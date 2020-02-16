@@ -1,3 +1,3 @@
 rootProject.name = extra.properties["name"] as String
 
-include("anfodis-core", "anfodis-command", "anfodis-listener")
+include("anfodis-core", "anfodis-command", "anfodis-listener", "anfodis-jda")
