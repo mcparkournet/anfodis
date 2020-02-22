@@ -25,10 +25,12 @@
 package net.mcparkour.anfodis.listener.mapper.properties;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import net.mcparkour.anfodis.mapper.Mapper;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
+import net.mcparkour.anfodis.mapper.Mapper;
+import net.mcparkour.anfodis.mapper.SingleElementMapper;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class ListenerPropertiesMapper<A extends Annotation, P extends ListenerProperties<M, E>, M extends MappedListenerProperties<E>, E> implements Mapper<Class<?>, P> {
@@ -37,22 +39,29 @@ public class ListenerPropertiesMapper<A extends Annotation, P extends ListenerPr
 	private Function<A, Class<? extends E>[]> listenedEventsSupplier;
 	private Supplier<M> mappedPropertiesSupplier;
 	private Function<M, P> mappedPropertiesToPropertiesMapper;
+	private List<Function<M, SingleElementMapper<Class<?>>>> additionalSingleElements;
 
 	public ListenerPropertiesMapper(Class<A> listenerAnnotationClass, Function<A, Class<? extends E>[]> listenedEventsSupplier, Supplier<M> mappedPropertiesSupplier, Function<M, P> mappedPropertiesToPropertiesMapper) {
+		this(listenerAnnotationClass, listenedEventsSupplier, mappedPropertiesSupplier, mappedPropertiesToPropertiesMapper, List.of());
+	}
+
+	public ListenerPropertiesMapper(Class<A> listenerAnnotationClass, Function<A, Class<? extends E>[]> listenedEventsSupplier, Supplier<M> mappedPropertiesSupplier, Function<M, P> mappedPropertiesToPropertiesMapper, List<Function<M, SingleElementMapper<Class<?>>>> additionalSingleElements) {
 		this.listenerAnnotationClass = listenerAnnotationClass;
 		this.listenedEventsSupplier = listenedEventsSupplier;
 		this.mappedPropertiesSupplier = mappedPropertiesSupplier;
 		this.mappedPropertiesToPropertiesMapper = mappedPropertiesToPropertiesMapper;
+		this.additionalSingleElements = additionalSingleElements;
 	}
 
 	@Override
 	public P map(Iterable<Class<?>> elements) {
-		return new ElementsMapperBuilder<Class<?>, M>()
+		ElementsMapperBuilder<Class<?>, M> elementsMapperBuilder = new ElementsMapperBuilder<Class<?>, M>()
 			.data(this.mappedPropertiesSupplier)
 			.singleElement(listener -> new SingleElementMapperBuilder<Class<?>>()
 				.annotation(this.listenerAnnotationClass, listenerAnnotation -> listener.setListenedEvents(this.listenedEventsSupplier.apply(listenerAnnotation)))
-				.build())
-			.build()
+				.build());
+		this.additionalSingleElements.forEach(elementsMapperBuilder::singleElement);
+		return elementsMapperBuilder.build()
 			.mapFirstOptional(elements)
 			.map(this.mappedPropertiesToPropertiesMapper)
 			.orElseThrow(() -> new RuntimeException("Listener is null"));

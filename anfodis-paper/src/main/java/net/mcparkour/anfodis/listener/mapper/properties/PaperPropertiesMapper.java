@@ -24,12 +24,23 @@
 
 package net.mcparkour.anfodis.listener.mapper.properties;
 
+import java.util.List;
+import net.mcparkour.anfodis.listener.annotation.properties.IgnoreCancelled;
 import net.mcparkour.anfodis.listener.annotation.properties.Listener;
+import net.mcparkour.anfodis.listener.annotation.properties.Priority;
+import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 import org.bukkit.event.Event;
 
 public class PaperPropertiesMapper extends ListenerPropertiesMapper<Listener, PaperListenerProperties, PaperMappedListenerProperties, Event> {
 
 	public PaperPropertiesMapper() {
-		super(Listener.class, Listener::value, PaperMappedListenerProperties::new, PaperListenerProperties::new);
+		super(Listener.class, Listener::value, PaperMappedListenerProperties::new, PaperListenerProperties::new, List.of(
+			properties -> new SingleElementMapperBuilder<Class<?>>()
+				.annotation(IgnoreCancelled.class, listenerAnnotation -> properties.setIgnoreCancelled(true))
+				.build(),
+			properties -> new SingleElementMapperBuilder<Class<?>>()
+				.annotation(Priority.class, listenerAnnotation -> properties.setPriority(listenerAnnotation.value()))
+				.build()
+		));
 	}
 }
