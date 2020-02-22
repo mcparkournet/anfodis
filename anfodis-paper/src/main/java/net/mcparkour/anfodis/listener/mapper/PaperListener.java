@@ -28,11 +28,10 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import net.mcparkour.anfodis.listener.mapper.event.Event;
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.PaperMappedListenerProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public class PaperListener extends Listener<PaperListenerProperties, PaperMappedListenerProperties, org.bukkit.event.Event> {
+public class PaperListener extends Listener<PaperListenerProperties> {
 
 	public PaperListener(Constructor<?> constructor, PaperListenerProperties listenerProperties, Event event, List<Injection> injections, Executor executor) {
 		super(constructor, listenerProperties, event, injections, executor);

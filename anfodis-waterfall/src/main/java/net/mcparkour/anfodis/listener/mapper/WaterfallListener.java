@@ -28,11 +28,10 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import net.mcparkour.anfodis.listener.mapper.event.Event;
 import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.WaterfallMappedListenerProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public class WaterfallListener extends Listener<WaterfallListenerProperties, WaterfallMappedListenerProperties, net.md_5.bungee.api.plugin.Event> {
+public class WaterfallListener extends Listener<WaterfallListenerProperties> {
 
 	public WaterfallListener(Constructor<?> constructor, WaterfallListenerProperties listenerProperties, Event event, List<Injection> injections, Executor executor) {
 		super(constructor, listenerProperties, event, injections, executor);

@@ -28,11 +28,10 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import net.mcparkour.anfodis.listener.mapper.event.Event;
 import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.VelocityMappedListenerProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public class VelocityListener extends Listener<VelocityListenerProperties, VelocityMappedListenerProperties, Object> {
+public class VelocityListener extends Listener<VelocityListenerProperties> {
 
 	public VelocityListener(Constructor<?> constructor, VelocityListenerProperties listenerProperties, Event event, List<Injection> injections, Executor executor) {
 		super(constructor, listenerProperties, event, injections, executor);

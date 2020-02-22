@@ -34,10 +34,10 @@ public class ListenerHandler implements Handler {
 
 	private Class<?> eventType;
 	private Object event;
-	private Listener<?, ?, ?> listener;
+	private Listener<?> listener;
 	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 
-	public ListenerHandler(Class<?> eventType, Object event, Listener<?, ?, ?> listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+	public ListenerHandler(Class<?> eventType, Object event, Listener<?> listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
 		this.eventType = eventType;
 		this.event = event;
 		this.listener = listener;
@@ -61,7 +61,7 @@ public class ListenerHandler implements Handler {
 		return this.event;
 	}
 
-	protected Listener<?, ?, ?> getListener() {
+	protected Listener<?> getListener() {
 		return this.listener;
 	}
 

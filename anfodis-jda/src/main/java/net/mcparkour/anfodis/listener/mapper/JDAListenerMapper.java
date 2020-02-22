@@ -24,12 +24,10 @@
 
 package net.mcparkour.anfodis.listener.mapper;
 
-import net.dv8tion.jda.api.events.GenericEvent;
 import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.JDAMappedListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.JDAPropertiesMapper;
 
-public class JDAListenerMapper extends ListenerMapper<JDAListener, JDAListenerProperties, JDAMappedListenerProperties, GenericEvent> {
+public class JDAListenerMapper extends ListenerMapper<JDAListener, JDAListenerProperties> {
 
 	private static final JDAPropertiesMapper PROPERTIES_MAPPER = new JDAPropertiesMapper();
 

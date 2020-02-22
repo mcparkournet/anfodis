@@ -28,12 +28,11 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import net.mcparkour.anfodis.listener.mapper.event.Event;
 import net.mcparkour.anfodis.listener.mapper.properties.ListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.MappedListenerProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 import net.mcparkour.common.reflection.Reflections;
 
-public class Listener<P extends ListenerProperties<M, E>, M extends MappedListenerProperties<E>, E> {
+public class Listener<P extends ListenerProperties<?, ?>> {
 
 	private Constructor<?> constructor;
 	private P listenerProperties;

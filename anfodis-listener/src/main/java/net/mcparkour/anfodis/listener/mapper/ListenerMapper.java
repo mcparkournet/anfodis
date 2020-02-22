@@ -32,7 +32,6 @@ import net.mcparkour.anfodis.listener.mapper.event.Event;
 import net.mcparkour.anfodis.listener.mapper.event.EventMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.ListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.ListenerPropertiesMapper;
-import net.mcparkour.anfodis.listener.mapper.properties.MappedListenerProperties;
 import net.mcparkour.anfodis.mapper.ClassMapper;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.executor.ExecutorMapper;
@@ -40,12 +39,12 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 import net.mcparkour.anfodis.mapper.injection.InjectionMapper;
 import net.mcparkour.common.reflection.Reflections;
 
-public class ListenerMapper<L extends Listener<P, M, E>, P extends ListenerProperties<M, E>, M extends MappedListenerProperties<E>, E> implements ClassMapper<L> {
+public class ListenerMapper<L extends Listener<P>, P extends ListenerProperties<?, ?>> implements ClassMapper<L> {
 
-	private ListenerMerger<L, P, M, E> listenerMerger;
-	private ListenerPropertiesMapper<?, P, M, E> listenerPropertiesMapper;
+	private ListenerMerger<L, P> listenerMerger;
+	private ListenerPropertiesMapper<?, P, ?, ?> listenerPropertiesMapper;
 
-	public ListenerMapper(ListenerMerger<L, P, M, E> listenerMerger, ListenerPropertiesMapper<?, P, M, E> listenerPropertiesMapper) {
+	public ListenerMapper(ListenerMerger<L, P> listenerMerger, ListenerPropertiesMapper<?, P, ?, ?> listenerPropertiesMapper) {
 		this.listenerMerger = listenerMerger;
 		this.listenerPropertiesMapper = listenerPropertiesMapper;
 	}

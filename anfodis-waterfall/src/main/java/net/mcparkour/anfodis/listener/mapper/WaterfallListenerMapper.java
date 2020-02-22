@@ -25,11 +25,9 @@
 package net.mcparkour.anfodis.listener.mapper;
 
 import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.WaterfallMappedListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.WaterfallPropertiesMapper;
-import net.md_5.bungee.api.plugin.Event;
 
-public class WaterfallListenerMapper extends ListenerMapper<WaterfallListener, WaterfallListenerProperties, WaterfallMappedListenerProperties, Event> {
+public class WaterfallListenerMapper extends ListenerMapper<WaterfallListener, WaterfallListenerProperties> {
 
 	private static final WaterfallPropertiesMapper PROPERTIES_MAPPER = new WaterfallPropertiesMapper();
 

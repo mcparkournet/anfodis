@@ -36,7 +36,7 @@ public class ListenerExecutorHandler extends ListenerHandler {
 	private Executor executor;
 	private Object listenerInstance;
 
-	public ListenerExecutorHandler(Class<?> eventType, Object event, Listener<?, ?, ?> listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, Executor executor) {
+	public ListenerExecutorHandler(Class<?> eventType, Object event, Listener<?> listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, Executor executor) {
 		super(eventType, event, listener, injectionCodecRegistry);
 		this.executor = executor;
 		this.listenerInstance = listener.createListener();
@@ -50,7 +50,7 @@ public class ListenerExecutorHandler extends ListenerHandler {
 	}
 
 	private void fillInjections() {
-		Listener<?, ?, ?> listener = getListener();
+		Listener<?> listener = getListener();
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
 		for (Injection injection : listener.getInjections()) {
 			InjectionCodec<?> codec = injection.getCodec(injectionCodecRegistry);
@@ -60,7 +60,7 @@ public class ListenerExecutorHandler extends ListenerHandler {
 	}
 
 	private void setEvent() {
-		Listener<?, ?, ?> listener = getListener();
+		Listener<?> listener = getListener();
 		net.mcparkour.anfodis.listener.mapper.event.Event event = listener.getEvent();
 		Object eventObject = getEvent();
 		event.setValue(this.listenerInstance, eventObject);

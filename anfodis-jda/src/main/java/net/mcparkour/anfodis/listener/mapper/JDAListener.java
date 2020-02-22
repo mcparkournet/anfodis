@@ -26,14 +26,12 @@ package net.mcparkour.anfodis.listener.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
-import net.dv8tion.jda.api.events.GenericEvent;
 import net.mcparkour.anfodis.listener.mapper.event.Event;
 import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.JDAMappedListenerProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public class JDAListener extends Listener<JDAListenerProperties, JDAMappedListenerProperties, GenericEvent> {
+public class JDAListener extends Listener<JDAListenerProperties> {
 
 	public JDAListener(Constructor<?> constructor, JDAListenerProperties listenerProperties, Event event, List<Injection> injections, Executor executor) {
 		super(constructor, listenerProperties, event, injections, executor);

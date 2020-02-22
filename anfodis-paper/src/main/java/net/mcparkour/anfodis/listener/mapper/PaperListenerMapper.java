@@ -25,11 +25,9 @@
 package net.mcparkour.anfodis.listener.mapper;
 
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.PaperMappedListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.PaperPropertiesMapper;
-import org.bukkit.event.Event;
 
-public class PaperListenerMapper extends ListenerMapper<PaperListener, PaperListenerProperties, PaperMappedListenerProperties, Event> {
+public class PaperListenerMapper extends ListenerMapper<PaperListener, PaperListenerProperties> {
 
 	private static final PaperPropertiesMapper PROPERTIES_MAPPER = new PaperPropertiesMapper();
 
