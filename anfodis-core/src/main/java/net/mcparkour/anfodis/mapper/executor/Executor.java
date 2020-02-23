@@ -37,23 +37,25 @@ public class Executor {
 
 	public void invokeBefore(Object instance) {
 		Method method = this.executorData.getBeforeMethod();
-		if (method != null) {
-			Reflections.invokeMethod(method, instance);
+		if (method == null) {
+			return;
 		}
+		Reflections.invokeMethod(method, instance);
 	}
 
 	public Object invokeExecutor(Object instance) {
 		Method method = this.executorData.getExecutorMethod();
 		if (method == null) {
-			throw new RuntimeException("Method is null");
+			throw new RuntimeException("Executor method is null");
 		}
 		return Reflections.invokeMethod(method, instance);
 	}
 
 	public void invokeAfter(Object instance) {
 		Method method = this.executorData.getAfterMethod();
-		if (method != null) {
-			Reflections.invokeMethod(method, instance);
+		if (method == null) {
+			return;
 		}
+		Reflections.invokeMethod(method, instance);
 	}
 }

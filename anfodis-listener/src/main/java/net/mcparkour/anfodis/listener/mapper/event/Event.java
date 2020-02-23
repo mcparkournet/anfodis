@@ -37,8 +37,9 @@ public class Event {
 
 	public void setEventField(Object instance, Object event) {
 		Field field = this.eventData.getEventField();
-		if (field != null) {
-			Reflections.setFieldValue(field, instance, event);
+		if (field == null) {
+			return;
 		}
+		Reflections.setFieldValue(field, instance, event);
 	}
 }
