@@ -51,6 +51,8 @@ public class CodecRegistryBuilder<T> {
 	}
 
 	public CodecRegistry<T> build() {
-		return new CodecRegistry<>(this.typedCodecs, this.keyedCodecs);
+		Map<Class<?>, T> typedCodecsCopy = Map.copyOf(this.typedCodecs);
+		Map<Object, T> keyedCodecsCopy = Map.copyOf(this.keyedCodecs);
+		return new CodecRegistry<>(typedCodecsCopy, keyedCodecsCopy);
 	}
 }

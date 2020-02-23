@@ -24,7 +24,6 @@
 
 package net.mcparkour.anfodis.codec;
 
-import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,14 +31,6 @@ public class CodecRegistry<T> {
 
 	private Map<Class<?>, T> typedCodecs;
 	private Map<Object, T> keyedCodecs;
-
-	public static <T> CodecRegistryBuilder<T> builder() {
-		return new CodecRegistryBuilder<>();
-	}
-
-	public CodecRegistry() {
-		this(new HashMap<>(0), new HashMap<>(0));
-	}
 
 	public CodecRegistry(Map<Class<?>, T> typedCodecs, Map<Object, T> keyedCodecs) {
 		this.typedCodecs = typedCodecs;
@@ -56,11 +47,11 @@ public class CodecRegistry<T> {
 		return this.keyedCodecs.get(key);
 	}
 
-	public Map<Class<?>, T> getTypedCodecs() {
+	Map<Class<?>, T> getTypedCodecs() {
 		return Map.copyOf(this.typedCodecs);
 	}
 
-	public Map<Object, T> getKeyedCodecs() {
+	Map<Object, T> getKeyedCodecs() {
 		return Map.copyOf(this.keyedCodecs);
 	}
 }
