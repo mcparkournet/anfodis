@@ -27,15 +27,15 @@ package net.mcparkour.anfodis.listener.mapper.properties;
 import net.md_5.bungee.api.plugin.Event;
 import net.md_5.bungee.event.EventPriority;
 
-public class WaterfallListenerProperties extends ListenerProperties<WaterfallMappedListenerProperties, Event> {
+public class WaterfallListenerProperties extends ListenerProperties<WaterfallListenerPropertiesData, Event> {
 
-	public WaterfallListenerProperties(WaterfallMappedListenerProperties mappedListenerProperties) {
-		super(mappedListenerProperties);
+	public WaterfallListenerProperties(WaterfallListenerPropertiesData listenerPropertiesData) {
+		super(listenerPropertiesData);
 	}
 
 	public byte getPriority() {
-		WaterfallMappedListenerProperties mappedListenerProperties = getMappedListenerProperties();
-		Byte priority = mappedListenerProperties.getPriority();
+		WaterfallListenerPropertiesData listenerPropertiesData = getListenerPropertiesData();
+		Byte priority = listenerPropertiesData.getPriority();
 		if (priority == null) {
 			return EventPriority.NORMAL;
 		}

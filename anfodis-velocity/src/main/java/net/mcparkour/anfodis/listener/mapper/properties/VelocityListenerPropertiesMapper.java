@@ -24,6 +24,14 @@
 
 package net.mcparkour.anfodis.listener.mapper.properties;
 
-import net.dv8tion.jda.api.events.GenericEvent;
+import net.mcparkour.anfodis.listener.annotation.properties.Listener;
+import net.mcparkour.anfodis.listener.annotation.properties.Priority;
 
-public class JDAMappedListenerProperties extends MappedListenerProperties<GenericEvent> {}
+public class VelocityListenerPropertiesMapper extends ListenerPropertiesMapper<VelocityListenerProperties, VelocityListenerPropertiesData, Object, Listener> {
+
+	public VelocityListenerPropertiesMapper() {
+		super(Listener.class, Listener::value, VelocityListenerProperties::new, VelocityListenerPropertiesData::new, (data, builder) -> {
+			builder.annotation(Priority.class, priority -> data.setPriority(priority.value()));
+		});
+	}
+}

@@ -34,15 +34,15 @@ public class EventMapper implements Mapper<Field, net.mcparkour.anfodis.listener
 
 	@Override
 	public net.mcparkour.anfodis.listener.mapper.event.Event map(Iterable<Field> elements) {
-		return new ElementsMapperBuilder<Field, MappedEvent>()
-			.data(MappedEvent::new)
-			.singleElement(event -> new SingleElementMapperBuilder<Field>()
+		return new ElementsMapperBuilder<Field, EventData>()
+			.data(EventData::new)
+			.singleElement(data -> new SingleElementMapperBuilder<Field>()
 				.annotation(Event.class)
-				.elementConsumer(event::setEventField)
+				.elementConsumer(data::setEventField)
 				.build())
 			.build()
 			.mapFirstOptional(elements)
 			.map(net.mcparkour.anfodis.listener.mapper.event.Event::new)
-			.orElseThrow(() -> new RuntimeException("Event is null"));
+			.orElseThrow();
 	}
 }

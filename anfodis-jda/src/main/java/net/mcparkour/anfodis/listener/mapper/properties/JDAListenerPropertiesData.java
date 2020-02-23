@@ -26,9 +26,4 @@ package net.mcparkour.anfodis.listener.mapper.properties;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 
-public class JDAListenerProperties extends ListenerProperties<JDAListenerPropertiesData, GenericEvent> {
-
-	public JDAListenerProperties(JDAListenerPropertiesData listenerPropertiesData) {
-		super(listenerPropertiesData);
-	}
-}
+public class JDAListenerPropertiesData extends ListenerPropertiesData<GenericEvent> {}

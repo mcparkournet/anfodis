@@ -25,10 +25,9 @@
 package net.mcparkour.anfodis.mapper.executor;
 
 import java.lang.reflect.Method;
-import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
-public class MappedExecutor {
+public class ExecutorData {
 
 	@Nullable
 	private Method beforeMethod;
@@ -36,42 +35,6 @@ public class MappedExecutor {
 	private Method executorMethod;
 	@Nullable
 	private Method afterMethod;
-
-	public MappedExecutor() {}
-
-	public MappedExecutor(@Nullable Method beforeMethod, @Nullable Method executorMethod, @Nullable Method afterMethod) {
-		this.beforeMethod = beforeMethod;
-		this.executorMethod = executorMethod;
-		this.afterMethod = afterMethod;
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
-			return true;
-		}
-		if (object == null || getClass() != object.getClass()) {
-			return false;
-		}
-		MappedExecutor that = (MappedExecutor) object;
-		return Objects.equals(this.beforeMethod, that.beforeMethod) &&
-			Objects.equals(this.executorMethod, that.executorMethod) &&
-			Objects.equals(this.afterMethod, that.afterMethod);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.beforeMethod, this.executorMethod, this.afterMethod);
-	}
-
-	@Override
-	public String toString() {
-		return "MappedExecutor{" +
-			"beforeMethod=" + this.beforeMethod +
-			", executorMethod=" + this.executorMethod +
-			", afterMethod=" + this.afterMethod +
-			"}";
-	}
 
 	@Nullable
 	public Method getBeforeMethod() {

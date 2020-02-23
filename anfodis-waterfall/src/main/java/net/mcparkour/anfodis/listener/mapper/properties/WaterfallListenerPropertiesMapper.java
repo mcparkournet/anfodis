@@ -24,27 +24,15 @@
 
 package net.mcparkour.anfodis.listener.mapper.properties;
 
+import net.mcparkour.anfodis.listener.annotation.properties.Listener;
+import net.mcparkour.anfodis.listener.annotation.properties.Priority;
 import net.md_5.bungee.api.plugin.Event;
-import org.jetbrains.annotations.Nullable;
 
-public class WaterfallMappedListenerProperties extends MappedListenerProperties<Event> {
+public class WaterfallListenerPropertiesMapper extends ListenerPropertiesMapper<WaterfallListenerProperties, WaterfallListenerPropertiesData, Event, Listener> {
 
-	@Nullable
-	private Byte priority;
-
-	public WaterfallMappedListenerProperties() {}
-
-	public WaterfallMappedListenerProperties(@Nullable Class<? extends Event>[] listenedEvents, @Nullable Byte priority) {
-		super(listenedEvents);
-		this.priority = priority;
-	}
-
-	@Nullable
-	public Byte getPriority() {
-		return this.priority;
-	}
-
-	public void setPriority(@Nullable Byte priority) {
-		this.priority = priority;
+	public WaterfallListenerPropertiesMapper() {
+		super(Listener.class, Listener::value, WaterfallListenerProperties::new, WaterfallListenerPropertiesData::new, (data, builder) -> {
+			builder.annotation(Priority.class, priority -> data.setPriority(priority.value()));
+		});
 	}
 }

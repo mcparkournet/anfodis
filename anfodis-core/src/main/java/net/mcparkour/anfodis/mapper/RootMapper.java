@@ -22,13 +22,34 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.mapper.properties;
+package net.mcparkour.anfodis.mapper;
 
-import net.dv8tion.jda.api.events.GenericEvent;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
+import net.mcparkour.anfodis.mapper.executor.Executor;
+import net.mcparkour.anfodis.mapper.executor.ExecutorMapper;
+import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.injection.InjectionMapper;
+import net.mcparkour.common.reflection.Reflections;
 
-public class JDAListenerProperties extends ListenerProperties<JDAListenerPropertiesData, GenericEvent> {
+public interface RootMapper<T extends Root> {
 
-	public JDAListenerProperties(JDAListenerPropertiesData listenerPropertiesData) {
-		super(listenerPropertiesData);
+	InjectionMapper INJECTION_MAPPER = new InjectionMapper();
+	ExecutorMapper EXECUTOR_MAPPER = new ExecutorMapper();
+
+	T map(Class<?> annotatedClass);
+
+	default Constructor<?> getConstructor(Class<?> type) {
+		return Reflections.getSerializationConstructor(type);
+	}
+
+	default List<Injection> getInjections(Field[] fields) {
+		return INJECTION_MAPPER.map(fields);
+	}
+
+	default Executor getExecutor(Method[] methods) {
+		return EXECUTOR_MAPPER.map(methods);
 	}
 }

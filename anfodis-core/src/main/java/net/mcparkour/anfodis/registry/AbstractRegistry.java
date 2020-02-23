@@ -27,15 +27,16 @@ package net.mcparkour.anfodis.registry;
 import java.lang.annotation.Annotation;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.mapper.ClassMapper;
+import net.mcparkour.anfodis.mapper.Root;
+import net.mcparkour.anfodis.mapper.RootMapper;
 
-public abstract class AbstractRegistry<T> implements Registry {
+public abstract class AbstractRegistry<T extends Root> implements Registry {
 
 	private Class<? extends Annotation> annotationClass;
-	private ClassMapper<T> mapper;
+	private RootMapper<T> mapper;
 	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 
-	public AbstractRegistry(Class<? extends Annotation> annotation, ClassMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+	public AbstractRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
 		this.annotationClass = annotation;
 		this.mapper = mapper;
 		this.injectionCodecRegistry = injectionCodecRegistry;
@@ -46,11 +47,11 @@ public abstract class AbstractRegistry<T> implements Registry {
 		if (!annotatedClass.isAnnotationPresent(this.annotationClass)) {
 			throw new IllegalArgumentException("Class " + annotatedClass.getName() + " is not annotated with " + this.annotationClass.getName() + " annotation");
 		}
-		T listener = this.mapper.map(annotatedClass);
-		register(listener);
+		T root = this.mapper.map(annotatedClass);
+		register(root);
 	}
 
-	protected abstract void register(T mapped);
+	protected abstract void register(T root);
 
 	protected CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {
 		return this.injectionCodecRegistry;

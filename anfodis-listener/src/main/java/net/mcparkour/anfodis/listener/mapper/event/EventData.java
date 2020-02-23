@@ -22,21 +22,22 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.mapper.properties;
+package net.mcparkour.anfodis.listener.mapper.event;
 
-import java.util.List;
-import net.mcparkour.anfodis.listener.annotation.properties.Listener;
-import net.mcparkour.anfodis.listener.annotation.properties.Priority;
-import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
-import net.md_5.bungee.api.plugin.Event;
+import java.lang.reflect.Field;
+import org.jetbrains.annotations.Nullable;
 
-public class WaterfallPropertiesMapper extends ListenerPropertiesMapper<Listener, WaterfallListenerProperties, WaterfallMappedListenerProperties, Event> {
+public class EventData {
 
-	public WaterfallPropertiesMapper() {
-		super(Listener.class, Listener::value, WaterfallMappedListenerProperties::new, WaterfallListenerProperties::new, List.of(
-			properties -> new SingleElementMapperBuilder<Class<?>>()
-				.annotation(Priority.class, priority -> properties.setPriority(priority.value()))
-				.build()
-		));
+	@Nullable
+	private Field eventField;
+
+	@Nullable
+	public Field getEventField() {
+		return this.eventField;
+	}
+
+	public void setEventField(@Nullable Field eventField) {
+		this.eventField = eventField;
 	}
 }

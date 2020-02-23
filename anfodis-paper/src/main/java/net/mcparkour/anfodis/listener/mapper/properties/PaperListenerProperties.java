@@ -27,15 +27,15 @@ package net.mcparkour.anfodis.listener.mapper.properties;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 
-public class PaperListenerProperties extends ListenerProperties<PaperMappedListenerProperties, Event> {
+public class PaperListenerProperties extends ListenerProperties<PaperListenerPropertiesData, Event> {
 
-	public PaperListenerProperties(PaperMappedListenerProperties mappedListenerProperties) {
-		super(mappedListenerProperties);
+	public PaperListenerProperties(PaperListenerPropertiesData listenerPropertiesData) {
+		super(listenerPropertiesData);
 	}
 
 	public EventPriority getPriority() {
-		PaperMappedListenerProperties mappedListenerProperties = getMappedListenerProperties();
-		EventPriority priority = mappedListenerProperties.getPriority();
+		PaperListenerPropertiesData listenerPropertiesData = getListenerPropertiesData();
+		EventPriority priority = listenerPropertiesData.getPriority();
 		if (priority == null) {
 			return EventPriority.NORMAL;
 		}
@@ -43,8 +43,8 @@ public class PaperListenerProperties extends ListenerProperties<PaperMappedListe
 	}
 
 	public boolean isIgnoreCancelled() {
-		PaperMappedListenerProperties mappedListenerProperties = getMappedListenerProperties();
-		Boolean ignoreCancelled = mappedListenerProperties.getIgnoreCancelled();
+		PaperListenerPropertiesData listenerPropertiesData = getListenerPropertiesData();
+		Boolean ignoreCancelled = listenerPropertiesData.getIgnoreCancelled();
 		if (ignoreCancelled == null) {
 			return false;
 		}

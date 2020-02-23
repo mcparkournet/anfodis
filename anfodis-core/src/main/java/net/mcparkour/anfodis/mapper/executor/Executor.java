@@ -29,21 +29,21 @@ import net.mcparkour.common.reflection.Reflections;
 
 public class Executor {
 
-	private MappedExecutor mappedExecutor;
+	private ExecutorData executorData;
 
-	public Executor(MappedExecutor mappedExecutor) {
-		this.mappedExecutor = mappedExecutor;
+	public Executor(ExecutorData executorData) {
+		this.executorData = executorData;
 	}
 
 	public void invokeBefore(Object instance) {
-		Method method = this.mappedExecutor.getBeforeMethod();
+		Method method = this.executorData.getBeforeMethod();
 		if (method != null) {
 			Reflections.invokeMethod(method, instance);
 		}
 	}
 
 	public Object invokeExecutor(Object instance) {
-		Method method = this.mappedExecutor.getExecutorMethod();
+		Method method = this.executorData.getExecutorMethod();
 		if (method == null) {
 			throw new RuntimeException("Method is null");
 		}
@@ -51,7 +51,7 @@ public class Executor {
 	}
 
 	public void invokeAfter(Object instance) {
-		Method method = this.mappedExecutor.getAfterMethod();
+		Method method = this.executorData.getAfterMethod();
 		if (method != null) {
 			Reflections.invokeMethod(method, instance);
 		}

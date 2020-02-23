@@ -33,5 +33,5 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public interface ListenerMerger<L extends Listener<P>, P extends ListenerProperties<?, ?>> {
 
-	L merge(Constructor<?> constructor, P listenerProperties, Event event, List<Injection> injections, Executor executor);
+	L merge(Constructor<?> constructor, List<Injection> injections, Executor executor, P listenerProperties, Event event);
 }

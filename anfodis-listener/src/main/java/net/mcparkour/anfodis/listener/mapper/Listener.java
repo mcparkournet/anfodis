@@ -28,28 +28,19 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import net.mcparkour.anfodis.listener.mapper.event.Event;
 import net.mcparkour.anfodis.listener.mapper.properties.ListenerProperties;
+import net.mcparkour.anfodis.mapper.Root;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
-import net.mcparkour.common.reflection.Reflections;
 
-public class Listener<P extends ListenerProperties<?, ?>> {
+public class Listener<P extends ListenerProperties<?, ?>> extends Root {
 
-	private Constructor<?> constructor;
 	private P listenerProperties;
 	private Event event;
-	private List<Injection> injections;
-	private Executor executor;
 
-	public Listener(Constructor<?> constructor, P listenerProperties, Event event, List<Injection> injections, Executor executor) {
-		this.constructor = constructor;
+	public Listener(Constructor<?> constructor, List<Injection> injections, Executor executor, P listenerProperties, Event event) {
+		super(constructor, injections, executor);
 		this.listenerProperties = listenerProperties;
 		this.event = event;
-		this.injections = injections;
-		this.executor = executor;
-	}
-
-	public Object createListener() {
-		return Reflections.newInstance(this.constructor);
 	}
 
 	public P getListenerProperties() {
@@ -58,13 +49,5 @@ public class Listener<P extends ListenerProperties<?, ?>> {
 
 	public Event getEvent() {
 		return this.event;
-	}
-
-	public List<Injection> getInjections() {
-		return this.injections;
-	}
-
-	public Executor getExecutor() {
-		return this.executor;
 	}
 }

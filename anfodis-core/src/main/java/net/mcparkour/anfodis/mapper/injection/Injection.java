@@ -31,27 +31,27 @@ import net.mcparkour.common.reflection.Reflections;
 
 public class Injection {
 
-	private MappedInjection mappedInjection;
+	private InjectionData injectionData;
 
-	public Injection(MappedInjection mappedInjection) {
-		this.mappedInjection = mappedInjection;
+	public Injection(InjectionData injectionData) {
+		this.injectionData = injectionData;
 	}
 
-	public void setValue(Object instance, Object value) {
-		Field field = this.mappedInjection.getInjectionField();
+	public void setInjectionField(Object instance, Object injection) {
+		Field field = this.injectionData.getInjectionField();
 		if (field == null) {
 			throw new RuntimeException("Field is null");
 		}
-		Reflections.setFieldValue(field, instance, value);
+		Reflections.setFieldValue(field, instance, injection);
 	}
 
 	public InjectionCodec<?> getCodec(CodecRegistry<InjectionCodec<?>> registry) {
-		Field field = this.mappedInjection.getInjectionField();
+		Field field = this.injectionData.getInjectionField();
 		if (field == null) {
 			throw new RuntimeException("Field is null");
 		}
 		Class<?> type = field.getType();
-		String codecKey = this.mappedInjection.getCodecKey();
+		String codecKey = this.injectionData.getCodecKey();
 		InjectionCodec<?> codec = codecKey == null ? registry.getTypedCodec(type) : registry.getKeyedCodec(codecKey);
 		if (codec == null) {
 			throw new RuntimeException("Cannot find injection codec for type " + type);

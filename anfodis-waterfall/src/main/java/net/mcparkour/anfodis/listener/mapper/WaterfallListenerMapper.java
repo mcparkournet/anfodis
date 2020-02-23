@@ -25,13 +25,13 @@
 package net.mcparkour.anfodis.listener.mapper;
 
 import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.WaterfallPropertiesMapper;
+import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerPropertiesMapper;
 
 public class WaterfallListenerMapper extends ListenerMapper<WaterfallListener, WaterfallListenerProperties> {
 
-	private static final WaterfallPropertiesMapper PROPERTIES_MAPPER = new WaterfallPropertiesMapper();
+	private static final WaterfallListenerPropertiesMapper LISTENER_PROPERTIES_MAPPER = new WaterfallListenerPropertiesMapper();
 
 	public WaterfallListenerMapper() {
-		super(WaterfallListener::new, PROPERTIES_MAPPER);
+		super(LISTENER_PROPERTIES_MAPPER, WaterfallListener::new);
 	}
 }

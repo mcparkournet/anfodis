@@ -22,42 +22,33 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.mapper.properties;
+package net.mcparkour.anfodis.mapper.injection;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
+import java.lang.reflect.Field;
 import org.jetbrains.annotations.Nullable;
 
-public class PaperMappedListenerProperties extends MappedListenerProperties<Event> {
+public class InjectionData {
 
 	@Nullable
-	private EventPriority priority;
+	private Field injectionField;
 	@Nullable
-	private Boolean ignoreCancelled;
+	private String codecKey;
 
-	public PaperMappedListenerProperties() {}
+	@Nullable
+	public Field getInjectionField() {
+		return this.injectionField;
+	}
 
-	public PaperMappedListenerProperties(@Nullable Class<? extends Event>[] listenedEvents, @Nullable EventPriority priority, @Nullable Boolean ignoreCancelled) {
-		super(listenedEvents);
-		this.priority = priority;
-		this.ignoreCancelled = ignoreCancelled;
+	public void setInjectionField(@Nullable Field injectionField) {
+		this.injectionField = injectionField;
 	}
 
 	@Nullable
-	public EventPriority getPriority() {
-		return this.priority;
+	public String getCodecKey() {
+		return this.codecKey;
 	}
 
-	public void setPriority(@Nullable EventPriority priority) {
-		this.priority = priority;
-	}
-
-	@Nullable
-	public Boolean getIgnoreCancelled() {
-		return this.ignoreCancelled;
-	}
-
-	public void setIgnoreCancelled(boolean ignoreCancelled) {
-		this.ignoreCancelled = ignoreCancelled;
+	public void setCodecKey(@Nullable String codecKey) {
+		this.codecKey = codecKey;
 	}
 }

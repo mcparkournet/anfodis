@@ -35,9 +35,8 @@ import net.mcparkour.anfodis.listener.handler.ListenerHandler;
 import net.mcparkour.anfodis.listener.mapper.JDAListener;
 import net.mcparkour.anfodis.listener.mapper.JDAListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerProperties;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
 
-public class JDAListenerRegistry extends AbstractRegistry<JDAListener> {
+public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener> {
 
 	private static final JDAListenerMapper LISTENER_MAPPER = new JDAListenerMapper();
 
@@ -49,13 +48,13 @@ public class JDAListenerRegistry extends AbstractRegistry<JDAListener> {
 	}
 
 	@Override
-	protected void register(JDAListener mapped) {
+	protected void register(JDAListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		JDAListenerProperties properties = mapped.getListenerProperties();
+		JDAListenerProperties properties = root.getListenerProperties();
 		Iterable<Class<? extends GenericEvent>> eventTypes = properties.getListenedEvents();
 		for (Class<? extends GenericEvent> eventType : eventTypes) {
 			EventListener listener = event -> {
-				Handler handler = new ListenerHandler(eventType, event, mapped, injectionCodecRegistry);
+				Handler handler = new ListenerHandler(eventType, event, root, injectionCodecRegistry);
 				handler.handle();
 			};
 			this.jda.addEventListener(listener);

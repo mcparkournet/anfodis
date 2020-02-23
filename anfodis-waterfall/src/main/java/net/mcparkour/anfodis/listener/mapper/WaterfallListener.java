@@ -33,7 +33,7 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class WaterfallListener extends Listener<WaterfallListenerProperties> {
 
-	public WaterfallListener(Constructor<?> constructor, WaterfallListenerProperties listenerProperties, Event event, List<Injection> injections, Executor executor) {
-		super(constructor, listenerProperties, event, injections, executor);
+	public WaterfallListener(Constructor<?> constructor, List<Injection> injections, Executor executor, WaterfallListenerProperties listenerProperties, Event event) {
+		super(constructor, injections, executor, listenerProperties, event);
 	}
 }

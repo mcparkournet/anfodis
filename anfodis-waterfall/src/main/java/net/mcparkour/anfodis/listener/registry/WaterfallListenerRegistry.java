@@ -33,14 +33,13 @@ import net.mcparkour.anfodis.listener.handler.ListenerHandler;
 import net.mcparkour.anfodis.listener.mapper.WaterfallListener;
 import net.mcparkour.anfodis.listener.mapper.WaterfallListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerProperties;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
 import net.mcparkour.common.reflection.Reflections;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Event;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
-public class WaterfallListenerRegistry extends AbstractRegistry<WaterfallListener> {
+public class WaterfallListenerRegistry extends AbstractListenerRegistry<WaterfallListener> {
 
 	private static final WaterfallListenerMapper LISTENER_MAPPER = new WaterfallListenerMapper();
 
@@ -60,14 +59,14 @@ public class WaterfallListenerRegistry extends AbstractRegistry<WaterfallListene
 	}
 
 	@Override
-	protected void register(WaterfallListener mapped) {
+	protected void register(WaterfallListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		WaterfallListenerProperties properties = mapped.getListenerProperties();
-		byte priority = properties.getPriority();
-		Iterable<Class<? extends Event>> eventTypes = properties.getListenedEvents();
+		WaterfallListenerProperties listenerProperties = root.getListenerProperties();
+		byte priority = listenerProperties.getPriority();
+		Iterable<Class<? extends Event>> eventTypes = listenerProperties.getListenedEvents();
 		for (Class<? extends Event> eventType : eventTypes) {
 			ListenerExecutor<? extends Event> listenerExecutor = event -> {
-				Handler handler = new ListenerHandler(eventType, event, mapped, injectionCodecRegistry);
+				Handler handler = new ListenerHandler(eventType, event, root, injectionCodecRegistry);
 				handler.handle();
 			};
 			Method listenMethod = Reflections.getMethod(ListenerExecutor.class, "listen", Event.class);

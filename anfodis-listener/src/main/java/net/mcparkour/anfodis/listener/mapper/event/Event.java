@@ -29,16 +29,16 @@ import net.mcparkour.common.reflection.Reflections;
 
 public class Event {
 
-	private MappedEvent mappedEvent;
+	private EventData eventData;
 
-	public Event(MappedEvent mappedEvent) {
-		this.mappedEvent = mappedEvent;
+	public Event(EventData eventData) {
+		this.eventData = eventData;
 	}
 
-	public void setValue(Object instance, Object value) {
-		Field field = this.mappedEvent.getEventField();
+	public void setEventField(Object instance, Object event) {
+		Field field = this.eventData.getEventField();
 		if (field != null) {
-			Reflections.setFieldValue(field, instance, value);
+			Reflections.setFieldValue(field, instance, event);
 		}
 	}
 }

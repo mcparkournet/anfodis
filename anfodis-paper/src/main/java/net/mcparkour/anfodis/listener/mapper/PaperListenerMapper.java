@@ -25,13 +25,13 @@
 package net.mcparkour.anfodis.listener.mapper;
 
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.PaperPropertiesMapper;
+import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerPropertiesMapper;
 
 public class PaperListenerMapper extends ListenerMapper<PaperListener, PaperListenerProperties> {
 
-	private static final PaperPropertiesMapper PROPERTIES_MAPPER = new PaperPropertiesMapper();
+	private static final PaperListenerPropertiesMapper LISTENER_PROPERTIES_MAPPER = new PaperListenerPropertiesMapper();
 
 	public PaperListenerMapper() {
-		super(PaperListener::new, PROPERTIES_MAPPER);
+		super(LISTENER_PROPERTIES_MAPPER, PaperListener::new);
 	}
 }

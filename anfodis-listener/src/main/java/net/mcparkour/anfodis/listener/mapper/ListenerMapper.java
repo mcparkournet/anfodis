@@ -32,33 +32,30 @@ import net.mcparkour.anfodis.listener.mapper.event.Event;
 import net.mcparkour.anfodis.listener.mapper.event.EventMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.ListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.ListenerPropertiesMapper;
-import net.mcparkour.anfodis.mapper.ClassMapper;
+import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.anfodis.mapper.executor.Executor;
-import net.mcparkour.anfodis.mapper.executor.ExecutorMapper;
 import net.mcparkour.anfodis.mapper.injection.Injection;
-import net.mcparkour.anfodis.mapper.injection.InjectionMapper;
-import net.mcparkour.common.reflection.Reflections;
 
-public class ListenerMapper<L extends Listener<P>, P extends ListenerProperties<?, ?>> implements ClassMapper<L> {
+public class ListenerMapper<T extends Listener<P>, P extends ListenerProperties<?, ?>> implements RootMapper<T> {
 
-	private ListenerMerger<L, P> listenerMerger;
-	private ListenerPropertiesMapper<?, P, ?, ?> listenerPropertiesMapper;
+	private ListenerPropertiesMapper<P, ?, ?, ?> listenerPropertiesMapper;
+	private ListenerMerger<T, P> listenerMerger;
 
-	public ListenerMapper(ListenerMerger<L, P> listenerMerger, ListenerPropertiesMapper<?, P, ?, ?> listenerPropertiesMapper) {
-		this.listenerMerger = listenerMerger;
+	public ListenerMapper(ListenerPropertiesMapper<P, ?, ?, ?> listenerPropertiesMapper, ListenerMerger<T, P> listenerMerger) {
 		this.listenerPropertiesMapper = listenerPropertiesMapper;
+		this.listenerMerger = listenerMerger;
 	}
 
 	@Override
-	public L map(Class<?> annotatedClass) {
+	public T map(Class<?> annotatedClass) {
 		Field[] fields = annotatedClass.getDeclaredFields();
 		Method[] methods = annotatedClass.getDeclaredMethods();
-		Constructor<?> constructor = Reflections.getSerializationConstructor(annotatedClass);
+		Constructor<?> constructor = getConstructor(annotatedClass);
 		P listenerProperties = getListenerProperties(annotatedClass);
 		Event event = getEvent(fields);
 		List<Injection> injections = getInjections(fields);
 		Executor executor = getExecutor(methods);
-		return this.listenerMerger.merge(constructor, listenerProperties, event, injections, executor);
+		return this.listenerMerger.merge(constructor, injections, executor, listenerProperties, event);
 	}
 
 	private P getListenerProperties(Class<?> listenerClass) {
@@ -68,15 +65,5 @@ public class ListenerMapper<L extends Listener<P>, P extends ListenerProperties<
 	private Event getEvent(Field[] fields) {
 		EventMapper eventMapper = new EventMapper();
 		return eventMapper.map(fields);
-	}
-
-	private List<Injection> getInjections(Field[] fields) {
-		InjectionMapper injectionMapper = new InjectionMapper();
-		return injectionMapper.map(fields);
-	}
-
-	private Executor getExecutor(Method[] methods) {
-		ExecutorMapper executorMapper = new ExecutorMapper();
-		return executorMapper.map(methods);
 	}
 }

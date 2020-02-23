@@ -36,23 +36,23 @@ public class ExecutorMapper implements Mapper<Method, net.mcparkour.anfodis.mapp
 
 	@Override
 	public net.mcparkour.anfodis.mapper.executor.Executor map(Iterable<Method> elements) {
-		return new ElementsMapperBuilder<Method, MappedExecutor>()
-			.data(MappedExecutor::new)
-			.singleElement(executor -> new SingleElementMapperBuilder<Method>()
+		return new ElementsMapperBuilder<Method, ExecutorData>()
+			.data(ExecutorData::new)
+			.singleElement(data -> new SingleElementMapperBuilder<Method>()
 				.annotation(Before.class)
-				.elementConsumer(executor::setBeforeMethod)
+				.elementConsumer(data::setBeforeMethod)
 				.build())
-			.singleElement(executor -> new SingleElementMapperBuilder<Method>()
+			.singleElement(data -> new SingleElementMapperBuilder<Method>()
 				.annotation(Executor.class)
-				.elementConsumer(executor::setExecutorMethod)
+				.elementConsumer(data::setExecutorMethod)
 				.build())
-			.singleElement(executor -> new SingleElementMapperBuilder<Method>()
+			.singleElement(data -> new SingleElementMapperBuilder<Method>()
 				.annotation(After.class)
-				.elementConsumer(executor::setAfterMethod)
+				.elementConsumer(data::setAfterMethod)
 				.build())
 			.build()
 			.mapFirstOptional(elements)
 			.map(net.mcparkour.anfodis.mapper.executor.Executor::new)
-			.orElseThrow(() -> new RuntimeException("Executor is null"));
+			.orElseThrow();
 	}
 }

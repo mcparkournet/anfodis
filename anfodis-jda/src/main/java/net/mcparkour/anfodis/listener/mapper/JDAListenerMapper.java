@@ -25,13 +25,13 @@
 package net.mcparkour.anfodis.listener.mapper;
 
 import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.JDAPropertiesMapper;
+import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerPropertiesMapper;
 
 public class JDAListenerMapper extends ListenerMapper<JDAListener, JDAListenerProperties> {
 
-	private static final JDAPropertiesMapper PROPERTIES_MAPPER = new JDAPropertiesMapper();
+	private static final JDAListenerPropertiesMapper LISTENER_PROPERTIES_MAPPER = new JDAListenerPropertiesMapper();
 
 	public JDAListenerMapper() {
-		super(JDAListener::new, PROPERTIES_MAPPER);
+		super(LISTENER_PROPERTIES_MAPPER, JDAListener::new);
 	}
 }

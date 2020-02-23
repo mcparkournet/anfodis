@@ -32,7 +32,6 @@ import net.mcparkour.anfodis.listener.handler.ListenerHandler;
 import net.mcparkour.anfodis.listener.mapper.PaperListener;
 import net.mcparkour.anfodis.listener.mapper.PaperListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerProperties;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
 import org.bukkit.Server;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -40,7 +39,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-public class PaperListenerRegistry extends AbstractRegistry<PaperListener> {
+public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListener> {
 
 	private static final PaperListenerMapper LISTENER_MAPPER = new PaperListenerMapper();
 	private static final org.bukkit.event.Listener EMPTY_LISTENER = new org.bukkit.event.Listener() {};
@@ -53,17 +52,17 @@ public class PaperListenerRegistry extends AbstractRegistry<PaperListener> {
 	}
 
 	@Override
-	protected void register(PaperListener mapped) {
+	protected void register(PaperListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
 		Server server = this.plugin.getServer();
 		PluginManager pluginManager = server.getPluginManager();
-		PaperListenerProperties properties = mapped.getListenerProperties();
+		PaperListenerProperties properties = root.getListenerProperties();
 		EventPriority priority = properties.getPriority();
 		boolean ignoreCancelled = properties.isIgnoreCancelled();
 		Iterable<Class<? extends Event>> eventTypes = properties.getListenedEvents();
 		for (Class<? extends Event> eventType : eventTypes) {
 			EventExecutor executor = (listener, event) -> {
-				Handler handler = new ListenerHandler(eventType, event, mapped, injectionCodecRegistry);
+				Handler handler = new ListenerHandler(eventType, event, root, injectionCodecRegistry);
 				handler.handle();
 			};
 			pluginManager.registerEvent(eventType, EMPTY_LISTENER, priority, executor, this.plugin, ignoreCancelled);

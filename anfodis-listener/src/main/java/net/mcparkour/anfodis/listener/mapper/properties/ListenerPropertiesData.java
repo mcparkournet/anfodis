@@ -26,16 +26,10 @@ package net.mcparkour.anfodis.listener.mapper.properties;
 
 import org.jetbrains.annotations.Nullable;
 
-public class MappedListenerProperties<E> {
+public class ListenerPropertiesData<E> {
 
 	@Nullable
 	private Class<? extends E>[] listenedEvents;
-
-	public MappedListenerProperties() {}
-
-	public MappedListenerProperties(@Nullable Class<? extends E>[] listenedEvents) {
-		this.listenedEvents = listenedEvents;
-	}
 
 	@Nullable
 	public Class<? extends E>[] getListenedEvents() {

@@ -33,7 +33,7 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class PaperListener extends Listener<PaperListenerProperties> {
 
-	public PaperListener(Constructor<?> constructor, PaperListenerProperties listenerProperties, Event event, List<Injection> injections, Executor executor) {
-		super(constructor, listenerProperties, event, injections, executor);
+	public PaperListener(Constructor<?> constructor, List<Injection> injections, Executor executor, PaperListenerProperties listenerProperties, Event event) {
+		super(constructor, injections, executor, listenerProperties, event);
 	}
 }

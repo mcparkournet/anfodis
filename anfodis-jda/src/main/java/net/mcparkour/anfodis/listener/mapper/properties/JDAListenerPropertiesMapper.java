@@ -24,27 +24,12 @@
 
 package net.mcparkour.anfodis.listener.mapper.properties;
 
-import com.velocitypowered.api.event.PostOrder;
-import org.jetbrains.annotations.Nullable;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.mcparkour.anfodis.listener.annotation.properties.Listener;
 
-public class VelocityMappedListenerProperties extends MappedListenerProperties<Object> {
+public class JDAListenerPropertiesMapper extends ListenerPropertiesMapper<JDAListenerProperties, JDAListenerPropertiesData, GenericEvent, Listener> {
 
-	@Nullable
-	private PostOrder priority;
-
-	public VelocityMappedListenerProperties() {}
-
-	public VelocityMappedListenerProperties(@Nullable Class<?>[] listenedEvents, @Nullable PostOrder priority) {
-		super(listenedEvents);
-		this.priority = priority;
-	}
-
-	@Nullable
-	public PostOrder getPriority() {
-		return this.priority;
-	}
-
-	public void setPriority(@Nullable PostOrder priority) {
-		this.priority = priority;
+	public JDAListenerPropertiesMapper() {
+		super(Listener.class, Listener::value, JDAListenerProperties::new, JDAListenerPropertiesData::new);
 	}
 }

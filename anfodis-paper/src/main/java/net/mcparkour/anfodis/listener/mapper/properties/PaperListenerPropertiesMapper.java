@@ -24,11 +24,17 @@
 
 package net.mcparkour.anfodis.listener.mapper.properties;
 
-import net.dv8tion.jda.api.events.GenericEvent;
+import net.mcparkour.anfodis.listener.annotation.properties.IgnoreCancelled;
+import net.mcparkour.anfodis.listener.annotation.properties.Listener;
+import net.mcparkour.anfodis.listener.annotation.properties.Priority;
+import org.bukkit.event.Event;
 
-public class JDAListenerProperties extends ListenerProperties<JDAListenerPropertiesData, GenericEvent> {
+public class PaperListenerPropertiesMapper extends ListenerPropertiesMapper<PaperListenerProperties, PaperListenerPropertiesData, Event, Listener> {
 
-	public JDAListenerProperties(JDAListenerPropertiesData listenerPropertiesData) {
-		super(listenerPropertiesData);
+	public PaperListenerPropertiesMapper() {
+		super(Listener.class, Listener::value, PaperListenerProperties::new, PaperListenerPropertiesData::new, (data, builder) -> {
+			builder.annotation(IgnoreCancelled.class, ignoreCancelled -> data.setIgnoreCancelled(true));
+			builder.annotation(Priority.class, priority -> data.setPriority(priority.value()));
+		});
 	}
 }

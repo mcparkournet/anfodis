@@ -24,23 +24,32 @@
 
 package net.mcparkour.anfodis.listener.mapper.properties;
 
-import java.util.List;
-import net.mcparkour.anfodis.listener.annotation.properties.IgnoreCancelled;
-import net.mcparkour.anfodis.listener.annotation.properties.Listener;
-import net.mcparkour.anfodis.listener.annotation.properties.Priority;
-import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
+import org.jetbrains.annotations.Nullable;
 
-public class PaperPropertiesMapper extends ListenerPropertiesMapper<Listener, PaperListenerProperties, PaperMappedListenerProperties, Event> {
+public class PaperListenerPropertiesData extends ListenerPropertiesData<Event> {
 
-	public PaperPropertiesMapper() {
-		super(Listener.class, Listener::value, PaperMappedListenerProperties::new, PaperListenerProperties::new, List.of(
-			properties -> new SingleElementMapperBuilder<Class<?>>()
-				.annotation(IgnoreCancelled.class, listenerAnnotation -> properties.setIgnoreCancelled(true))
-				.build(),
-			properties -> new SingleElementMapperBuilder<Class<?>>()
-				.annotation(Priority.class, listenerAnnotation -> properties.setPriority(listenerAnnotation.value()))
-				.build()
-		));
+	@Nullable
+	private EventPriority priority;
+	@Nullable
+	private Boolean ignoreCancelled;
+
+	@Nullable
+	public EventPriority getPriority() {
+		return this.priority;
+	}
+
+	public void setPriority(@Nullable EventPriority priority) {
+		this.priority = priority;
+	}
+
+	@Nullable
+	public Boolean getIgnoreCancelled() {
+		return this.ignoreCancelled;
+	}
+
+	public void setIgnoreCancelled(boolean ignoreCancelled) {
+		this.ignoreCancelled = ignoreCancelled;
 	}
 }

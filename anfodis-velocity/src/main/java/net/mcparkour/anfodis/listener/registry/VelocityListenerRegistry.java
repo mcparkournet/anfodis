@@ -36,9 +36,8 @@ import net.mcparkour.anfodis.listener.handler.ListenerHandler;
 import net.mcparkour.anfodis.listener.mapper.VelocityListener;
 import net.mcparkour.anfodis.listener.mapper.VelocityListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerProperties;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
 
-public class VelocityListenerRegistry extends AbstractRegistry<VelocityListener> {
+public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityListener> {
 
 	private static final VelocityListenerMapper LISTENER_MAPPER = new VelocityListenerMapper();
 
@@ -52,13 +51,13 @@ public class VelocityListenerRegistry extends AbstractRegistry<VelocityListener>
 	}
 
 	@Override
-	protected void register(VelocityListener mapped) {
+	protected void register(VelocityListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		VelocityListenerProperties properties = mapped.getListenerProperties();
+		VelocityListenerProperties properties = root.getListenerProperties();
 		PostOrder priority = properties.getPriority();
 		Iterable<Class<?>> eventTypes = properties.getListenedEvents();
 		for (Class<?> eventType : eventTypes) {
-			register(injectionCodecRegistry, mapped, eventType, priority);
+			register(injectionCodecRegistry, root, eventType, priority);
 		}
 	}
 

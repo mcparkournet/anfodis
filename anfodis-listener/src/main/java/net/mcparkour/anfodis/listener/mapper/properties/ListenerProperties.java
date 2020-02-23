@@ -26,23 +26,23 @@ package net.mcparkour.anfodis.listener.mapper.properties;
 
 import java.util.List;
 
-public class ListenerProperties<M extends MappedListenerProperties<E>, E> {
+public class ListenerProperties<D extends ListenerPropertiesData<E>, E> {
 
-	private M mappedListenerProperties;
+	private D listenerPropertiesData;
 
-	public ListenerProperties(M mappedListenerProperties) {
-		this.mappedListenerProperties = mappedListenerProperties;
+	public ListenerProperties(D listenerPropertiesData) {
+		this.listenerPropertiesData = listenerPropertiesData;
 	}
 
 	public Iterable<Class<? extends E>> getListenedEvents() {
-		Class<? extends E>[] listenedEvents = this.mappedListenerProperties.getListenedEvents();
+		Class<? extends E>[] listenedEvents = this.listenerPropertiesData.getListenedEvents();
 		if (listenedEvents == null) {
 			return List.of();
 		}
 		return List.of(listenedEvents);
 	}
 
-	protected M getMappedListenerProperties() {
-		return this.mappedListenerProperties;
+	protected D getListenerPropertiesData() {
+		return this.listenerPropertiesData;
 	}
 }

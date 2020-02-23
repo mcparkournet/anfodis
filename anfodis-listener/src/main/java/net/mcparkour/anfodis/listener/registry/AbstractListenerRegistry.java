@@ -22,13 +22,18 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.mapper.properties;
+package net.mcparkour.anfodis.listener.registry;
 
-import net.dv8tion.jda.api.events.GenericEvent;
+import java.lang.annotation.Annotation;
+import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.listener.mapper.Listener;
+import net.mcparkour.anfodis.mapper.RootMapper;
+import net.mcparkour.anfodis.registry.AbstractRegistry;
 
-public class JDAListenerProperties extends ListenerProperties<JDAListenerPropertiesData, GenericEvent> {
+public abstract class AbstractListenerRegistry<T extends Listener<?>> extends AbstractRegistry<T> {
 
-	public JDAListenerProperties(JDAListenerPropertiesData listenerPropertiesData) {
-		super(listenerPropertiesData);
+	public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+		super(annotation, mapper, injectionCodecRegistry);
 	}
 }

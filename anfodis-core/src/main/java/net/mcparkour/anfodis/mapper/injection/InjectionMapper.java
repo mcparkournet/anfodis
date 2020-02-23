@@ -36,11 +36,11 @@ public class InjectionMapper implements Mapper<Field, List<Injection>> {
 
 	@Override
 	public List<Injection> map(Iterable<Field> elements) {
-		return new ElementsMapperBuilder<Field, MappedInjection>()
-			.data(MappedInjection::new)
-			.singleElement(injection -> new SingleElementMapperBuilder<Field>()
-				.annotation(Inject.class, inject -> injection.setCodecKey(inject.value()))
-				.elementConsumer(injection::setInjectionField)
+		return new ElementsMapperBuilder<Field, InjectionData>()
+			.data(InjectionData::new)
+			.singleElement(data -> new SingleElementMapperBuilder<Field>()
+				.annotation(Inject.class, inject -> data.setCodecKey(inject.value()))
+				.elementConsumer(data::setInjectionField)
 				.build())
 			.build()
 			.map(elements)

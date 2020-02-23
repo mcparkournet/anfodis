@@ -25,13 +25,13 @@
 package net.mcparkour.anfodis.listener.mapper;
 
 import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerProperties;
-import net.mcparkour.anfodis.listener.mapper.properties.VelocityPropertiesMapper;
+import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerPropertiesMapper;
 
 public class VelocityListenerMapper extends ListenerMapper<VelocityListener, VelocityListenerProperties> {
 
-	private static final VelocityPropertiesMapper PROPERTIES_MAPPER = new VelocityPropertiesMapper();
+	private static final VelocityListenerPropertiesMapper LISTENER_PROPERTIES_MAPPER = new VelocityListenerPropertiesMapper();
 
 	public VelocityListenerMapper() {
-		super(VelocityListener::new, PROPERTIES_MAPPER);
+		super(LISTENER_PROPERTIES_MAPPER, VelocityListener::new);
 	}
 }
