@@ -22,18 +22,15 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.codec.injection;
+package net.mcparkour.anfodis.command.handler;
 
-public class ReferenceInjectionCodec<T> implements InjectionCodec<T> {
+import java.util.List;
+import net.mcparkour.craftmon.permission.Permission;
+import org.jetbrains.annotations.Nullable;
 
-	private T injection;
+public class CompletionContext extends CommandContext {
 
-	public ReferenceInjectionCodec(T injection) {
-		this.injection = injection;
-	}
-
-	@Override
-	public T getInjection() {
-		return this.injection;
+	public CompletionContext(CommandSender sender, List<String> arguments, @Nullable Permission permission) {
+		super(sender, arguments, permission);
 	}
 }

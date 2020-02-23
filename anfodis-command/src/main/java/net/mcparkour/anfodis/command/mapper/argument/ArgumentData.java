@@ -22,9 +22,55 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.mapper;
+package net.mcparkour.anfodis.command.mapper.argument;
 
-public interface ClassMapper<T> {
+import java.lang.reflect.Field;
+import org.jetbrains.annotations.Nullable;
 
-	T map(Class<?> annotatedClass);
+public class ArgumentData {
+
+	@Nullable
+	private Field argumentField;
+	@Nullable
+	private String argumentCodecKey;
+	@Nullable
+	private String name;
+	@Nullable
+	private Boolean optional;
+
+	@Nullable
+	public Field getArgumentField() {
+		return this.argumentField;
+	}
+
+	public void setArgumentField(@Nullable Field argumentField) {
+		this.argumentField = argumentField;
+	}
+
+	@Nullable
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(@Nullable String name) {
+		this.name = name;
+	}
+
+	@Nullable
+	public String getArgumentCodecKey() {
+		return this.argumentCodecKey;
+	}
+
+	public void setArgumentCodecKey(@Nullable String argumentCodecKey) {
+		this.argumentCodecKey = argumentCodecKey;
+	}
+
+	@Nullable
+	public Boolean getOptional() {
+		return this.optional;
+	}
+
+	public void setOptional(@Nullable Boolean optional) {
+		this.optional = optional;
+	}
 }

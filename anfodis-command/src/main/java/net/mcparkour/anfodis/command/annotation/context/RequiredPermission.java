@@ -22,53 +22,13 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.mapper.event;
+package net.mcparkour.anfodis.command.annotation.context;
 
-import java.lang.reflect.Field;
-import java.util.Objects;
-import org.jetbrains.annotations.Nullable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class MappedEvent {
-
-	@Nullable
-	private Field eventField;
-
-	public MappedEvent() {}
-
-	public MappedEvent(@Nullable Field eventField) {
-		this.eventField = eventField;
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
-			return true;
-		}
-		if (object == null || getClass() != object.getClass()) {
-			return false;
-		}
-		MappedEvent that = (MappedEvent) object;
-		return Objects.equals(this.eventField, that.eventField);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.eventField);
-	}
-
-	@Override
-	public String toString() {
-		return "MappedEvent{" +
-			"eventField=" + this.eventField +
-			"}";
-	}
-
-	@Nullable
-	public Field getEventField() {
-		return this.eventField;
-	}
-
-	public void setEventField(@Nullable Field eventField) {
-		this.eventField = eventField;
-	}
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface RequiredPermission {}
