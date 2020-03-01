@@ -53,7 +53,7 @@ public class PaperCommandHandler extends CommandHandler<PaperCommand> {
 		PaperCommand command = getCommand();
 		PaperCommandProperties properties = command.getProperties();
 		List<Class<? extends org.bukkit.command.CommandSender>> senders = properties.getSendersTypes();
-		if (senders == null) {
+		if (senders.isEmpty()) {
 			return true;
 		}
 		CommandContext context = getContext();
