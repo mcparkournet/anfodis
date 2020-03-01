@@ -26,6 +26,7 @@ package net.mcparkour.anfodis.mapper.executor;
 
 import java.lang.reflect.Method;
 import net.mcparkour.common.reflection.Reflections;
+import org.jetbrains.annotations.Nullable;
 
 public class Executor {
 
@@ -43,10 +44,11 @@ public class Executor {
 		Reflections.invokeMethod(method, instance);
 	}
 
+	@Nullable
 	public Object invokeExecutor(Object instance) {
 		Method method = this.executorData.getExecutorMethod();
 		if (method == null) {
-			throw new RuntimeException("Executor method is null");
+			return null;
 		}
 		return Reflections.invokeMethod(method, instance);
 	}
