@@ -26,41 +26,19 @@ package net.mcparkour.anfodis.command.mapper.context;
 
 import java.lang.reflect.Field;
 import net.mcparkour.common.reflection.Reflections;
-import org.jetbrains.annotations.Nullable;
 
-public class Context<D extends ContextData> {
+public class JDAContext extends Context<JDAContextData> {
 
-	private D contextData;
-
-	public Context(D contextData) {
-		this.contextData = contextData;
+	public JDAContext(JDAContextData contextData) {
+		super(contextData);
 	}
 
-	public void setArgumentsField(Object instance, Object arguments) {
-		Field field = this.contextData.getArgumentsField();
+	public void setChannelField(Object instance, Object channel) {
+		JDAContextData contextData = getContextData();
+		Field field = contextData.getChannelField();
 		if (field == null) {
 			return;
 		}
-		Reflections.setFieldValue(field, instance, arguments);
-	}
-
-	public void setRequiredPermissionField(Object instance, @Nullable Object requiredPermission) {
-		Field field = this.contextData.getRequiredPermissionField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, requiredPermission);
-	}
-
-	public void setSenderField(Object instance, Object sender) {
-		Field field = this.contextData.getSenderField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, sender);
-	}
-
-	protected D getContextData() {
-		return this.contextData;
+		Reflections.setFieldValue(field, instance, channel);
 	}
 }

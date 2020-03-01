@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command.mapper.context;
 
 import java.lang.reflect.Field;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.mcparkour.anfodis.command.annotation.context.Arguments;
@@ -38,15 +39,21 @@ public class ContextMapper<C extends Context<D>, D extends ContextData> implemen
 
 	private Function<D, C> contextSupplier;
 	private Supplier<D> contextDataSupplier;
+	private Consumer<ElementsMapperBuilder<Field, D>> additional;
 
 	public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier) {
+		this(contextSupplier, contextDataSupplier, builder -> {});
+	}
+
+	public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier, Consumer<ElementsMapperBuilder<Field, D>> additional) {
 		this.contextSupplier = contextSupplier;
 		this.contextDataSupplier = contextDataSupplier;
+		this.additional = additional;
 	}
 
 	@Override
 	public C map(Iterable<Field> elements) {
-		return new ElementsMapperBuilder<Field, D>()
+		ElementsMapperBuilder<Field, D> builder = new ElementsMapperBuilder<Field, D>()
 			.data(this.contextDataSupplier)
 			.singleElement(data -> new SingleElementMapperBuilder<Field>()
 				.annotation(Arguments.class)
@@ -59,8 +66,9 @@ public class ContextMapper<C extends Context<D>, D extends ContextData> implemen
 			.singleElement(data -> new SingleElementMapperBuilder<Field>()
 				.annotation(Sender.class)
 				.elementConsumer(data::setSenderField)
-				.build())
-			.build()
+				.build());
+		this.additional.accept(builder);
+		return builder.build()
 			.mapFirstOptional(elements)
 			.map(this.contextSupplier)
 			.get();

@@ -32,20 +32,28 @@ import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.context.Context;
+import net.mcparkour.anfodis.handler.Handler;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 import net.mcparkour.anfodis.result.Result;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.translation.Translations;
 
-public class CommandExecutorHandler<T extends Command<?, ?, ?>> extends CommandHandler<T> {
+public class CommandExecutorHandler<T extends Command<?, ?, ?>, C extends CommandContext> implements Handler {
 
-	private Executor executor;
+	private T command;
+	private C context;
+	private Translations translations;
+	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
+	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
 	private Object commandInstance;
 
-	public CommandExecutorHandler(T command, CommandContext context, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Executor executor) {
-		super(command, context, translations, injectionCodecRegistry, argumentCodecRegistry);
-		this.executor = executor;
+	public CommandExecutorHandler(T command, C context, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
+		this.command = command;
+		this.context = context;
+		this.translations = translations;
+		this.injectionCodecRegistry = injectionCodecRegistry;
+		this.argumentCodecRegistry = argumentCodecRegistry;
 		this.commandInstance = command.createInstance();
 	}
 
@@ -58,28 +66,22 @@ public class CommandExecutorHandler<T extends Command<?, ?, ?>> extends CommandH
 			execute();
 		} catch (ArgumentParseException exception) {
 			Argument<?> argument = exception.getArgument();
-			CommandContext context = getContext();
-			CommandSender sender = context.getSender();
+			CommandSender sender = this.context.getSender();
 			sender.sendMessage("Could not parse the argument " + argument.getName() + ".");
 		}
 	}
 
 	private void setInjections() {
-		Command<?, ?, ?> command = getCommand();
-		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		for (Injection injection : command.getInjections()) {
-			InjectionCodec<?> codec = injection.getCodec(injectionCodecRegistry);
+		for (Injection injection : this.command.getInjections()) {
+			InjectionCodec<?> codec = injection.getCodec(this.injectionCodecRegistry);
 			Object codecInjection = codec.getInjection();
 			injection.setInjectionField(this.commandInstance, codecInjection);
 		}
 	}
 
 	private void setArguments() {
-		CommandContext context = getContext();
-		List<String> arguments = context.getArguments();
-		Command<?, ?, ?> command = getCommand();
-		List<? extends Argument<?>> commandArguments = command.getArguments();
-		CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = getArgumentCodecRegistry();
+		List<String> arguments = this.context.getArguments();
+		List<? extends Argument<?>> commandArguments = this.command.getArguments();
 		for (int index = 0; index < arguments.size(); index++) {
 			Argument<?> commandArgument = commandArguments.get(index);
 			Class<?> type = commandArgument.getFieldType();
@@ -88,7 +90,7 @@ public class CommandExecutorHandler<T extends Command<?, ?, ?>> extends CommandH
 				return;
 			}
 			String argument = arguments.get(index);
-			ArgumentCodec<?> codec = commandArgument.getArgumentCodec(argumentCodecRegistry);
+			ArgumentCodec<?> codec = commandArgument.getArgumentCodec(this.argumentCodecRegistry);
 			Object parsedArgument = codec.parse(argument);
 			if (parsedArgument == null) {
 				throw new ArgumentParseException(commandArgument);
@@ -98,11 +100,9 @@ public class CommandExecutorHandler<T extends Command<?, ?, ?>> extends CommandH
 	}
 
 	private void setListArgument(Argument<?> commandArgument, int startIndex) {
-		CommandContext context = getContext();
-		List<String> arguments = context.getArguments();
+		List<String> arguments = this.context.getArguments();
 		int size = arguments.size();
-		CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = getArgumentCodecRegistry();
-		ArgumentCodec<?> codec = commandArgument.getGenericTypeArgumentCodec(argumentCodecRegistry, 0);
+		ArgumentCodec<?> codec = commandArgument.getGenericTypeArgumentCodec(this.argumentCodecRegistry, 0);
 		List<Object> list = new ArrayList<>(size - startIndex);
 		for (int index = startIndex; index < size; index++) {
 			String argument = arguments.get(index);
@@ -116,25 +116,48 @@ public class CommandExecutorHandler<T extends Command<?, ?, ?>> extends CommandH
 	}
 
 	private void setContext() {
-		Command<?, ?, ?> command = getCommand();
-		Context<?> commandContext = command.getContext();
-		CommandContext context = getContext();
-		List<String> arguments = context.getArguments();
+		Context<?> commandContext = this.command.getContext();
+		List<String> arguments = this.context.getArguments();
 		commandContext.setArgumentsField(this.commandInstance, arguments);
-		Permission permission = context.getPermission();
+		Permission permission = this.context.getPermission();
 		commandContext.setRequiredPermissionField(this.commandInstance, permission);
-		CommandSender sender = context.getSender();
+		CommandSender sender = this.context.getSender();
 		Object rawSender = sender.getRawSender();
 		commandContext.setSenderField(this.commandInstance, rawSender);
 	}
 
 	private void execute() {
-		this.executor.invokeBefore(this.commandInstance);
-		Object invokeResult = this.executor.invokeExecutor(this.commandInstance);
+		Executor executor = this.command.getExecutor();
+		executor.invokeBefore(this.commandInstance);
+		Object invokeResult = executor.invokeExecutor(this.commandInstance);
 		if (invokeResult instanceof Result) {
 			Result result = (Result) invokeResult;
 			result.onResult();
 		}
-		this.executor.invokeAfter(this.commandInstance);
+		executor.invokeAfter(this.commandInstance);
+	}
+
+	public T getCommand() {
+		return this.command;
+	}
+
+	public C getContext() {
+		return this.context;
+	}
+
+	public Translations getTranslations() {
+		return this.translations;
+	}
+
+	public CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {
+		return this.injectionCodecRegistry;
+	}
+
+	public CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {
+		return this.argumentCodecRegistry;
+	}
+
+	public Object getCommandInstance() {
+		return this.commandInstance;
 	}
 }

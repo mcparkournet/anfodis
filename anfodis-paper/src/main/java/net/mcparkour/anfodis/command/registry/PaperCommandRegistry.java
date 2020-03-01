@@ -32,11 +32,13 @@ import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.PaperCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
+import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.craftmon.permission.PermissionBuilder;
 import net.mcparkour.intext.translation.Translations;
 import org.bukkit.Server;
 import org.bukkit.command.CommandMap;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 
 public class PaperCommandRegistry extends AbstractCommandRegistry<PaperCommand> {
@@ -46,15 +48,15 @@ public class PaperCommandRegistry extends AbstractCommandRegistry<PaperCommand> 
 	private CommandMap commandMap;
 	private String prefix;
 	private Translations translations;
-	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
 	private CodecRegistry<CompletionCodec> completionCodecRegistry;
 
-	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, Server server, String prefix, Translations translations, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry) {
-		super(COMMAND_MAPPER, injectionCodecRegistry);
+	public PaperCommandRegistry(RootMapper<PaperCommand> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Plugin plugin, Translations translations, CodecRegistry<CompletionCodec> completionCodecRegistry) {
+		super(COMMAND_MAPPER, injectionCodecRegistry, argumentCodecRegistry);
+		Server server = plugin.getServer();
 		this.commandMap = server.getCommandMap();
-		this.prefix = prefix;
+		String pluginName = plugin.getName();
+		this.prefix = pluginName.toLowerCase();
 		this.translations = translations;
-		this.argumentCodecRegistry = argumentCodecRegistry;
 		this.completionCodecRegistry = completionCodecRegistry;
 	}
 
@@ -67,7 +69,8 @@ public class PaperCommandRegistry extends AbstractCommandRegistry<PaperCommand> 
 		List<String> aliases = properties.getAliases();
 		Permission permission = createPermission(properties);
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		CommandWrapper command = new CommandWrapper(name, description, usage, aliases, root, permission, this.translations, injectionCodecRegistry, this.argumentCodecRegistry, this.completionCodecRegistry);
+		CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = getArgumentCodecRegistry();
+		CommandWrapper command = new CommandWrapper(name, description, usage, aliases, root, permission, this.translations, injectionCodecRegistry, argumentCodecRegistry, this.completionCodecRegistry);
 		if (permission != null) {
 			String permissionName = permission.getName();
 			command.setPermission(permissionName);

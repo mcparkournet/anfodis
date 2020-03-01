@@ -47,13 +47,19 @@ public class CommandHandler<T extends Command<?, ?, ?>> implements Handler {
 	private Translations translations;
 	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+	private Handler executorHandler;
 
 	public CommandHandler(T command, CommandContext context, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
+		this(command, context, translations, injectionCodecRegistry, argumentCodecRegistry, new CommandExecutorHandler<>(command, context, translations, injectionCodecRegistry, argumentCodecRegistry));
+	}
+
+	public CommandHandler(T command, CommandContext context, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Handler executorHandler) {
 		this.command = command;
 		this.context = context;
 		this.translations = translations;
 		this.injectionCodecRegistry = injectionCodecRegistry;
 		this.argumentCodecRegistry = argumentCodecRegistry;
+		this.executorHandler = executorHandler;
 	}
 
 	@Override
@@ -72,14 +78,14 @@ public class CommandHandler<T extends Command<?, ?, ?>> implements Handler {
 					argumentsCopy.remove(0);
 					Permission permission = getPermission(subCommand);
 					CommandContext context = new CommandContext(sender, argumentsCopy, permission);
-					Handler handler = new CommandHandler<>(subCommand, context, this.translations, this.injectionCodecRegistry, this.argumentCodecRegistry);
+					Handler handler = new CommandHandler<>(subCommand, context, this.translations, this.injectionCodecRegistry, this.argumentCodecRegistry, this.executorHandler);
 					handler.handle();
 					return;
 				}
 			}
 		}
 		Executor executor = this.command.getExecutor();
-		if (executor == null) {
+		if (!executor.hasExecutor()) {
 			sendHelpMessage();
 			return;
 		}
@@ -87,8 +93,7 @@ public class CommandHandler<T extends Command<?, ?, ?>> implements Handler {
 			sender.sendMessage("Invalid number of arguments.");
 			return;
 		}
-		Handler executorHandler = new CommandExecutorHandler<>(this.command, this.context, this.translations, this.injectionCodecRegistry, this.argumentCodecRegistry, executor);
-		executorHandler.handle();
+		this.executorHandler.handle();
 	}
 
 	private boolean checkLength() {

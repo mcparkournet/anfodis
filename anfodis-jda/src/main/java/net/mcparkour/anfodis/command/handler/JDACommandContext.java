@@ -22,45 +22,23 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.context;
+package net.mcparkour.anfodis.command.handler;
 
-import java.lang.reflect.Field;
-import net.mcparkour.common.reflection.Reflections;
+import java.util.List;
+import net.dv8tion.jda.api.entities.PrivateChannel;
+import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
-public class Context<D extends ContextData> {
+public class JDACommandContext extends CommandContext {
 
-	private D contextData;
+	private PrivateChannel channel;
 
-	public Context(D contextData) {
-		this.contextData = contextData;
+	public JDACommandContext(CommandSender sender, List<String> arguments, @Nullable Permission permission, PrivateChannel channel) {
+		super(sender, arguments, permission);
+		this.channel = channel;
 	}
 
-	public void setArgumentsField(Object instance, Object arguments) {
-		Field field = this.contextData.getArgumentsField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, arguments);
-	}
-
-	public void setRequiredPermissionField(Object instance, @Nullable Object requiredPermission) {
-		Field field = this.contextData.getRequiredPermissionField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, requiredPermission);
-	}
-
-	public void setSenderField(Object instance, Object sender) {
-		Field field = this.contextData.getSenderField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, sender);
-	}
-
-	protected D getContextData() {
-		return this.contextData;
+	public PrivateChannel getChannel() {
+		return this.channel;
 	}
 }

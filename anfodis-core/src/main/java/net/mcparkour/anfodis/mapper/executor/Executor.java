@@ -44,6 +44,11 @@ public class Executor {
 		Reflections.invokeMethod(method, instance);
 	}
 
+	public boolean hasExecutor() {
+		Method method = this.executorData.getExecutorMethod();
+		return method != null;
+	}
+
 	@Nullable
 	public Object invokeExecutor(Object instance) {
 		Method method = this.executorData.getExecutorMethod();

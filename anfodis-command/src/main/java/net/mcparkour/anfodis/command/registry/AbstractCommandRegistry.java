@@ -26,13 +26,21 @@ package net.mcparkour.anfodis.command.registry;
 
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.anfodis.registry.AbstractRegistry;
 
 public abstract class AbstractCommandRegistry<T extends Command<?, ?, ?>> extends AbstractRegistry<T> {
 
-	public AbstractCommandRegistry(RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+
+	public AbstractCommandRegistry(RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
 		super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
+		this.argumentCodecRegistry = argumentCodecRegistry;
+	}
+
+	protected CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {
+		return this.argumentCodecRegistry;
 	}
 }

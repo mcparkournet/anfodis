@@ -22,45 +22,22 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.context;
+package net.mcparkour.anfodis.command.mapper;
 
-import java.lang.reflect.Field;
-import net.mcparkour.common.reflection.Reflections;
-import org.jetbrains.annotations.Nullable;
+import net.mcparkour.anfodis.command.mapper.argument.JDAArgument;
+import net.mcparkour.anfodis.command.mapper.argument.JDAArgumentMapper;
+import net.mcparkour.anfodis.command.mapper.context.JDAContext;
+import net.mcparkour.anfodis.command.mapper.context.JDAContextMapper;
+import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
+import net.mcparkour.anfodis.command.mapper.properties.JDACommandPropertiesMapper;
 
-public class Context<D extends ContextData> {
+public class JDACommandMapper extends CommandMapper<JDACommand, JDAArgument, JDAContext, JDACommandProperties> {
 
-	private D contextData;
+	private static final JDAArgumentMapper ARGUMENT_MAPPER = new JDAArgumentMapper();
+	private static final JDAContextMapper CONTEXT_MAPPER = new JDAContextMapper();
+	private static final JDACommandPropertiesMapper PROPERTIES_MAPPER = new JDACommandPropertiesMapper();
 
-	public Context(D contextData) {
-		this.contextData = contextData;
-	}
-
-	public void setArgumentsField(Object instance, Object arguments) {
-		Field field = this.contextData.getArgumentsField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, arguments);
-	}
-
-	public void setRequiredPermissionField(Object instance, @Nullable Object requiredPermission) {
-		Field field = this.contextData.getRequiredPermissionField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, requiredPermission);
-	}
-
-	public void setSenderField(Object instance, Object sender) {
-		Field field = this.contextData.getSenderField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, sender);
-	}
-
-	protected D getContextData() {
-		return this.contextData;
+	public JDACommandMapper() {
+		super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, JDACommand::new);
 	}
 }

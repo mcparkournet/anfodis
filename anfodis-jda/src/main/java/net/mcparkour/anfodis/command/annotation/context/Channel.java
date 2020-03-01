@@ -22,45 +22,13 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.context;
+package net.mcparkour.anfodis.command.annotation.context;
 
-import java.lang.reflect.Field;
-import net.mcparkour.common.reflection.Reflections;
-import org.jetbrains.annotations.Nullable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class Context<D extends ContextData> {
-
-	private D contextData;
-
-	public Context(D contextData) {
-		this.contextData = contextData;
-	}
-
-	public void setArgumentsField(Object instance, Object arguments) {
-		Field field = this.contextData.getArgumentsField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, arguments);
-	}
-
-	public void setRequiredPermissionField(Object instance, @Nullable Object requiredPermission) {
-		Field field = this.contextData.getRequiredPermissionField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, requiredPermission);
-	}
-
-	public void setSenderField(Object instance, Object sender) {
-		Field field = this.contextData.getSenderField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, sender);
-	}
-
-	protected D getContextData() {
-		return this.contextData;
-	}
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Channel {}

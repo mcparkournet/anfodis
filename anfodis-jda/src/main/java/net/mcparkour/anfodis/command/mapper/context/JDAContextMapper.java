@@ -25,42 +25,17 @@
 package net.mcparkour.anfodis.command.mapper.context;
 
 import java.lang.reflect.Field;
-import net.mcparkour.common.reflection.Reflections;
-import org.jetbrains.annotations.Nullable;
+import net.mcparkour.anfodis.command.annotation.context.Channel;
+import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
-public class Context<D extends ContextData> {
+public class JDAContextMapper extends ContextMapper<JDAContext, JDAContextData> {
 
-	private D contextData;
-
-	public Context(D contextData) {
-		this.contextData = contextData;
-	}
-
-	public void setArgumentsField(Object instance, Object arguments) {
-		Field field = this.contextData.getArgumentsField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, arguments);
-	}
-
-	public void setRequiredPermissionField(Object instance, @Nullable Object requiredPermission) {
-		Field field = this.contextData.getRequiredPermissionField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, requiredPermission);
-	}
-
-	public void setSenderField(Object instance, Object sender) {
-		Field field = this.contextData.getSenderField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, sender);
-	}
-
-	protected D getContextData() {
-		return this.contextData;
+	public JDAContextMapper() {
+		super(JDAContext::new, JDAContextData::new, builder -> {
+			builder.singleElement(data -> new SingleElementMapperBuilder<Field>()
+				.annotation(Channel.class)
+				.elementConsumer(data::setChannelField)
+				.build());
+		});
 	}
 }
