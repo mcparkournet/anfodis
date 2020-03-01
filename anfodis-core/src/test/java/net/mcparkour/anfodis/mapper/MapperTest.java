@@ -54,7 +54,7 @@ public class MapperTest {
 	@Test
 	public void testMapMethods() throws NoSuchMethodException {
 		Method[] methods = TestClass.class.getDeclaredMethods();
-		List<MethodData> list = new ElementsMapperBuilder<Method, MethodData>()
+		MethodData data = new ElementsMapperBuilder<Method, MethodData>()
 			.data(MethodData::new)
 			.singleElement(methodData -> new SingleElementMapperBuilder<Method>()
 				.annotation(Before.class)
@@ -69,8 +69,8 @@ public class MapperTest {
 				.elementConsumer(methodData::setAfterMethod)
 				.build())
 			.build()
-			.map(methods);
-		Assertions.assertEquals(List.of(new MethodData(TestClass.class.getDeclaredMethod("before"), TestClass.class.getDeclaredMethod("executor"), TestClass.class.getDeclaredMethod("after"))), list);
+			.mapFirst(methods);
+		Assertions.assertEquals(new MethodData(TestClass.class.getDeclaredMethod("before"), TestClass.class.getDeclaredMethod("executor"), TestClass.class.getDeclaredMethod("after")), data);
 	}
 
 	@Test

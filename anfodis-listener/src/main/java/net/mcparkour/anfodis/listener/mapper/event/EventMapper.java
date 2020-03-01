@@ -43,6 +43,6 @@ public class EventMapper implements Mapper<Field, net.mcparkour.anfodis.listener
 			.build()
 			.mapFirstOptional(elements)
 			.map(net.mcparkour.anfodis.listener.mapper.event.Event::new)
-			.orElseThrow();
+			.get();
 	}
 }

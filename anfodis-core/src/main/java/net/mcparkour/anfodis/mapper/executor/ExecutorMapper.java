@@ -53,6 +53,6 @@ public class ExecutorMapper implements Mapper<Method, net.mcparkour.anfodis.mapp
 			.build()
 			.mapFirstOptional(elements)
 			.map(net.mcparkour.anfodis.mapper.executor.Executor::new)
-			.orElseThrow();
+			.get();
 	}
 }

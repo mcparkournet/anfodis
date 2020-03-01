@@ -63,6 +63,6 @@ public class ContextMapper<C extends Context<D>, D extends ContextData> implemen
 			.build()
 			.mapFirstOptional(elements)
 			.map(this.contextSupplier)
-			.orElseThrow();
+			.get();
 	}
 }
