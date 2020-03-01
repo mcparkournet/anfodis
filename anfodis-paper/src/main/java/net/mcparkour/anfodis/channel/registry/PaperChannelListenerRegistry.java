@@ -24,7 +24,6 @@
 
 package net.mcparkour.anfodis.channel.registry;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 import net.mcparkour.anfodis.channel.annotation.properties.ChannelListener;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListener;
@@ -44,7 +43,7 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
 	private Plugin plugin;
 	private Messenger messenger;
 
-	public PaperChannelListenerRegistry(Class<? extends Annotation> annotation, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, Plugin plugin) {
+	public PaperChannelListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, Plugin plugin) {
 		super(ChannelListener.class, CHANNEL_LISTENER_MAPPER, injectionCodecRegistry);
 		this.plugin = plugin;
 		Server server = plugin.getServer();
