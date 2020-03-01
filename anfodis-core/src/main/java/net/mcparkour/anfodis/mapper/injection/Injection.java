@@ -52,7 +52,7 @@ public class Injection {
 		}
 		Class<?> type = field.getType();
 		String codecKey = this.injectionData.getCodecKey();
-		InjectionCodec<?> codec = codecKey == null ? registry.getTypedCodec(type) : registry.getKeyedCodec(codecKey);
+		InjectionCodec<?> codec = codecKey == null || codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(codecKey);
 		if (codec == null) {
 			throw new RuntimeException("Cannot find injection codec for type " + type);
 		}

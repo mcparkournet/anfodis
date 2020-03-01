@@ -93,7 +93,19 @@ public class Argument<D extends ArgumentData> {
 		if (name == null) {
 			throw new RuntimeException("Argument name is null");
 		}
+		if (name.isEmpty()) {
+			return getFieldName();
+		}
 		return name;
+	}
+
+
+	private String getFieldName() {
+		Field field = this.argumentData.getArgumentField();
+		if (field == null) {
+			throw new RuntimeException("Field is null");
+		}
+		return field.getName();
 	}
 
 	public boolean isOptional() {
