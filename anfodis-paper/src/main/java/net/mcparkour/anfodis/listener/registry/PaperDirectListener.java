@@ -24,16 +24,7 @@
 
 package net.mcparkour.anfodis.listener.registry;
 
-import java.lang.annotation.Annotation;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.listener.mapper.Listener;
-import net.mcparkour.anfodis.mapper.RootMapper;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
+import org.bukkit.event.Event;
+import org.bukkit.event.Listener;
 
-public abstract class AbstractListenerRegistry<T extends Listener<?>, D extends DirectListener<?>> extends AbstractRegistry<T, D> {
-
-	public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		super(annotation, mapper, injectionCodecRegistry);
-	}
-}
+public interface PaperDirectListener<E extends Event> extends Listener, DirectListener<E> {}

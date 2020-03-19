@@ -30,7 +30,7 @@ import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.mapper.Root;
 import net.mcparkour.anfodis.mapper.RootMapper;
 
-public abstract class AbstractRegistry<T extends Root> implements Registry {
+public abstract class AbstractRegistry<T extends Root, D> implements DirectRegistry<T, D> {
 
 	private Class<? extends Annotation> annotationClass;
 	private RootMapper<T> mapper;

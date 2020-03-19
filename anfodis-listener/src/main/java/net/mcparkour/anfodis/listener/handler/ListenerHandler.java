@@ -28,44 +28,53 @@ import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.Handler;
 import net.mcparkour.anfodis.listener.mapper.Listener;
+import net.mcparkour.anfodis.listener.mapper.event.Event;
 import net.mcparkour.anfodis.mapper.executor.Executor;
+import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.result.Result;
 
 public class ListenerHandler implements Handler {
 
-	private Class<?> eventType;
 	private Object event;
 	private Listener<?> listener;
 	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
+	private Object listenerInstance;
 
-	public ListenerHandler(Class<?> eventType, Object event, Listener<?> listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		this.eventType = eventType;
+	public ListenerHandler(Object event, Listener<?> listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
 		this.event = event;
 		this.listener = listener;
 		this.injectionCodecRegistry = injectionCodecRegistry;
+		this.listenerInstance = listener.createInstance();
 	}
 
 	@Override
 	public void handle() {
-		if (!this.eventType.isInstance(this.event)) {
-			return;
+		setInjections();
+		setEvent();
+		execute();
+	}
+
+	private void setInjections() {
+		for (Injection injection : this.listener.getInjections()) {
+			InjectionCodec<?> codec = injection.getCodec(this.injectionCodecRegistry);
+			Object codecInjection = codec.getInjection();
+			injection.setInjectionField(this.listenerInstance, codecInjection);
 		}
+	}
+
+	private void setEvent() {
+		Event event = this.listener.getEvent();
+		event.setEventField(this.listenerInstance, this.event);
+	}
+
+	private void execute() {
 		Executor executor = this.listener.getExecutor();
-		if (executor == null) {
-			return;
+		executor.invokeBefore(this.listenerInstance);
+		Object invokeResult = executor.invokeExecutor(this.listenerInstance);
+		if (invokeResult instanceof Result) {
+			Result result = (Result) invokeResult;
+			result.onResult();
 		}
-		Handler executorHandler = new ListenerExecutorHandler(this.eventType, this.event, this.listener, this.injectionCodecRegistry, executor);
-		executorHandler.handle();
-	}
-
-	protected Object getEvent() {
-		return this.event;
-	}
-
-	protected Listener<?> getListener() {
-		return this.listener;
-	}
-
-	protected CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {
-		return this.injectionCodecRegistry;
+		executor.invokeAfter(this.listenerInstance);
 	}
 }

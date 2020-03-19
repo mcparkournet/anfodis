@@ -10,6 +10,6 @@ repositories {
 dependencies {
 	api(project(":anfodis-command-completion"))
 	api(project(":anfodis-listener"))
-	implementation("net.mcparkour:common-reflection:1.0.3")
+	implementation("net.mcparkour:common-reflection:1.0.4")
 	compileOnly("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT")
 }

@@ -24,16 +24,15 @@
 
 package net.mcparkour.anfodis.listener.registry;
 
-import java.lang.annotation.Annotation;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.listener.mapper.Listener;
-import net.mcparkour.anfodis.mapper.RootMapper;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
+import javax.annotation.Nonnull;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.hooks.EventListener;
+import net.mcparkour.common.reflection.Casts;
 
-public abstract class AbstractListenerRegistry<T extends Listener<?>, D extends DirectListener<?>> extends AbstractRegistry<T, D> {
+public interface JDADirectListener<E extends GenericEvent> extends EventListener, DirectListener<E> {
 
-	public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		super(annotation, mapper, injectionCodecRegistry);
+	@Override
+	default void onEvent(@Nonnull GenericEvent event) {
+		Casts.sneakyCast(event, this);
 	}
 }

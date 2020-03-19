@@ -26,7 +26,6 @@ package net.mcparkour.anfodis.listener.registry;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.Handler;
@@ -35,8 +34,9 @@ import net.mcparkour.anfodis.listener.handler.ListenerHandler;
 import net.mcparkour.anfodis.listener.mapper.JDAListener;
 import net.mcparkour.anfodis.listener.mapper.JDAListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerProperties;
+import net.mcparkour.common.reflection.Casts;
 
-public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener> {
+public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, JDADirectListener<? extends GenericEvent>> {
 
 	private static final JDAListenerMapper LISTENER_MAPPER = new JDAListenerMapper();
 
@@ -50,12 +50,21 @@ public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener> {
 	@Override
 	protected void register(JDAListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
+		registerDirect(root, event -> {
+			Handler handler = new ListenerHandler(event, root, injectionCodecRegistry);
+			handler.handle();
+		});
+	}
+
+	@Override
+	public void registerDirect(JDAListener root, JDADirectListener<? extends GenericEvent> directHandler) {
 		JDAListenerProperties properties = root.getListenerProperties();
 		Iterable<Class<? extends GenericEvent>> eventTypes = properties.getListenedEvents();
 		for (Class<? extends GenericEvent> eventType : eventTypes) {
-			EventListener listener = event -> {
-				Handler handler = new ListenerHandler(eventType, event, root, injectionCodecRegistry);
-				handler.handle();
+			JDADirectListener<? extends GenericEvent> listener = event -> {
+				if (eventType.isInstance(event)) {
+					Casts.sneakyCast(event, directHandler);
+				}
 			};
 			this.jda.addEventListener(listener);
 		}

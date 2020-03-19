@@ -31,13 +31,18 @@ import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.anfodis.registry.AbstractRegistry;
 
-public abstract class AbstractCommandRegistry<T extends Command<?, ?, ?>> extends AbstractRegistry<T> {
+public abstract class AbstractCommandRegistry<T extends Command<?, ?, ?>> extends AbstractRegistry<T, Object> {
 
 	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
 
 	public AbstractCommandRegistry(RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
 		super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
 		this.argumentCodecRegistry = argumentCodecRegistry;
+	}
+
+	@Override
+	public void registerDirect(T root, Object directHandler) {
+		throw new UnsupportedOperationException("Not supported yet");
 	}
 
 	protected CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {

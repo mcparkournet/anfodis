@@ -24,16 +24,12 @@
 
 package net.mcparkour.anfodis.listener.registry;
 
-import java.lang.annotation.Annotation;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.listener.mapper.Listener;
-import net.mcparkour.anfodis.mapper.RootMapper;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
+import com.velocitypowered.api.event.EventHandler;
 
-public abstract class AbstractListenerRegistry<T extends Listener<?>, D extends DirectListener<?>> extends AbstractRegistry<T, D> {
+public interface VelocityDirectListener<E> extends EventHandler<E>, DirectListener<E> {
 
-	public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		super(annotation, mapper, injectionCodecRegistry);
+	@Override
+	default void execute(E event) {
+		listen(event);
 	}
 }

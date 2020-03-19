@@ -22,12 +22,11 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.registry;
+package net.mcparkour.anfodis.registry;
 
-import net.md_5.bungee.api.plugin.Event;
-import net.md_5.bungee.api.plugin.Listener;
+import net.mcparkour.anfodis.mapper.Root;
 
-public interface ListenerExecutor<T extends Event> extends Listener {
+public interface DirectRegistry<T extends Root, D> extends Registry {
 
-	void listen(T event);
+	void registerDirect(T root, D directHandler);
 }

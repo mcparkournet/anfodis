@@ -36,7 +36,7 @@ import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.Messenger;
 
-public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelListener> {
+public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelListener, Object> {
 
 	private static final PaperChannelListenerMapper CHANNEL_LISTENER_MAPPER = new PaperChannelListenerMapper();
 
@@ -59,5 +59,9 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
 			PluginMessageListenerWrapper messageListener = new PluginMessageListenerWrapper(root, channel, injectionCodecRegistry);
 			this.messenger.registerIncomingPluginChannel(this.plugin, channel, messageListener);
 		}
+	}
+
+	@Override
+	public void registerDirect(PaperChannelListener root, Object directHandler) {
 	}
 }

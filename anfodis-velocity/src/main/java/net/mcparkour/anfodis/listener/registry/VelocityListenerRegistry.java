@@ -24,7 +24,6 @@
 
 package net.mcparkour.anfodis.listener.registry;
 
-import com.velocitypowered.api.event.EventHandler;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -36,8 +35,9 @@ import net.mcparkour.anfodis.listener.handler.ListenerHandler;
 import net.mcparkour.anfodis.listener.mapper.VelocityListener;
 import net.mcparkour.anfodis.listener.mapper.VelocityListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerProperties;
+import net.mcparkour.common.reflection.Casts;
 
-public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityListener> {
+public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityListener, VelocityDirectListener<?>> {
 
 	private static final VelocityListenerMapper LISTENER_MAPPER = new VelocityListenerMapper();
 
@@ -45,27 +45,40 @@ public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityL
 	private Object plugin;
 
 	public VelocityListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, ProxyServer server, Object plugin) {
+		this(injectionCodecRegistry, server.getEventManager(), plugin);
+	}
+
+	public VelocityListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, EventManager eventManager, Object plugin) {
 		super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);
-		this.eventManager = server.getEventManager();
+		this.eventManager = eventManager;
 		this.plugin = plugin;
 	}
 
 	@Override
 	protected void register(VelocityListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
+		registerDirect(root, event -> {
+			Handler handler = new ListenerHandler(event, root, injectionCodecRegistry);
+			handler.handle();
+		});
+	}
+
+	@Override
+	public void registerDirect(VelocityListener root, VelocityDirectListener<?> directHandler) {
 		VelocityListenerProperties properties = root.getListenerProperties();
 		PostOrder priority = properties.getPriority();
 		Iterable<Class<?>> eventTypes = properties.getListenedEvents();
 		for (Class<?> eventType : eventTypes) {
-			register(injectionCodecRegistry, root, eventType, priority);
+			register(eventType, priority, directHandler);
 		}
 	}
 
-	private <E> void register(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, VelocityListener listener, Class<E> eventType, PostOrder priority) {
-		EventHandler<E> eventHandler = event -> {
-			Handler handler = new ListenerHandler(eventType, event, listener, injectionCodecRegistry);
-			handler.handle();
+	private <E> void register(Class<E> eventType, PostOrder priority, VelocityDirectListener<?> handler) {
+		VelocityDirectListener<E> directListener = event -> {
+			if (eventType.isInstance(event)) {
+				Casts.sneakyCast(event, handler);
+			}
 		};
-		this.eventManager.register(this.plugin, eventType, priority, eventHandler);
+		this.eventManager.register(this.plugin, eventType, priority, directListener);
 	}
 }

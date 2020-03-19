@@ -24,16 +24,15 @@
 
 package net.mcparkour.anfodis.listener.registry;
 
-import java.lang.annotation.Annotation;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.listener.mapper.Listener;
-import net.mcparkour.anfodis.mapper.RootMapper;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
+import java.util.function.Consumer;
 
-public abstract class AbstractListenerRegistry<T extends Listener<?>, D extends DirectListener<?>> extends AbstractRegistry<T, D> {
+@FunctionalInterface
+public interface DirectListener<E> extends Consumer<E> {
 
-	public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		super(annotation, mapper, injectionCodecRegistry);
+	void listen(E event);
+
+	@Override
+	default void accept(E event) {
+		listen(event);
 	}
 }
