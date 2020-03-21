@@ -26,34 +26,18 @@ package net.mcparkour.anfodis.channel.registry;
 
 import net.mcparkour.anfodis.channel.ChannelMessage;
 import net.mcparkour.anfodis.channel.handler.ChannelListenerContext;
-import net.mcparkour.anfodis.channel.handler.PaperChannelListenerHandler;
-import net.mcparkour.anfodis.channel.mapper.PaperChannelListener;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.handler.Handler;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
-public class PluginMessageListenerWrapper implements PluginMessageListener {
+public interface PaperDirectChannelListener extends PluginMessageListener {
 
-	private PaperChannelListener channelListener;
-	private String channel;
-	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
-
-	public PluginMessageListenerWrapper(PaperChannelListener channelListener, String channel, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		this.channelListener = channelListener;
-		this.channel = channel;
-		this.injectionCodecRegistry = injectionCodecRegistry;
-	}
+	void listen(ChannelListenerContext context);
 
 	@Override
-	public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
-		if (this.channel.equals(channel)) {
-			ChannelMessage channelMessage = new ChannelMessage(message);
-			ChannelListenerContext context = new ChannelListenerContext(player, channelMessage);
-			Handler handler = new PaperChannelListenerHandler(this.channelListener, context, this.injectionCodecRegistry);
-			handler.handle();
-		}
+	default void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
+		ChannelMessage channelMessage = new ChannelMessage(message);
+		ChannelListenerContext context = new ChannelListenerContext(player, channelMessage);
+		listen(context);
 	}
 }

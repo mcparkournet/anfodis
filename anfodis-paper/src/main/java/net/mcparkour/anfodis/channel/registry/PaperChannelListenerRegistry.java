@@ -26,17 +26,20 @@ package net.mcparkour.anfodis.channel.registry;
 
 import java.util.List;
 import net.mcparkour.anfodis.channel.annotation.properties.ChannelListener;
+import net.mcparkour.anfodis.channel.handler.PaperChannelListenerHandler;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListener;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListenerMapper;
 import net.mcparkour.anfodis.channel.mapper.properties.PaperChannelListenerProperties;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.handler.Handler;
 import net.mcparkour.anfodis.registry.AbstractRegistry;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.Messenger;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
-public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelListener, Object> {
+public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelListener, PaperDirectChannelListener> {
 
 	private static final PaperChannelListenerMapper CHANNEL_LISTENER_MAPPER = new PaperChannelListenerMapper();
 
@@ -53,15 +56,23 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
 	@Override
 	protected void register(PaperChannelListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		PaperChannelListenerProperties properties = root.getProperties();
-		List<String> channels = properties.getChannels();
-		for (String channel : channels) {
-			PluginMessageListenerWrapper messageListener = new PluginMessageListenerWrapper(root, channel, injectionCodecRegistry);
-			this.messenger.registerIncomingPluginChannel(this.plugin, channel, messageListener);
-		}
+		registerDirect(root, context -> {
+			Handler handler = new PaperChannelListenerHandler(root, context, injectionCodecRegistry);
+			handler.handle();
+		});
 	}
 
 	@Override
-	public void registerDirect(PaperChannelListener root, Object directHandler) {
+	public void registerDirect(PaperChannelListener root, PaperDirectChannelListener directHandler) {
+		PaperChannelListenerProperties properties = root.getProperties();
+		List<String> channels = properties.getChannels();
+		for (String channel : channels) {
+			PluginMessageListener messageListener = (incomingChannel, player, message) -> {
+				if (channel.equals(incomingChannel)) {
+					directHandler.onPluginMessageReceived(incomingChannel, player, message);
+				}
+			};
+			this.messenger.registerIncomingPluginChannel(this.plugin, channel, messageListener);
+		}
 	}
 }
