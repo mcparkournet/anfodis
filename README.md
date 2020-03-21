@@ -3,3 +3,15 @@
 # Anfodis
 
 Annotation API for different things.
+
+## Usage
+
+```kotlin
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation("net.mcparkour:anfodis-paper:1.0.5")
+}
+```

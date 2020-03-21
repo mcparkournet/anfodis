@@ -9,6 +9,6 @@ repositories {
 
 dependencies {
 	api(project(":anfodis-listener"))
-	implementation("net.mcparkour:common-reflection:1.0.4")
+	implementation("net.mcparkour:common-reflection:1.0.5")
 	compileOnly("io.github.waterfallmc:waterfall-api:1.15-SNAPSHOT")
 }
