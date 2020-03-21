@@ -24,64 +24,36 @@
 
 package net.mcparkour.anfodis.channel.handler;
 
-import java.util.List;
 import net.mcparkour.anfodis.channel.ChannelMessage;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListener;
 import net.mcparkour.anfodis.channel.mapper.context.PaperChannelListenerContext;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.handler.Handler;
-import net.mcparkour.anfodis.mapper.executor.Executor;
-import net.mcparkour.anfodis.mapper.injection.Injection;
-import net.mcparkour.anfodis.result.Result;
+import net.mcparkour.anfodis.handler.RootHandler;
 import org.bukkit.entity.Player;
 
-public class PaperChannelListenerHandler implements Handler {
+public class PaperChannelListenerHandler extends RootHandler<PaperChannelListener> {
 
-	private PaperChannelListener channelListener;
 	private ChannelListenerContext context;
-	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
-	private Object channelListenerInstance;
 
-	public PaperChannelListenerHandler(PaperChannelListener channelListener, ChannelListenerContext context, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		this.channelListener = channelListener;
+	public PaperChannelListenerHandler(PaperChannelListener root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, ChannelListenerContext context) {
+		super(root, injectionCodecRegistry);
 		this.context = context;
-		this.injectionCodecRegistry = injectionCodecRegistry;
-		this.channelListenerInstance = channelListener.createInstance();
 	}
 
 	@Override
 	public void handle() {
-		setInjections();
 		setContext();
-		execute();
-	}
-
-	private void setInjections() {
-		List<Injection> injections = this.channelListener.getInjections();
-		for (Injection injection : injections) {
-			InjectionCodec<?> codec = injection.getCodec(this.injectionCodecRegistry);
-			Object codecInjection = codec.getInjection();
-			injection.setInjectionField(this.channelListenerInstance, codecInjection);
-		}
+		super.handle();
 	}
 
 	private void setContext() {
-		PaperChannelListenerContext channelListenerContext = this.channelListener.getContext();
+		PaperChannelListener channelListener = getRoot();
+		PaperChannelListenerContext channelListenerContext = channelListener.getContext();
+		Object channelListenerInstance = getInstance();
 		ChannelMessage message = this.context.getMessage();
-		channelListenerContext.setMessageField(this.channelListenerInstance, message);
+		channelListenerContext.setMessageField(channelListenerInstance, message);
 		Player source = this.context.getSource();
-		channelListenerContext.setSourceField(this.channelListenerInstance, source);
-	}
-
-	private void execute() {
-		Executor executor = this.channelListener.getExecutor();
-		executor.invokeBefore(this.channelListenerInstance);
-		Object invokeResult = executor.invokeExecutor(this.channelListenerInstance);
-		if (invokeResult instanceof Result) {
-			Result result = (Result) invokeResult;
-			result.onResult();
-		}
-		executor.invokeAfter(this.channelListenerInstance);
+		channelListenerContext.setSourceField(channelListenerInstance, source);
 	}
 }

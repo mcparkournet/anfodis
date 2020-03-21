@@ -26,55 +26,29 @@ package net.mcparkour.anfodis.listener.handler;
 
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.handler.Handler;
+import net.mcparkour.anfodis.handler.RootHandler;
 import net.mcparkour.anfodis.listener.mapper.Listener;
 import net.mcparkour.anfodis.listener.mapper.event.Event;
-import net.mcparkour.anfodis.mapper.executor.Executor;
-import net.mcparkour.anfodis.mapper.injection.Injection;
-import net.mcparkour.anfodis.result.Result;
 
-public class ListenerHandler implements Handler {
+public class ListenerHandler extends RootHandler<Listener<?>> {
 
 	private Object event;
-	private Listener<?> listener;
-	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
-	private Object listenerInstance;
 
-	public ListenerHandler(Object event, Listener<?> listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+	public ListenerHandler(Listener<?> root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, Object event) {
+		super(root, injectionCodecRegistry);
 		this.event = event;
-		this.listener = listener;
-		this.injectionCodecRegistry = injectionCodecRegistry;
-		this.listenerInstance = listener.createInstance();
 	}
 
 	@Override
 	public void handle() {
-		setInjections();
 		setEvent();
-		execute();
-	}
-
-	private void setInjections() {
-		for (Injection injection : this.listener.getInjections()) {
-			InjectionCodec<?> codec = injection.getCodec(this.injectionCodecRegistry);
-			Object codecInjection = codec.getInjection();
-			injection.setInjectionField(this.listenerInstance, codecInjection);
-		}
+		super.handle();
 	}
 
 	private void setEvent() {
-		Event event = this.listener.getEvent();
-		event.setEventField(this.listenerInstance, this.event);
-	}
-
-	private void execute() {
-		Executor executor = this.listener.getExecutor();
-		executor.invokeBefore(this.listenerInstance);
-		Object invokeResult = executor.invokeExecutor(this.listenerInstance);
-		if (invokeResult instanceof Result) {
-			Result result = (Result) invokeResult;
-			result.onResult();
-		}
-		executor.invokeAfter(this.listenerInstance);
+		Listener<?> listener = getRoot();
+		Event event = listener.getEvent();
+		Object listenerInstance = getInstance();
+		event.setEventField(listenerInstance, this.event);
 	}
 }

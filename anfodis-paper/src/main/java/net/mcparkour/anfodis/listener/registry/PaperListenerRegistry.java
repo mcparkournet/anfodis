@@ -59,7 +59,7 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
 	protected void register(PaperListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
 		registerDirect(root, event -> {
-			Handler handler = new ListenerHandler(event, root, injectionCodecRegistry);
+			Handler handler = new ListenerHandler(root, injectionCodecRegistry, event);
 			handler.handle();
 		});
 	}

@@ -57,7 +57,7 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
 	protected void register(PaperChannelListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
 		registerDirect(root, context -> {
-			Handler handler = new PaperChannelListenerHandler(root, context, injectionCodecRegistry);
+			Handler handler = new PaperChannelListenerHandler(root, injectionCodecRegistry, context);
 			handler.handle();
 		});
 	}

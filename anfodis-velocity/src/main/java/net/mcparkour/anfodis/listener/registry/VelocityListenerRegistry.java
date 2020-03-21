@@ -58,7 +58,7 @@ public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityL
 	protected void register(VelocityListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
 		registerDirect(root, event -> {
-			Handler handler = new ListenerHandler(event, root, injectionCodecRegistry);
+			Handler handler = new ListenerHandler(root, injectionCodecRegistry, event);
 			handler.handle();
 		});
 	}

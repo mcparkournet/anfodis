@@ -10,8 +10,8 @@ import net.mcparkour.intext.translation.Translations;
 
 public class JDACommandExecutorHandler extends CommandExecutorHandler<JDACommand, JDACommandContext> {
 
-	public JDACommandExecutorHandler(JDACommand command, JDACommandContext context, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
-		super(command, context, translations, injectionCodecRegistry, argumentCodecRegistry);
+	public JDACommandExecutorHandler(JDACommand root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, JDACommandContext context, Translations translations, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
+		super(root, injectionCodecRegistry, context, translations, argumentCodecRegistry);
 	}
 
 	@Override
@@ -21,9 +21,9 @@ public class JDACommandExecutorHandler extends CommandExecutorHandler<JDACommand
 	}
 
 	private void setChannel() {
-		JDACommand command = getCommand();
+		JDACommand command = getRoot();
 		JDAContext commandContext = command.getContext();
-		Object commandInstance = getCommandInstance();
+		Object commandInstance = getInstance();
 		JDACommandContext context = getContext();
 		PrivateChannel channel = context.getChannel();
 		commandContext.setChannelField(commandInstance, channel);

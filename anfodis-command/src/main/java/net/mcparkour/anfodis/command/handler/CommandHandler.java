@@ -50,7 +50,7 @@ public class CommandHandler<T extends Command<?, ?, ?>> implements Handler {
 	private Handler executorHandler;
 
 	public CommandHandler(T command, CommandContext context, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
-		this(command, context, translations, injectionCodecRegistry, argumentCodecRegistry, new CommandExecutorHandler<>(command, context, translations, injectionCodecRegistry, argumentCodecRegistry));
+		this(command, context, translations, injectionCodecRegistry, argumentCodecRegistry, new CommandExecutorHandler<>(command, injectionCodecRegistry, context, translations, argumentCodecRegistry));
 	}
 
 	public CommandHandler(T command, CommandContext context, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Handler executorHandler) {

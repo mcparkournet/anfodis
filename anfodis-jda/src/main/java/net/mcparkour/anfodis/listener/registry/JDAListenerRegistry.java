@@ -51,7 +51,7 @@ public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, J
 	protected void register(JDAListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
 		registerDirect(root, event -> {
-			Handler handler = new ListenerHandler(event, root, injectionCodecRegistry);
+			Handler handler = new ListenerHandler(root, injectionCodecRegistry, event);
 			handler.handle();
 		});
 	}
