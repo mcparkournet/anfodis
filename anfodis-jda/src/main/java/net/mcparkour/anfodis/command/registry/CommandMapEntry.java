@@ -24,24 +24,24 @@
 
 package net.mcparkour.anfodis.command.registry;
 
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.handler.CommandContext;
-import net.mcparkour.anfodis.command.mapper.Command;
-import net.mcparkour.anfodis.mapper.RootMapper;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
+import net.mcparkour.anfodis.command.handler.JDACommandContext;
+import net.mcparkour.anfodis.command.mapper.JDACommand;
 
-public abstract class AbstractCommandRegistry<T extends Command<?, ?, ?>, C extends CommandContext> extends AbstractRegistry<T, DirectCommandHandler<C>> {
+public class CommandMapEntry {
 
-	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+	private JDACommand command;
+	private DirectCommandHandler<JDACommandContext> handler;
 
-	public AbstractCommandRegistry(RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
-		super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
-		this.argumentCodecRegistry = argumentCodecRegistry;
+	public CommandMapEntry(JDACommand command, DirectCommandHandler<JDACommandContext> handler) {
+		this.command = command;
+		this.handler = handler;
 	}
 
-	protected CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {
-		return this.argumentCodecRegistry;
+	public JDACommand getCommand() {
+		return this.command;
+	}
+
+	public DirectCommandHandler<JDACommandContext> getHandler() {
+		return this.handler;
 	}
 }

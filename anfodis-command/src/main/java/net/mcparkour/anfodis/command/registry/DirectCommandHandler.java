@@ -24,24 +24,16 @@
 
 package net.mcparkour.anfodis.command.registry;
 
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import java.util.function.Consumer;
 import net.mcparkour.anfodis.command.handler.CommandContext;
-import net.mcparkour.anfodis.command.mapper.Command;
-import net.mcparkour.anfodis.mapper.RootMapper;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
 
-public abstract class AbstractCommandRegistry<T extends Command<?, ?, ?>, C extends CommandContext> extends AbstractRegistry<T, DirectCommandHandler<C>> {
+@FunctionalInterface
+public interface DirectCommandHandler<C extends CommandContext> extends Consumer<C> {
 
-	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+	void handle(C context);
 
-	public AbstractCommandRegistry(RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
-		super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
-		this.argumentCodecRegistry = argumentCodecRegistry;
-	}
-
-	protected CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {
-		return this.argumentCodecRegistry;
+	@Override
+	default void accept(C context) {
+		handle(context);
 	}
 }

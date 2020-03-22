@@ -24,24 +24,37 @@
 
 package net.mcparkour.anfodis.command.registry;
 
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.handler.CommandContext;
-import net.mcparkour.anfodis.command.mapper.Command;
-import net.mcparkour.anfodis.mapper.RootMapper;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import net.mcparkour.anfodis.command.handler.JDACommandContext;
+import net.mcparkour.anfodis.command.mapper.JDACommand;
+import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
+import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractCommandRegistry<T extends Command<?, ?, ?>, C extends CommandContext> extends AbstractRegistry<T, DirectCommandHandler<C>> {
+public class CommandMap {
 
-	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+	private Map<String, CommandMapEntry> commandMap;
 
-	public AbstractCommandRegistry(RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
-		super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
-		this.argumentCodecRegistry = argumentCodecRegistry;
+	public CommandMap() {
+		this.commandMap = new HashMap<>(16);
 	}
 
-	protected CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {
-		return this.argumentCodecRegistry;
+	public void register(JDACommand command, DirectCommandHandler<JDACommandContext> handler) {
+		CommandMapEntry entry = new CommandMapEntry(command, handler);
+		JDACommandProperties properties = command.getProperties();
+		List<String> names = properties.getAllNames();
+		for (String name : names) {
+			this.commandMap.put(name, entry);
+		}
+	}
+
+	@Nullable
+	public CommandMapEntry getCommand(String name) {
+		return this.commandMap.get(name);
+	}
+
+	public int getSize() {
+		return this.commandMap.size();
 	}
 }

@@ -24,24 +24,17 @@
 
 package net.mcparkour.anfodis.command.registry;
 
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.handler.CommandContext;
-import net.mcparkour.anfodis.command.mapper.Command;
-import net.mcparkour.anfodis.mapper.RootMapper;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
+import java.util.List;
+import java.util.function.Function;
+import net.mcparkour.anfodis.command.handler.CompletionContext;
 
-public abstract class AbstractCommandRegistry<T extends Command<?, ?, ?>, C extends CommandContext> extends AbstractRegistry<T, DirectCommandHandler<C>> {
+@FunctionalInterface
+public interface DirectCompletionHandler<C extends CompletionContext> extends Function<C, List<String>> {
 
-	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+	List<String> handle(C context);
 
-	public AbstractCommandRegistry(RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
-		super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
-		this.argumentCodecRegistry = argumentCodecRegistry;
-	}
-
-	protected CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {
-		return this.argumentCodecRegistry;
+	@Override
+	default List<String> apply(C context) {
+		return handle(context);
 	}
 }

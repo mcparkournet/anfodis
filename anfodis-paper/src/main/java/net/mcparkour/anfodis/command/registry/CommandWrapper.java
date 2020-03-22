@@ -25,19 +25,10 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.List;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.handler.CommandContext;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.handler.CompletionHandler;
-import net.mcparkour.anfodis.command.handler.PaperCommandHandler;
 import net.mcparkour.anfodis.command.handler.PaperCommandSender;
-import net.mcparkour.anfodis.command.mapper.PaperCommand;
-import net.mcparkour.anfodis.handler.Handler;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.intext.translation.Translations;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -46,22 +37,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommandWrapper extends Command {
 
-	private PaperCommand command;
 	@Nullable
 	private Permission permission;
-	private Translations translations;
-	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
-	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
-	private CodecRegistry<CompletionCodec> completionCodecRegistry;
+	private DirectCommandHandler<CommandContext> handler;
+	private DirectCompletionHandler<CompletionContext> completionHandler;
 
-	protected CommandWrapper(String name, String description, String usageMessage, List<String> aliases, PaperCommand command, @Nullable Permission permission, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry) {
+	protected CommandWrapper(String name, String description, String usageMessage, List<String> aliases, @Nullable Permission permission, DirectCommandHandler<CommandContext> handler, DirectCompletionHandler<CompletionContext> completionHandler) {
 		super(name, description, usageMessage, aliases);
-		this.command = command;
 		this.permission = permission;
-		this.translations = translations;
-		this.injectionCodecRegistry = injectionCodecRegistry;
-		this.argumentCodecRegistry = argumentCodecRegistry;
-		this.completionCodecRegistry = completionCodecRegistry;
+		this.handler = handler;
+		this.completionHandler = completionHandler;
 	}
 
 	@Override
@@ -69,8 +54,7 @@ public class CommandWrapper extends Command {
 		PaperCommandSender paperSender = new PaperCommandSender(sender);
 		List<String> arguments = List.of(args);
 		CommandContext context = new CommandContext(paperSender, arguments, this.permission);
-		Handler handler = new PaperCommandHandler(this.command, context, this.translations, this.injectionCodecRegistry, this.argumentCodecRegistry);
-		handler.handle();
+		this.handler.handle(context);
 		return true;
 	}
 
@@ -80,7 +64,6 @@ public class CommandWrapper extends Command {
 		PaperCommandSender paperSender = new PaperCommandSender(sender);
 		List<String> arguments = List.of(args);
 		CompletionContext context = new CompletionContext(paperSender, arguments, this.permission);
-		CompletionHandler handler = new CompletionHandler(this.command, context, this.completionCodecRegistry);
-		return handler.handle();
+		return this.completionHandler.handle(context);
 	}
 }

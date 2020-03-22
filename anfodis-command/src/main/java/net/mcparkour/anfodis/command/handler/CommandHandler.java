@@ -103,12 +103,13 @@ public class CommandHandler<T extends Command<?, ?, ?>> implements Handler {
 		int minSize = (int) commandArguments.stream()
 			.filter(argument -> !argument.isOptional())
 			.count();
-		int maxSize = commandArguments.size();
-		if (commandArguments.stream()
+		boolean containList = commandArguments.stream()
 			.map(Argument::getFieldType)
-			.anyMatch(type -> type.isAssignableFrom(List.class))) {
+			.anyMatch(type -> type.isAssignableFrom(List.class));
+		if (containList) {
 			return entrySize >= minSize;
 		}
+		int maxSize = commandArguments.size();
 		return entrySize >= minSize && entrySize <= maxSize;
 	}
 

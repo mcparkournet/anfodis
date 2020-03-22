@@ -22,52 +22,51 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command.registry;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import net.dv8tion.jda.api.entities.PrivateChannel;
+import java.util.Map;
 import net.dv8tion.jda.api.entities.User;
-import net.mcparkour.anfodis.command.registry.PermissionMap;
 import net.mcparkour.craftmon.permission.Permission;
+import org.jetbrains.annotations.Nullable;
 
-public class JDACommandSender implements CommandSender {
+public class PermissionMap {
 
-	private User sender;
-	private PrivateChannel channel;
-	private PermissionMap permissionMap;
+	private Map<Long, List<Permission>> permissionMap;
 
-	public JDACommandSender(User sender, PrivateChannel channel, PermissionMap permissionMap) {
-		this.sender = sender;
-		this.channel = channel;
-		this.permissionMap = permissionMap;
+	public PermissionMap() {
+		this.permissionMap = new HashMap<>(4);
 	}
 
-	@Override
-	public void sendMessage(String message) {
-		this.channel.sendMessage(message)
-			.queue();
+	public void addPermission(User user, Permission permission) {
+		List<Permission> currentPermissions = getCurrentPermissions(user);
+		currentPermissions.add(permission);
 	}
 
-	@Override
-	public boolean hasPermission(Permission permission) {
-		String name = permission.getName();
-		return hasPermission(name);
+	public void addPermissions(User user, List<Permission> permissions) {
+		List<Permission> currentPermissions = getCurrentPermissions(user);
+		currentPermissions.addAll(permissions);
 	}
 
-	@Override
-	public boolean hasPermission(String name) {
-		long id = this.sender.getIdLong();
-		List<Permission> permissions = this.permissionMap.getPermissions(id);
+	private List<Permission> getCurrentPermissions(User user) {
+		long id = user.getIdLong();
+		return this.permissionMap.computeIfAbsent(id, key -> new ArrayList<>(4));
+	}
+
+	@Nullable
+	public List<Permission> getPermissions(User user) {
+		long id = user.getIdLong();
+		return getPermissions(id);
+	}
+
+	@Nullable
+	public List<Permission> getPermissions(long userId) {
+		List<Permission> permissions = this.permissionMap.get(userId);
 		if (permissions == null) {
-			return false;
+			return null;
 		}
-		return permissions.stream()
-			.map(Permission::getName)
-			.anyMatch(permissionName -> permissionName.equals(name));
-	}
-
-	@Override
-	public Object getRawSender() {
-		return this.sender;
+		return List.copyOf(permissions);
 	}
 }

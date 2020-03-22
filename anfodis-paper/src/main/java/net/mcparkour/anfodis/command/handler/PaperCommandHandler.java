@@ -60,6 +60,7 @@ public class PaperCommandHandler extends CommandHandler<PaperCommand> {
 		CommandSender commandSender = context.getSender();
 		Object rawSender = commandSender.getRawSender();
 		Class<?> rawSenderType = rawSender.getClass();
-		return senders.stream().anyMatch(sender -> sender.isAssignableFrom(rawSenderType));
+		return senders.stream()
+			.anyMatch(sender -> sender.isAssignableFrom(rawSenderType));
 	}
 }

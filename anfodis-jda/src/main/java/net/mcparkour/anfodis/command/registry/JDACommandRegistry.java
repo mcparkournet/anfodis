@@ -24,60 +24,53 @@
 
 package net.mcparkour.anfodis.command.registry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.dv8tion.jda.api.JDA;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.handler.JDACommandContext;
+import net.mcparkour.anfodis.command.handler.JDACommandHandler;
 import net.mcparkour.anfodis.command.handler.PrivateMessageReceivedListener;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
-import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
+import net.mcparkour.anfodis.handler.Handler;
 import net.mcparkour.anfodis.mapper.RootMapper;
-import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.translation.Translations;
 
-public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand> {
+public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDACommandContext> {
 
 	private JDA jda;
 	private String prefix;
 	private Translations translations;
-	private Map<Long, List<Permission>> permissions;
-	private Map<String, JDACommand> commands = new HashMap<>(16);
+	private PermissionMap permissionMap;
+	private CommandMap commandMap;
 
-	public JDACommandRegistry(RootMapper<JDACommand> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, JDA jda, String prefix, Translations translations, Map<Long, List<Permission>> permissions) {
+	public JDACommandRegistry(RootMapper<JDACommand> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, JDA jda, String prefix, Translations translations, PermissionMap permissionMap) {
 		super(mapper, injectionCodecRegistry, argumentCodecRegistry);
 		this.jda = jda;
 		this.prefix = prefix;
 		this.translations = translations;
-		this.permissions = permissions;
+		this.permissionMap = permissionMap;
+		this.commandMap = new CommandMap();
 		registerCommandListener();
 	}
 
 	private void registerCommandListener() {
-		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = getArgumentCodecRegistry();
-		PrivateMessageReceivedListener listener = new PrivateMessageReceivedListener(this.prefix, this.translations, this.permissions, this.commands, injectionCodecRegistry, argumentCodecRegistry);
+		PrivateMessageReceivedListener listener = new PrivateMessageReceivedListener(this.prefix, this.permissionMap, this.commandMap);
 		this.jda.addEventListener(listener);
 	}
 
 	@Override
 	protected void register(JDACommand root) {
-		JDACommandProperties properties = root.getProperties();
-		List<String> names = getCommandNames(properties);
-		for (String name : names) {
-			this.commands.put(name, root);
-		}
+		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
+		CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = getArgumentCodecRegistry();
+		registerDirect(root, context -> {
+			Handler handler = new JDACommandHandler(root, context, this.translations, injectionCodecRegistry, argumentCodecRegistry);
+			handler.handle();
+		});
 	}
 
-	private List<String> getCommandNames(JDACommandProperties properties) {
-		List<String> names = new ArrayList<>(1);
-		String commandName = properties.getName();
-		names.add(commandName);
-		List<String> aliases = properties.getAliases();
-		names.addAll(aliases);
-		return names;
+	@Override
+	public void registerDirect(JDACommand root, DirectCommandHandler<JDACommandContext> directHandler) {
+		this.commandMap.register(root, directHandler);
 	}
 }

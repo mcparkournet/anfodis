@@ -26,7 +26,6 @@ package net.mcparkour.anfodis.command.handler;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.PrivateChannel;
@@ -34,33 +33,26 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
-import net.mcparkour.anfodis.handler.Handler;
+import net.mcparkour.anfodis.command.registry.CommandMap;
+import net.mcparkour.anfodis.command.registry.CommandMapEntry;
+import net.mcparkour.anfodis.command.registry.DirectCommandHandler;
+import net.mcparkour.anfodis.command.registry.PermissionMap;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.craftmon.permission.PermissionBuilder;
-import net.mcparkour.intext.translation.Translations;
 import org.jetbrains.annotations.Nullable;
 
 public class PrivateMessageReceivedListener implements EventListener {
 
 	private String prefix;
-	private Translations translations;
-	private Map<Long, List<Permission>> permissions;
-	private Map<String, JDACommand> commands;
-	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
-	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+	private PermissionMap permissionMap;
+	private CommandMap commandMap;
 
-	public PrivateMessageReceivedListener(String prefix, Translations translations, Map<Long, List<Permission>> permissions, Map<String, JDACommand> commands, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
+	public PrivateMessageReceivedListener(String prefix, PermissionMap permissionMap, CommandMap commandMap) {
 		this.prefix = prefix;
-		this.translations = translations;
-		this.permissions = permissions;
-		this.commands = commands;
-		this.injectionCodecRegistry = injectionCodecRegistry;
-		this.argumentCodecRegistry = argumentCodecRegistry;
+		this.permissionMap = permissionMap;
+		this.commandMap = commandMap;
 	}
 
 	@Override
@@ -83,20 +75,25 @@ public class PrivateMessageReceivedListener implements EventListener {
 		String[] split = rawMessage.split(" ");
 		String name = split[0];
 		String nameWithoutSlash = name.substring(1);
-		JDACommand command = this.commands.get(nameWithoutSlash);
-		if (command == null) {
+		CommandMapEntry entry = this.commandMap.getCommand(nameWithoutSlash);
+		if (entry == null) {
 			return;
 		}
+		DirectCommandHandler<JDACommandContext> handler = entry.getHandler();
+		JDACommandContext context = createContext(event, split, entry);
+		handler.handle(context);
+	}
+
+	private JDACommandContext createContext(PrivateMessageReceivedEvent event, String[] split, CommandMapEntry entry) {
 		User sender = event.getAuthor();
 		PrivateChannel channel = event.getChannel();
-		JDACommandSender jdaCommandSender = new JDACommandSender(sender, channel, this.permissions);
+		JDACommandSender jdaCommandSender = new JDACommandSender(sender, channel, this.permissionMap);
 		String[] argumentsArray = Arrays.copyOfRange(split, 1, split.length);
 		List<String> arguments = List.of(argumentsArray);
+		JDACommand command = entry.getCommand();
 		JDACommandProperties properties = command.getProperties();
 		Permission permission = createPermission(properties);
-		JDACommandContext context = new JDACommandContext(jdaCommandSender, arguments, permission, channel);
-		Handler handler = new JDACommandHandler(command, context, this.translations, this.injectionCodecRegistry, this.argumentCodecRegistry);
-		handler.handle();
+		return new JDACommandContext(jdaCommandSender, arguments, permission, channel);
 	}
 
 	@Nullable
@@ -105,8 +102,7 @@ public class PrivateMessageReceivedListener implements EventListener {
 		if (commandPermission == null) {
 			return null;
 		}
-		return new PermissionBuilder()
-			.node(this.prefix)
+		return new PermissionBuilder().node(this.prefix)
 			.node(commandPermission)
 			.build();
 	}

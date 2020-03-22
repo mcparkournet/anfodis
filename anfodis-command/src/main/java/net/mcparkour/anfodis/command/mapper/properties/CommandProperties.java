@@ -24,6 +24,7 @@
 
 package net.mcparkour.anfodis.command.mapper.properties;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,6 +50,15 @@ public class CommandProperties<D extends CommandPropertiesData> {
 
 	public String getDefaultUsage() {
 		return "/" + getName();
+	}
+
+	public List<String> getAllNames() {
+		List<String> names = new ArrayList<>(1);
+		String name = getName();
+		names.add(name);
+		List<String> aliases = getAliases();
+		names.addAll(aliases);
+		return names;
 	}
 
 	public String getName() {
