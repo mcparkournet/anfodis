@@ -32,11 +32,13 @@ import net.mcparkour.anfodis.command.handler.JDACommandContext;
 import net.mcparkour.anfodis.command.handler.JDACommandHandler;
 import net.mcparkour.anfodis.command.handler.PrivateMessageReceivedListener;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
+import net.mcparkour.anfodis.command.mapper.JDACommandMapper;
 import net.mcparkour.anfodis.handler.Handler;
-import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.intext.translation.Translations;
 
 public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDACommandContext> {
+
+	private static final JDACommandMapper COMMAND_MAPPER = new JDACommandMapper();
 
 	private JDA jda;
 	private String prefix;
@@ -44,8 +46,8 @@ public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDAC
 	private PermissionMap permissionMap;
 	private CommandMap commandMap;
 
-	public JDACommandRegistry(RootMapper<JDACommand> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, JDA jda, String prefix, Translations translations, PermissionMap permissionMap) {
-		super(mapper, injectionCodecRegistry, argumentCodecRegistry);
+	public JDACommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, JDA jda, String prefix, Translations translations, PermissionMap permissionMap) {
+		super(COMMAND_MAPPER, injectionCodecRegistry, argumentCodecRegistry);
 		this.jda = jda;
 		this.prefix = prefix;
 		this.translations = translations;

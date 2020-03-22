@@ -12,6 +12,6 @@ repositories {
 }
 
 dependencies {
-    implementation("net.mcparkour:anfodis-paper:1.0.6")
+    implementation("net.mcparkour:anfodis-paper:1.0.7")
 }
 ```

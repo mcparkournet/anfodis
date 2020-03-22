@@ -37,7 +37,6 @@ import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.PaperCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
 import net.mcparkour.anfodis.handler.Handler;
-import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.craftmon.permission.PermissionBuilder;
 import net.mcparkour.intext.translation.Translations;
@@ -55,15 +54,15 @@ public class PaperCommandRegistry extends AbstractCommandRegistry<PaperCommand, 
 	private Translations translations;
 	private CodecRegistry<CompletionCodec> completionCodecRegistry;
 
-	public PaperCommandRegistry(RootMapper<PaperCommand> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Plugin plugin, Translations translations, CodecRegistry<CompletionCodec> completionCodecRegistry) {
-		this(mapper, injectionCodecRegistry, argumentCodecRegistry, plugin.getServer(), plugin.getName(), translations, completionCodecRegistry);
+	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Plugin plugin, Translations translations, CodecRegistry<CompletionCodec> completionCodecRegistry) {
+		this(injectionCodecRegistry, argumentCodecRegistry, plugin.getServer(), plugin.getName(), translations, completionCodecRegistry);
 	}
 
-	private PaperCommandRegistry(RootMapper<PaperCommand> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Server server, String pluginName, Translations translations, CodecRegistry<CompletionCodec> completionCodecRegistry) {
-		this(mapper, injectionCodecRegistry, argumentCodecRegistry, server.getCommandMap(), pluginName.toLowerCase(), translations, completionCodecRegistry);
+	private PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Server server, String pluginName, Translations translations, CodecRegistry<CompletionCodec> completionCodecRegistry) {
+		this(injectionCodecRegistry, argumentCodecRegistry, server.getCommandMap(), pluginName.toLowerCase(), translations, completionCodecRegistry);
 	}
 
-	public PaperCommandRegistry(RootMapper<PaperCommand> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CommandMap commandMap, String prefix, Translations translations, CodecRegistry<CompletionCodec> completionCodecRegistry) {
+	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CommandMap commandMap, String prefix, Translations translations, CodecRegistry<CompletionCodec> completionCodecRegistry) {
 		super(COMMAND_MAPPER, injectionCodecRegistry, argumentCodecRegistry);
 		this.commandMap = commandMap;
 		this.prefix = prefix;
