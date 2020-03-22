@@ -47,13 +47,13 @@ public class CommandMapper<T extends Command<A, C, P>, A extends Argument<?>, C 
 
 	private ArgumentMapper<A, ?> argumentMapper;
 	private ContextMapper<C, ?> contextMapper;
-	private CommandPropertiesMapper<P, ?> commandPropertiesMapper;
+	private CommandPropertiesMapper<P, ?> propertiesMapper;
 	private CommandMerger<T, A, C, P> commandMerger;
 
-	public CommandMapper(ArgumentMapper<A, ?> argumentMapper, ContextMapper<C, ?> contextMapper, CommandPropertiesMapper<P, ?> commandPropertiesMapper, CommandMerger<T, A, C, P> commandMerger) {
+	public CommandMapper(ArgumentMapper<A, ?> argumentMapper, ContextMapper<C, ?> contextMapper, CommandPropertiesMapper<P, ?> propertiesMapper, CommandMerger<T, A, C, P> commandMerger) {
 		this.argumentMapper = argumentMapper;
 		this.contextMapper = contextMapper;
-		this.commandPropertiesMapper = commandPropertiesMapper;
+		this.propertiesMapper = propertiesMapper;
 		this.commandMerger = commandMerger;
 	}
 
@@ -66,21 +66,21 @@ public class CommandMapper<T extends Command<A, C, P>, A extends Argument<?>, C 
 		Executor executor = getExecutor(methods);
 		List<A> arguments = getArguments(fields);
 		C context = getContext(fields);
-		P commandProperties = getCommandProperties(annotatedClass);
+		P properties = getProperties(annotatedClass);
 		List<T> subCommands = getSubCommands(fields);
-		return this.commandMerger.merge(constructor, injections, executor, arguments, context, commandProperties, subCommands);
+		return this.commandMerger.merge(constructor, injections, executor, arguments, context, properties, subCommands);
 	}
 
-	private List<A> getArguments(Field[] listenerFields) {
-		return this.argumentMapper.map(listenerFields);
+	private List<A> getArguments(Field[] fields) {
+		return this.argumentMapper.map(fields);
 	}
 
-	private C getContext(Field[] listenerFields) {
-		return this.contextMapper.map(listenerFields);
+	private C getContext(Field[] fields) {
+		return this.contextMapper.map(fields);
 	}
 
-	private P getCommandProperties(Class<?> listenerClass) {
-		return this.commandPropertiesMapper.map(listenerClass);
+	private P getProperties(Class<?> commandClass) {
+		return this.propertiesMapper.map(commandClass);
 	}
 
 	private List<T> getSubCommands(Field[] fields) {

@@ -29,13 +29,13 @@ import net.md_5.bungee.event.EventPriority;
 
 public class WaterfallListenerProperties extends ListenerProperties<WaterfallListenerPropertiesData, Event> {
 
-	public WaterfallListenerProperties(WaterfallListenerPropertiesData listenerPropertiesData) {
-		super(listenerPropertiesData);
+	public WaterfallListenerProperties(WaterfallListenerPropertiesData propertiesData) {
+		super(propertiesData);
 	}
 
 	public byte getPriority() {
-		WaterfallListenerPropertiesData listenerPropertiesData = getListenerPropertiesData();
-		Byte priority = listenerPropertiesData.getPriority();
+		WaterfallListenerPropertiesData propertiesData = getPropertiesData();
+		Byte priority = propertiesData.getPriority();
 		if (priority == null) {
 			return EventPriority.NORMAL;
 		}

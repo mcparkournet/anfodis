@@ -28,13 +28,13 @@ import com.velocitypowered.api.event.PostOrder;
 
 public class VelocityListenerProperties extends ListenerProperties<VelocityListenerPropertiesData, Object> {
 
-	public VelocityListenerProperties(VelocityListenerPropertiesData listenerPropertiesData) {
-		super(listenerPropertiesData);
+	public VelocityListenerProperties(VelocityListenerPropertiesData propertiesData) {
+		super(propertiesData);
 	}
 
 	public PostOrder getPriority() {
-		VelocityListenerPropertiesData listenerPropertiesData = getListenerPropertiesData();
-		PostOrder priority = listenerPropertiesData.getPriority();
+		VelocityListenerPropertiesData propertiesData = getPropertiesData();
+		PostOrder priority = propertiesData.getPriority();
 		if (priority == null) {
 			return PostOrder.NORMAL;
 		}

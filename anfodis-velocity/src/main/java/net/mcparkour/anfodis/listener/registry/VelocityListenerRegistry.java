@@ -65,7 +65,7 @@ public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityL
 
 	@Override
 	public void registerDirect(VelocityListener root, VelocityDirectListener<?> directHandler) {
-		VelocityListenerProperties properties = root.getListenerProperties();
+		VelocityListenerProperties properties = root.getProperties();
 		PostOrder priority = properties.getPriority();
 		Iterable<Class<?>> eventTypes = properties.getListenedEvents();
 		for (Class<?> eventType : eventTypes) {

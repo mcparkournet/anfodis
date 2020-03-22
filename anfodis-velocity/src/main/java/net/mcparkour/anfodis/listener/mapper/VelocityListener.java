@@ -26,14 +26,14 @@ package net.mcparkour.anfodis.listener.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
-import net.mcparkour.anfodis.listener.mapper.event.Event;
+import net.mcparkour.anfodis.listener.mapper.context.VelocityContext;
 import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public class VelocityListener extends Listener<VelocityListenerProperties> {
+public class VelocityListener extends Listener<VelocityContext, VelocityListenerProperties> {
 
-	public VelocityListener(Constructor<?> constructor, List<Injection> injections, Executor executor, VelocityListenerProperties listenerProperties, Event event) {
-		super(constructor, injections, executor, listenerProperties, event);
+	public VelocityListener(Constructor<?> constructor, List<Injection> injections, Executor executor, VelocityContext context, VelocityListenerProperties properties) {
+		super(constructor, injections, executor, context, properties);
 	}
 }

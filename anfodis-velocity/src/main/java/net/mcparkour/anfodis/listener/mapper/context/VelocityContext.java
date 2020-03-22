@@ -22,22 +22,11 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.mapper.event;
+package net.mcparkour.anfodis.listener.mapper.context;
 
-import java.lang.reflect.Field;
-import org.jetbrains.annotations.Nullable;
+public class VelocityContext extends Context<VelocityContextData> {
 
-public class EventData {
-
-	@Nullable
-	private Field eventField;
-
-	@Nullable
-	public Field getEventField() {
-		return this.eventField;
-	}
-
-	public void setEventField(@Nullable Field eventField) {
-		this.eventField = eventField;
+	public VelocityContext(VelocityContextData contextData) {
+		super(contextData);
 	}
 }

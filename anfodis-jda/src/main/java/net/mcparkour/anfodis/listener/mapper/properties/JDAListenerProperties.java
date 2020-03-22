@@ -28,7 +28,7 @@ import net.dv8tion.jda.api.events.GenericEvent;
 
 public class JDAListenerProperties extends ListenerProperties<JDAListenerPropertiesData, GenericEvent> {
 
-	public JDAListenerProperties(JDAListenerPropertiesData listenerPropertiesData) {
-		super(listenerPropertiesData);
+	public JDAListenerProperties(JDAListenerPropertiesData propertiesData) {
+		super(propertiesData);
 	}
 }

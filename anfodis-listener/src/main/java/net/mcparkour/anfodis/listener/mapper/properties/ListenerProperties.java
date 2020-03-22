@@ -28,21 +28,21 @@ import java.util.List;
 
 public class ListenerProperties<D extends ListenerPropertiesData<E>, E> {
 
-	private D listenerPropertiesData;
+	private D propertiesData;
 
-	public ListenerProperties(D listenerPropertiesData) {
-		this.listenerPropertiesData = listenerPropertiesData;
+	public ListenerProperties(D propertiesData) {
+		this.propertiesData = propertiesData;
 	}
 
 	public Iterable<Class<? extends E>> getListenedEvents() {
-		Class<? extends E>[] listenedEvents = this.listenerPropertiesData.getListenedEvents();
+		Class<? extends E>[] listenedEvents = this.propertiesData.getListenedEvents();
 		if (listenedEvents == null) {
 			return List.of();
 		}
 		return List.of(listenedEvents);
 	}
 
-	protected D getListenerPropertiesData() {
-		return this.listenerPropertiesData;
+	protected D getPropertiesData() {
+		return this.propertiesData;
 	}
 }

@@ -24,14 +24,17 @@
 
 package net.mcparkour.anfodis.listener.mapper;
 
+import net.mcparkour.anfodis.listener.mapper.context.PaperContext;
+import net.mcparkour.anfodis.listener.mapper.context.PaperContextMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerPropertiesMapper;
 
-public class PaperListenerMapper extends ListenerMapper<PaperListener, PaperListenerProperties> {
+public class PaperListenerMapper extends ListenerMapper<PaperListener, PaperContext, PaperListenerProperties> {
 
-	private static final PaperListenerPropertiesMapper LISTENER_PROPERTIES_MAPPER = new PaperListenerPropertiesMapper();
+	private static final PaperContextMapper CONTEXT_MAPPER = new PaperContextMapper();
+	private static final PaperListenerPropertiesMapper PROPERTIES_MAPPER = new PaperListenerPropertiesMapper();
 
 	public PaperListenerMapper() {
-		super(LISTENER_PROPERTIES_MAPPER, PaperListener::new);
+		super(CONTEXT_MAPPER, PROPERTIES_MAPPER, PaperListener::new);
 	}
 }

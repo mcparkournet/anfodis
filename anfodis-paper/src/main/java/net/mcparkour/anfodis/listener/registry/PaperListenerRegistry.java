@@ -66,7 +66,7 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
 
 	@Override
 	public void registerDirect(PaperListener root, PaperDirectListener<? extends Event> directHandler) {
-		PaperListenerProperties properties = root.getListenerProperties();
+		PaperListenerProperties properties = root.getProperties();
 		EventPriority priority = properties.getPriority();
 		boolean ignoreCancelled = properties.isIgnoreCancelled();
 		Iterable<Class<? extends Event>> eventTypes = properties.getListenedEvents();

@@ -58,7 +58,7 @@ public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, J
 
 	@Override
 	public void registerDirect(JDAListener root, JDADirectListener<? extends GenericEvent> directHandler) {
-		JDAListenerProperties properties = root.getListenerProperties();
+		JDAListenerProperties properties = root.getProperties();
 		Iterable<Class<? extends GenericEvent>> eventTypes = properties.getListenedEvents();
 		for (Class<? extends GenericEvent> eventType : eventTypes) {
 			JDADirectListener<? extends GenericEvent> listener = event -> {

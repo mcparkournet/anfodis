@@ -24,14 +24,17 @@
 
 package net.mcparkour.anfodis.listener.mapper;
 
+import net.mcparkour.anfodis.listener.mapper.context.WaterfallContext;
+import net.mcparkour.anfodis.listener.mapper.context.WaterfallContextMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerPropertiesMapper;
 
-public class WaterfallListenerMapper extends ListenerMapper<WaterfallListener, WaterfallListenerProperties> {
+public class WaterfallListenerMapper extends ListenerMapper<WaterfallListener, WaterfallContext, WaterfallListenerProperties> {
 
-	private static final WaterfallListenerPropertiesMapper LISTENER_PROPERTIES_MAPPER = new WaterfallListenerPropertiesMapper();
+	private static final WaterfallContextMapper CONTEXT_MAPPER = new WaterfallContextMapper();
+	private static final WaterfallListenerPropertiesMapper PROPERTIES_MAPPER = new WaterfallListenerPropertiesMapper();
 
 	public WaterfallListenerMapper() {
-		super(LISTENER_PROPERTIES_MAPPER, WaterfallListener::new);
+		super(CONTEXT_MAPPER, PROPERTIES_MAPPER, WaterfallListener::new);
 	}
 }

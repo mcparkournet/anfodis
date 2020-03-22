@@ -26,12 +26,12 @@ package net.mcparkour.anfodis.listener.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
-import net.mcparkour.anfodis.listener.mapper.event.Event;
+import net.mcparkour.anfodis.listener.mapper.context.Context;
 import net.mcparkour.anfodis.listener.mapper.properties.ListenerProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public interface ListenerMerger<L extends Listener<P>, P extends ListenerProperties<?, ?>> {
+public interface ListenerMerger<L extends Listener<C, P>, C extends Context<?>, P extends ListenerProperties<?, ?>> {
 
-	L merge(Constructor<?> constructor, List<Injection> injections, Executor executor, P listenerProperties, Event event);
+	L merge(Constructor<?> constructor, List<Injection> injections, Executor executor, C context, P properties);
 }

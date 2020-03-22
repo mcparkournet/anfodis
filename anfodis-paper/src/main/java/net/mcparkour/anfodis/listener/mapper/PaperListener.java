@@ -26,14 +26,14 @@ package net.mcparkour.anfodis.listener.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
-import net.mcparkour.anfodis.listener.mapper.event.Event;
+import net.mcparkour.anfodis.listener.mapper.context.PaperContext;
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public class PaperListener extends Listener<PaperListenerProperties> {
+public class PaperListener extends Listener<PaperContext, PaperListenerProperties> {
 
-	public PaperListener(Constructor<?> constructor, List<Injection> injections, Executor executor, PaperListenerProperties listenerProperties, Event event) {
-		super(constructor, injections, executor, listenerProperties, event);
+	public PaperListener(Constructor<?> constructor, List<Injection> injections, Executor executor, PaperContext context, PaperListenerProperties properties) {
+		super(constructor, injections, executor, context, properties);
 	}
 }

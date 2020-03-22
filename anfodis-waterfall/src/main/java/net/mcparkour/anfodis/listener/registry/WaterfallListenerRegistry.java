@@ -70,9 +70,9 @@ public class WaterfallListenerRegistry extends AbstractListenerRegistry<Waterfal
 
 	@Override
 	public void registerDirect(WaterfallListener root, WaterfallDirectListener<? extends Event> directHandler) {
-		WaterfallListenerProperties listenerProperties = root.getListenerProperties();
-		byte priority = listenerProperties.getPriority();
-		Iterable<Class<? extends Event>> eventTypes = listenerProperties.getListenedEvents();
+		WaterfallListenerProperties properties = root.getProperties();
+		byte priority = properties.getPriority();
+		Iterable<Class<? extends Event>> eventTypes = properties.getListenedEvents();
 		for (Class<? extends Event> eventType : eventTypes) {
 			WaterfallDirectListener<? extends Event> listener = event -> {
 				if (eventType.isInstance(event)) {

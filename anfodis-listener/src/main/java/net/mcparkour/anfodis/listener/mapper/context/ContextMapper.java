@@ -22,24 +22,37 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.mapper.event;
+package net.mcparkour.anfodis.listener.mapper.context;
 
 import java.lang.reflect.Field;
-import net.mcparkour.common.reflection.Reflections;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import net.mcparkour.anfodis.listener.annotation.Event;
+import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
+import net.mcparkour.anfodis.mapper.Mapper;
+import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
-public class Event {
+public class ContextMapper<C extends Context<D>, D extends ContextData> implements Mapper<Field, C> {
 
-	private EventData eventData;
+	private Function<D, C> contextSupplier;
+	private Supplier<D> contextDataSupplier;
 
-	public Event(EventData eventData) {
-		this.eventData = eventData;
+	public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier) {
+		this.contextSupplier = contextSupplier;
+		this.contextDataSupplier = contextDataSupplier;
 	}
 
-	public void setEventField(Object instance, Object event) {
-		Field field = this.eventData.getEventField();
-		if (field == null) {
-			return;
-		}
-		Reflections.setFieldValue(field, instance, event);
+	@Override
+	public C map(Iterable<Field> elements) {
+		return new ElementsMapperBuilder<Field, D>()
+			.data(this.contextDataSupplier)
+			.singleElement(data -> new SingleElementMapperBuilder<Field>()
+				.annotation(Event.class)
+				.elementConsumer(data::setEventField)
+				.build())
+			.build()
+			.mapFirstOptional(elements)
+			.map(this.contextSupplier)
+			.get();
 	}
 }

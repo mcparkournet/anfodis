@@ -22,27 +22,11 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.mapper.event;
+package net.mcparkour.anfodis.listener.mapper.context;
 
-import java.lang.reflect.Field;
-import net.mcparkour.anfodis.listener.annotation.Event;
-import net.mcparkour.anfodis.mapper.Mapper;
-import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
-import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
+public class PaperContextMapper extends ContextMapper<PaperContext, PaperContextData> {
 
-public class EventMapper implements Mapper<Field, net.mcparkour.anfodis.listener.mapper.event.Event> {
-
-	@Override
-	public net.mcparkour.anfodis.listener.mapper.event.Event map(Iterable<Field> elements) {
-		return new ElementsMapperBuilder<Field, EventData>()
-			.data(EventData::new)
-			.singleElement(data -> new SingleElementMapperBuilder<Field>()
-				.annotation(Event.class)
-				.elementConsumer(data::setEventField)
-				.build())
-			.build()
-			.mapFirstOptional(elements)
-			.map(net.mcparkour.anfodis.listener.mapper.event.Event::new)
-			.get();
+	public PaperContextMapper() {
+		super(PaperContext::new, PaperContextData::new);
 	}
 }

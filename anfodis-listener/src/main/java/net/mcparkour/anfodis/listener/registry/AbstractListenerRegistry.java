@@ -31,7 +31,7 @@ import net.mcparkour.anfodis.listener.mapper.Listener;
 import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.anfodis.registry.AbstractRegistry;
 
-public abstract class AbstractListenerRegistry<T extends Listener<?>, D extends DirectListener<?>> extends AbstractRegistry<T, D> {
+public abstract class AbstractListenerRegistry<T extends Listener<?, ?>, D extends DirectListener<?>> extends AbstractRegistry<T, D> {
 
 	public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
 		super(annotation, mapper, injectionCodecRegistry);
