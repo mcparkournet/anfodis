@@ -44,7 +44,8 @@ public class CommandContext extends RootContext {
 	}
 
 	void removeFirstArgument() {
-		this.arguments.remove(0);
+		int size = this.arguments.size();
+		this.arguments = this.arguments.subList(1, size);
 	}
 
 	void appendPermissionNode(String name) {
