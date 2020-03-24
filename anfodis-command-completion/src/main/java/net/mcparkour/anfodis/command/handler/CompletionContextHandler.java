@@ -22,10 +22,12 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.handler;
+package net.mcparkour.anfodis.command.handler;
+
+import java.util.List;
 
 @FunctionalInterface
-public interface ReturningContextHandler<T extends RootContext, R> {
+public interface CompletionContextHandler<C extends CompletionContext> {
 
-	R handle(T context);
+	List<String> handle(C context);
 }

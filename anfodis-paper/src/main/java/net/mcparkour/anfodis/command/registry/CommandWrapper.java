@@ -27,9 +27,9 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.List;
 import net.mcparkour.anfodis.command.handler.CommandContext;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
+import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.PaperCommandSender;
 import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.anfodis.handler.ReturningContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -42,9 +42,9 @@ public class CommandWrapper extends Command {
 	@Nullable
 	private Permission permission;
 	private ContextHandler<CommandContext> handler;
-	private ReturningContextHandler<CompletionContext, List<String>> completionHandler;
+	private CompletionContextHandler<CompletionContext> completionHandler;
 
-	protected CommandWrapper(String name, String description, String usageMessage, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, ReturningContextHandler<CompletionContext, List<String>> completionHandler) {
+	protected CommandWrapper(String name, String description, String usageMessage, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
 		super(name, description, usageMessage, aliases);
 		this.permission = permission;
 		this.handler = handler;

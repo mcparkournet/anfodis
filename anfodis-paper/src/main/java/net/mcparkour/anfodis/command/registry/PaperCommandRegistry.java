@@ -31,12 +31,12 @@ import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.handler.CommandContext;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
+import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.PaperCommandHandler;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.PaperCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.anfodis.handler.ReturningContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.translation.Translations;
 import org.bukkit.Server;
@@ -64,7 +64,7 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
 	}
 
 	@Override
-	public void register(PaperCommand command, ContextHandler<CommandContext> handler, ReturningContextHandler<CompletionContext, List<String>> completionHandler) {
+	public void register(PaperCommand command, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
 		PaperCommandProperties properties = command.getProperties();
 		String name = properties.getName();
 		String description = properties.getDescription();
@@ -74,7 +74,7 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
 		register(name, description, usage, aliases, permission, handler, completionHandler);
 	}
 
-	public void register(String name, String description, String usage, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, ReturningContextHandler<CompletionContext, List<String>> completionHandler) {
+	public void register(String name, String description, String usage, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
 		CommandWrapper command = new CommandWrapper(name, description, usage, aliases, permission, handler, completionHandler);
 		if (permission != null) {
 			String permissionName = permission.getName();

@@ -33,10 +33,10 @@ import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.handler.CommandContext;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
+import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.CompletionHandler;
 import net.mcparkour.anfodis.command.mapper.CompletionCommand;
 import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.anfodis.handler.ReturningContextHandler;
 import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.intext.translation.Translations;
 
@@ -68,16 +68,16 @@ public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, 
 	@Override
 	public void register(T root) {
 		ContextHandler<C> handler = createCommandHandler(root);
-		ReturningContextHandler<D, List<String>> completionHandler = createCompletionHandler(root);
+		CompletionContextHandler<D> completionHandler = createCompletionHandler(root);
 		register(root, handler, completionHandler);
 	}
 
-	private ReturningContextHandler<D, List<String>> createCompletionHandler(T command) {
+	private CompletionContextHandler<D> createCompletionHandler(T command) {
 		List<T> subCommands = command.getSubCommands();
 		int size = subCommands.size();
-		Map<T, ReturningContextHandler<D, List<String>>> handlers = new HashMap<>(size);
+		Map<T, CompletionContextHandler<D>> handlers = new HashMap<>(size);
 		for (T subCommand : subCommands) {
-			ReturningContextHandler<D, List<String>> handler = createCompletionHandler(subCommand);
+			CompletionContextHandler<D> handler = createCompletionHandler(subCommand);
 			handlers.put(subCommand, handler);
 		}
 		return this.completionHandlerSupplier.supply(command, this.completionCodecRegistry, handlers);
@@ -88,5 +88,5 @@ public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, 
 		register(root, handler, context -> List.of());
 	}
 
-	public abstract void register(T command, ContextHandler<C> handler, ReturningContextHandler<D, List<String>> completionHandler);
+	public abstract void register(T command, ContextHandler<C> handler, CompletionContextHandler<D> completionHandler);
 }

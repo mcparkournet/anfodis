@@ -33,18 +33,17 @@ import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.mapper.CompletionCommand;
 import net.mcparkour.anfodis.command.mapper.argument.CompletionArgument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
-import net.mcparkour.anfodis.handler.ReturningContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.craftmon.permission.PermissionBuilder;
 import org.jetbrains.annotations.Nullable;
 
-public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext> implements ReturningContextHandler<C, List<String>> {
+public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext> implements CompletionContextHandler<C> {
 
 	private T command;
 	private CodecRegistry<CompletionCodec> completionCodecRegistry;
-	private Map<T, ? extends ReturningContextHandler<C, List<String>>> subCommandHandlerMap;
+	private Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap;
 
-	public CompletionHandler(T command, CodecRegistry<CompletionCodec> completionCodecRegistry, Map<T, ? extends ReturningContextHandler<C, List<String>>> subCommandHandlerMap) {
+	public CompletionHandler(T command, CodecRegistry<CompletionCodec> completionCodecRegistry, Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap) {
 		this.command = command;
 		this.completionCodecRegistry = completionCodecRegistry;
 		this.subCommandHandlerMap = subCommandHandlerMap;
@@ -61,7 +60,7 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 				.findFirst()
 				.orElse(null);
 			if (subCommand != null) {
-				ReturningContextHandler<C, List<String>> handler = this.subCommandHandlerMap.get(subCommand);
+				CompletionContextHandler<C> handler = this.subCommandHandlerMap.get(subCommand);
 				if (handler != null) {
 					context.removeFirstArgument();
 					CommandProperties<?> properties = subCommand.getProperties();
