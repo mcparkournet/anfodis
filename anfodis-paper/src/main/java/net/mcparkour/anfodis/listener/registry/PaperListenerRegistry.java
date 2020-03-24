@@ -26,13 +26,12 @@ package net.mcparkour.anfodis.listener.registry;
 
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.handler.Handler;
+import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.listener.annotation.properties.Listener;
-import net.mcparkour.anfodis.listener.handler.ListenerHandler;
+import net.mcparkour.anfodis.listener.handler.ListenerContext;
 import net.mcparkour.anfodis.listener.mapper.PaperListener;
 import net.mcparkour.anfodis.listener.mapper.PaperListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerProperties;
-import net.mcparkour.common.reflection.Casts;
 import org.bukkit.Server;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -40,7 +39,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListener, PaperDirectListener<? extends Event>> {
+public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListener, ListenerContext<? extends Event>> {
 
 	private static final PaperListenerMapper LISTENER_MAPPER = new PaperListenerMapper();
 	private static final org.bukkit.event.Listener EMPTY_LISTENER = new org.bukkit.event.Listener() {};
@@ -56,27 +55,44 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
 	}
 
 	@Override
-	protected void register(PaperListener root) {
-		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		registerDirect(root, event -> {
-			Handler handler = new ListenerHandler(root, injectionCodecRegistry, event);
-			handler.handle();
-		});
-	}
-
-	@Override
-	public void registerDirect(PaperListener root, PaperDirectListener<? extends Event> directHandler) {
+	public void register(PaperListener root, ContextHandler<ListenerContext<? extends Event>> handler) {
 		PaperListenerProperties properties = root.getProperties();
 		EventPriority priority = properties.getPriority();
 		boolean ignoreCancelled = properties.isIgnoreCancelled();
 		Iterable<Class<? extends Event>> eventTypes = properties.getListenedEvents();
 		for (Class<? extends Event> eventType : eventTypes) {
-			EventExecutor executor = (listener, event) -> {
-				if (eventType.isInstance(event)) {
-					Casts.sneakyCast(event, directHandler);
-				}
-			};
-			this.pluginManager.registerEvent(eventType, EMPTY_LISTENER, priority, executor, this.plugin, ignoreCancelled);
+			sneakyRegister(eventType, priority, ignoreCancelled, handler);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private <E extends Event> void sneakyRegister(Class<? extends Event> eventType, EventPriority priority, boolean ignoreCancelled, ContextHandler<? extends ListenerContext<? extends Event>> handler) {
+		ContextHandler<ListenerContext<E>> castedHandler = (ContextHandler<ListenerContext<E>>) handler;
+		Class<E> castedEventType = (Class<E>) eventType;
+		register(castedEventType, priority, ignoreCancelled, castedHandler);
+	}
+
+	public <E extends Event> void register(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
+		register(eventType, EventPriority.NORMAL, handler);
+	}
+
+	public <E extends Event> void register(Class<E> eventType, EventPriority priority, ContextHandler<ListenerContext<E>> handler) {
+		register(eventType, priority, false, handler);
+	}
+
+	public <E extends Event> void register(Class<E> eventType, EventPriority priority, boolean ignoreCancelled, ContextHandler<ListenerContext<E>> handler) {
+		EventExecutor executor = createEventExecutor(eventType, handler);
+		this.pluginManager.registerEvent(eventType, EMPTY_LISTENER, priority, executor, this.plugin, ignoreCancelled);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <E extends Event> EventExecutor createEventExecutor(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
+		return (listener, event) -> {
+			if (eventType.isInstance(event)) {
+				E castedEvent = (E) event;
+				ListenerContext<E> context = new ListenerContext<>(castedEvent);
+				handler.handle(context);
+			}
+		};
 	}
 }

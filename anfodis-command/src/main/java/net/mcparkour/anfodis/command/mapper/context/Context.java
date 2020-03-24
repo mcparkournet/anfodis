@@ -25,7 +25,9 @@
 package net.mcparkour.anfodis.command.mapper.context;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import net.mcparkour.common.reflection.Reflections;
+import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
 public class Context<D extends ContextData> {
@@ -36,7 +38,7 @@ public class Context<D extends ContextData> {
 		this.contextData = contextData;
 	}
 
-	public void setArgumentsField(Object instance, Object arguments) {
+	public void setArgumentsField(Object instance, List<String> arguments) {
 		Field field = this.contextData.getArgumentsField();
 		if (field == null) {
 			return;
@@ -44,7 +46,7 @@ public class Context<D extends ContextData> {
 		Reflections.setFieldValue(field, instance, arguments);
 	}
 
-	public void setRequiredPermissionField(Object instance, @Nullable Object requiredPermission) {
+	public void setRequiredPermissionField(Object instance, @Nullable Permission requiredPermission) {
 		Field field = this.contextData.getRequiredPermissionField();
 		if (field == null) {
 			return;

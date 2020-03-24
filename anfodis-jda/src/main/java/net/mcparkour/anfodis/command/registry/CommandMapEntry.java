@@ -26,13 +26,14 @@ package net.mcparkour.anfodis.command.registry;
 
 import net.mcparkour.anfodis.command.handler.JDACommandContext;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
+import net.mcparkour.anfodis.handler.ContextHandler;
 
 public class CommandMapEntry {
 
 	private JDACommand command;
-	private DirectCommandHandler<JDACommandContext> handler;
+	private ContextHandler<JDACommandContext> handler;
 
-	public CommandMapEntry(JDACommand command, DirectCommandHandler<JDACommandContext> handler) {
+	public CommandMapEntry(JDACommand command, ContextHandler<JDACommandContext> handler) {
 		this.command = command;
 		this.handler = handler;
 	}
@@ -41,7 +42,7 @@ public class CommandMapEntry {
 		return this.command;
 	}
 
-	public DirectCommandHandler<JDACommandContext> getHandler() {
+	public ContextHandler<JDACommandContext> getHandler() {
 		return this.handler;
 	}
 }

@@ -37,20 +37,20 @@ import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
 import net.mcparkour.anfodis.command.registry.CommandMap;
 import net.mcparkour.anfodis.command.registry.CommandMapEntry;
-import net.mcparkour.anfodis.command.registry.DirectCommandHandler;
 import net.mcparkour.anfodis.command.registry.PermissionMap;
+import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.craftmon.permission.PermissionBuilder;
 import org.jetbrains.annotations.Nullable;
 
 public class PrivateMessageReceivedListener implements EventListener {
 
-	private String prefix;
+	private String permissionPrefix;
 	private PermissionMap permissionMap;
 	private CommandMap commandMap;
 
-	public PrivateMessageReceivedListener(String prefix, PermissionMap permissionMap, CommandMap commandMap) {
-		this.prefix = prefix;
+	public PrivateMessageReceivedListener(String permissionPrefix, PermissionMap permissionMap, CommandMap commandMap) {
+		this.permissionPrefix = permissionPrefix;
 		this.permissionMap = permissionMap;
 		this.commandMap = commandMap;
 	}
@@ -79,7 +79,7 @@ public class PrivateMessageReceivedListener implements EventListener {
 		if (entry == null) {
 			return;
 		}
-		DirectCommandHandler<JDACommandContext> handler = entry.getHandler();
+		ContextHandler<JDACommandContext> handler = entry.getHandler();
 		JDACommandContext context = createContext(event, split, entry);
 		handler.handle(context);
 	}
@@ -102,7 +102,8 @@ public class PrivateMessageReceivedListener implements EventListener {
 		if (commandPermission == null) {
 			return null;
 		}
-		return new PermissionBuilder().node(this.prefix)
+		return new PermissionBuilder()
+			.node(this.permissionPrefix)
 			.node(commandPermission)
 			.build();
 	}

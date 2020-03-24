@@ -27,10 +27,12 @@ package net.mcparkour.anfodis.registry;
 import java.lang.annotation.Annotation;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.handler.ContextHandler;
+import net.mcparkour.anfodis.handler.RootContext;
 import net.mcparkour.anfodis.mapper.Root;
 import net.mcparkour.anfodis.mapper.RootMapper;
 
-public abstract class AbstractRegistry<T extends Root, D> implements DirectRegistry<T, D> {
+public abstract class AbstractRegistry<T extends Root, C extends RootContext> implements Registry {
 
 	private Class<? extends Annotation> annotationClass;
 	private RootMapper<T> mapper;
@@ -51,7 +53,9 @@ public abstract class AbstractRegistry<T extends Root, D> implements DirectRegis
 		register(root);
 	}
 
-	protected abstract void register(T root);
+	public abstract void register(T root);
+
+	public abstract void register(T root, ContextHandler<C> handler);
 
 	protected CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {
 		return this.injectionCodecRegistry;

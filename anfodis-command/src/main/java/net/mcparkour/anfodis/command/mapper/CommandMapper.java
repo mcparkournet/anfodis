@@ -41,7 +41,7 @@ import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public class CommandMapper<T extends Command<A, C, P>, A extends Argument<?>, C extends Context<?>, P extends CommandProperties<?>> implements RootMapper<T> {
+public class CommandMapper<T extends Command<T, A, C, P>, A extends Argument<?>, C extends Context<?>, P extends CommandProperties<?>> implements RootMapper<T> {
 
 	private static final SubCommandMapper SUB_COMMAND_MAPPER = new SubCommandMapper();
 

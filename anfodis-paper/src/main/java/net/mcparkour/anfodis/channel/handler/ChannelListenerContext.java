@@ -25,9 +25,10 @@
 package net.mcparkour.anfodis.channel.handler;
 
 import net.mcparkour.anfodis.channel.ChannelMessage;
+import net.mcparkour.anfodis.handler.RootContext;
 import org.bukkit.entity.Player;
 
-public class ChannelListenerContext {
+public class ChannelListenerContext extends RootContext {
 
 	private Player source;
 	private ChannelMessage message;

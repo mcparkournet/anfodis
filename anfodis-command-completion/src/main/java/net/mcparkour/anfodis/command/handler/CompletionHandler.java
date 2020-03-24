@@ -26,50 +26,57 @@ package net.mcparkour.anfodis.command.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
-import net.mcparkour.anfodis.command.mapper.Command;
+import net.mcparkour.anfodis.command.mapper.CompletionCommand;
 import net.mcparkour.anfodis.command.mapper.argument.CompletionArgument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
-import net.mcparkour.anfodis.handler.ReturningHandler;
+import net.mcparkour.anfodis.handler.ReturningContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.craftmon.permission.PermissionBuilder;
 import org.jetbrains.annotations.Nullable;
 
-public class CompletionHandler implements ReturningHandler<List<String>> {
+public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext> implements ReturningContextHandler<C, List<String>> {
 
-	private Command<? extends CompletionArgument<?>, ?, ?> command;
-	private CompletionContext context;
+	private T command;
 	private CodecRegistry<CompletionCodec> completionCodecRegistry;
+	private Map<T, ? extends ReturningContextHandler<C, List<String>>> subCommandHandlerMap;
 
-	public CompletionHandler(Command<? extends CompletionArgument<?>, ?, ?> command, CompletionContext context, CodecRegistry<CompletionCodec> completionCodecRegistry) {
+	public CompletionHandler(T command, CodecRegistry<CompletionCodec> completionCodecRegistry, Map<T, ? extends ReturningContextHandler<C, List<String>>> subCommandHandlerMap) {
 		this.command = command;
-		this.context = context;
 		this.completionCodecRegistry = completionCodecRegistry;
+		this.subCommandHandlerMap = subCommandHandlerMap;
 	}
 
 	@Override
-	public List<String> handle() {
-		CommandSender sender = this.context.getSender();
-		List<String> arguments = this.context.getArguments();
+	public List<String> handle(C context) {
+		List<String> arguments = context.getArguments();
 		if (arguments.size() >= 2) {
 			String firstArgument = arguments.get(0);
-			for (Command<? extends CompletionArgument<?>, ?, ?> subCommand : this.command.getSubCommands()) {
-				if (isMatching(firstArgument, subCommand)) {
-					int size = arguments.size();
-					List<String> subArguments = arguments.subList(1, size);
-					Permission permission = getPermission(subCommand);
-					CompletionContext context = new CompletionContext(sender, subArguments, permission);
-					ReturningHandler<List<String>> handler = new CompletionHandler(subCommand, context, this.completionCodecRegistry);
-					return handler.handle();
+			List<T> subCommands = this.command.getSubCommands();
+			T subCommand = subCommands.stream()
+				.filter(item -> isMatching(firstArgument, item))
+				.findFirst()
+				.orElse(null);
+			if (subCommand != null) {
+				ReturningContextHandler<C, List<String>> handler = this.subCommandHandlerMap.get(subCommand);
+				if (handler != null) {
+					context.removeFirstArgument();
+					CommandProperties<?> properties = subCommand.getProperties();
+					String permissionName = properties.getPermission();
+					if (permissionName != null) {
+						context.appendPermissionNode(permissionName);
+					}
+					return handler.handle(context);
 				}
 			}
 		}
-		return getCompletions();
+		return getCompletions(context);
 	}
 
-	private boolean isMatching(String argument, Command<? extends CompletionArgument<?>, ?, ?> command) {
+	private boolean isMatching(String argument, T command) {
 		CommandProperties<?> properties = command.getProperties();
 		String name = properties.getName();
 		if (argument.equalsIgnoreCase(name)) {
@@ -80,47 +87,30 @@ public class CompletionHandler implements ReturningHandler<List<String>> {
 			.anyMatch(alias -> alias.equalsIgnoreCase(argument));
 	}
 
-	@Nullable
-	private Permission getPermission(Command<? extends CompletionArgument<?>, ?, ?> command) {
-		Permission permission = this.context.getPermission();
-		if (permission == null) {
-			return null;
-		}
-		CommandProperties<?> properties = command.getProperties();
-		String permissionName = properties.getPermission();
-		if (permissionName == null) {
-			return null;
-		}
-		return new PermissionBuilder()
-			.with(permission)
-			.node(permissionName)
-			.build();
-	}
-
-	private List<String> getCompletions() {
-		List<String> arguments = this.context.getArguments();
+	private List<String> getCompletions(C context) {
+		List<String> arguments = context.getArguments();
 		List<String> completions = new ArrayList<>(0);
 		if (arguments.size() == 1) {
-			List<String> subCommandsCompletions = getSubCommandsCompletions();
+			List<String> subCommandsCompletions = getSubCommandsCompletions(context);
 			completions.addAll(subCommandsCompletions);
 		}
-		CommandSender sender = this.context.getSender();
-		Permission permission = this.context.getPermission();
+		CommandSender sender = context.getSender();
+		Permission permission = context.getPermission();
 		if (permission == null || sender.hasPermission(permission)) {
-			List<String> executorCompletions = handleExecutor();
+			List<String> executorCompletions = handleExecutor(context);
 			completions.addAll(executorCompletions);
 		}
 		return completions;
 	}
 
-	private List<String> getSubCommandsCompletions() {
-		List<String> arguments = this.context.getArguments();
+	private List<String> getSubCommandsCompletions(C context) {
+		List<String> arguments = context.getArguments();
 		String firstArgument = arguments.get(0);
 		List<String> completions = new ArrayList<>(0);
-		for (Command<?, ?, ?> subCommand : this.command.getSubCommands()) {
+		for (T subCommand : this.command.getSubCommands()) {
 			CommandProperties<?> properties = subCommand.getProperties();
 			String commandPermission = properties.getPermission();
-			if (hasPermission(commandPermission)) {
+			if (hasPermission(context, commandPermission)) {
 				String name = properties.getName();
 				if (name.startsWith(firstArgument)) {
 					completions.add(name);
@@ -134,8 +124,8 @@ public class CompletionHandler implements ReturningHandler<List<String>> {
 		return completions;
 	}
 
-	private boolean hasPermission(@Nullable String commandPermission) {
-		Permission permission = this.context.getPermission();
+	private boolean hasPermission(C context, @Nullable String commandPermission) {
+		Permission permission = context.getPermission();
 		if (permission == null) {
 			return true;
 		}
@@ -146,12 +136,12 @@ public class CompletionHandler implements ReturningHandler<List<String>> {
 			.with(permission)
 			.node(commandPermission)
 			.build();
-		CommandSender sender = this.context.getSender();
+		CommandSender sender = context.getSender();
 		return sender.hasPermission(newPermission);
 	}
 
-	private List<String> handleExecutor() {
-		List<String> arguments = this.context.getArguments();
+	private List<String> handleExecutor(C context) {
+		List<String> arguments = context.getArguments();
 		int argumentsCount = arguments.size();
 		List<? extends CompletionArgument<?>> commandArguments = this.command.getArguments();
 		if (!arguments.isEmpty() && !commandArguments.isEmpty() && argumentsCount <= commandArguments.size()) {
@@ -159,7 +149,7 @@ public class CompletionHandler implements ReturningHandler<List<String>> {
 			CompletionCodec codec = commandArgument.getCompletionCodec(this.completionCodecRegistry);
 			if (codec != null) {
 				String argument = arguments.get(argumentsCount - 1);
-				return codec.getCompletions(this.context)
+				return codec.getCompletions(context)
 					.stream()
 					.filter(completion -> completion.startsWith(argument))
 					.collect(Collectors.toUnmodifiableList());

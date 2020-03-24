@@ -22,11 +22,15 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.registry;
+package net.mcparkour.anfodis.listener.handler;
 
-import net.mcparkour.anfodis.mapper.Root;
+import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.handler.ContextHandler;
+import net.mcparkour.anfodis.listener.mapper.Listener;
 
-public interface DirectRegistry<T extends Root, D> extends Registry {
+@FunctionalInterface
+public interface ListenerHandlerSupplier<T extends Listener<?, ?>, C extends ListenerContext<?>> {
 
-	void registerDirect(T root, D directHandler);
+	ContextHandler<C> supply(T listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry);
 }

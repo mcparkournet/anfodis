@@ -33,14 +33,14 @@ import net.mcparkour.anfodis.mapper.Root;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public class Command<A extends Argument<?>, C extends Context<?>, P extends CommandProperties<?>> extends Root {
+public class Command<T extends Command<T, A, C, P>, A extends Argument<?>, C extends Context<?>, P extends CommandProperties<?>> extends Root {
 
 	private List<A> arguments;
 	private C context;
 	private P properties;
-	private List<? extends Command<A, C, P>> subCommands;
+	private List<T> subCommands;
 
-	public Command(Constructor<?> constructor, List<Injection> injections, Executor executor, List<A> arguments, C context, P properties, List<? extends Command<A, C, P>> subCommands) {
+	public Command(Constructor<?> constructor, List<Injection> injections, Executor executor, List<A> arguments, C context, P properties, List<T> subCommands) {
 		super(constructor, injections, executor);
 		this.arguments = arguments;
 		this.context = context;
@@ -60,7 +60,7 @@ public class Command<A extends Argument<?>, C extends Context<?>, P extends Comm
 		return this.properties;
 	}
 
-	public List<? extends Command<A, C, P>> getSubCommands() {
-		return this.subCommands;
+	public List<T> getSubCommands() {
+		return List.copyOf(this.subCommands);
 	}
 }

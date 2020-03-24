@@ -32,7 +32,7 @@ import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public interface CommandMerger<T extends Command<A, C, P>, A extends Argument<?>, C extends Context<?>, P extends CommandProperties<?>> {
+public interface CommandMerger<T extends Command<T, A, C, P>, A extends Argument<?>, C extends Context<?>, P extends CommandProperties<?>> {
 
 	T merge(Constructor<?> constructor, List<Injection> injections, Executor executor, List<A> arguments, C context, P properties, List<T> subCommands);
 }

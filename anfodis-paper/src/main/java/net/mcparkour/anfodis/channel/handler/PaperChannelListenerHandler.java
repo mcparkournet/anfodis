@@ -32,28 +32,25 @@ import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.RootHandler;
 import org.bukkit.entity.Player;
 
-public class PaperChannelListenerHandler extends RootHandler<PaperChannelListener> {
+public class PaperChannelListenerHandler extends RootHandler<PaperChannelListener, ChannelListenerContext> {
 
-	private ChannelListenerContext context;
-
-	public PaperChannelListenerHandler(PaperChannelListener root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, ChannelListenerContext context) {
+	public PaperChannelListenerHandler(PaperChannelListener root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
 		super(root, injectionCodecRegistry);
-		this.context = context;
 	}
 
 	@Override
-	public void handle() {
-		setContext();
-		super.handle();
+	public void handle(ChannelListenerContext context) {
+		setContext(context);
+		super.handle(context);
 	}
 
-	private void setContext() {
+	private void setContext(ChannelListenerContext context) {
 		PaperChannelListener channelListener = getRoot();
 		PaperChannelListenerContext channelListenerContext = channelListener.getContext();
 		Object channelListenerInstance = getInstance();
-		ChannelMessage message = this.context.getMessage();
+		ChannelMessage message = context.getMessage();
 		channelListenerContext.setMessageField(channelListenerInstance, message);
-		Player source = this.context.getSource();
+		Player source = context.getSource();
 		channelListenerContext.setSourceField(channelListenerInstance, source);
 	}
 }

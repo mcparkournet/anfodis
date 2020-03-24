@@ -25,38 +25,38 @@
 package net.mcparkour.anfodis.command.handler;
 
 import java.util.List;
+import java.util.Map;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
+import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.translation.Translations;
 
-public class PaperCommandHandler extends CommandHandler<PaperCommand> {
+public class PaperCommandHandler extends CommandHandler<PaperCommand, CommandContext> {
 
-	public PaperCommandHandler(PaperCommand command, CommandContext context, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
-		super(command, context, translations, injectionCodecRegistry, argumentCodecRegistry);
+	public PaperCommandHandler(PaperCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations, Map<PaperCommand, ? extends ContextHandler<CommandContext>> subCommandHandlers) {
+		super(command, injectionCodecRegistry, argumentCodecRegistry, translations, subCommandHandlers);
 	}
 
 	@Override
-	public void handle() {
-		CommandContext context = getContext();
+	public void handle(CommandContext context) {
 		CommandSender sender = context.getSender();
-		if (!checkSenders()) {
+		if (!checkSenders(context)) {
 			sender.sendMessage("You are not a valid sender.");
 			return;
 		}
-		super.handle();
+		super.handle(context);
 	}
 
-	private boolean checkSenders() {
+	private boolean checkSenders(CommandContext context) {
 		PaperCommand command = getCommand();
 		PaperCommandProperties properties = command.getProperties();
 		List<Class<? extends org.bukkit.command.CommandSender>> senders = properties.getSendersTypes();
 		if (senders.isEmpty()) {
 			return true;
 		}
-		CommandContext context = getContext();
 		CommandSender commandSender = context.getSender();
 		Object rawSender = commandSender.getRawSender();
 		Class<?> rawSenderType = rawSender.getClass();

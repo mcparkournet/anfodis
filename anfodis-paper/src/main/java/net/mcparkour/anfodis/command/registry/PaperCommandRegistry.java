@@ -31,87 +31,56 @@ import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.handler.CommandContext;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.handler.CompletionHandler;
 import net.mcparkour.anfodis.command.handler.PaperCommandHandler;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.PaperCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
-import net.mcparkour.anfodis.handler.Handler;
+import net.mcparkour.anfodis.handler.ContextHandler;
+import net.mcparkour.anfodis.handler.ReturningContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.craftmon.permission.PermissionBuilder;
 import net.mcparkour.intext.translation.Translations;
 import org.bukkit.Server;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 
-public class PaperCommandRegistry extends AbstractCommandRegistry<PaperCommand, CommandContext> {
+public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperCommand, CommandContext, CompletionContext> {
 
 	private static final PaperCommandMapper COMMAND_MAPPER = new PaperCommandMapper();
 
 	private CommandMap commandMap;
-	private String prefix;
-	private Translations translations;
-	private CodecRegistry<CompletionCodec> completionCodecRegistry;
 
-	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Plugin plugin, Translations translations, CodecRegistry<CompletionCodec> completionCodecRegistry) {
-		this(injectionCodecRegistry, argumentCodecRegistry, plugin.getServer(), plugin.getName(), translations, completionCodecRegistry);
+	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, Plugin plugin) {
+		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, plugin.getServer(), plugin.getName());
 	}
 
-	private PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Server server, String pluginName, Translations translations, CodecRegistry<CompletionCodec> completionCodecRegistry) {
-		this(injectionCodecRegistry, argumentCodecRegistry, server.getCommandMap(), pluginName.toLowerCase(), translations, completionCodecRegistry);
+	private PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, Server server, String pluginName) {
+		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, pluginName.toLowerCase(), server.getCommandMap());
 	}
 
-	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CommandMap commandMap, String prefix, Translations translations, CodecRegistry<CompletionCodec> completionCodecRegistry) {
-		super(COMMAND_MAPPER, injectionCodecRegistry, argumentCodecRegistry);
+	private PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, CommandMap commandMap) {
+		super(COMMAND_MAPPER, PaperCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, permissionPrefix);
 		this.commandMap = commandMap;
-		this.prefix = prefix;
-		this.translations = translations;
-		this.completionCodecRegistry = completionCodecRegistry;
 	}
 
 	@Override
-	protected void register(PaperCommand root) {
-		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = getArgumentCodecRegistry();
-		registerDirect(root, context -> {
-			Handler handler = new PaperCommandHandler(root, context, this.translations, injectionCodecRegistry, argumentCodecRegistry);
-			handler.handle();
-		});
-	}
-
-	@Override
-	public void registerDirect(PaperCommand root, DirectCommandHandler<CommandContext> directHandler) {
-		registerDirect(root, directHandler, context -> {
-			CompletionHandler handler = new CompletionHandler(root, context, this.completionCodecRegistry);
-			return handler.handle();
-		});
-	}
-
-	public void registerDirect(PaperCommand root, DirectCommandHandler<CommandContext> directHandler, DirectCompletionHandler<CompletionContext> directCompletionHandler) {
-		PaperCommandProperties properties = root.getProperties();
+	public void register(PaperCommand command, ContextHandler<CommandContext> handler, ReturningContextHandler<CompletionContext, List<String>> completionHandler) {
+		PaperCommandProperties properties = command.getProperties();
 		String name = properties.getName();
 		String description = properties.getDescription();
 		String usage = properties.getDefaultUsage();
 		List<String> aliases = properties.getAliases();
 		Permission permission = createPermission(properties);
-		CommandWrapper command = new CommandWrapper(name, description, usage, aliases, permission, directHandler, directCompletionHandler);
+		register(name, description, usage, aliases, permission, handler, completionHandler);
+	}
+
+	public void register(String name, String description, String usage, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, ReturningContextHandler<CompletionContext, List<String>> completionHandler) {
+		CommandWrapper command = new CommandWrapper(name, description, usage, aliases, permission, handler, completionHandler);
 		if (permission != null) {
 			String permissionName = permission.getName();
 			command.setPermission(permissionName);
 		}
-		this.commandMap.register(this.prefix, command);
-	}
-
-	@Nullable
-	private Permission createPermission(PaperCommandProperties properties) {
-		String commandPermission = properties.getPermission();
-		if (commandPermission == null) {
-			return null;
-		}
-		return new PermissionBuilder()
-			.node(this.prefix)
-			.node(commandPermission)
-			.build();
+		String permissionPrefix = getPermissionPrefix();
+		this.commandMap.register(permissionPrefix, command);
 	}
 }

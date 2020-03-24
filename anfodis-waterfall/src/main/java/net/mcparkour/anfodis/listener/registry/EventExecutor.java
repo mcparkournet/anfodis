@@ -22,19 +22,12 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.registry;
+package net.mcparkour.anfodis.listener.registry;
 
-import java.util.List;
-import java.util.function.Function;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
+import net.md_5.bungee.api.plugin.Event;
+import net.md_5.bungee.api.plugin.Listener;
 
-@FunctionalInterface
-public interface DirectCompletionHandler<C extends CompletionContext> extends Function<C, List<String>> {
+public interface EventExecutor<E extends Event> extends Listener {
 
-	List<String> handle(C context);
-
-	@Override
-	default List<String> apply(C context) {
-		return handle(context);
-	}
+	void execute(E event);
 }

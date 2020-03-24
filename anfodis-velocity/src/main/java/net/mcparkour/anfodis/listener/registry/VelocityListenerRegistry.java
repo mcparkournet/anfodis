@@ -24,20 +24,20 @@
 
 package net.mcparkour.anfodis.listener.registry;
 
+import com.velocitypowered.api.event.EventHandler;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.handler.Handler;
+import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.listener.annotation.properties.Listener;
-import net.mcparkour.anfodis.listener.handler.ListenerHandler;
+import net.mcparkour.anfodis.listener.handler.ListenerContext;
 import net.mcparkour.anfodis.listener.mapper.VelocityListener;
 import net.mcparkour.anfodis.listener.mapper.VelocityListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerProperties;
-import net.mcparkour.common.reflection.Casts;
 
-public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityListener, VelocityDirectListener<?>> {
+public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityListener, ListenerContext<?>> {
 
 	private static final VelocityListenerMapper LISTENER_MAPPER = new VelocityListenerMapper();
 
@@ -55,30 +55,37 @@ public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityL
 	}
 
 	@Override
-	protected void register(VelocityListener root) {
-		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		registerDirect(root, event -> {
-			Handler handler = new ListenerHandler(root, injectionCodecRegistry, event);
-			handler.handle();
-		});
-	}
-
-	@Override
-	public void registerDirect(VelocityListener root, VelocityDirectListener<?> directHandler) {
+	public void register(VelocityListener root, ContextHandler<ListenerContext<?>> handler) {
 		VelocityListenerProperties properties = root.getProperties();
 		PostOrder priority = properties.getPriority();
 		Iterable<Class<?>> eventTypes = properties.getListenedEvents();
 		for (Class<?> eventType : eventTypes) {
-			register(eventType, priority, directHandler);
+			sneakyRegister(eventType, priority, handler);
 		}
 	}
 
-	private <E> void register(Class<E> eventType, PostOrder priority, VelocityDirectListener<?> handler) {
-		VelocityDirectListener<E> directListener = event -> {
+	@SuppressWarnings("unchecked")
+	private <E> void sneakyRegister(Class<?> eventType, PostOrder priority, ContextHandler<? extends ListenerContext<?>> handler) {
+		ContextHandler<ListenerContext<E>> castedHandler = (ContextHandler<ListenerContext<E>>) handler;
+		Class<E> castedEventType = (Class<E>) eventType;
+		register(castedEventType, priority, castedHandler);
+	}
+
+	public <E> void register(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
+		register(eventType, PostOrder.NORMAL, handler);
+	}
+
+	public <E> void register(Class<E> eventType, PostOrder priority, ContextHandler<ListenerContext<E>> handler) {
+		EventHandler<E> eventHandler = createEventHandler(eventType, handler);
+		this.eventManager.register(this.plugin, eventType, priority, eventHandler);
+	}
+
+	private <E> EventHandler<E> createEventHandler(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
+		return event -> {
 			if (eventType.isInstance(event)) {
-				Casts.sneakyCast(event, handler);
+				ListenerContext<E> context = new ListenerContext<>(event);
+				handler.handle(context);
 			}
 		};
-		this.eventManager.register(this.plugin, eventType, priority, directListener);
 	}
 }

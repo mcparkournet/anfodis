@@ -22,17 +22,19 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.registry;
+package net.mcparkour.anfodis.command.mapper;
 
-import javax.annotation.Nonnull;
-import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
-import net.mcparkour.common.reflection.Casts;
+import java.lang.reflect.Constructor;
+import java.util.List;
+import net.mcparkour.anfodis.command.mapper.argument.CompletionArgument;
+import net.mcparkour.anfodis.command.mapper.context.Context;
+import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
+import net.mcparkour.anfodis.mapper.executor.Executor;
+import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public interface JDADirectListener<E extends GenericEvent> extends EventListener, DirectListener<E> {
+public class CompletionCommand<T extends CompletionCommand<T, A, C, P>, A extends CompletionArgument<?>, C extends Context<?>, P extends CommandProperties<?>> extends Command<T, A, C, P> {
 
-	@Override
-	default void onEvent(@Nonnull GenericEvent event) {
-		Casts.sneakyCast(event, this);
+	public CompletionCommand(Constructor<?> constructor, List<Injection> injections, Executor executor, List<A> arguments, C context, P properties, List<T> subCommands) {
+		super(constructor, injections, executor, arguments, context, properties, subCommands);
 	}
 }

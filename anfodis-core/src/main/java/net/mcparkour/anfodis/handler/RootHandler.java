@@ -31,7 +31,7 @@ import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 import net.mcparkour.anfodis.result.Result;
 
-public class RootHandler<T extends Root> implements Handler {
+public class RootHandler<T extends Root, C extends RootContext> implements ContextHandler<C> {
 
 	private T root;
 	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
@@ -39,14 +39,9 @@ public class RootHandler<T extends Root> implements Handler {
 
 	public RootHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
 		this.root = root;
-		this.injectionCodecRegistry = injectionCodecRegistry;
 		this.instance = root.createInstance();
-	}
-
-	@Override
-	public void handle() {
+		this.injectionCodecRegistry = injectionCodecRegistry;
 		setInjections();
-		execute();
 	}
 
 	private void setInjections() {
@@ -55,6 +50,11 @@ public class RootHandler<T extends Root> implements Handler {
 			Object codecInjection = codec.getInjection();
 			injection.setInjectionField(this.instance, codecInjection);
 		}
+	}
+
+	@Override
+	public void handle(C context) {
+		execute();
 	}
 
 	private void execute() {

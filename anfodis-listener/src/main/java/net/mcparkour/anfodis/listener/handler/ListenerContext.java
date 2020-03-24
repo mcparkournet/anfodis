@@ -22,14 +22,19 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.registry;
+package net.mcparkour.anfodis.listener.handler;
 
-import com.velocitypowered.api.event.EventHandler;
+import net.mcparkour.anfodis.handler.RootContext;
 
-public interface VelocityDirectListener<E> extends EventHandler<E>, DirectListener<E> {
+public class ListenerContext<E> extends RootContext {
 
-	@Override
-	default void execute(E event) {
-		listen(event);
+	private E event;
+
+	public ListenerContext(E event) {
+		this.event = event;
+	}
+
+	public E getEvent() {
+		return this.event;
 	}
 }

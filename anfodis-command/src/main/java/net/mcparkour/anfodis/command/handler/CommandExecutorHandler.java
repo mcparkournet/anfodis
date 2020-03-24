@@ -36,34 +36,32 @@ import net.mcparkour.anfodis.handler.RootHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.translation.Translations;
 
-public class CommandExecutorHandler<T extends Command<?, ?, ?>, C extends CommandContext> extends RootHandler<T> {
+public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext> extends RootHandler<T, C> {
 
-	private C context;
-	private Translations translations;
 	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+	private Translations translations;
 
-	public CommandExecutorHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, C context, Translations translations, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
+	public CommandExecutorHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations) {
 		super(root, injectionCodecRegistry);
-		this.context = context;
 		this.translations = translations;
 		this.argumentCodecRegistry = argumentCodecRegistry;
 	}
 
 	@Override
-	public void handle() {
+	public void handle(C context) {
 		try {
-			setArguments();
-			setContext();
-			super.handle();
+			setArguments(context);
+			setContext(context);
+			super.handle(context);
 		} catch (ArgumentParseException exception) {
 			Argument<?> argument = exception.getArgument();
-			CommandSender sender = this.context.getSender();
+			CommandSender sender = context.getSender();
 			sender.sendMessage("Could not parse the argument " + argument.getName() + ".");
 		}
 	}
 
-	private void setArguments() {
-		List<String> arguments = this.context.getArguments();
+	private void setArguments(C context) {
+		List<String> arguments = context.getArguments();
 		T command = getRoot();
 		List<? extends Argument<?>> commandArguments = command.getArguments();
 		Object commandInstance = getInstance();
@@ -71,7 +69,7 @@ public class CommandExecutorHandler<T extends Command<?, ?, ?>, C extends Comman
 			Argument<?> commandArgument = commandArguments.get(index);
 			Class<?> type = commandArgument.getFieldType();
 			if (type.isAssignableFrom(List.class)) {
-				setListArgument(commandArgument, index);
+				setListArgument(context, commandArgument, index);
 				return;
 			}
 			String argument = arguments.get(index);
@@ -84,8 +82,8 @@ public class CommandExecutorHandler<T extends Command<?, ?, ?>, C extends Comman
 		}
 	}
 
-	private void setListArgument(Argument<?> commandArgument, int startIndex) {
-		List<String> arguments = this.context.getArguments();
+	private void setListArgument(C context, Argument<?> commandArgument, int startIndex) {
+		List<String> arguments = context.getArguments();
 		int size = arguments.size();
 		ArgumentCodec<?> codec = commandArgument.getGenericTypeArgumentCodec(this.argumentCodecRegistry, 0);
 		List<Object> list = new ArrayList<>(size - startIndex);
@@ -101,21 +99,17 @@ public class CommandExecutorHandler<T extends Command<?, ?, ?>, C extends Comman
 		commandArgument.setArgumentField(commandInstance, list);
 	}
 
-	private void setContext() {
+	private void setContext(C context) {
 		T command = getRoot();
 		Context<?> commandContext = command.getContext();
 		Object commandInstance = getInstance();
-		List<String> arguments = this.context.getArguments();
+		List<String> arguments = context.getArguments();
 		commandContext.setArgumentsField(commandInstance, arguments);
-		Permission permission = this.context.getPermission();
+		Permission permission = context.getPermission();
 		commandContext.setRequiredPermissionField(commandInstance, permission);
-		CommandSender sender = this.context.getSender();
+		CommandSender sender = context.getSender();
 		Object rawSender = sender.getRawSender();
 		commandContext.setSenderField(commandInstance, rawSender);
-	}
-
-	protected C getContext() {
-		return this.context;
 	}
 
 	protected Translations getTranslations() {

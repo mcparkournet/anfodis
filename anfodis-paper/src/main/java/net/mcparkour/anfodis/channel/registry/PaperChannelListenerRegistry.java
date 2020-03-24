@@ -25,21 +25,24 @@
 package net.mcparkour.anfodis.channel.registry;
 
 import java.util.List;
+import net.mcparkour.anfodis.channel.ChannelMessage;
 import net.mcparkour.anfodis.channel.annotation.properties.ChannelListener;
+import net.mcparkour.anfodis.channel.handler.ChannelListenerContext;
 import net.mcparkour.anfodis.channel.handler.PaperChannelListenerHandler;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListener;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListenerMapper;
 import net.mcparkour.anfodis.channel.mapper.properties.PaperChannelListenerProperties;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.handler.Handler;
+import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.registry.AbstractRegistry;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.jetbrains.annotations.NotNull;
 
-public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelListener, PaperDirectChannelListener> {
+public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelListener, ChannelListenerContext> {
 
 	private static final PaperChannelListenerMapper CHANNEL_LISTENER_MAPPER = new PaperChannelListenerMapper();
 
@@ -54,25 +57,34 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
 	}
 
 	@Override
-	protected void register(PaperChannelListener root) {
+	public void register(PaperChannelListener root) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		registerDirect(root, context -> {
-			Handler handler = new PaperChannelListenerHandler(root, injectionCodecRegistry, context);
-			handler.handle();
-		});
+		PaperChannelListenerHandler handler = new PaperChannelListenerHandler(root, injectionCodecRegistry);
+		register(root, handler);
 	}
 
 	@Override
-	public void registerDirect(PaperChannelListener root, PaperDirectChannelListener directHandler) {
+	public void register(PaperChannelListener root, ContextHandler<ChannelListenerContext> handler) {
 		PaperChannelListenerProperties properties = root.getProperties();
 		List<String> channels = properties.getChannels();
 		for (String channel : channels) {
-			PluginMessageListener messageListener = (incomingChannel, player, message) -> {
-				if (channel.equals(incomingChannel)) {
-					directHandler.onPluginMessageReceived(incomingChannel, player, message);
-				}
-			};
-			this.messenger.registerIncomingPluginChannel(this.plugin, channel, messageListener);
+			register(channel, handler);
 		}
+	}
+
+	public void register(String channel, ContextHandler<ChannelListenerContext> handler) {
+		PluginMessageListener messageListener = createPluginMessageListener(channel, handler);
+		this.messenger.registerIncomingPluginChannel(this.plugin, channel, messageListener);
+	}
+
+	@NotNull
+	private PluginMessageListener createPluginMessageListener(String channel, ContextHandler<ChannelListenerContext> handler) {
+		return (incomingChannel, player, message) -> {
+			if (channel.equals(incomingChannel)) {
+				ChannelMessage channelMessage = new ChannelMessage(message);
+				ChannelListenerContext context = new ChannelListenerContext(player, channelMessage);
+				handler.handle(context);
+			}
+		};
 	}
 }

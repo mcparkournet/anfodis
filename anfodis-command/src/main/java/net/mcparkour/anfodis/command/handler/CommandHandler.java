@@ -24,8 +24,8 @@
 
 package net.mcparkour.anfodis.command.handler;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
@@ -33,71 +33,76 @@ import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
-import net.mcparkour.anfodis.handler.Handler;
+import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.craftmon.permission.PermissionBuilder;
 import net.mcparkour.intext.translation.Translations;
-import org.jetbrains.annotations.Nullable;
 
-public class CommandHandler<T extends Command<?, ?, ?>> implements Handler {
+public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext> implements ContextHandler<C> {
 
 	private T command;
-	private CommandContext context;
-	private Translations translations;
 	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
-	private Handler executorHandler;
+	private Translations translations;
+	private Map<T, ? extends ContextHandler<C>> subCommandHandlers;
+	private ContextHandler<C> executorHandler;
 
-	public CommandHandler(T command, CommandContext context, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
-		this(command, context, translations, injectionCodecRegistry, argumentCodecRegistry, new CommandExecutorHandler<>(command, injectionCodecRegistry, context, translations, argumentCodecRegistry));
+	public CommandHandler(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations, Map<T, ? extends ContextHandler<C>> subCommandHandlers) {
+		this(command, injectionCodecRegistry, argumentCodecRegistry, translations, subCommandHandlers, new CommandExecutorHandler<>(command, injectionCodecRegistry, argumentCodecRegistry, translations));
 	}
 
-	public CommandHandler(T command, CommandContext context, Translations translations, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Handler executorHandler) {
+	public CommandHandler(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations, Map<T, ? extends ContextHandler<C>> subCommandHandlers, ContextHandler<C> executorHandler) {
 		this.command = command;
-		this.context = context;
 		this.translations = translations;
 		this.injectionCodecRegistry = injectionCodecRegistry;
 		this.argumentCodecRegistry = argumentCodecRegistry;
+		this.subCommandHandlers = subCommandHandlers;
 		this.executorHandler = executorHandler;
 	}
 
 	@Override
-	public void handle() {
-		CommandSender sender = this.context.getSender();
-		if (!checkPermission()) {
+	public void handle(C context) {
+		CommandSender sender = context.getSender();
+		if (!checkPermission(context)) {
 			sender.sendMessage("You do not have permission.");
 			return;
 		}
-		List<String> arguments = this.context.getArguments();
+		List<String> arguments = context.getArguments();
 		if (!arguments.isEmpty()) {
 			String firstArgument = arguments.get(0);
-			for (Command<?, ?, ?> subCommand : this.command.getSubCommands()) {
-				if (isMatching(firstArgument, subCommand)) {
-					List<String> argumentsCopy = new ArrayList<>(arguments);
-					argumentsCopy.remove(0);
-					Permission permission = getPermission(subCommand);
-					CommandContext context = new CommandContext(sender, argumentsCopy, permission);
-					Handler handler = new CommandHandler<>(subCommand, context, this.translations, this.injectionCodecRegistry, this.argumentCodecRegistry, this.executorHandler);
-					handler.handle();
+			List<T> subCommands = this.command.getSubCommands();
+			T subCommand = subCommands.stream()
+				.filter(element -> isMatching(firstArgument, element))
+				.findFirst()
+				.orElse(null);
+			if (subCommand != null) {
+				ContextHandler<C> handler = this.subCommandHandlers.get(subCommand);
+				if (handler != null) {
+					context.removeFirstArgument();
+					CommandProperties<?> properties = subCommand.getProperties();
+					String permissionName = properties.getPermission();
+					if (permissionName != null) {
+						context.appendPermissionNode(permissionName);
+					}
+					handler.handle(context);
 					return;
 				}
 			}
 		}
 		Executor executor = this.command.getExecutor();
 		if (!executor.hasExecutor()) {
-			sendHelpMessage();
+			sendHelpMessage(context);
 			return;
 		}
-		if (!checkLength()) {
+		if (!checkLength(context)) {
 			sender.sendMessage("Invalid number of arguments.");
 			return;
 		}
-		this.executorHandler.handle();
+		this.executorHandler.handle(context);
 	}
 
-	private boolean checkLength() {
-		List<String> arguments = this.context.getArguments();
+	private boolean checkLength(C context) {
+		List<String> arguments = context.getArguments();
 		int entrySize = arguments.size();
 		List<? extends Argument<?>> commandArguments = this.command.getArguments();
 		int minSize = (int) commandArguments.stream()
@@ -113,16 +118,16 @@ public class CommandHandler<T extends Command<?, ?, ?>> implements Handler {
 		return entrySize >= minSize && entrySize <= maxSize;
 	}
 
-	private boolean checkPermission() {
-		Permission permission = this.context.getPermission();
+	private boolean checkPermission(C context) {
+		Permission permission = context.getPermission();
 		if (permission == null) {
 			return true;
 		}
-		CommandSender sender = this.context.getSender();
+		CommandSender sender = context.getSender();
 		return sender.hasPermission(permission);
 	}
 
-	private boolean isMatching(String argument, Command<?, ?, ?> command) {
+	private boolean isMatching(String argument, T command) {
 		CommandProperties<?> properties = command.getProperties();
 		String name = properties.getName();
 		if (argument.equalsIgnoreCase(name)) {
@@ -133,24 +138,7 @@ public class CommandHandler<T extends Command<?, ?, ?>> implements Handler {
 			.anyMatch(alias -> alias.equalsIgnoreCase(argument));
 	}
 
-	@Nullable
-	private Permission getPermission(Command<?, ?, ?> command) {
-		Permission permission = this.context.getPermission();
-		if (permission == null) {
-			return null;
-		}
-		CommandProperties<?> properties = command.getProperties();
-		String permissionName = properties.getPermission();
-		if (permissionName == null) {
-			return null;
-		}
-		return new PermissionBuilder()
-			.with(permission)
-			.node(permissionName)
-			.build();
-	}
-
-	private void sendHelpMessage() {
+	private void sendHelpMessage(C context) {
 		StringBuilder usage = new StringBuilder();
 		CommandProperties<?> properties = this.command.getProperties();
 		String name = properties.getName();
@@ -160,9 +148,10 @@ public class CommandHandler<T extends Command<?, ?, ?>> implements Handler {
 			usage.append(" - " + description);
 		}
 		usage.append(".");
-		CommandSender sender = this.context.getSender();
+		CommandSender sender = context.getSender();
 		sender.sendMessage(usage.toString());
-		for (Command<?, ?, ?> subCommand : this.command.getSubCommands()) {
+		List<T> subCommands = this.command.getSubCommands();
+		for (T subCommand : subCommands) {
 			StringBuilder subCommandUsage = new StringBuilder();
 			CommandProperties<?> subCommandProperties = subCommand.getProperties();
 			String subCommandName = subCommandProperties.getName();
@@ -186,10 +175,6 @@ public class CommandHandler<T extends Command<?, ?, ?>> implements Handler {
 
 	protected T getCommand() {
 		return this.command;
-	}
-
-	protected CommandContext getContext() {
-		return this.context;
 	}
 
 	protected Translations getTranslations() {

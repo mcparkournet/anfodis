@@ -22,18 +22,10 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.registry;
-
-import java.util.function.Consumer;
-import net.mcparkour.anfodis.command.handler.CommandContext;
+package net.mcparkour.anfodis.handler;
 
 @FunctionalInterface
-public interface DirectCommandHandler<C extends CommandContext> extends Consumer<C> {
+public interface ReturningContextHandler<T extends RootContext, R> {
 
-	void handle(C context);
-
-	@Override
-	default void accept(C context) {
-		handle(context);
-	}
+	R handle(T context);
 }

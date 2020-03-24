@@ -25,10 +25,12 @@
 package net.mcparkour.anfodis.command.handler;
 
 import java.util.List;
+import net.mcparkour.anfodis.handler.RootContext;
 import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.craftmon.permission.PermissionBuilder;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandContext {
+public class CommandContext extends RootContext {
 
 	private CommandSender sender;
 	private List<String> arguments;
@@ -39,6 +41,19 @@ public class CommandContext {
 		this.sender = sender;
 		this.arguments = arguments;
 		this.permission = permission;
+	}
+
+	void removeFirstArgument() {
+		this.arguments.remove(0);
+	}
+
+	void appendPermissionNode(String name) {
+		if (this.permission != null) {
+			this.permission = new PermissionBuilder()
+				.with(this.permission)
+				.node(name)
+				.build();
+		}
 	}
 
 	public CommandSender getSender() {

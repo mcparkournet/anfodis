@@ -22,9 +22,17 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.handler;
+package net.mcparkour.anfodis.command.registry;
 
-public interface ReturningHandler<T> {
+import java.util.List;
+import java.util.Map;
+import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
+import net.mcparkour.anfodis.command.handler.CompletionContext;
+import net.mcparkour.anfodis.command.mapper.CompletionCommand;
+import net.mcparkour.anfodis.handler.ReturningContextHandler;
 
-	T handle();
+public interface CompletionHandlerSupplier<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext> {
+
+	ReturningContextHandler<C, List<String>> supply(T command, CodecRegistry<CompletionCodec> completionCodecRegistry, Map<T, ? extends ReturningContextHandler<C, List<String>>> subCommandHandlerMap);
 }

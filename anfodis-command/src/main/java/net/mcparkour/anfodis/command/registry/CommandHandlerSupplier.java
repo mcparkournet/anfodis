@@ -22,9 +22,18 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.registry;
+package net.mcparkour.anfodis.command.registry;
 
-import net.md_5.bungee.api.plugin.Event;
-import net.md_5.bungee.api.plugin.Listener;
+import java.util.Map;
+import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.handler.CommandContext;
+import net.mcparkour.anfodis.command.mapper.Command;
+import net.mcparkour.anfodis.handler.ContextHandler;
+import net.mcparkour.intext.translation.Translations;
 
-public interface WaterfallDirectListener<E extends Event> extends Listener, DirectListener<E> {}
+public interface CommandHandlerSupplier<T extends Command<T, ?, ?, ?>, C extends CommandContext> {
+
+	ContextHandler<C> supply(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations, Map<T, ? extends ContextHandler<C>> subCommandHandlers);
+}

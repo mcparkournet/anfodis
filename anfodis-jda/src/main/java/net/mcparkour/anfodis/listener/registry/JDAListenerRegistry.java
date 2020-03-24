@@ -26,17 +26,17 @@ package net.mcparkour.anfodis.listener.registry;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.hooks.EventListener;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.handler.Handler;
+import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.listener.annotation.properties.Listener;
-import net.mcparkour.anfodis.listener.handler.ListenerHandler;
+import net.mcparkour.anfodis.listener.handler.ListenerContext;
 import net.mcparkour.anfodis.listener.mapper.JDAListener;
 import net.mcparkour.anfodis.listener.mapper.JDAListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerProperties;
-import net.mcparkour.common.reflection.Casts;
 
-public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, JDADirectListener<? extends GenericEvent>> {
+public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, ListenerContext<? extends GenericEvent>> {
 
 	private static final JDAListenerMapper LISTENER_MAPPER = new JDAListenerMapper();
 
@@ -48,25 +48,34 @@ public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, J
 	}
 
 	@Override
-	protected void register(JDAListener root) {
-		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		registerDirect(root, event -> {
-			Handler handler = new ListenerHandler(root, injectionCodecRegistry, event);
-			handler.handle();
-		});
-	}
-
-	@Override
-	public void registerDirect(JDAListener root, JDADirectListener<? extends GenericEvent> directHandler) {
+	public void register(JDAListener root, ContextHandler<ListenerContext<? extends GenericEvent>> handler) {
 		JDAListenerProperties properties = root.getProperties();
 		Iterable<Class<? extends GenericEvent>> eventTypes = properties.getListenedEvents();
 		for (Class<? extends GenericEvent> eventType : eventTypes) {
-			JDADirectListener<? extends GenericEvent> listener = event -> {
-				if (eventType.isInstance(event)) {
-					Casts.sneakyCast(event, directHandler);
-				}
-			};
-			this.jda.addEventListener(listener);
+			sneakyRegister(eventType, handler);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private <E extends GenericEvent> void sneakyRegister(Class<? extends GenericEvent> eventType, ContextHandler<? extends ListenerContext<? extends GenericEvent>> handler) {
+		Class<E> castedEventType = (Class<E>) eventType;
+		ContextHandler<ListenerContext<E>> castedHandler = (ContextHandler<ListenerContext<E>>) handler;
+		register(castedEventType, castedHandler);
+	}
+
+	public <E extends GenericEvent> void register(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
+		EventListener listener = createEventListener(eventType, handler);
+		this.jda.addEventListener(listener);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <E extends GenericEvent> EventListener createEventListener(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
+		return event -> {
+			if (eventType.isInstance(event)) {
+				E castedEvent = (E) event;
+				ListenerContext<E> context = new ListenerContext<>(castedEvent);
+				handler.handle(context);
+			}
+		};
 	}
 }

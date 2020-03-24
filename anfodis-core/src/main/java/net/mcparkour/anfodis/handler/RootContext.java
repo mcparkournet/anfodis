@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.registry;
+package net.mcparkour.anfodis.handler;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.Listener;
-
-public interface PaperDirectListener<E extends Event> extends Listener, DirectListener<E> {}
+public class RootContext {}
