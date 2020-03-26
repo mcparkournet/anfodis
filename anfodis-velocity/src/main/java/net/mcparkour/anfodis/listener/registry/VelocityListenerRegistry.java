@@ -65,26 +65,28 @@ public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityL
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E> void sneakyRegister(Class<?> eventType, PostOrder priority, ContextHandler<? extends ListenerContext<?>> handler) {
-		ContextHandler<ListenerContext<E>> castedHandler = (ContextHandler<ListenerContext<E>>) handler;
+	private <E> void sneakyRegister(Class<?> eventType, PostOrder priority, ContextHandler<ListenerContext<?>> handler) {
 		Class<E> castedEventType = (Class<E>) eventType;
-		register(castedEventType, priority, castedHandler);
+		VelocityEventListener<E> eventListener = event -> {
+			ListenerContext<E> context = new ListenerContext<>(event);
+			handler.handle(context);
+		};
+		register(castedEventType, priority, eventListener);
 	}
 
-	public <E> void register(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
-		register(eventType, PostOrder.NORMAL, handler);
+	public <E> void register(Class<E> eventType, VelocityEventListener<E> listener) {
+		register(eventType, PostOrder.NORMAL, listener);
 	}
 
-	public <E> void register(Class<E> eventType, PostOrder priority, ContextHandler<ListenerContext<E>> handler) {
-		EventHandler<E> eventHandler = createEventHandler(eventType, handler);
+	public <E> void register(Class<E> eventType, PostOrder priority, VelocityEventListener<E> listener) {
+		EventHandler<E> eventHandler = createEventHandler(eventType, listener);
 		this.eventManager.register(this.plugin, eventType, priority, eventHandler);
 	}
 
-	private <E> EventHandler<E> createEventHandler(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
+	private <E> EventHandler<E> createEventHandler(Class<E> eventType, VelocityEventListener<E> listener) {
 		return event -> {
 			if (eventType.isInstance(event)) {
-				ListenerContext<E> context = new ListenerContext<>(event);
-				handler.handle(context);
+				listener.listen(event);
 			}
 		};
 	}

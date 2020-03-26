@@ -70,27 +70,29 @@ public class WaterfallListenerRegistry extends AbstractListenerRegistry<Waterfal
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E extends Event> void sneakyRegister(Class<? extends Event> eventType, byte priority, ContextHandler<? extends ListenerContext<? extends Event>> handler) {
-		ContextHandler<ListenerContext<E>> castedHandler = (ContextHandler<ListenerContext<E>>) handler;
+	private <E extends Event> void sneakyRegister(Class<? extends Event> eventType, byte priority, ContextHandler<ListenerContext<? extends Event>> handler) {
 		Class<E> castedEventType = (Class<E>) eventType;
-		register(castedEventType, priority, castedHandler);
+		WaterfallEventListener<E> eventListener = event -> {
+			ListenerContext<E> context = new ListenerContext<>(event);
+			handler.handle(context);
+		};
+		register(castedEventType, priority, eventListener);
 	}
 
-	public <E extends Event> void register(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
-		register(eventType, EventPriority.NORMAL, handler);
+	public <E extends Event> void register(Class<E> eventType, WaterfallEventListener<E> listener) {
+		register(eventType, EventPriority.NORMAL, listener);
 	}
 
-	public <E extends Event> void register(Class<E> eventType, byte priority, ContextHandler<ListenerContext<E>> handler) {
-		EventExecutor<E> eventExecutor = createEventExecutor(eventType, handler);
+	public <E extends Event> void register(Class<E> eventType, byte priority, WaterfallEventListener<E> listener) {
+		EventExecutor<E> eventExecutor = createEventExecutor(eventType, listener);
 		Method listenMethod = Reflections.getMethod(EventExecutor.class, "execute", eventType);
 		this.reflectedPluginManager.registerListener(this.plugin, eventExecutor, listenMethod, eventType, priority);
 	}
 
-	private <E extends Event> EventExecutor<E> createEventExecutor(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
+	private <E extends Event> EventExecutor<E> createEventExecutor(Class<E> eventType, WaterfallEventListener<E> listener) {
 		return event -> {
 			if (eventType.isInstance(event)) {
-				ListenerContext<E> context = new ListenerContext<>(event);
-				handler.handle(context);
+				listener.listen(event);
 			}
 		};
 	}

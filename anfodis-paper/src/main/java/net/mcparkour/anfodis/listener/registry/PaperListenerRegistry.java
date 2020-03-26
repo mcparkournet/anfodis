@@ -66,32 +66,34 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E extends Event> void sneakyRegister(Class<? extends Event> eventType, EventPriority priority, boolean ignoreCancelled, ContextHandler<? extends ListenerContext<? extends Event>> handler) {
-		ContextHandler<ListenerContext<E>> castedHandler = (ContextHandler<ListenerContext<E>>) handler;
+	private <E extends Event> void sneakyRegister(Class<? extends Event> eventType, EventPriority priority, boolean ignoreCancelled, ContextHandler<ListenerContext<? extends Event>> handler) {
 		Class<E> castedEventType = (Class<E>) eventType;
-		register(castedEventType, priority, ignoreCancelled, castedHandler);
+		PaperEventListener<E> eventListener = event -> {
+			ListenerContext<E> context = new ListenerContext<>(event);
+			handler.handle(context);
+		};
+		register(castedEventType, priority, ignoreCancelled, eventListener);
 	}
 
-	public <E extends Event> void register(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
-		register(eventType, EventPriority.NORMAL, handler);
+	public <E extends Event> void register(Class<E> eventType, PaperEventListener<E> listener) {
+		register(eventType, EventPriority.NORMAL, listener);
 	}
 
-	public <E extends Event> void register(Class<E> eventType, EventPriority priority, ContextHandler<ListenerContext<E>> handler) {
-		register(eventType, priority, false, handler);
+	public <E extends Event> void register(Class<E> eventType, EventPriority priority, PaperEventListener<E> listener) {
+		register(eventType, priority, false, listener);
 	}
 
-	public <E extends Event> void register(Class<E> eventType, EventPriority priority, boolean ignoreCancelled, ContextHandler<ListenerContext<E>> handler) {
-		EventExecutor executor = createEventExecutor(eventType, handler);
+	public <E extends Event> void register(Class<E> eventType, EventPriority priority, boolean ignoreCancelled, PaperEventListener<E> listener) {
+		EventExecutor executor = createEventExecutor(eventType, listener);
 		this.pluginManager.registerEvent(eventType, EMPTY_LISTENER, priority, executor, this.plugin, ignoreCancelled);
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E extends Event> EventExecutor createEventExecutor(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
+	private <E extends Event> EventExecutor createEventExecutor(Class<E> eventType, PaperEventListener<E> eventListener) {
 		return (listener, event) -> {
 			if (eventType.isInstance(event)) {
 				E castedEvent = (E) event;
-				ListenerContext<E> context = new ListenerContext<>(castedEvent);
-				handler.handle(context);
+				eventListener.listen(castedEvent);
 			}
 		};
 	}

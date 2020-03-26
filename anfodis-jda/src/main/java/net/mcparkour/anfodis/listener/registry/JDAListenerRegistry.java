@@ -57,24 +57,26 @@ public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, L
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E extends GenericEvent> void sneakyRegister(Class<? extends GenericEvent> eventType, ContextHandler<? extends ListenerContext<? extends GenericEvent>> handler) {
+	private <E extends GenericEvent> void sneakyRegister(Class<? extends GenericEvent> eventType, ContextHandler<ListenerContext<? extends GenericEvent>> handler) {
 		Class<E> castedEventType = (Class<E>) eventType;
-		ContextHandler<ListenerContext<E>> castedHandler = (ContextHandler<ListenerContext<E>>) handler;
-		register(castedEventType, castedHandler);
+		JDAEventListener<E> eventListener = event -> {
+			ListenerContext<E> context = new ListenerContext<>(event);
+			handler.handle(context);
+		};
+		register(castedEventType, eventListener);
 	}
 
-	public <E extends GenericEvent> void register(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
-		EventListener listener = createEventListener(eventType, handler);
-		this.jda.addEventListener(listener);
+	public <E extends GenericEvent> void register(Class<E> eventType, JDAEventListener<E> listener) {
+		EventListener eventListener = createEventListener(eventType, listener);
+		this.jda.addEventListener(eventListener);
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E extends GenericEvent> EventListener createEventListener(Class<E> eventType, ContextHandler<ListenerContext<E>> handler) {
+	private <E extends GenericEvent> EventListener createEventListener(Class<E> eventType, JDAEventListener<E> listener) {
 		return event -> {
 			if (eventType.isInstance(event)) {
 				E castedEvent = (E) event;
-				ListenerContext<E> context = new ListenerContext<>(castedEvent);
-				handler.handle(context);
+				listener.listen(castedEvent);
 			}
 		};
 	}
