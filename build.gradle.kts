@@ -3,7 +3,7 @@ import com.jfrog.bintray.gradle.BintrayExtension
 plugins {
 	`java-library`
 	`maven-publish`
-	id("com.jfrog.bintray") version "1.8.4" apply false
+	id("com.jfrog.bintray") version "1.8.5" apply false
 }
 
 subprojects {
@@ -19,8 +19,8 @@ subprojects {
 
 	dependencies {
 		compileOnly("org.jetbrains:annotations:19.0.0")
-		testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
-		testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
+		testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
+		testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")
 		testCompileOnly("org.jetbrains:annotations:19.0.0")
 	}
 
