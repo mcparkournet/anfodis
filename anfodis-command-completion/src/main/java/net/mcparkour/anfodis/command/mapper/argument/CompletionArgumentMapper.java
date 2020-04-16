@@ -34,7 +34,7 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 public class CompletionArgumentMapper<A extends CompletionArgument<D>, D extends CompletionArgumentData> extends ArgumentMapper<A, D> {
 
 	public CompletionArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier) {
-		super(argumentSupplier, argumentDataSupplier);
+		this(argumentSupplier, argumentDataSupplier, (data, builder) -> {});
 	}
 
 	public CompletionArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier, BiConsumer<D, SingleElementMapperBuilder<Field>> additional) {
