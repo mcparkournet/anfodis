@@ -56,11 +56,11 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
 		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, plugin.getServer(), plugin.getName());
 	}
 
-	private PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, Server server, String pluginName) {
+	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, Server server, String pluginName) {
 		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, pluginName.toLowerCase(), server.getCommandMap());
 	}
 
-	private PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, CommandMap commandMap) {
+	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, CommandMap commandMap) {
 		super(COMMAND_MAPPER, PaperCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, permissionPrefix);
 		this.commandMap = commandMap;
 	}

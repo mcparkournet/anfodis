@@ -55,7 +55,7 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
 		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, permissionPrefix, server.getCommandManager());
 	}
 
-	private VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, CommandManager commandManager) {
+	public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, CommandManager commandManager) {
 		super(COMMAND_MAPPER, VelocityCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, permissionPrefix);
 		this.commandManager = commandManager;
 	}

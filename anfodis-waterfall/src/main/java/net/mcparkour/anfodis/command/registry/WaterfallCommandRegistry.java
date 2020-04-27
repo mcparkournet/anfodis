@@ -56,11 +56,11 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
 		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, plugin.getProxy(), plugin);
 	}
 
-	private WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, ProxyServer server, Plugin plugin) {
+	public WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, ProxyServer server, Plugin plugin) {
 		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, plugin.getDescription().getName().toLowerCase(), server.getPluginManager(), plugin);
 	}
 
-	private WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, PluginManager pluginManager, Plugin plugin) {
+	public WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, PluginManager pluginManager, Plugin plugin) {
 		super(COMMAND_MAPPER, WaterfallCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, permissionPrefix);
 		this.pluginManager = pluginManager;
 		this.plugin = plugin;
