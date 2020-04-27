@@ -80,17 +80,18 @@ public class PrivateMessageReceivedListener implements EventListener {
 			return;
 		}
 		ContextHandler<JDACommandContext> handler = entry.getHandler();
-		JDACommandContext context = createContext(event, split, entry);
-		handler.handle(context);
+		JDACommand command = entry.getCommand();
+		JDACommandContext context = createContext(event, split, command);
+		Object commandInstance = command.createInstance();
+		handler.handle(context, commandInstance);
 	}
 
-	private JDACommandContext createContext(PrivateMessageReceivedEvent event, String[] split, CommandMapEntry entry) {
+	private JDACommandContext createContext(PrivateMessageReceivedEvent event, String[] split, JDACommand command) {
 		User sender = event.getAuthor();
 		PrivateChannel channel = event.getChannel();
 		JDACommandSender jdaCommandSender = new JDACommandSender(sender, channel, this.permissionMap);
 		String[] argumentsArray = Arrays.copyOfRange(split, 1, split.length);
 		List<String> arguments = List.of(argumentsArray);
-		JDACommand command = entry.getCommand();
 		JDACommandProperties properties = command.getProperties();
 		Permission permission = createPermission(properties);
 		return new JDACommandContext(jdaCommandSender, arguments, permission, channel);

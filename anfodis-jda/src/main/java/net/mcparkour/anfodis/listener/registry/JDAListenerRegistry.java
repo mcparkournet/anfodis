@@ -52,16 +52,17 @@ public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, L
 		JDAListenerProperties properties = root.getProperties();
 		Iterable<Class<? extends GenericEvent>> eventTypes = properties.getListenedEvents();
 		for (Class<? extends GenericEvent> eventType : eventTypes) {
-			sneakyRegister(eventType, handler);
+			register(root, eventType, handler);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E extends GenericEvent> void sneakyRegister(Class<? extends GenericEvent> eventType, ContextHandler<ListenerContext<? extends GenericEvent>> handler) {
+	private <E extends GenericEvent> void register(JDAListener listener, Class<? extends GenericEvent> eventType, ContextHandler<ListenerContext<? extends GenericEvent>> handler) {
 		Class<E> castedEventType = (Class<E>) eventType;
 		JDAEventListener<E> eventListener = event -> {
 			ListenerContext<E> context = new ListenerContext<>(event);
-			handler.handle(context);
+			Object listenerInstance = listener.createInstance();
+			handler.handle(context, listenerInstance);
 		};
 		register(castedEventType, eventListener);
 	}

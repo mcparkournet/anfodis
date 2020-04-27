@@ -39,15 +39,14 @@ public class PaperChannelListenerHandler extends RootHandler<PaperChannelListene
 	}
 
 	@Override
-	public void handle(ChannelListenerContext context) {
-		setContext(context);
-		super.handle(context);
+	public void handle(ChannelListenerContext context, Object instance) {
+		setContext(context, instance);
+		super.handle(context, instance);
 	}
 
-	private void setContext(ChannelListenerContext context) {
+	private void setContext(ChannelListenerContext context, Object channelListenerInstance) {
 		PaperChannelListener channelListener = getRoot();
 		PaperChannelListenerContext channelListenerContext = channelListener.getContext();
-		Object channelListenerInstance = getInstance();
 		ChannelMessage message = context.getMessage();
 		channelListenerContext.setMessageField(channelListenerInstance, message);
 		Player source = context.getSource();

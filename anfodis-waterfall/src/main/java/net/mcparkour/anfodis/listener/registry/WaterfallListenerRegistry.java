@@ -65,16 +65,17 @@ public class WaterfallListenerRegistry extends AbstractListenerRegistry<Waterfal
 		byte priority = properties.getPriority();
 		Iterable<Class<? extends Event>> eventTypes = properties.getListenedEvents();
 		for (Class<? extends Event> eventType : eventTypes) {
-			sneakyRegister(eventType, priority, handler);
+			register(root, eventType, priority, handler);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E extends Event> void sneakyRegister(Class<? extends Event> eventType, byte priority, ContextHandler<ListenerContext<? extends Event>> handler) {
+	private <E extends Event> void register(WaterfallListener listener, Class<? extends Event> eventType, byte priority, ContextHandler<ListenerContext<? extends Event>> handler) {
 		Class<E> castedEventType = (Class<E>) eventType;
 		WaterfallEventListener<E> eventListener = event -> {
 			ListenerContext<E> context = new ListenerContext<>(event);
-			handler.handle(context);
+			Object listenerInstance = listener.createInstance();
+			handler.handle(context, listenerInstance);
 		};
 		register(castedEventType, priority, eventListener);
 	}

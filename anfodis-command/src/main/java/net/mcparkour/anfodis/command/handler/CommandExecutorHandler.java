@@ -48,11 +48,11 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 	}
 
 	@Override
-	public void handle(C context) {
+	public void handle(C context, Object instance) {
 		try {
-			setArguments(context);
-			setContext(context);
-			super.handle(context);
+			setArguments(context, instance);
+			setContext(context, instance);
+			super.handle(context, instance);
 		} catch (ArgumentParseException exception) {
 			Argument<?> argument = exception.getArgument();
 			CommandSender sender = context.getSender();
@@ -60,16 +60,15 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 		}
 	}
 
-	private void setArguments(C context) {
+	private void setArguments(C context, Object commandInstance) {
 		List<String> arguments = context.getArguments();
 		T command = getRoot();
 		List<? extends Argument<?>> commandArguments = command.getArguments();
-		Object commandInstance = getInstance();
 		for (int index = 0; index < arguments.size(); index++) {
 			Argument<?> commandArgument = commandArguments.get(index);
 			Class<?> type = commandArgument.getFieldType();
 			if (type.isAssignableFrom(List.class)) {
-				setListArgument(context, commandArgument, index);
+				setListArgument(context, commandArgument, index, commandInstance);
 				return;
 			}
 			String argument = arguments.get(index);
@@ -82,7 +81,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 		}
 	}
 
-	private void setListArgument(C context, Argument<?> commandArgument, int startIndex) {
+	private void setListArgument(C context, Argument<?> commandArgument, int startIndex, Object commandInstance) {
 		List<String> arguments = context.getArguments();
 		int size = arguments.size();
 		ArgumentCodec<?> codec = commandArgument.getGenericTypeArgumentCodec(this.argumentCodecRegistry, 0);
@@ -95,14 +94,12 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 			}
 			list.add(parsedArgument);
 		}
-		Object commandInstance = getInstance();
 		commandArgument.setArgumentField(commandInstance, list);
 	}
 
-	private void setContext(C context) {
+	private void setContext(C context, Object commandInstance) {
 		T command = getRoot();
 		Context<?> commandContext = command.getContext();
-		Object commandInstance = getInstance();
 		List<String> arguments = context.getArguments();
 		commandContext.setArgumentsField(commandInstance, arguments);
 		Permission permission = context.getPermission();

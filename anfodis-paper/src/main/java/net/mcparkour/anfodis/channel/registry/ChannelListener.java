@@ -25,19 +25,10 @@
 package net.mcparkour.anfodis.channel.registry;
 
 import net.mcparkour.anfodis.channel.ChannelMessage;
-import net.mcparkour.anfodis.channel.handler.ChannelListenerContext;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.jetbrains.annotations.NotNull;
 
-public interface PaperDirectChannelListener extends PluginMessageListener {
+@FunctionalInterface
+public interface ChannelListener {
 
-	void listen(ChannelListenerContext context);
-
-	@Override
-	default void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
-		ChannelMessage channelMessage = new ChannelMessage(message);
-		ChannelListenerContext context = new ChannelListenerContext(player, channelMessage);
-		listen(context);
-	}
+	void listen(Player source, ChannelMessage message);
 }

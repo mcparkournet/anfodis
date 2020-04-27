@@ -42,13 +42,13 @@ public class VelocityCommandHandler extends CommandHandler<VelocityCommand, Comm
 	}
 
 	@Override
-	public void handle(CommandContext context) {
+	public void handle(CommandContext context, Object instance) {
 		CommandSender sender = context.getSender();
 		if (!checkSenders(context)) {
 			sender.sendMessage("You are not a valid sender.");
 			return;
 		}
-		super.handle(context);
+		super.handle(context, instance);
 	}
 
 	private boolean checkSenders(CommandContext context) {

@@ -31,6 +31,7 @@ import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
+import org.jetbrains.annotations.Nullable;
 
 public class Argument<D extends ArgumentData> {
 
@@ -40,7 +41,7 @@ public class Argument<D extends ArgumentData> {
 		this.argumentData = argumentData;
 	}
 
-	public void setArgumentField(Object instance, Object argument) {
+	public void setArgumentField(Object instance, @Nullable Object argument) {
 		Field field = this.argumentData.getArgumentField();
 		if (field == null) {
 			throw new RuntimeException("Field is null");

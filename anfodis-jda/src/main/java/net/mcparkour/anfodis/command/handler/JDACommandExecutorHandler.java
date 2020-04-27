@@ -15,15 +15,14 @@ public class JDACommandExecutorHandler extends CommandExecutorHandler<JDACommand
 	}
 
 	@Override
-	public void handle(JDACommandContext context) {
-		setChannel(context);
-		super.handle(context);
+	public void handle(JDACommandContext context, Object instance) {
+		setChannel(context, instance);
+		super.handle(context, instance);
 	}
 
-	private void setChannel(JDACommandContext context) {
+	private void setChannel(JDACommandContext context, Object commandInstance) {
 		JDACommand command = getRoot();
 		JDAContext commandContext = command.getContext();
-		Object commandInstance = getInstance();
 		PrivateChannel channel = context.getChannel();
 		commandContext.setChannelField(commandInstance, channel);
 	}

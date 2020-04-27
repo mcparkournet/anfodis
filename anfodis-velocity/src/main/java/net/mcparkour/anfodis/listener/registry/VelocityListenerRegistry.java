@@ -60,16 +60,17 @@ public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityL
 		PostOrder priority = properties.getPriority();
 		Iterable<Class<?>> eventTypes = properties.getListenedEvents();
 		for (Class<?> eventType : eventTypes) {
-			sneakyRegister(eventType, priority, handler);
+			register(root, eventType, priority, handler);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E> void sneakyRegister(Class<?> eventType, PostOrder priority, ContextHandler<ListenerContext<?>> handler) {
+	private <E> void register(VelocityListener listener, Class<?> eventType, PostOrder priority, ContextHandler<ListenerContext<?>> handler) {
 		Class<E> castedEventType = (Class<E>) eventType;
 		VelocityEventListener<E> eventListener = event -> {
 			ListenerContext<E> context = new ListenerContext<>(event);
-			handler.handle(context);
+			Object listenerInstance = listener.createInstance();
+			handler.handle(context, listenerInstance);
 		};
 		register(castedEventType, priority, eventListener);
 	}

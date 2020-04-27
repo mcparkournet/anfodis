@@ -61,7 +61,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 	}
 
 	@Override
-	public void handle(C context) {
+	public void handle(C context, Object instance) {
 		CommandSender sender = context.getSender();
 		if (!checkPermission(context)) {
 			sender.sendMessage("You do not have permission.");
@@ -84,7 +84,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 					if (permissionName != null) {
 						context.appendPermissionNode(permissionName);
 					}
-					handler.handle(context);
+					handler.handle(context, instance);
 					return;
 				}
 			}
@@ -98,7 +98,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 			sender.sendMessage("Invalid number of arguments.");
 			return;
 		}
-		this.executorHandler.handle(context);
+		this.executorHandler.handle(context, instance);
 	}
 
 	private boolean checkLength(C context) {

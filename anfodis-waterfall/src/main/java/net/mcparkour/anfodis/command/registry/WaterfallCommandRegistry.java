@@ -33,6 +33,7 @@ import net.mcparkour.anfodis.command.handler.CommandContext;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.WaterfallCommandHandler;
+import net.mcparkour.anfodis.command.handler.WaterfallCommandSender;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.WaterfallCommandProperties;
@@ -71,13 +72,32 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
 		String name = properties.getName();
 		List<String> aliases = properties.getAliases();
 		Permission permission = createPermission(properties);
-		register(name, aliases, permission, handler, completionHandler);
+		register(command, name, aliases, permission, handler, completionHandler);
 	}
 
-	public void register(String name, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+	private void register(WaterfallCommand command, String name, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+		WaterfallCommandExecutor commandExecutor = (sender, arguments) -> {
+			WaterfallCommandSender waterfallSender = new WaterfallCommandSender(sender);
+			CommandContext context = new CommandContext(waterfallSender, arguments, permission);
+			Object commandInstance = command.createInstance();
+			handler.handle(context, commandInstance);
+		};
+		WaterfallCompletionExecutor completionExecutor = (sender, arguments) -> {
+			WaterfallCommandSender waterfallSender = new WaterfallCommandSender(sender);
+			CompletionContext context = new CompletionContext(waterfallSender, arguments, permission);
+			return completionHandler.handle(context);
+		};
+		register(name, aliases, permission, commandExecutor, completionExecutor);
+	}
+
+	public void register(String name, List<String> aliases, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
+		register(name, aliases, null, commandExecutor, completionExecutor);
+	}
+
+	public void register(String name, List<String> aliases, @Nullable Permission permission, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
 		String permissionName = permission == null ? null : permission.getName();
 		String[] aliasesArray = aliases.toArray(String[]::new);
-		CommandWrapper command = new CommandWrapper(name, permissionName, aliasesArray, permission, handler, completionHandler);
+		CommandWrapper command = new CommandWrapper(name, permissionName, aliasesArray, commandExecutor, completionExecutor);
 		this.pluginManager.registerCommand(this.plugin, command);
 	}
 }

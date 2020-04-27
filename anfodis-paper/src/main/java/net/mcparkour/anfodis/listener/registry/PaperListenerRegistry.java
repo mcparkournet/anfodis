@@ -61,16 +61,17 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
 		boolean ignoreCancelled = properties.isIgnoreCancelled();
 		Iterable<Class<? extends Event>> eventTypes = properties.getListenedEvents();
 		for (Class<? extends Event> eventType : eventTypes) {
-			sneakyRegister(eventType, priority, ignoreCancelled, handler);
+			register(root, eventType, priority, ignoreCancelled, handler);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E extends Event> void sneakyRegister(Class<? extends Event> eventType, EventPriority priority, boolean ignoreCancelled, ContextHandler<ListenerContext<? extends Event>> handler) {
+	private <E extends Event> void register(PaperListener listener, Class<? extends Event> eventType, EventPriority priority, boolean ignoreCancelled, ContextHandler<ListenerContext<? extends Event>> handler) {
 		Class<E> castedEventType = (Class<E>) eventType;
 		PaperEventListener<E> eventListener = event -> {
 			ListenerContext<E> context = new ListenerContext<>(event);
-			handler.handle(context);
+			Object listenerInstance = listener.createInstance();
+			handler.handle(context, listenerInstance);
 		};
 		register(castedEventType, priority, ignoreCancelled, eventListener);
 	}

@@ -25,11 +25,6 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.List;
-import net.mcparkour.anfodis.command.handler.CommandContext;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
-import net.mcparkour.anfodis.command.handler.PaperCommandSender;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -37,35 +32,32 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandWrapper extends Command {
+final class CommandWrapper extends Command {
 
-	@Nullable
-	private Permission permission;
-	private ContextHandler<CommandContext> handler;
-	private CompletionContextHandler<CompletionContext> completionHandler;
+	private PaperCommandExecutor commandExecutor;
+	private PaperCompletionExecutor completionExecutor;
 
-	protected CommandWrapper(String name, String description, String usageMessage, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+	CommandWrapper(String name, String description, String usageMessage, List<String> aliases, @Nullable Permission permission, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
 		super(name, description, usageMessage, aliases);
-		this.permission = permission;
-		this.handler = handler;
-		this.completionHandler = completionHandler;
+		this.commandExecutor = commandExecutor;
+		this.completionExecutor = completionExecutor;
+		if (permission != null) {
+			String permissionName = permission.getName();
+			setPermission(permissionName);
+		}
 	}
 
 	@Override
 	public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
-		PaperCommandSender paperSender = new PaperCommandSender(sender);
 		List<String> arguments = List.of(args);
-		CommandContext context = new CommandContext(paperSender, arguments, this.permission);
-		this.handler.handle(context);
+		this.commandExecutor.execute(sender, arguments);
 		return true;
 	}
 
 	@Override
 	@NotNull
 	public List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args, @Nullable Location location) {
-		PaperCommandSender paperSender = new PaperCommandSender(sender);
 		List<String> arguments = List.of(args);
-		CompletionContext context = new CompletionContext(paperSender, arguments, this.permission);
-		return this.completionHandler.handle(context);
+		return this.completionExecutor.execute(sender, arguments);
 	}
 }

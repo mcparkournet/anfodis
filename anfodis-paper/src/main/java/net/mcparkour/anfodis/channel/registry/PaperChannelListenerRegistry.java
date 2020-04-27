@@ -26,7 +26,6 @@ package net.mcparkour.anfodis.channel.registry;
 
 import java.util.List;
 import net.mcparkour.anfodis.channel.ChannelMessage;
-import net.mcparkour.anfodis.channel.annotation.properties.ChannelListener;
 import net.mcparkour.anfodis.channel.handler.ChannelListenerContext;
 import net.mcparkour.anfodis.channel.handler.PaperChannelListenerHandler;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListener;
@@ -40,7 +39,6 @@ import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.jetbrains.annotations.NotNull;
 
 public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelListener, ChannelListenerContext> {
 
@@ -50,7 +48,7 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
 	private Messenger messenger;
 
 	public PaperChannelListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, Plugin plugin) {
-		super(ChannelListener.class, CHANNEL_LISTENER_MAPPER, injectionCodecRegistry);
+		super(net.mcparkour.anfodis.channel.annotation.properties.ChannelListener.class, CHANNEL_LISTENER_MAPPER, injectionCodecRegistry);
 		this.plugin = plugin;
 		Server server = plugin.getServer();
 		this.messenger = server.getMessenger();
@@ -68,22 +66,29 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
 		PaperChannelListenerProperties properties = root.getProperties();
 		List<String> channels = properties.getChannels();
 		for (String channel : channels) {
-			register(channel, handler);
+			register(root, channel, handler);
 		}
 	}
 
-	public void register(String channel, ContextHandler<ChannelListenerContext> handler) {
-		PluginMessageListener messageListener = createPluginMessageListener(channel, handler);
+	private void register(PaperChannelListener channelListener, String channel, ContextHandler<ChannelListenerContext> handler) {
+		ChannelListener listener = (source, message) -> {
+			ChannelListenerContext context = new ChannelListenerContext(source, message);
+			Object channelListenerInstance = channelListener.createInstance();
+			handler.handle(context, channelListenerInstance);
+		};
+		register(channel, listener);
+	}
+
+	public void register(String channel, ChannelListener channelListener) {
+		PluginMessageListener messageListener = createPluginMessageListener(channel, channelListener);
 		this.messenger.registerIncomingPluginChannel(this.plugin, channel, messageListener);
 	}
 
-	@NotNull
-	private PluginMessageListener createPluginMessageListener(String channel, ContextHandler<ChannelListenerContext> handler) {
+	private PluginMessageListener createPluginMessageListener(String channel, ChannelListener channelListener) {
 		return (incomingChannel, player, message) -> {
 			if (channel.equals(incomingChannel)) {
 				ChannelMessage channelMessage = new ChannelMessage(message);
-				ChannelListenerContext context = new ChannelListenerContext(player, channelMessage);
-				handler.handle(context);
+				channelListener.listen(player, channelMessage);
 			}
 		};
 	}

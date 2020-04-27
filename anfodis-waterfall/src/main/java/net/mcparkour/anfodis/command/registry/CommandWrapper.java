@@ -25,44 +25,31 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.List;
-import net.mcparkour.anfodis.command.handler.CommandContext;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
-import net.mcparkour.anfodis.command.handler.WaterfallCommandSender;
-import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.craftmon.permission.Permission;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandWrapper extends Command implements TabExecutor {
+class CommandWrapper extends Command implements TabExecutor {
 
-	@Nullable
-	private Permission permission;
-	private ContextHandler<CommandContext> handler;
-	private CompletionContextHandler<CompletionContext> completionHandler;
+	private WaterfallCommandExecutor commandExecutor;
+	private WaterfallCompletionExecutor completionExecutor;
 
-	protected CommandWrapper(String name, @Nullable String permissionName, String[] aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+	CommandWrapper(String name, @Nullable String permissionName, String[] aliases, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
 		super(name, permissionName, aliases);
-		this.permission = permission;
-		this.handler = handler;
-		this.completionHandler = completionHandler;
+		this.commandExecutor = commandExecutor;
+		this.completionExecutor = completionExecutor;
 	}
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
-		WaterfallCommandSender paperSender = new WaterfallCommandSender(sender);
 		List<String> arguments = List.of(args);
-		CommandContext context = new CommandContext(paperSender, arguments, this.permission);
-		this.handler.handle(context);
+		this.commandExecutor.execute(sender, arguments);
 	}
 
 	@Override
 	public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-		WaterfallCommandSender paperSender = new WaterfallCommandSender(sender);
 		List<String> arguments = List.of(args);
-		CompletionContext context = new CompletionContext(paperSender, arguments, this.permission);
-		return this.completionHandler.handle(context);
+		return this.completionExecutor.execute(sender, arguments);
 	}
 }

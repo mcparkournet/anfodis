@@ -33,6 +33,7 @@ import net.mcparkour.anfodis.command.handler.CommandContext;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.PaperCommandHandler;
+import net.mcparkour.anfodis.command.handler.PaperCommandSender;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.PaperCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
@@ -40,6 +41,7 @@ import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.translation.Translations;
 import org.bukkit.Server;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
@@ -71,16 +73,31 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
 		String usage = properties.getDefaultUsage();
 		List<String> aliases = properties.getAliases();
 		Permission permission = createPermission(properties);
-		register(name, description, usage, aliases, permission, handler, completionHandler);
+		register(command, name, description, usage, aliases, permission, handler, completionHandler);
 	}
 
-	public void register(String name, String description, String usage, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
-		CommandWrapper command = new CommandWrapper(name, description, usage, aliases, permission, handler, completionHandler);
-		if (permission != null) {
-			String permissionName = permission.getName();
-			command.setPermission(permissionName);
-		}
+	private void register(PaperCommand command, String name, String description, String usage, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+		PaperCommandExecutor commandExecutor = (sender, arguments) -> {
+			PaperCommandSender paperSender = new PaperCommandSender(sender);
+			CommandContext context = new CommandContext(paperSender, arguments, permission);
+			Object commandInstance = command.createInstance();
+			handler.handle(context, commandInstance);
+		};
+		PaperCompletionExecutor completionExecutor = (sender, arguments) -> {
+			PaperCommandSender paperSender = new PaperCommandSender(sender);
+			CompletionContext context = new CompletionContext(paperSender, arguments, permission);
+			return completionHandler.handle(context);
+		};
+		register(name, description, usage, aliases, permission, commandExecutor, completionExecutor);
+	}
+
+	public void register(String name, String description, String usage, List<String> aliases, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
+		register(name, description, usage, aliases, null, commandExecutor, completionExecutor);
+	}
+
+	public void register(String name, String description, String usage, List<String> aliases, @Nullable Permission permission, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
 		String permissionPrefix = getPermissionPrefix();
+		Command command = new CommandWrapper(name, description, usage, aliases, permission, commandExecutor, completionExecutor);
 		this.commandMap.register(permissionPrefix, command);
 	}
 }

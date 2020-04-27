@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.List;
+import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.mcparkour.anfodis.codec.CodecRegistry;
@@ -35,6 +36,7 @@ import net.mcparkour.anfodis.command.handler.CommandContext;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.VelocityCommandHandler;
+import net.mcparkour.anfodis.command.handler.VelocityCommandSender;
 import net.mcparkour.anfodis.command.mapper.VelocityCommand;
 import net.mcparkour.anfodis.command.mapper.VelocityCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.VelocityCommandProperties;
@@ -63,16 +65,31 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
 		VelocityCommandProperties properties = command.getProperties();
 		List<String> names = properties.getAllNames();
 		Permission permission = createPermission(properties);
-		register(names, permission, handler, completionHandler);
+		register(command, names, permission, handler, completionHandler);
 	}
 
-	public void register(List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
-		String[] namesArray = aliases.toArray(String[]::new);
-		register(namesArray, permission, handler, completionHandler);
+	private void register(VelocityCommand command, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+		VelocityCommandExecutor commandExecutor = (sender, arguments) -> {
+			VelocityCommandSender velocitySender = new VelocityCommandSender(sender);
+			CommandContext context = new CommandContext(velocitySender, arguments, permission);
+			Object commandInstance = command.createInstance();
+			handler.handle(context, commandInstance);
+		};
+		VelocityCompletionExecutor completionExecutor = (sender, arguments) -> {
+			VelocityCommandSender velocitySender = new VelocityCommandSender(sender);
+			CompletionContext context = new CompletionContext(velocitySender, arguments, permission);
+			return completionHandler.handle(context);
+		};
+		register(aliases, commandExecutor, completionExecutor);
 	}
 
-	public void register(String[] aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
-		CommandWrapper command = new CommandWrapper(permission, handler, completionHandler);
+	public void register(List<String> aliases, VelocityCommandExecutor commandExecutor, VelocityCompletionExecutor completionExecutor) {
+		String[] aliasesArray = aliases.toArray(String[]::new);
+		register(aliasesArray, commandExecutor, completionExecutor);
+	}
+
+	public void register(String[] aliases, VelocityCommandExecutor commandExecutor, VelocityCompletionExecutor completionExecutor) {
+		Command command = new CommandWrapper(commandExecutor, completionExecutor);
 		this.commandManager.register(command, aliases);
 	}
 }

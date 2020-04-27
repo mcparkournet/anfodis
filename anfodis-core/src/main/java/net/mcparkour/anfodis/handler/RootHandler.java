@@ -35,37 +35,35 @@ public class RootHandler<T extends Root, C extends RootContext> implements Conte
 
 	private T root;
 	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
-	private Object instance;
 
 	public RootHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
 		this.root = root;
-		this.instance = root.createInstance();
 		this.injectionCodecRegistry = injectionCodecRegistry;
-		setInjections();
-	}
-
-	private void setInjections() {
-		for (Injection injection : this.root.getInjections()) {
-			InjectionCodec<?> codec = injection.getCodec(this.injectionCodecRegistry);
-			Object codecInjection = codec.getInjection();
-			injection.setInjectionField(this.instance, codecInjection);
-		}
 	}
 
 	@Override
-	public void handle(C context) {
-		execute();
+	public void handle(C context, Object instance) {
+		setInjections(instance);
+		execute(instance);
 	}
 
-	private void execute() {
+	private void setInjections(Object instance) {
+		for (Injection injection : this.root.getInjections()) {
+			InjectionCodec<?> codec = injection.getCodec(this.injectionCodecRegistry);
+			Object codecInjection = codec.getInjection();
+			injection.setInjectionField(instance, codecInjection);
+		}
+	}
+
+	private void execute(Object instance) {
 		Executor executor = this.root.getExecutor();
-		executor.invokeBefore(this.instance);
-		Object invokeResult = executor.invokeExecutor(this.instance);
+		executor.invokeBefore(instance);
+		Object invokeResult = executor.invokeExecutor(instance);
 		if (invokeResult instanceof Result) {
 			Result result = (Result) invokeResult;
 			result.onResult();
 		}
-		executor.invokeAfter(this.instance);
+		executor.invokeAfter(instance);
 	}
 
 	protected T getRoot() {
@@ -74,9 +72,5 @@ public class RootHandler<T extends Root, C extends RootContext> implements Conte
 
 	protected CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {
 		return this.injectionCodecRegistry;
-	}
-
-	protected Object getInstance() {
-		return this.instance;
 	}
 }

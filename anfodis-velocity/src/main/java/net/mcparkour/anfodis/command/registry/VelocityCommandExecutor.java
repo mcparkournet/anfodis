@@ -22,30 +22,9 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.handler;
+package net.mcparkour.anfodis.command.registry;
 
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.handler.RootHandler;
-import net.mcparkour.anfodis.listener.mapper.Listener;
-import net.mcparkour.anfodis.listener.mapper.context.Context;
+import com.velocitypowered.api.command.CommandSource;
 
-public class ListenerHandler<T extends Listener<?, ?>, C extends ListenerContext<? extends E>, E> extends RootHandler<T, C> {
-
-	public ListenerHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		super(root, injectionCodecRegistry);
-	}
-
-	@Override
-	public void handle(C context, Object instance) {
-		setContext(context, instance);
-		super.handle(context, instance);
-	}
-
-	private void setContext(C context, Object listenerInstance) {
-		Listener<?, ?> listener = getRoot();
-		Context<?> listenerContext = listener.getContext();
-		E event = context.getEvent();
-		listenerContext.setEventField(listenerInstance, event);
-	}
-}
+@FunctionalInterface
+public interface VelocityCommandExecutor extends CommandExecutor<CommandSource> {}

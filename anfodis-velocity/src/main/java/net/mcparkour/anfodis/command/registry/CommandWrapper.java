@@ -27,41 +27,32 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.List;
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
-import net.mcparkour.anfodis.command.handler.CommandContext;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
-import net.mcparkour.anfodis.command.handler.VelocityCommandSender;
-import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.craftmon.permission.Permission;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.Nullable;
 
-public class CommandWrapper implements Command {
+class CommandWrapper implements Command {
 
-	@Nullable
-	private Permission permission;
-	private ContextHandler<CommandContext> handler;
-	private CompletionContextHandler<CompletionContext> completionHandler;
+	private final VelocityCommandExecutor commandExecutor;
+	private final VelocityCompletionExecutor completionExecutor;
 
-	public CommandWrapper(@Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
-		this.permission = permission;
-		this.handler = handler;
-		this.completionHandler = completionHandler;
+	CommandWrapper(VelocityCommandExecutor commandExecutor, VelocityCompletionExecutor completionExecutor) {
+		this.commandExecutor = commandExecutor;
+		this.completionExecutor = completionExecutor;
 	}
 
 	@Override
-	public void execute(@NonNull CommandSource source, @NonNull String[] args) {
-		VelocityCommandSender paperSender = new VelocityCommandSender(source);
+	public void execute(CommandSource source, @NonNull String[] args) {
 		List<String> arguments = List.of(args);
-		CommandContext context = new CommandContext(paperSender, arguments, this.permission);
-		this.handler.handle(context);
+		this.commandExecutor.execute(source, arguments);
 	}
 
 	@Override
-	public List<String> suggest(@NonNull CommandSource source, @NonNull String[] currentArgs) {
-		VelocityCommandSender paperSender = new VelocityCommandSender(source);
+	public List<String> suggest(CommandSource source, @NonNull String[] currentArgs) {
 		List<String> arguments = List.of(currentArgs);
-		CompletionContext context = new CompletionContext(paperSender, arguments, this.permission);
-		return this.completionHandler.handle(context);
+		return this.completionExecutor.execute(source, arguments);
+	}
+
+	@Override
+	public boolean hasPermission(CommandSource source, @NonNull String[] args) {
+		return true;
 	}
 }
