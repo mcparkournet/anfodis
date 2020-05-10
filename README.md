@@ -1,3 +1,4 @@
+![build](https://github.com/mcparkournet/anfodis/workflows/build/badge.svg)
 [![Download](https://api.bintray.com/packages/mcparkour/maven-public/anfodis-core/images/download.svg)](https://bintray.com/mcparkour/maven-public/anfodis-core/_latestVersion)
 
 # Anfodis
