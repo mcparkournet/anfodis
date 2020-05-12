@@ -22,11 +22,16 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.context;
+package net.mcparkour.anfodis.command.context;
 
-public class JDAContext extends Context<JDAContextData> {
+import java.util.List;
+import net.mcparkour.anfodis.command.ChannelSender;
+import net.mcparkour.craftmon.permission.Permission;
+import org.jetbrains.annotations.Nullable;
 
-	public JDAContext(JDAContextData contextData) {
-		super(contextData);
+public class JDACommandContext extends CommandContext<ChannelSender> {
+
+	public JDACommandContext(CommandSender<ChannelSender> sender, List<String> arguments, @Nullable Permission permission) {
+		super(sender, arguments, permission);
 	}
 }

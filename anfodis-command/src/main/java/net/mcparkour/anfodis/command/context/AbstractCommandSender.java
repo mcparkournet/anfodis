@@ -22,36 +22,27 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command.context;
 
-import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.intext.message.MessageReceiver;
 
-public class PaperCommandSender implements CommandSender {
+public abstract class AbstractCommandSender<T> implements CommandSender<T> {
 
-	private org.bukkit.command.CommandSender sender;
+	private T sender;
+	private MessageReceiver receiver;
 
-	public PaperCommandSender(org.bukkit.command.CommandSender sender) {
+	public AbstractCommandSender(T sender, MessageReceiver receiver) {
 		this.sender = sender;
+		this.receiver = receiver;
 	}
 
 	@Override
-	public void sendMessage(String message) {
-		this.sender.sendMessage(message);
-	}
-
-	@Override
-	public boolean hasPermission(Permission permission) {
-		String name = permission.getName();
-		return hasPermission(name);
-	}
-
-	@Override
-	public boolean hasPermission(String name) {
-		return this.sender.hasPermission(name);
-	}
-
-	@Override
-	public Object getRawSender() {
+	public T getSender() {
 		return this.sender;
+	}
+
+	@Override
+	public MessageReceiver getReceiver() {
+		return this.receiver;
 	}
 }

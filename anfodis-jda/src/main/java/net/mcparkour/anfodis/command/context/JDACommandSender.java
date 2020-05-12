@@ -22,11 +22,31 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.context;
+package net.mcparkour.anfodis.command.context;
 
-public class JDAContext extends Context<JDAContextData> {
+import java.util.List;
+import net.dv8tion.jda.api.entities.User;
+import net.mcparkour.anfodis.command.ChannelSender;
+import net.mcparkour.anfodis.command.PermissionMap;
+import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.intext.message.MessageReceiver;
 
-	public JDAContext(JDAContextData contextData) {
-		super(contextData);
+public class JDACommandSender extends AbstractCommandSender<ChannelSender> {
+
+	private PermissionMap permissionMap;
+
+	public JDACommandSender(ChannelSender sender, MessageReceiver receiver, PermissionMap permissionMap) {
+		super(sender, receiver);
+		this.permissionMap = permissionMap;
+	}
+
+	@Override
+	public boolean hasPermission(String name) {
+		ChannelSender sender = getSender();
+		User user = sender.getUser();
+		List<Permission> permissions = this.permissionMap.getPermissions(user);
+		return permissions.stream()
+			.map(Permission::getName)
+			.anyMatch(permissionName -> permissionName.equals(name));
 	}
 }

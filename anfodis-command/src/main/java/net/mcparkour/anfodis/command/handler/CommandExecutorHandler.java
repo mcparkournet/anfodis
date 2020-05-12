@@ -29,21 +29,21 @@ import java.util.List;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.context.Context;
 import net.mcparkour.anfodis.handler.RootHandler;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.intext.translation.Translations;
+import net.mcparkour.intext.message.MessageReceiver;
 
-public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext> extends RootHandler<T, C> {
+public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> extends RootHandler<T, C> {
 
 	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
-	private Translations translations;
 
-	public CommandExecutorHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations) {
+	public CommandExecutorHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
 		super(root, injectionCodecRegistry);
-		this.translations = translations;
 		this.argumentCodecRegistry = argumentCodecRegistry;
 	}
 
@@ -55,8 +55,9 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 			super.handle(context, instance);
 		} catch (ArgumentParseException exception) {
 			Argument<?> argument = exception.getArgument();
-			CommandSender sender = context.getSender();
-			sender.sendMessage("Could not parse the argument " + argument.getName() + ".");
+			CommandSender<?> sender = context.getSender();
+			MessageReceiver receiver = sender.getReceiver();
+			receiver.receivePlain("Could not parse the argument " + argument.getName() + ".");
 		}
 	}
 
@@ -104,13 +105,11 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 		commandContext.setArgumentsField(commandInstance, arguments);
 		Permission permission = context.getPermission();
 		commandContext.setRequiredPermissionField(commandInstance, permission);
-		CommandSender sender = context.getSender();
-		Object rawSender = sender.getRawSender();
+		CommandSender<?> sender = context.getSender();
+		Object rawSender = sender.getSender();
 		commandContext.setSenderField(commandInstance, rawSender);
-	}
-
-	protected Translations getTranslations() {
-		return this.translations;
+		MessageReceiver receiver = sender.getReceiver();
+		commandContext.setReceiverField(commandInstance, receiver);
 	}
 
 	protected CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {

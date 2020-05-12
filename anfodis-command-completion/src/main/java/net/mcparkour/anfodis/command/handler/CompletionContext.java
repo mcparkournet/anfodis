@@ -25,12 +25,14 @@
 package net.mcparkour.anfodis.command.handler;
 
 import java.util.List;
+import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
-public class CompletionContext extends CommandContext {
+public class CompletionContext<T> extends CommandContext<T> {
 
-	public CompletionContext(CommandSender sender, List<String> arguments, @Nullable Permission permission) {
+	public CompletionContext(CommandSender<T> sender, List<String> arguments, @Nullable Permission permission) {
 		super(sender, arguments, permission);
 	}
 }

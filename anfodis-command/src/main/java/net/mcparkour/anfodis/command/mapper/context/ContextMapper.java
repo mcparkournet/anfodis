@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.mcparkour.anfodis.command.annotation.context.Arguments;
+import net.mcparkour.anfodis.command.annotation.context.Receiver;
 import net.mcparkour.anfodis.command.annotation.context.RequiredPermission;
 import net.mcparkour.anfodis.command.annotation.context.Sender;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
@@ -66,6 +67,10 @@ public class ContextMapper<C extends Context<D>, D extends ContextData> implemen
 			.singleElement(data -> new SingleElementMapperBuilder<Field>()
 				.annotation(Sender.class)
 				.elementConsumer(data::setSenderField)
+				.build())
+			.singleElement(data -> new SingleElementMapperBuilder<Field>()
+				.annotation(Receiver.class)
+				.elementConsumer(data::setReceiverField)
 				.build());
 		this.additional.accept(builder);
 		return builder.build()

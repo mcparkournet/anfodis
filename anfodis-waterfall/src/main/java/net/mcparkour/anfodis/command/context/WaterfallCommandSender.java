@@ -22,41 +22,20 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command.context;
 
-import com.velocitypowered.api.command.CommandSource;
-import net.kyori.text.TextComponent;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
-import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.intext.message.MessageReceiver;
+import net.md_5.bungee.api.CommandSender;
 
-public class VelocityCommandSender implements CommandSender {
+public class WaterfallCommandSender extends AbstractCommandSender<CommandSender> {
 
-	private CommandSource sender;
-
-	public VelocityCommandSender(CommandSource sender) {
-		this.sender = sender;
-	}
-
-	@Override
-	public void sendMessage(String message) {
-		LegacyComponentSerializer serializer = LegacyComponentSerializer.legacy();
-		TextComponent component = serializer.deserialize(message);
-		this.sender.sendMessage(component);
-	}
-
-	@Override
-	public boolean hasPermission(Permission permission) {
-		String name = permission.getName();
-		return hasPermission(name);
+	public WaterfallCommandSender(CommandSender sender, MessageReceiver receiver) {
+		super(sender, receiver);
 	}
 
 	@Override
 	public boolean hasPermission(String name) {
-		return this.sender.hasPermission(name);
-	}
-
-	@Override
-	public Object getRawSender() {
-		return this.sender;
+		CommandSender sender = getSender();
+		return sender.hasPermission(name);
 	}
 }

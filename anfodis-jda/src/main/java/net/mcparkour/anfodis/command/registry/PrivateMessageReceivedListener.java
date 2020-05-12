@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command.registry;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,14 +33,18 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
+import net.mcparkour.anfodis.command.ChannelSender;
+import net.mcparkour.anfodis.command.JDAChannelSender;
+import net.mcparkour.anfodis.command.PermissionMap;
+import net.mcparkour.anfodis.command.context.JDACommandContext;
+import net.mcparkour.anfodis.command.context.JDACommandSender;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
-import net.mcparkour.anfodis.command.registry.CommandMap;
-import net.mcparkour.anfodis.command.registry.CommandMapEntry;
-import net.mcparkour.anfodis.command.registry.PermissionMap;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.craftmon.permission.PermissionBuilder;
+import net.mcparkour.intext.message.MessageReceiver;
+import net.mcparkour.intext.message.MessageReceiverFactory;
 import org.jetbrains.annotations.Nullable;
 
 public class PrivateMessageReceivedListener implements EventListener {
@@ -48,11 +52,13 @@ public class PrivateMessageReceivedListener implements EventListener {
 	private String permissionPrefix;
 	private PermissionMap permissionMap;
 	private CommandMap commandMap;
+	private MessageReceiverFactory<ChannelSender> messageReceiverFactory;
 
-	public PrivateMessageReceivedListener(String permissionPrefix, PermissionMap permissionMap, CommandMap commandMap) {
+	public PrivateMessageReceivedListener(String permissionPrefix, PermissionMap permissionMap, CommandMap commandMap, MessageReceiverFactory<ChannelSender> messageReceiverFactory) {
 		this.permissionPrefix = permissionPrefix;
 		this.permissionMap = permissionMap;
 		this.commandMap = commandMap;
+		this.messageReceiverFactory = messageReceiverFactory;
 	}
 
 	@Override
@@ -66,10 +72,7 @@ public class PrivateMessageReceivedListener implements EventListener {
 	private void onPrivateMessageReceivedEvent(PrivateMessageReceivedEvent event) {
 		Message message = event.getMessage();
 		String rawMessage = message.getContentRaw();
-		if (rawMessage.isBlank()) {
-			return;
-		}
-		if (rawMessage.charAt(0) != '/') {
+		if (rawMessage.isBlank() || rawMessage.charAt(0) != '/') {
 			return;
 		}
 		String[] split = rawMessage.split(" ");
@@ -89,12 +92,14 @@ public class PrivateMessageReceivedListener implements EventListener {
 	private JDACommandContext createContext(PrivateMessageReceivedEvent event, String[] split, JDACommand command) {
 		User sender = event.getAuthor();
 		PrivateChannel channel = event.getChannel();
-		JDACommandSender jdaCommandSender = new JDACommandSender(sender, channel, this.permissionMap);
+		ChannelSender channelSender = new JDAChannelSender(sender, channel);
+		MessageReceiver receiver = this.messageReceiverFactory.createMessageReceiver(channelSender);
+		JDACommandSender commandSender = new JDACommandSender(channelSender, receiver, this.permissionMap);
 		String[] argumentsArray = Arrays.copyOfRange(split, 1, split.length);
 		List<String> arguments = List.of(argumentsArray);
 		JDACommandProperties properties = command.getProperties();
 		Permission permission = createPermission(properties);
-		return new JDACommandContext(jdaCommandSender, arguments, permission, channel);
+		return new JDACommandContext(commandSender, arguments, permission);
 	}
 
 	@Nullable

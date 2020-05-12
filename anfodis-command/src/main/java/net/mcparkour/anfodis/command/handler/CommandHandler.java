@@ -30,30 +30,30 @@ import java.util.stream.Collectors;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.intext.translation.Translations;
+import net.mcparkour.intext.message.MessageReceiver;
 
-public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext> implements ContextHandler<C> {
+public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> implements ContextHandler<C> {
 
 	private T command;
 	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
-	private Translations translations;
 	private Map<T, ? extends ContextHandler<C>> subCommandHandlers;
 	private ContextHandler<C> executorHandler;
 
-	public CommandHandler(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations, Map<T, ? extends ContextHandler<C>> subCommandHandlers) {
-		this(command, injectionCodecRegistry, argumentCodecRegistry, translations, subCommandHandlers, new CommandExecutorHandler<>(command, injectionCodecRegistry, argumentCodecRegistry, translations));
+	public CommandHandler(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<T, ? extends ContextHandler<C>> subCommandHandlers) {
+		this(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers, new CommandExecutorHandler<>(command, injectionCodecRegistry, argumentCodecRegistry));
 	}
 
-	public CommandHandler(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations, Map<T, ? extends ContextHandler<C>> subCommandHandlers, ContextHandler<C> executorHandler) {
+	public CommandHandler(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<T, ? extends ContextHandler<C>> subCommandHandlers, ContextHandler<C> executorHandler) {
 		this.command = command;
-		this.translations = translations;
 		this.injectionCodecRegistry = injectionCodecRegistry;
 		this.argumentCodecRegistry = argumentCodecRegistry;
 		this.subCommandHandlers = subCommandHandlers;
@@ -62,9 +62,10 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 
 	@Override
 	public void handle(C context, Object instance) {
-		CommandSender sender = context.getSender();
+		CommandSender<?> sender = context.getSender();
+		MessageReceiver receiver = sender.getReceiver();
 		if (!checkPermission(context)) {
-			sender.sendMessage("You do not have permission.");
+			receiver.receivePlain("You do not have permission.");
 			return;
 		}
 		List<String> arguments = context.getArguments();
@@ -95,7 +96,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 			return;
 		}
 		if (!checkLength(context)) {
-			sender.sendMessage("Invalid number of arguments.");
+			receiver.receivePlain("Invalid number of arguments.");
 			return;
 		}
 		this.executorHandler.handle(context, instance);
@@ -123,7 +124,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 		if (permission == null) {
 			return true;
 		}
-		CommandSender sender = context.getSender();
+		CommandSender<?> sender = context.getSender();
 		return sender.hasPermission(permission);
 	}
 
@@ -148,8 +149,9 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 			usage.append(" - " + description);
 		}
 		usage.append(".");
-		CommandSender sender = context.getSender();
-		sender.sendMessage(usage.toString());
+		CommandSender<?> sender = context.getSender();
+		MessageReceiver receiver = sender.getReceiver();
+		receiver.receivePlain(usage.toString());
 		List<T> subCommands = this.command.getSubCommands();
 		for (T subCommand : subCommands) {
 			StringBuilder subCommandUsage = new StringBuilder();
@@ -169,16 +171,12 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 				subCommandUsage.append(" - " + subCommandDescription);
 			}
 			subCommandUsage.append(".");
-			sender.sendMessage(subCommandUsage.toString());
+			receiver.receivePlain(subCommandUsage.toString());
 		}
 	}
 
 	protected T getCommand() {
 		return this.command;
-	}
-
-	protected Translations getTranslations() {
-		return this.translations;
 	}
 
 	protected CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {

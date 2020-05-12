@@ -29,45 +29,47 @@ import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
-import net.mcparkour.anfodis.command.handler.CommandContext;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
+import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
+import net.mcparkour.anfodis.command.context.WaterfallCompletionContext;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.WaterfallCommandHandler;
-import net.mcparkour.anfodis.command.handler.WaterfallCommandSender;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.WaterfallCommandProperties;
+import net.mcparkour.anfodis.command.context.WaterfallCommandSender;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.intext.translation.Translations;
+import net.mcparkour.intext.message.MessageReceiver;
+import net.mcparkour.intext.message.MessageReceiverFactory;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import org.jetbrains.annotations.Nullable;
 
-public class WaterfallCommandRegistry extends AbstractCompletionRegistry<WaterfallCommand, CommandContext, CompletionContext> {
+public class WaterfallCommandRegistry extends AbstractCompletionRegistry<WaterfallCommand, WaterfallCommandContext, WaterfallCompletionContext, CommandSender> {
 
 	private static final WaterfallCommandMapper COMMAND_MAPPER = new WaterfallCommandMapper();
 
 	private PluginManager pluginManager;
 	private Plugin plugin;
 
-	public WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, Plugin plugin) {
-		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, plugin.getProxy(), plugin);
+	public WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSender> messageReceiverFactory, Plugin plugin) {
+		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, plugin.getProxy(), plugin);
 	}
 
-	public WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, ProxyServer server, Plugin plugin) {
-		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, plugin.getDescription().getName().toLowerCase(), server.getPluginManager(), plugin);
+	public WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSender> messageReceiverFactory, ProxyServer server, Plugin plugin) {
+		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, plugin.getDescription().getName().toLowerCase(), server.getPluginManager(), plugin);
 	}
 
-	public WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, PluginManager pluginManager, Plugin plugin) {
-		super(COMMAND_MAPPER, WaterfallCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, permissionPrefix);
+	public WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSender> messageReceiverFactory, String permissionPrefix, PluginManager pluginManager, Plugin plugin) {
+		super(COMMAND_MAPPER, WaterfallCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
 		this.pluginManager = pluginManager;
 		this.plugin = plugin;
 	}
 
 	@Override
-	public void register(WaterfallCommand command, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+	public void register(WaterfallCommand command, ContextHandler<WaterfallCommandContext> handler, CompletionContextHandler<WaterfallCompletionContext> completionHandler) {
 		WaterfallCommandProperties properties = command.getProperties();
 		String name = properties.getName();
 		List<String> aliases = properties.getAliases();
@@ -75,16 +77,19 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
 		register(command, name, aliases, permission, handler, completionHandler);
 	}
 
-	private void register(WaterfallCommand command, String name, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+	private void register(WaterfallCommand command, String name, List<String> aliases, @Nullable Permission permission, ContextHandler<WaterfallCommandContext> handler, CompletionContextHandler<WaterfallCompletionContext> completionHandler) {
+		MessageReceiverFactory<CommandSender> messageReceiverFactory = getMessageReceiverFactory();
 		WaterfallCommandExecutor commandExecutor = (sender, arguments) -> {
-			WaterfallCommandSender waterfallSender = new WaterfallCommandSender(sender);
-			CommandContext context = new CommandContext(waterfallSender, arguments, permission);
+			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
+			WaterfallCommandSender waterfallSender = new WaterfallCommandSender(sender, receiver);
+			WaterfallCommandContext context = new WaterfallCommandContext(waterfallSender, arguments, permission);
 			Object commandInstance = command.createInstance();
 			handler.handle(context, commandInstance);
 		};
 		WaterfallCompletionExecutor completionExecutor = (sender, arguments) -> {
-			WaterfallCommandSender waterfallSender = new WaterfallCommandSender(sender);
-			CompletionContext context = new CompletionContext(waterfallSender, arguments, permission);
+			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
+			WaterfallCommandSender waterfallSender = new WaterfallCommandSender(sender, receiver);
+			WaterfallCompletionContext context = new WaterfallCompletionContext(waterfallSender, arguments, permission);
 			return completionHandler.handle(context);
 		};
 		register(name, aliases, permission, commandExecutor, completionExecutor);

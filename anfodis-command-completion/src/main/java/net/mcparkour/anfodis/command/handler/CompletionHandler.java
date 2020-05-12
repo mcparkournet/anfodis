@@ -30,14 +30,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
+import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.mapper.CompletionCommand;
 import net.mcparkour.anfodis.command.mapper.argument.CompletionArgument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.craftmon.permission.PermissionBuilder;
-import org.jetbrains.annotations.Nullable;
 
-public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext> implements CompletionContextHandler<C> {
+public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<?>> implements CompletionContextHandler<C> {
 
 	private T command;
 	private CodecRegistry<CompletionCodec> completionCodecRegistry;
@@ -93,7 +93,7 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 			List<String> subCommandsCompletions = getSubCommandsCompletions(context);
 			completions.addAll(subCommandsCompletions);
 		}
-		CommandSender sender = context.getSender();
+		CommandSender<?> sender = context.getSender();
 		Permission permission = context.getPermission();
 		if (permission == null || sender.hasPermission(permission)) {
 			List<String> executorCompletions = handleExecutor(context);
@@ -109,7 +109,7 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 		for (T subCommand : this.command.getSubCommands()) {
 			CommandProperties<?> properties = subCommand.getProperties();
 			String commandPermission = properties.getPermission();
-			if (hasPermission(context, commandPermission)) {
+			if (commandPermission != null && hasPermission(context, commandPermission)) {
 				String name = properties.getName();
 				if (name.startsWith(firstArgument)) {
 					completions.add(name);
@@ -123,19 +123,16 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 		return completions;
 	}
 
-	private boolean hasPermission(C context, @Nullable String commandPermission) {
+	private boolean hasPermission(C context, String commandPermission) {
 		Permission permission = context.getPermission();
 		if (permission == null) {
 			return true;
-		}
-		if (commandPermission == null) {
-			return false;
 		}
 		Permission newPermission = new PermissionBuilder()
 			.with(permission)
 			.node(commandPermission)
 			.build();
-		CommandSender sender = context.getSender();
+		CommandSender<?> sender = context.getSender();
 		return sender.hasPermission(newPermission);
 	}
 

@@ -29,38 +29,40 @@ import java.util.Map;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.PaperCommandContext;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.intext.translation.Translations;
+import net.mcparkour.intext.message.MessageReceiver;
 
-public class PaperCommandHandler extends CommandHandler<PaperCommand, CommandContext> {
+public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperCommandContext> {
 
-	public PaperCommandHandler(PaperCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations, Map<PaperCommand, ? extends ContextHandler<CommandContext>> subCommandHandlers) {
-		super(command, injectionCodecRegistry, argumentCodecRegistry, translations, subCommandHandlers);
+	public PaperCommandHandler(PaperCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<PaperCommand, ? extends ContextHandler<PaperCommandContext>> subCommandHandlers) {
+		super(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers);
 	}
 
 	@Override
-	public void handle(CommandContext context, Object instance) {
-		CommandSender sender = context.getSender();
+	public void handle(PaperCommandContext context, Object instance) {
+		CommandSender<?> sender = context.getSender();
+		MessageReceiver receiver = sender.getReceiver();
 		if (!checkSenders(context)) {
-			sender.sendMessage("You are not a valid sender.");
+			receiver.receivePlain("You are not a valid sender.");
 			return;
 		}
 		super.handle(context, instance);
 	}
 
-	private boolean checkSenders(CommandContext context) {
+	private boolean checkSenders(PaperCommandContext context) {
 		PaperCommand command = getCommand();
 		PaperCommandProperties properties = command.getProperties();
 		List<Class<? extends org.bukkit.command.CommandSender>> senders = properties.getSendersTypes();
 		if (senders.isEmpty()) {
 			return true;
 		}
-		CommandSender commandSender = context.getSender();
-		Object rawSender = commandSender.getRawSender();
+		CommandSender<?> commandSender = context.getSender();
+		Object rawSender = commandSender.getSender();
 		Class<?> rawSenderType = rawSender.getClass();
-		return senders.stream()
-			.anyMatch(sender -> sender.isAssignableFrom(rawSenderType));
+		return senders.stream().anyMatch(sender -> sender.isAssignableFrom(rawSenderType));
 	}
 }

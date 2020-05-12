@@ -22,55 +22,51 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.context;
+package net.mcparkour.anfodis.command.context;
 
-import java.lang.reflect.Field;
+import java.util.List;
+import net.mcparkour.anfodis.handler.RootContext;
+import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.craftmon.permission.PermissionBuilder;
 import org.jetbrains.annotations.Nullable;
 
-public class ContextData {
+public class CommandContext<T> extends RootContext {
 
+	private CommandSender<T> sender;
+	private List<String> arguments;
 	@Nullable
-	private Field argumentsField;
-	@Nullable
-	private Field requiredPermissionField;
-	@Nullable
-	private Field senderField;
-	@Nullable
-	private Field receiverField;
+	private Permission permission;
 
-	@Nullable
-	public Field getArgumentsField() {
-		return this.argumentsField;
+	public CommandContext(CommandSender<T> sender, List<String> arguments, @Nullable Permission permission) {
+		this.sender = sender;
+		this.arguments = arguments;
+		this.permission = permission;
 	}
 
-	public void setArgumentsField(@Nullable Field argumentsField) {
-		this.argumentsField = argumentsField;
+	public void removeFirstArgument() {
+		int size = this.arguments.size();
+		this.arguments = this.arguments.subList(1, size);
 	}
 
-	@Nullable
-	public Field getRequiredPermissionField() {
-		return this.requiredPermissionField;
+	public void appendPermissionNode(String node) {
+		if (this.permission != null) {
+			this.permission = new PermissionBuilder()
+				.with(this.permission)
+				.node(node)
+				.build();
+		}
 	}
 
-	public void setRequiredPermissionField(@Nullable Field requiredPermissionField) {
-		this.requiredPermissionField = requiredPermissionField;
+	public CommandSender<T> getSender() {
+		return this.sender;
 	}
 
-	@Nullable
-	public Field getSenderField() {
-		return this.senderField;
-	}
-
-	public void setSenderField(@Nullable Field senderField) {
-		this.senderField = senderField;
+	public List<String> getArguments() {
+		return List.copyOf(this.arguments);
 	}
 
 	@Nullable
-	public Field getReceiverField() {
-		return this.receiverField;
-	}
-
-	public void setReceiverField(@Nullable Field receiverField) {
-		this.receiverField = receiverField;
+	public Permission getPermission() {
+		return this.permission;
 	}
 }

@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.mcparkour.anfodis.command.handler.JDACommandContext;
+import net.mcparkour.anfodis.command.context.JDACommandContext;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;

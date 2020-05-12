@@ -22,51 +22,21 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command.context;
 
-import java.util.List;
-import net.mcparkour.anfodis.handler.RootContext;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.craftmon.permission.PermissionBuilder;
-import org.jetbrains.annotations.Nullable;
+import net.mcparkour.intext.message.MessageReceiver;
 
-public class CommandContext extends RootContext {
+public interface CommandSender<T> {
 
-	private CommandSender sender;
-	private List<String> arguments;
-	@Nullable
-	private Permission permission;
-
-	public CommandContext(CommandSender sender, List<String> arguments, @Nullable Permission permission) {
-		this.sender = sender;
-		this.arguments = arguments;
-		this.permission = permission;
+	default boolean hasPermission(Permission permission) {
+		String name = permission.getName();
+		return hasPermission(name);
 	}
 
-	void removeFirstArgument() {
-		int size = this.arguments.size();
-		this.arguments = this.arguments.subList(1, size);
-	}
+	boolean hasPermission(String name);
 
-	void appendPermissionNode(String name) {
-		if (this.permission != null) {
-			this.permission = new PermissionBuilder()
-				.with(this.permission)
-				.node(name)
-				.build();
-		}
-	}
+	T getSender();
 
-	public CommandSender getSender() {
-		return this.sender;
-	}
-
-	public List<String> getArguments() {
-		return List.copyOf(this.arguments);
-	}
-
-	@Nullable
-	public Permission getPermission() {
-		return this.permission;
-	}
+	MessageReceiver getReceiver();
 }

@@ -22,39 +22,17 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command;
 
+import java.util.List;
+import net.dv8tion.jda.api.entities.User;
 import net.mcparkour.craftmon.permission.Permission;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 
-public class WaterfallCommandSender implements CommandSender {
+public interface PermissionMap {
 
-	private net.md_5.bungee.api.CommandSender sender;
+	void addPermission(User user, Permission permission);
 
-	public WaterfallCommandSender(net.md_5.bungee.api.CommandSender sender) {
-		this.sender = sender;
-	}
+	void addPermissions(User user, List<Permission> permissions);
 
-	@Override
-	public void sendMessage(String message) {
-		BaseComponent[] components = TextComponent.fromLegacyText(message);
-		this.sender.sendMessage(components);
-	}
-
-	@Override
-	public boolean hasPermission(Permission permission) {
-		String name = permission.getName();
-		return hasPermission(name);
-	}
-
-	@Override
-	public boolean hasPermission(String name) {
-		return this.sender.hasPermission(name);
-	}
-
-	@Override
-	public Object getRawSender() {
-		return this.sender;
-	}
+	List<Permission> getPermissions(User user);
 }

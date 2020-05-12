@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
 public class Context<D extends ContextData> {
@@ -60,6 +61,14 @@ public class Context<D extends ContextData> {
 			return;
 		}
 		Reflections.setFieldValue(field, instance, sender);
+	}
+
+	public void setReceiverField(Object instance, MessageReceiver receiver) {
+		Field field = this.contextData.getReceiverField();
+		if (field == null) {
+			return;
+		}
+		Reflections.setFieldValue(field, instance, receiver);
 	}
 
 	protected D getContextData() {

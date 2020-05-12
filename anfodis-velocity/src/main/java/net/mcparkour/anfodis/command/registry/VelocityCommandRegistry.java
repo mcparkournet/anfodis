@@ -27,57 +27,62 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.List;
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandManager;
+import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
-import net.mcparkour.anfodis.command.handler.CommandContext;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
+import net.mcparkour.anfodis.command.context.VelocityCommandContext;
+import net.mcparkour.anfodis.command.context.VelocityCompletionContext;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.VelocityCommandHandler;
-import net.mcparkour.anfodis.command.handler.VelocityCommandSender;
 import net.mcparkour.anfodis.command.mapper.VelocityCommand;
 import net.mcparkour.anfodis.command.mapper.VelocityCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.VelocityCommandProperties;
+import net.mcparkour.anfodis.command.context.VelocityCommandSender;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.intext.translation.Translations;
+import net.mcparkour.intext.message.MessageReceiver;
+import net.mcparkour.intext.message.MessageReceiverFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class VelocityCommandRegistry extends AbstractCompletionRegistry<VelocityCommand, CommandContext, CompletionContext> {
+public class VelocityCommandRegistry extends AbstractCompletionRegistry<VelocityCommand, VelocityCommandContext, VelocityCompletionContext, CommandSource> {
 
 	private static final VelocityCommandMapper COMMAND_MAPPER = new VelocityCommandMapper();
 
 	private CommandManager commandManager;
 
-	public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, ProxyServer server) {
-		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, permissionPrefix, server.getCommandManager());
+	public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSource> messageReceiverFactory, String permissionPrefix, ProxyServer server) {
+		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix, server.getCommandManager());
 	}
 
-	public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, CommandManager commandManager) {
-		super(COMMAND_MAPPER, VelocityCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, permissionPrefix);
+	public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSource> messageReceiverFactory, String permissionPrefix, CommandManager commandManager) {
+		super(COMMAND_MAPPER, VelocityCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
 		this.commandManager = commandManager;
 	}
 
 	@Override
-	public void register(VelocityCommand command, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+	public void register(VelocityCommand command, ContextHandler<VelocityCommandContext> handler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
 		VelocityCommandProperties properties = command.getProperties();
 		List<String> names = properties.getAllNames();
 		Permission permission = createPermission(properties);
 		register(command, names, permission, handler, completionHandler);
 	}
 
-	private void register(VelocityCommand command, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+	private void register(VelocityCommand command, List<String> aliases, @Nullable Permission permission, ContextHandler<VelocityCommandContext> handler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
+		MessageReceiverFactory<CommandSource> messageReceiverFactory = getMessageReceiverFactory();
 		VelocityCommandExecutor commandExecutor = (sender, arguments) -> {
-			VelocityCommandSender velocitySender = new VelocityCommandSender(sender);
-			CommandContext context = new CommandContext(velocitySender, arguments, permission);
+			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
+			VelocityCommandSender velocitySender = new VelocityCommandSender(sender, receiver);
+			VelocityCommandContext context = new VelocityCommandContext(velocitySender, arguments, permission);
 			Object commandInstance = command.createInstance();
 			handler.handle(context, commandInstance);
 		};
 		VelocityCompletionExecutor completionExecutor = (sender, arguments) -> {
-			VelocityCommandSender velocitySender = new VelocityCommandSender(sender);
-			CompletionContext context = new CompletionContext(velocitySender, arguments, permission);
+			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
+			VelocityCommandSender velocitySender = new VelocityCommandSender(sender, receiver);
+			VelocityCompletionContext context = new VelocityCompletionContext(velocitySender, arguments, permission);
 			return completionHandler.handle(context);
 		};
 		register(aliases, commandExecutor, completionExecutor);

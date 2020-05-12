@@ -22,11 +22,28 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.context;
+package net.mcparkour.anfodis.command;
 
-public class JDAContext extends Context<JDAContextData> {
+import net.dv8tion.jda.api.entities.PrivateChannel;
+import net.dv8tion.jda.api.entities.User;
 
-	public JDAContext(JDAContextData contextData) {
-		super(contextData);
+public class JDAChannelSender implements ChannelSender {
+
+	private User user;
+	private PrivateChannel channel;
+
+	public JDAChannelSender(User user, PrivateChannel channel) {
+		this.user = user;
+		this.channel = channel;
+	}
+
+	@Override
+	public User getUser() {
+		return this.user;
+	}
+
+	@Override
+	public PrivateChannel getChannel() {
+		return this.channel;
 	}
 }

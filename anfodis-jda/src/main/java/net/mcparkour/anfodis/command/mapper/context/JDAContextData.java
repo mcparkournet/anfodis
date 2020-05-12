@@ -24,20 +24,4 @@
 
 package net.mcparkour.anfodis.command.mapper.context;
 
-import java.lang.reflect.Field;
-import org.jetbrains.annotations.Nullable;
-
-public class JDAContextData extends ContextData {
-
-	@Nullable
-	private Field channelField;
-
-	@Nullable
-	public Field getChannelField() {
-		return this.channelField;
-	}
-
-	public void setChannelField(@Nullable Field channelField) {
-		this.channelField = channelField;
-	}
-}
+public class JDAContextData extends ContextData {}

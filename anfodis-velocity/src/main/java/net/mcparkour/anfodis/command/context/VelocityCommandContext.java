@@ -22,51 +22,16 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.registry;
+package net.mcparkour.anfodis.command.context;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import net.dv8tion.jda.api.entities.User;
+import com.velocitypowered.api.command.CommandSource;
 import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
-public class PermissionMap {
+public class VelocityCommandContext extends CommandContext<CommandSource> {
 
-	private Map<Long, List<Permission>> permissionMap;
-
-	public PermissionMap() {
-		this.permissionMap = new HashMap<>(4);
-	}
-
-	public void addPermission(User user, Permission permission) {
-		List<Permission> currentPermissions = getCurrentPermissions(user);
-		currentPermissions.add(permission);
-	}
-
-	public void addPermissions(User user, List<Permission> permissions) {
-		List<Permission> currentPermissions = getCurrentPermissions(user);
-		currentPermissions.addAll(permissions);
-	}
-
-	private List<Permission> getCurrentPermissions(User user) {
-		long id = user.getIdLong();
-		return this.permissionMap.computeIfAbsent(id, key -> new ArrayList<>(4));
-	}
-
-	@Nullable
-	public List<Permission> getPermissions(User user) {
-		long id = user.getIdLong();
-		return getPermissions(id);
-	}
-
-	@Nullable
-	public List<Permission> getPermissions(long userId) {
-		List<Permission> permissions = this.permissionMap.get(userId);
-		if (permissions == null) {
-			return null;
-		}
-		return List.copyOf(permissions);
+	public VelocityCommandContext(CommandSender<CommandSource> sender, List<String> arguments, @Nullable Permission permission) {
+		super(sender, arguments, permission);
 	}
 }

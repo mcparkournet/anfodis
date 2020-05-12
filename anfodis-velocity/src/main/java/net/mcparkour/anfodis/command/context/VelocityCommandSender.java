@@ -22,11 +22,20 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.context;
+package net.mcparkour.anfodis.command.context;
 
-public class JDAContext extends Context<JDAContextData> {
+import com.velocitypowered.api.command.CommandSource;
+import net.mcparkour.intext.message.MessageReceiver;
 
-	public JDAContext(JDAContextData contextData) {
-		super(contextData);
+public class VelocityCommandSender extends AbstractCommandSender<CommandSource> {
+
+	public VelocityCommandSender(CommandSource sender, MessageReceiver receiver) {
+		super(sender, receiver);
+	}
+
+	@Override
+	public boolean hasPermission(String name) {
+		CommandSource sender = getSender();
+		return sender.hasPermission(name);
 	}
 }

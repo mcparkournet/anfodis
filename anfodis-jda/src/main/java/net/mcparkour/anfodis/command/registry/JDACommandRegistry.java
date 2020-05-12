@@ -27,16 +27,17 @@ package net.mcparkour.anfodis.command.registry;
 import net.dv8tion.jda.api.JDA;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.command.ChannelSender;
+import net.mcparkour.anfodis.command.PermissionMap;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.handler.JDACommandContext;
+import net.mcparkour.anfodis.command.context.JDACommandContext;
 import net.mcparkour.anfodis.command.handler.JDACommandHandler;
-import net.mcparkour.anfodis.command.handler.PrivateMessageReceivedListener;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.JDACommandMapper;
 import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.intext.translation.Translations;
+import net.mcparkour.intext.message.MessageReceiverFactory;
 
-public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDACommandContext> {
+public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDACommandContext, ChannelSender> {
 
 	private static final JDACommandMapper COMMAND_MAPPER = new JDACommandMapper();
 
@@ -44,8 +45,8 @@ public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDAC
 	private PermissionMap permissionMap;
 	private CommandMap commandMap;
 
-	public JDACommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations, String permissionPrefix, JDA jda, PermissionMap permissionMap) {
-		super(COMMAND_MAPPER, JDACommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, translations, permissionPrefix);
+	public JDACommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<ChannelSender> messageReceiverFactory, String permissionPrefix, JDA jda, PermissionMap permissionMap) {
+		super(COMMAND_MAPPER, JDACommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, permissionPrefix);
 		this.jda = jda;
 		this.permissionMap = permissionMap;
 		this.commandMap = new CommandMap();
@@ -54,7 +55,8 @@ public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDAC
 
 	private void registerCommandListener() {
 		String permissionPrefix = getPermissionPrefix();
-		PrivateMessageReceivedListener listener = new PrivateMessageReceivedListener(permissionPrefix, this.permissionMap, this.commandMap);
+		MessageReceiverFactory<ChannelSender> messageReceiverFactory = getMessageReceiverFactory();
+		PrivateMessageReceivedListener listener = new PrivateMessageReceivedListener(permissionPrefix, this.permissionMap, this.commandMap, messageReceiverFactory);
 		this.jda.addEventListener(listener);
 	}
 

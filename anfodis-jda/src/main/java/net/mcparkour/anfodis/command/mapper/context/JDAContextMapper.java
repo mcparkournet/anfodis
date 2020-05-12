@@ -24,18 +24,9 @@
 
 package net.mcparkour.anfodis.command.mapper.context;
 
-import java.lang.reflect.Field;
-import net.mcparkour.anfodis.command.annotation.context.Channel;
-import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
-
 public class JDAContextMapper extends ContextMapper<JDAContext, JDAContextData> {
 
 	public JDAContextMapper() {
-		super(JDAContext::new, JDAContextData::new, builder -> {
-			builder.singleElement(data -> new SingleElementMapperBuilder<Field>()
-				.annotation(Channel.class)
-				.elementConsumer(data::setChannelField)
-				.build());
-		});
+		super(JDAContext::new, JDAContextData::new);
 	}
 }

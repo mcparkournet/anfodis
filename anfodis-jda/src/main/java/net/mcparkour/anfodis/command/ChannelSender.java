@@ -22,23 +22,14 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command;
 
-import java.util.List;
 import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.mcparkour.craftmon.permission.Permission;
-import org.jetbrains.annotations.Nullable;
+import net.dv8tion.jda.api.entities.User;
 
-public class JDACommandContext extends CommandContext {
+public interface ChannelSender {
 
-	private PrivateChannel channel;
+	User getUser();
 
-	public JDACommandContext(CommandSender sender, List<String> arguments, @Nullable Permission permission, PrivateChannel channel) {
-		super(sender, arguments, permission);
-		this.channel = channel;
-	}
-
-	public PrivateChannel getChannel() {
-		return this.channel;
-	}
+	PrivateChannel getChannel();
 }

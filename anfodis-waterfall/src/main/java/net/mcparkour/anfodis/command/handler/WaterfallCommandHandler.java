@@ -29,36 +29,39 @@ import java.util.Map;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.anfodis.command.mapper.properties.WaterfallCommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.intext.translation.Translations;
+import net.mcparkour.intext.message.MessageReceiver;
 
-public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, CommandContext> {
+public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, WaterfallCommandContext> {
 
-	public WaterfallCommandHandler(WaterfallCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Translations translations, Map<WaterfallCommand, ? extends ContextHandler<CommandContext>> subCommandHandlers) {
-		super(command, injectionCodecRegistry, argumentCodecRegistry, translations, subCommandHandlers);
+	public WaterfallCommandHandler(WaterfallCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<WaterfallCommand, ? extends ContextHandler<WaterfallCommandContext>> subCommandHandlers) {
+		super(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers);
 	}
 
 	@Override
-	public void handle(CommandContext context, Object instance) {
-		CommandSender sender = context.getSender();
+	public void handle(WaterfallCommandContext context, Object instance) {
 		if (!checkSenders(context)) {
-			sender.sendMessage("You are not a valid sender.");
+			CommandSender<net.md_5.bungee.api.CommandSender> sender = context.getSender();
+			MessageReceiver receiver = sender.getReceiver();
+			receiver.receivePlain("You are not a valid sender.");
 			return;
 		}
 		super.handle(context, instance);
 	}
 
-	private boolean checkSenders(CommandContext context) {
+	private boolean checkSenders(WaterfallCommandContext context) {
 		WaterfallCommand command = getCommand();
 		WaterfallCommandProperties properties = command.getProperties();
 		List<Class<? extends net.md_5.bungee.api.CommandSender>> senders = properties.getSendersTypes();
 		if (senders.isEmpty()) {
 			return true;
 		}
-		CommandSender commandSender = context.getSender();
-		Object rawSender = commandSender.getRawSender();
+		CommandSender<net.md_5.bungee.api.CommandSender> commandSender = context.getSender();
+		Object rawSender = commandSender.getSender();
 		Class<?> rawSenderType = rawSender.getClass();
 		return senders.stream()
 			.anyMatch(sender -> sender.isAssignableFrom(rawSenderType));

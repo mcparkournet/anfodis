@@ -29,44 +29,46 @@ import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
-import net.mcparkour.anfodis.command.handler.CommandContext;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
+import net.mcparkour.anfodis.command.context.PaperCommandContext;
+import net.mcparkour.anfodis.command.context.PaperCommandSender;
+import net.mcparkour.anfodis.command.context.PaperCompletionContext;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.PaperCommandHandler;
-import net.mcparkour.anfodis.command.handler.PaperCommandSender;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.PaperCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.intext.translation.Translations;
+import net.mcparkour.intext.message.MessageReceiver;
+import net.mcparkour.intext.message.MessageReceiverFactory;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 
-public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperCommand, CommandContext, CompletionContext> {
+public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperCommand, PaperCommandContext, PaperCompletionContext, CommandSender> {
 
 	private static final PaperCommandMapper COMMAND_MAPPER = new PaperCommandMapper();
 
 	private CommandMap commandMap;
 
-	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, Plugin plugin) {
-		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, plugin.getServer(), plugin.getName());
+	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSender> messageReceiverFactory, Plugin plugin) {
+		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, plugin.getServer(), plugin.getName());
 	}
 
-	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, Server server, String pluginName) {
-		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, pluginName.toLowerCase(), server.getCommandMap());
+	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSender> messageReceiverFactory, Server server, String pluginName) {
+		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, pluginName.toLowerCase(), server.getCommandMap());
 	}
 
-	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, Translations translations, String permissionPrefix, CommandMap commandMap) {
-		super(COMMAND_MAPPER, PaperCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, translations, permissionPrefix);
+	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSender> messageReceiverFactory, String permissionPrefix, CommandMap commandMap) {
+		super(COMMAND_MAPPER, PaperCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
 		this.commandMap = commandMap;
 	}
 
 	@Override
-	public void register(PaperCommand command, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+	public void register(PaperCommand command, ContextHandler<PaperCommandContext> handler, CompletionContextHandler<PaperCompletionContext> completionHandler) {
 		PaperCommandProperties properties = command.getProperties();
 		String name = properties.getName();
 		String description = properties.getDescription();
@@ -76,16 +78,19 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
 		register(command, name, description, usage, aliases, permission, handler, completionHandler);
 	}
 
-	private void register(PaperCommand command, String name, String description, String usage, List<String> aliases, @Nullable Permission permission, ContextHandler<CommandContext> handler, CompletionContextHandler<CompletionContext> completionHandler) {
+	private void register(PaperCommand command, String name, String description, String usage, List<String> aliases, @Nullable Permission permission, ContextHandler<PaperCommandContext> handler, CompletionContextHandler<PaperCompletionContext> completionHandler) {
+		MessageReceiverFactory<CommandSender> receiverFactory = getMessageReceiverFactory();
 		PaperCommandExecutor commandExecutor = (sender, arguments) -> {
-			PaperCommandSender paperSender = new PaperCommandSender(sender);
-			CommandContext context = new CommandContext(paperSender, arguments, permission);
+			MessageReceiver receiver = receiverFactory.createMessageReceiver(sender);
+			PaperCommandSender paperSender = new PaperCommandSender(sender, receiver);
+			PaperCommandContext context = new PaperCommandContext(paperSender, arguments, permission);
 			Object commandInstance = command.createInstance();
 			handler.handle(context, commandInstance);
 		};
 		PaperCompletionExecutor completionExecutor = (sender, arguments) -> {
-			PaperCommandSender paperSender = new PaperCommandSender(sender);
-			CompletionContext context = new CompletionContext(paperSender, arguments, permission);
+			MessageReceiver receiver = receiverFactory.createMessageReceiver(sender);
+			PaperCommandSender paperSender = new PaperCommandSender(sender, receiver);
+			PaperCompletionContext context = new PaperCompletionContext(paperSender, arguments, permission);
 			return completionHandler.handle(context);
 		};
 		register(name, description, usage, aliases, permission, commandExecutor, completionExecutor);
