@@ -38,9 +38,9 @@ import net.mcparkour.anfodis.command.JDAChannelSender;
 import net.mcparkour.anfodis.command.PermissionMap;
 import net.mcparkour.anfodis.command.context.JDACommandContext;
 import net.mcparkour.anfodis.command.context.JDACommandSender;
+import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.craftmon.permission.PermissionBuilder;
 import net.mcparkour.intext.message.MessageReceiver;
@@ -82,11 +82,10 @@ public class PrivateMessageReceivedListener implements EventListener {
 		if (entry == null) {
 			return;
 		}
-		ContextHandler<JDACommandContext> handler = entry.getHandler();
+		CommandContextHandler<JDACommandContext> handler = entry.getHandler();
 		JDACommand command = entry.getCommand();
 		JDACommandContext context = createContext(event, split, command);
-		Object commandInstance = command.createInstance();
-		handler.handle(context, commandInstance);
+		handler.handle(context);
 	}
 
 	private JDACommandContext createContext(PrivateMessageReceivedEvent event, String[] split, JDACommand command) {

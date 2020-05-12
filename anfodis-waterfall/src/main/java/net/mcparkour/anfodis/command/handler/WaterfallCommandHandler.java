@@ -33,24 +33,23 @@ import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.anfodis.command.mapper.properties.WaterfallCommandProperties;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiver;
 
 public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, WaterfallCommandContext> {
 
-	public WaterfallCommandHandler(WaterfallCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<WaterfallCommand, ? extends ContextHandler<WaterfallCommandContext>> subCommandHandlers) {
+	public WaterfallCommandHandler(WaterfallCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers) {
 		super(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers);
 	}
 
 	@Override
-	public void handle(WaterfallCommandContext context, Object instance) {
+	public void handle(WaterfallCommandContext context) {
 		if (!checkSenders(context)) {
 			CommandSender<net.md_5.bungee.api.CommandSender> sender = context.getSender();
 			MessageReceiver receiver = sender.getReceiver();
 			receiver.receivePlain("You are not a valid sender.");
 			return;
 		}
-		super.handle(context, instance);
+		super.handle(context);
 	}
 
 	private boolean checkSenders(WaterfallCommandContext context) {

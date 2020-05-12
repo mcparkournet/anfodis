@@ -31,10 +31,10 @@ import net.mcparkour.anfodis.command.ChannelSender;
 import net.mcparkour.anfodis.command.PermissionMap;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.JDACommandContext;
+import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.handler.JDACommandHandler;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.JDACommandMapper;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
 public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDACommandContext, ChannelSender> {
@@ -61,7 +61,7 @@ public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDAC
 	}
 
 	@Override
-	public void register(JDACommand root, ContextHandler<JDACommandContext> handler) {
-		this.commandMap.register(root, handler);
+	public void register(JDACommand command, CommandContextHandler<JDACommandContext> commandHandler) {
+		this.commandMap.register(command, commandHandler);
 	}
 }

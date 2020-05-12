@@ -30,11 +30,10 @@ import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.TestCommandContext;
 import net.mcparkour.anfodis.command.mapper.TestCommand;
-import net.mcparkour.anfodis.handler.ContextHandler;
 
 public class TestCommandHandler extends CommandHandler<TestCommand, TestCommandContext> {
 
-	public TestCommandHandler(TestCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<TestCommand, ? extends ContextHandler<TestCommandContext>> subCommandHandlers) {
+	public TestCommandHandler(TestCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<TestCommand, ? extends CommandContextHandler<TestCommandContext>> subCommandHandlers) {
 		super(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers);
 	}
 }

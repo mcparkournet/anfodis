@@ -24,10 +24,10 @@
 
 package net.mcparkour.anfodis.command.handler;
 
-import java.util.List;
+import net.mcparkour.anfodis.command.context.CommandContext;
 
 @FunctionalInterface
-public interface CompletionContextHandler<C extends CompletionContext<?>> {
+public interface CommandContextHandler<C extends CommandContext<?>> {
 
-	List<String> handle(C context);
+	void handle(C context);
 }

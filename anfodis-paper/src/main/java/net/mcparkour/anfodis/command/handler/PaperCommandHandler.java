@@ -33,24 +33,23 @@ import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.PaperCommandContext;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiver;
 
 public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperCommandContext> {
 
-	public PaperCommandHandler(PaperCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<PaperCommand, ? extends ContextHandler<PaperCommandContext>> subCommandHandlers) {
+	public PaperCommandHandler(PaperCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers) {
 		super(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers);
 	}
 
 	@Override
-	public void handle(PaperCommandContext context, Object instance) {
+	public void handle(PaperCommandContext context) {
 		CommandSender<?> sender = context.getSender();
 		MessageReceiver receiver = sender.getReceiver();
 		if (!checkSenders(context)) {
 			receiver.receivePlain("You are not a valid sender.");
 			return;
 		}
-		super.handle(context, instance);
+		super.handle(context);
 	}
 
 	private boolean checkSenders(PaperCommandContext context) {

@@ -31,7 +31,7 @@ import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.mapper.CompletionCommand;
 
-public interface CompletionHandlerSupplier<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext> {
+public interface CompletionHandlerSupplier<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<?>> {
 
 	CompletionContextHandler<C> supply(T command, CodecRegistry<CompletionCodec> completionCodecRegistry, Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap);
 }

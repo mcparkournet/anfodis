@@ -32,11 +32,11 @@ import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.CompletionHandler;
 import net.mcparkour.anfodis.command.mapper.CompletionCommand;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
@@ -67,9 +67,9 @@ public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, 
 
 	@Override
 	public void register(T root) {
-		ContextHandler<C> handler = createCommandHandler(root);
+		CommandContextHandler<C> commandHandler = createCommandHandler(root);
 		CompletionContextHandler<D> completionHandler = createCompletionHandler(root);
-		register(root, handler, completionHandler);
+		register(root, commandHandler, completionHandler);
 	}
 
 	private CompletionContextHandler<D> createCompletionHandler(T command) {
@@ -84,9 +84,9 @@ public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, 
 	}
 
 	@Override
-	public void register(T root, ContextHandler<C> handler) {
-		register(root, handler, context -> List.of());
+	public void register(T command, CommandContextHandler<C> commandHandler) {
+		register(command, commandHandler, context -> List.of());
 	}
 
-	public abstract void register(T command, ContextHandler<C> handler, CompletionContextHandler<D> completionHandler);
+	public abstract void register(T command, CommandContextHandler<C> commandHandler, CompletionContextHandler<D> completionHandler);
 }

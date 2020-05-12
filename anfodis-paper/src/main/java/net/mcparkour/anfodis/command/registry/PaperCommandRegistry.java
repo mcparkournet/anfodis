@@ -32,12 +32,12 @@ import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.PaperCommandContext;
 import net.mcparkour.anfodis.command.context.PaperCommandSender;
 import net.mcparkour.anfodis.command.context.PaperCompletionContext;
+import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.PaperCommandHandler;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.PaperCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
@@ -68,24 +68,23 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
 	}
 
 	@Override
-	public void register(PaperCommand command, ContextHandler<PaperCommandContext> handler, CompletionContextHandler<PaperCompletionContext> completionHandler) {
+	public void register(PaperCommand command, CommandContextHandler<PaperCommandContext> commandHandler, CompletionContextHandler<PaperCompletionContext> completionHandler) {
 		PaperCommandProperties properties = command.getProperties();
 		String name = properties.getName();
 		String description = properties.getDescription();
 		String usage = properties.getDefaultUsage();
 		List<String> aliases = properties.getAliases();
 		Permission permission = createPermission(properties);
-		register(command, name, description, usage, aliases, permission, handler, completionHandler);
+		register(name, description, usage, aliases, permission, commandHandler, completionHandler);
 	}
 
-	private void register(PaperCommand command, String name, String description, String usage, List<String> aliases, @Nullable Permission permission, ContextHandler<PaperCommandContext> handler, CompletionContextHandler<PaperCompletionContext> completionHandler) {
+	private void register(String name, String description, String usage, List<String> aliases, @Nullable Permission permission, CommandContextHandler<PaperCommandContext> commandHandler, CompletionContextHandler<PaperCompletionContext> completionHandler) {
 		MessageReceiverFactory<CommandSender> receiverFactory = getMessageReceiverFactory();
 		PaperCommandExecutor commandExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = receiverFactory.createMessageReceiver(sender);
 			PaperCommandSender paperSender = new PaperCommandSender(sender, receiver);
 			PaperCommandContext context = new PaperCommandContext(paperSender, arguments, permission);
-			Object commandInstance = command.createInstance();
-			handler.handle(context, commandInstance);
+			commandHandler.handle(context);
 		};
 		PaperCompletionExecutor completionExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = receiverFactory.createMessageReceiver(sender);

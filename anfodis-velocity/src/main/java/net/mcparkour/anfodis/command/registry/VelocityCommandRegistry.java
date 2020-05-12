@@ -34,14 +34,14 @@ import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.VelocityCommandContext;
+import net.mcparkour.anfodis.command.context.VelocityCommandSender;
 import net.mcparkour.anfodis.command.context.VelocityCompletionContext;
+import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.VelocityCommandHandler;
 import net.mcparkour.anfodis.command.mapper.VelocityCommand;
 import net.mcparkour.anfodis.command.mapper.VelocityCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.VelocityCommandProperties;
-import net.mcparkour.anfodis.command.context.VelocityCommandSender;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
@@ -63,21 +63,20 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
 	}
 
 	@Override
-	public void register(VelocityCommand command, ContextHandler<VelocityCommandContext> handler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
+	public void register(VelocityCommand command, CommandContextHandler<VelocityCommandContext> commandHandler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
 		VelocityCommandProperties properties = command.getProperties();
 		List<String> names = properties.getAllNames();
 		Permission permission = createPermission(properties);
-		register(command, names, permission, handler, completionHandler);
+		register(names, permission, commandHandler, completionHandler);
 	}
 
-	private void register(VelocityCommand command, List<String> aliases, @Nullable Permission permission, ContextHandler<VelocityCommandContext> handler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
+	private void register(List<String> aliases, @Nullable Permission permission, CommandContextHandler<VelocityCommandContext> commandHandler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
 		MessageReceiverFactory<CommandSource> messageReceiverFactory = getMessageReceiverFactory();
 		VelocityCommandExecutor commandExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
 			VelocityCommandSender velocitySender = new VelocityCommandSender(sender, receiver);
 			VelocityCommandContext context = new VelocityCommandContext(velocitySender, arguments, permission);
-			Object commandInstance = command.createInstance();
-			handler.handle(context, commandInstance);
+			commandHandler.handle(context);
 		};
 		VelocityCompletionExecutor completionExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);

@@ -28,9 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.mcparkour.anfodis.command.context.JDACommandContext;
+import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class CommandMap {
@@ -41,7 +41,7 @@ public class CommandMap {
 		this.commandMap = new HashMap<>(16);
 	}
 
-	public void register(JDACommand command, ContextHandler<JDACommandContext> handler) {
+	public void register(JDACommand command, CommandContextHandler<JDACommandContext> handler) {
 		CommandMapEntry entry = new CommandMapEntry(command, handler);
 		JDACommandProperties properties = command.getProperties();
 		List<String> names = properties.getAllNames();

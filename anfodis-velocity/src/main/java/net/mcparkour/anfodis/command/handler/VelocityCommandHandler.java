@@ -34,24 +34,23 @@ import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.VelocityCommandContext;
 import net.mcparkour.anfodis.command.mapper.VelocityCommand;
 import net.mcparkour.anfodis.command.mapper.properties.VelocityCommandProperties;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiver;
 
 public class VelocityCommandHandler extends CommandHandler<VelocityCommand, VelocityCommandContext> {
 
-	public VelocityCommandHandler(VelocityCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<VelocityCommand, ? extends ContextHandler<VelocityCommandContext>> subCommandHandlers) {
+	public VelocityCommandHandler(VelocityCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<VelocityCommand, ? extends CommandContextHandler<VelocityCommandContext>> subCommandHandlers) {
 		super(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers);
 	}
 
 	@Override
-	public void handle(VelocityCommandContext context, Object instance) {
+	public void handle(VelocityCommandContext context) {
 		if (!checkSenders(context)) {
 			CommandSender<?> sender = context.getSender();
 			MessageReceiver receiver = sender.getReceiver();
 			receiver.receivePlain("You are not a valid sender.");
 			return;
 		}
-		super.handle(context, instance);
+		super.handle(context);
 	}
 
 	private boolean checkSenders(VelocityCommandContext context) {

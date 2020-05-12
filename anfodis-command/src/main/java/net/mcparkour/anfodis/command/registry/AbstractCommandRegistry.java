@@ -31,6 +31,7 @@ import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.handler.CommandHandler;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
@@ -63,21 +64,31 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
 
 	@Override
 	public void register(T root) {
-		ContextHandler<C> handler = createCommandHandler(root);
+		CommandContextHandler<C> handler = createCommandHandler(root);
 		register(root, handler);
 	}
 
-	protected ContextHandler<C> createCommandHandler(T command) {
+	@Override
+	public void register(T root, ContextHandler<C> handler) {
+		register(root, context -> {
+			Object instance = root.createInstance();
+			handler.handle(context, instance);
+		});
+	}
+
+	protected CommandContextHandler<C> createCommandHandler(T command) {
 		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
 		List<T> subCommands = command.getSubCommands();
 		int size = subCommands.size();
-		Map<T, ContextHandler<C>> handlers = new HashMap<>(size);
+		Map<T, CommandContextHandler<C>> handlers = new HashMap<>(size);
 		for (T subCommand : subCommands) {
-			ContextHandler<C> handler = createCommandHandler(subCommand);
+			CommandContextHandler<C> handler = createCommandHandler(subCommand);
 			handlers.put(subCommand, handler);
 		}
 		return this.commandHandlerSupplier.supply(command, injectionCodecRegistry, this.argumentCodecRegistry, handlers);
 	}
+
+	public abstract void register(T command, CommandContextHandler<C> commandHandler);
 
 	@Nullable
 	protected Permission createPermission(CommandProperties<?> properties) {

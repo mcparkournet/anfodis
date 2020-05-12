@@ -29,10 +29,10 @@ import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.mapper.Command;
-import net.mcparkour.anfodis.handler.ContextHandler;
 
 public interface CommandHandlerSupplier<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> {
 
-	ContextHandler<C> supply(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<T, ? extends ContextHandler<C>> subCommandHandlers);
+	CommandContextHandler<C> supply(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers);
 }

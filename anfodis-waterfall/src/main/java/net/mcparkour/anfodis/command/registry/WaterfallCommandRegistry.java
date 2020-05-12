@@ -30,14 +30,14 @@ import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
+import net.mcparkour.anfodis.command.context.WaterfallCommandSender;
 import net.mcparkour.anfodis.command.context.WaterfallCompletionContext;
+import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.WaterfallCommandHandler;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.WaterfallCommandProperties;
-import net.mcparkour.anfodis.command.context.WaterfallCommandSender;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
@@ -69,22 +69,21 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
 	}
 
 	@Override
-	public void register(WaterfallCommand command, ContextHandler<WaterfallCommandContext> handler, CompletionContextHandler<WaterfallCompletionContext> completionHandler) {
+	public void register(WaterfallCommand command, CommandContextHandler<WaterfallCommandContext> commandHandler, CompletionContextHandler<WaterfallCompletionContext> completionHandler) {
 		WaterfallCommandProperties properties = command.getProperties();
 		String name = properties.getName();
 		List<String> aliases = properties.getAliases();
 		Permission permission = createPermission(properties);
-		register(command, name, aliases, permission, handler, completionHandler);
+		register(name, aliases, permission, commandHandler, completionHandler);
 	}
 
-	private void register(WaterfallCommand command, String name, List<String> aliases, @Nullable Permission permission, ContextHandler<WaterfallCommandContext> handler, CompletionContextHandler<WaterfallCompletionContext> completionHandler) {
+	private void register(String name, List<String> aliases, @Nullable Permission permission, CommandContextHandler<WaterfallCommandContext> commandHandler, CompletionContextHandler<WaterfallCompletionContext> completionHandler) {
 		MessageReceiverFactory<CommandSender> messageReceiverFactory = getMessageReceiverFactory();
 		WaterfallCommandExecutor commandExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
 			WaterfallCommandSender waterfallSender = new WaterfallCommandSender(sender, receiver);
 			WaterfallCommandContext context = new WaterfallCommandContext(waterfallSender, arguments, permission);
-			Object commandInstance = command.createInstance();
-			handler.handle(context, commandInstance);
+			commandHandler.handle(context);
 		};
 		WaterfallCompletionExecutor completionExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);

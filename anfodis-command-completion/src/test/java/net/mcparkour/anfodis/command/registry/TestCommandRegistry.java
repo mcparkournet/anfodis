@@ -33,12 +33,12 @@ import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.TestCommandContext;
 import net.mcparkour.anfodis.command.context.TestCommandSender;
 import net.mcparkour.anfodis.command.context.TestCompletionContext;
+import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.TestCommandHandler;
 import net.mcparkour.anfodis.command.mapper.TestCommand;
 import net.mcparkour.anfodis.command.mapper.TestCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.TestCommandProperties;
-import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
@@ -56,21 +56,20 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
 	}
 
 	@Override
-	public void register(TestCommand command, ContextHandler<TestCommandContext> handler, CompletionContextHandler<TestCompletionContext> completionHandler) {
+	public void register(TestCommand command, CommandContextHandler<TestCommandContext> commandHandler, CompletionContextHandler<TestCompletionContext> completionHandler) {
 		TestCommandProperties properties = command.getProperties();
 		List<String> names = properties.getAllNames();
 		Permission permission = createPermission(properties);
-		register(command, names, permission, handler, completionHandler);
+		register(names, permission, commandHandler, completionHandler);
 	}
 
-	private void register(TestCommand command, List<String> aliases, @Nullable Permission permission, ContextHandler<TestCommandContext> handler, CompletionContextHandler<TestCompletionContext> completionHandler) {
+	private void register(List<String> aliases, @Nullable Permission permission, CommandContextHandler<TestCommandContext> commandHandler, CompletionContextHandler<TestCompletionContext> completionHandler) {
 		MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory = getMessageReceiverFactory();
 		TestCommandExecutor commandExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
 			TestCommandSender testCommandSender = new TestCommandSender(sender, receiver);
 			TestCommandContext context = new TestCommandContext(testCommandSender, arguments, permission);
-			Object commandInstance = command.createInstance();
-			handler.handle(context, commandInstance);
+			commandHandler.handle(context);
 		};
 		TestCompletionExecutor completionExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
