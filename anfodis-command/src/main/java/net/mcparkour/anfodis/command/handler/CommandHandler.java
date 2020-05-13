@@ -27,7 +27,6 @@ package net.mcparkour.anfodis.command.handler;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.mapper.Command;
@@ -88,11 +87,11 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 
 	private void execute(C context, MessageReceiver receiver) {
 		if (this.executorHandler == null) {
-			sendHelpMessage(context);
+			sendUsage(receiver);
 			return;
 		}
 		if (!checkLength(context)) {
-			receiver.receivePlain("Invalid number of arguments.");
+			sendUsage(receiver, this.command);
 			return;
 		}
 		Object instance = this.command.createInstance();
@@ -155,40 +154,45 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 		return aliases.contains(lowerCaseArgument);
 	}
 
-	private void sendHelpMessage(C context) {
-		StringBuilder usage = new StringBuilder();
+	private void sendUsage(MessageReceiver receiver) {
+		StringBuilder builder = new StringBuilder();
 		CommandProperties properties = this.command.getProperties();
 		String name = properties.getName();
-		usage.append("Correct usage: " + name);
+		builder.append(name);
 		String description = properties.getDescription();
 		if (description != null) {
-			usage.append(" - " + description);
+			builder.append(" - " + description);
 		}
-		usage.append(".");
-		CommandSender<?> sender = context.getSender();
-		MessageReceiver receiver = sender.getReceiver();
-		receiver.receivePlain(usage.toString());
+		builder.append(".");
+		String usage = builder.toString();
+		receiver.receivePlain(usage);
 		List<T> subCommands = this.command.getSubCommands();
 		for (T subCommand : subCommands) {
-			StringBuilder subCommandUsage = new StringBuilder();
-			CommandProperties subCommandProperties = subCommand.getProperties();
-			String subCommandName = subCommandProperties.getName();
-			subCommandUsage.append(subCommandName);
-			List<? extends Argument> subCommandArguments = subCommand.getArguments();
-			if (!subCommandArguments.isEmpty()) {
-				subCommandUsage.append(" ");
-				String collect = subCommandArguments.stream()
-					.map(Argument::getName)
-					.collect(Collectors.joining(" ", "<", ">"));
-				subCommandUsage.append(collect);
-			}
-			String subCommandDescription = subCommandProperties.getDescription();
-			if (subCommandDescription != null) {
-				subCommandUsage.append(" - " + subCommandDescription);
-			}
-			subCommandUsage.append(".");
-			receiver.receivePlain(subCommandUsage.toString());
+			sendUsage(receiver, subCommand);
 		}
+	}
+
+	private void sendUsage(MessageReceiver receiver, T command) {
+		StringBuilder builder = new StringBuilder();
+		CommandProperties properties = command.getProperties();
+		String name = properties.getName();
+		builder.append(name);
+		List<? extends Argument> arguments = command.getArguments();
+		for (Argument argument : arguments) {
+			String argumentName = argument.getName();
+			boolean optional = argument.isOptional();
+			builder.append(" ")
+				.append(optional ? '[' : '<')
+				.append(argumentName)
+				.append(optional ? ']' : '>');
+		}
+		String description = properties.getDescription();
+		if (description != null) {
+			builder.append(" - " + description);
+		}
+		builder.append(".");
+		String usage = builder.toString();
+		receiver.receivePlain(usage);
 	}
 
 	protected T getCommand() {
