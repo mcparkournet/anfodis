@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command.mapper.argument;
 
 import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.UnknownCodecException;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,10 +44,22 @@ public class CompletionArgument extends Argument {
 		if (this.codecKey == null) {
 			return null;
 		}
-		Class<?> type = getArgumentClass();
-		CompletionCodec codec = this.codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(this.codecKey);
+		Class<?> argumentClass = getArgumentClass();
+		return this.codecKey.isEmpty() ? getTypedCodec(registry, argumentClass) : getKeyedCodec(registry, this.codecKey);
+	}
+
+	private CompletionCodec getTypedCodec(CodecRegistry<CompletionCodec> registry, Class<?> type) {
+		CompletionCodec codec = registry.getTypedCodec(type);
 		if (codec == null) {
-			throw new RuntimeException("Cannot find completion codec for type " + type);
+			throw new UnknownCodecException("Cannot find completion codec for type " + type);
+		}
+		return codec;
+	}
+
+	private CompletionCodec getKeyedCodec(CodecRegistry<CompletionCodec> registry, String key) {
+		CompletionCodec codec = registry.getKeyedCodec(key);
+		if (codec == null) {
+			throw new UnknownCodecException("Cannot find completion codec for key '" + key + "'");
 		}
 		return codec;
 	}

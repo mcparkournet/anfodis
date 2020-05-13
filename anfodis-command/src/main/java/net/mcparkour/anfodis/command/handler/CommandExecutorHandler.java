@@ -79,13 +79,13 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 			return getListArgumentValue(arguments, commandArgument, index);
 		}
 		String argument = arguments.get(index);
-		ArgumentCodec<?> codec = commandArgument.getArgumentCodec(this.argumentCodecRegistry);
+		ArgumentCodec<?> codec = commandArgument.getCodec(this.argumentCodecRegistry);
 		return codec.parse(argument);
 	}
 
 	private List<?> getListArgumentValue(List<String> arguments, Argument commandArgument, int startIndex) {
 		int size = arguments.size();
-		ArgumentCodec<?> codec = commandArgument.getGenericTypeArgumentCodec(this.argumentCodecRegistry, 0);
+		ArgumentCodec<?> codec = commandArgument.getGenericTypeCodec(this.argumentCodecRegistry, 0);
 		return IntStream.range(startIndex, size)
 			.mapToObj(arguments::get)
 			.map(codec::parse)

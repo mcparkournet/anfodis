@@ -26,6 +26,7 @@ package net.mcparkour.anfodis.listener.registry;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import com.google.common.collect.Multimap;
 import net.mcparkour.common.reflection.Reflections;
 import net.md_5.bungee.api.plugin.Event;
@@ -49,9 +50,7 @@ public class ReflectedPluginManager {
 	private static <T> T getFieldValue(String fieldName, PluginManager pluginManager) {
 		Field field = Reflections.getField(PluginManager.class, fieldName);
 		Object fieldValue = Reflections.getFieldValue(field, pluginManager);
-		if (fieldValue == null) {
-			throw new RuntimeException("Value of field " + fieldName + " is null");
-		}
+		Objects.requireNonNull(fieldValue, "Value of field " + fieldName + " is null");
 		return (T) fieldValue;
 	}
 

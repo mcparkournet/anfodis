@@ -30,6 +30,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.UnknownCodecException;
 import net.mcparkour.anfodis.command.OptionalArgument;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.common.reflection.Reflections;
@@ -77,43 +78,55 @@ public class Argument {
 		Reflections.setFieldValue(this.field, instance, value);
 	}
 
-	public boolean isList() {
-		Class<?> type = getArgumentClass();
-		return type.isAssignableFrom(List.class);
-	}
-
-	public boolean isOptionalArgument() {
+	private boolean isOptionalArgument() {
 		Class<?> fieldType = this.field.getType();
 		return fieldType.isAssignableFrom(OptionalArgument.class);
 	}
 
-	public ArgumentCodec<?> getArgumentCodec(CodecRegistry<ArgumentCodec<?>> registry) {
-		Class<?> type = getArgumentClass();
-		ArgumentCodec<?> codec = this.codecKey == null || this.codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(this.codecKey);
-		if (codec == null) {
-			throw new RuntimeException("Cannot find argument codec for type " + type);
-		}
-		return codec;
+	public boolean isList() {
+		Class<?> argumentClass = getArgumentClass();
+		return argumentClass.isAssignableFrom(List.class);
 	}
 
-	public Class<?> getArgumentClass() {
-		return Types.getRawClassType(this.argumentType);
+	public ArgumentCodec<?> getCodec(CodecRegistry<ArgumentCodec<?>> registry) {
+		Class<?> argumentClass = getArgumentClass();
+		return getCodec(registry, argumentClass);
 	}
 
-	public ArgumentCodec<?> getGenericTypeArgumentCodec(CodecRegistry<ArgumentCodec<?>> registry, int genericTypeIndex) {
+	public ArgumentCodec<?> getGenericTypeCodec(CodecRegistry<ArgumentCodec<?>> registry, int genericTypeIndex) {
 		Type[] genericTypes = getArgumentGenericTypes();
 		Type genericType = genericTypes[genericTypeIndex];
 		Class<?> type = Types.getRawClassType(genericType);
-		ArgumentCodec<?> codec = this.codecKey == null || this.codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(this.codecKey);
+		return getCodec(registry, type);
+	}
+
+	private ArgumentCodec<?> getCodec(CodecRegistry<ArgumentCodec<?>> registry, Class<?> type) {
+		return this.codecKey == null || this.codecKey.isEmpty() ? getTypedCodec(registry, type) : getKeyedCodec(registry, this.codecKey);
+	}
+
+	private ArgumentCodec<?> getTypedCodec(CodecRegistry<ArgumentCodec<?>> registry, Class<?> type) {
+		ArgumentCodec<?> codec = registry.getTypedCodec(type);
 		if (codec == null) {
-			throw new RuntimeException("Cannot find argument codec for generic type " + type);
+			throw new UnknownCodecException("Cannot find argument codec for type " + type);
 		}
 		return codec;
 	}
 
-	public Type[] getArgumentGenericTypes() {
+	private ArgumentCodec<?> getKeyedCodec(CodecRegistry<ArgumentCodec<?>> registry, String key) {
+		ArgumentCodec<?> codec = registry.getKeyedCodec(key);
+		if (codec == null) {
+			throw new UnknownCodecException("Cannot find argument codec for key '" + key + "'");
+		}
+		return codec;
+	}
+
+	private Type[] getArgumentGenericTypes() {
 		ParameterizedType parameterizedType = Types.asParametrizedType(this.argumentType);
 		return parameterizedType.getActualTypeArguments();
+	}
+
+	protected Class<?> getArgumentClass() {
+		return Types.getRawClassType(this.argumentType);
 	}
 
 	public String getName() {

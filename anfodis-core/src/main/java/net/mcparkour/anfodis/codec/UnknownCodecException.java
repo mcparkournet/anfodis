@@ -22,46 +22,13 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.argument;
+package net.mcparkour.anfodis.codec;
 
-import java.util.NoSuchElementException;
-import net.mcparkour.anfodis.command.OptionalArgument;
-import org.jetbrains.annotations.Nullable;
+public class UnknownCodecException extends RuntimeException {
 
-final class MappedOptionalArgument<T> implements OptionalArgument<T> {
+	private static final long serialVersionUID = -3196208203977782715L;
 
-	static final OptionalArgument<?> EMPTY_OPTIONAL_ARGUMENT = new MappedOptionalArgument<>(null, false);
-
-	@Nullable
-	private final T value;
-	private final boolean present;
-
-	static <T> OptionalArgument<T> of(@Nullable T value) {
-		return new MappedOptionalArgument<>(value, true);
-	}
-
-	private MappedOptionalArgument(@Nullable T value, boolean present) {
-		this.value = value;
-		this.present = present;
-	}
-
-	@Override
-	public boolean isPresent() {
-		return this.present;
-	}
-
-	@Override
-	@Nullable
-	public T orElse(@Nullable T other) {
-		return this.present ? this.value : other;
-	}
-
-	@Override
-	@Nullable
-	public T get() {
-		if (!this.present) {
-			throw new NoSuchElementException("Argument value is not present");
-		}
-		return this.value;
+	public UnknownCodecException(String message) {
+		super(message);
 	}
 }

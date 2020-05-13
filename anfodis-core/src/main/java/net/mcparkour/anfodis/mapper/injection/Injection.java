@@ -27,6 +27,7 @@ package net.mcparkour.anfodis.mapper.injection;
 import java.lang.reflect.Field;
 import java.util.Objects;
 import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.UnknownCodecException;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.common.reflection.Reflections;
 import org.jetbrains.annotations.Nullable;
@@ -49,9 +50,21 @@ public class Injection {
 
 	public InjectionCodec<?> getCodec(CodecRegistry<InjectionCodec<?>> registry) {
 		Class<?> type = this.field.getType();
-		InjectionCodec<?> codec = this.codecKey == null || this.codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(this.codecKey);
+		return this.codecKey == null || this.codecKey.isEmpty() ? getTypedCodec(registry, type) : getKeyedCodec(registry, this.codecKey);
+	}
+
+	private InjectionCodec<?> getTypedCodec(CodecRegistry<InjectionCodec<?>> registry, Class<?> type) {
+		InjectionCodec<?> codec = registry.getTypedCodec(type);
 		if (codec == null) {
-			throw new RuntimeException("Cannot find injection codec for type " + type);
+			throw new UnknownCodecException("Cannot find injection codec for type " + type);
+		}
+		return codec;
+	}
+
+	private InjectionCodec<?> getKeyedCodec(CodecRegistry<InjectionCodec<?>> registry, String key) {
+		InjectionCodec<?> codec = registry.getKeyedCodec(key);
+		if (codec == null) {
+			throw new UnknownCodecException("Cannot find injection codec for key '" + key + "'");
 		}
 		return codec;
 	}
