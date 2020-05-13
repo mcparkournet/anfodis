@@ -33,34 +33,22 @@ import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.handler.CommandContextSupplier;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
-import net.mcparkour.anfodis.command.handler.CompletionHandler;
 import net.mcparkour.anfodis.command.mapper.CompletionCommand;
 import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
-public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, ?, ?, ?>, C extends CommandContext<?>, D extends CompletionContext<?>, S> extends AbstractCommandRegistry<T, C, S> {
+public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, ?, ?, ?>, C extends CommandContext<S>, D extends CompletionContext<S>, S> extends AbstractCommandRegistry<T, C, S> {
 
-	private CompletionHandlerSupplier<T, D> completionHandlerSupplier;
+	private CompletionHandlerSupplier<T, D, S> completionHandlerSupplier;
+	private CommandContextSupplier<D, S> completionContextSupplier;
 	private CodecRegistry<CompletionCodec> completionCodecRegistry;
 
-	public AbstractCompletionRegistry(RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, String permissionPrefix) {
-		this(mapper, CompletionHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
-	}
-
-	public AbstractCompletionRegistry(RootMapper<T> mapper, CompletionHandlerSupplier<T, D> completionHandlerSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, String permissionPrefix) {
-		super(mapper, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, permissionPrefix);
-		this.completionHandlerSupplier = completionHandlerSupplier;
-		this.completionCodecRegistry = completionCodecRegistry;
-	}
-
-	public AbstractCompletionRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, String permissionPrefix) {
-		this(mapper, commandHandlerSupplier, commandExecutorHandlerSupplier, CompletionHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
-	}
-
-	public AbstractCompletionRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CompletionHandlerSupplier<T, D> completionHandlerSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, String permissionPrefix) {
-		super(mapper, commandHandlerSupplier, commandExecutorHandlerSupplier, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, permissionPrefix);
+	public AbstractCompletionRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C, S> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CommandContextSupplier<C, S> commandContextSupplier, CompletionHandlerSupplier<T, D, S> completionHandlerSupplier, CommandContextSupplier<D, S> completionContextSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, String permissionPrefix) {
+		super(mapper, commandHandlerSupplier, commandExecutorHandlerSupplier, commandContextSupplier, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, permissionPrefix);
+		this.completionContextSupplier = completionContextSupplier;
 		this.completionHandlerSupplier = completionHandlerSupplier;
 		this.completionCodecRegistry = completionCodecRegistry;
 	}
@@ -80,7 +68,7 @@ public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, 
 			CompletionContextHandler<D> handler = createCompletionHandler(subCommand);
 			handlers.put(subCommand, handler);
 		}
-		return this.completionHandlerSupplier.supply(command, this.completionCodecRegistry, handlers);
+		return this.completionHandlerSupplier.supply(command, this.completionCodecRegistry, handlers, this.completionContextSupplier);
 	}
 
 	@Override

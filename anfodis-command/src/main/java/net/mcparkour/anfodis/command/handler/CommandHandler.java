@@ -35,52 +35,58 @@ import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.craftmon.permission.PermissionBuilder;
 import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> implements CommandContextHandler<C> {
+public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S> implements CommandContextHandler<C> {
 
 	private T command;
 	private Map<T, ? extends CommandContextHandler<C>> subCommandHandlers;
 	@Nullable
 	private ContextHandler<C> executorHandler;
+	private CommandContextSupplier<C, S> contextSupplier;
 
-	public CommandHandler(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler) {
+	public CommandHandler(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler, CommandContextSupplier<C, S> contextSupplier) {
 		this.command = command;
 		this.subCommandHandlers = subCommandHandlers;
 		this.executorHandler = executorHandler;
+		this.contextSupplier = contextSupplier;
 	}
 
 	@Override
 	public void handle(C context) {
-		CommandSender<?> sender = context.getSender();
+		CommandSender<S> sender = context.getSender();
 		MessageReceiver receiver = sender.getReceiver();
 		if (!checkPermission(context)) {
 			receiver.receivePlain("You do not have permission.");
 			return;
 		}
 		List<String> arguments = context.getArguments();
-		if (!arguments.isEmpty()) {
-			String firstArgument = arguments.get(0);
-			List<T> subCommands = this.command.getSubCommands();
-			T subCommand = subCommands.stream()
-				.filter(element -> isMatching(firstArgument, element))
-				.findFirst()
-				.orElse(null);
-			if (subCommand != null) {
-				CommandContextHandler<C> handler = this.subCommandHandlers.get(subCommand);
-				if (handler != null) {
-					context.removeFirstArgument();
-					CommandProperties properties = subCommand.getProperties();
-					String permissionName = properties.getPermission();
-					if (permissionName != null) {
-						context.appendPermissionNode(permissionName);
-					}
-					handler.handle(context);
-					return;
-				}
-			}
+		if (arguments.isEmpty()) {
+			execute(context, receiver);
+			return;
 		}
+		String firstArgument = arguments.get(0);
+		List<T> subCommands = this.command.getSubCommands();
+		T subCommand = subCommands.stream()
+			.filter(element -> isMatching(firstArgument, element))
+			.findFirst()
+			.orElse(null);
+		if (subCommand == null) {
+			execute(context, receiver);
+			return;
+		}
+		CommandContextHandler<C> subCommandHandler = this.subCommandHandlers.get(subCommand);
+		if (subCommandHandler == null) {
+			execute(context, receiver);
+			return;
+		}
+		C subCommandContext = createSubCommandContext(arguments, context, subCommand);
+		subCommandHandler.handle(subCommandContext);
+	}
+
+	private void execute(C context, MessageReceiver receiver) {
 		if (this.executorHandler == null) {
 			sendHelpMessage(context);
 			return;
@@ -91,6 +97,28 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 		}
 		Object instance = this.command.createInstance();
 		this.executorHandler.handle(context, instance);
+	}
+
+	private C createSubCommandContext(List<String> subCommandArguments, C context, T subCommand) {
+		CommandSender<S> sender = context.getSender();
+		int size = subCommandArguments.size();
+		List<String> arguments = subCommandArguments.subList(1, size);
+		Permission permission = createSubCommandPermission(context, subCommand);
+		return this.contextSupplier.supply(sender, arguments, permission);
+	}
+
+	@Nullable
+	private Permission createSubCommandPermission(C context, T subCommand) {
+		Permission permission = context.getPermission();
+		CommandProperties properties = subCommand.getProperties();
+		String permissionName = properties.getPermission();
+		if (permissionName == null || permission == null) {
+			return permission;
+		}
+		return new PermissionBuilder()
+			.with(permission)
+			.node(permissionName)
+			.build();
 	}
 
 	private boolean checkLength(C context) {

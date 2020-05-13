@@ -34,15 +34,15 @@ import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
-public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperCommandContext> {
+public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperCommandContext, org.bukkit.command.CommandSender> {
 
-	public PaperCommandHandler(PaperCommand command, Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers, @Nullable ContextHandler<PaperCommandContext> executorHandler) {
-		super(command, subCommandHandlers, executorHandler);
+	public PaperCommandHandler(PaperCommand command, Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers, @Nullable ContextHandler<PaperCommandContext> executorHandler, CommandContextSupplier<PaperCommandContext, org.bukkit.command.CommandSender> contextSupplier) {
+		super(command, subCommandHandlers, executorHandler, contextSupplier);
 	}
 
 	@Override
 	public void handle(PaperCommandContext context) {
-		CommandSender<?> sender = context.getSender();
+		CommandSender<org.bukkit.command.CommandSender> sender = context.getSender();
 		MessageReceiver receiver = sender.getReceiver();
 		if (!checkSenders(context)) {
 			receiver.receivePlain("You are not a valid sender.");
@@ -58,9 +58,9 @@ public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperComma
 		if (senders.isEmpty()) {
 			return true;
 		}
-		CommandSender<?> commandSender = context.getSender();
-		Object rawSender = commandSender.getSender();
-		Class<?> rawSenderType = rawSender.getClass();
-		return senders.stream().anyMatch(sender -> sender.isAssignableFrom(rawSenderType));
+		CommandSender<org.bukkit.command.CommandSender> commandSender = context.getSender();
+		org.bukkit.command.CommandSender bukkitSender = commandSender.getSender();
+		Class<?> bukkitSenderClass = bukkitSender.getClass();
+		return senders.stream().anyMatch(sender -> sender.isAssignableFrom(bukkitSenderClass));
 	}
 }

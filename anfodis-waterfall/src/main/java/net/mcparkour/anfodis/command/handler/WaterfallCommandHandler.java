@@ -34,10 +34,10 @@ import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
-public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, WaterfallCommandContext> {
+public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, WaterfallCommandContext, net.md_5.bungee.api.CommandSender> {
 
-	public WaterfallCommandHandler(WaterfallCommand command, Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers, @Nullable ContextHandler<WaterfallCommandContext> executorHandler) {
-		super(command, subCommandHandlers, executorHandler);
+	public WaterfallCommandHandler(WaterfallCommand command, Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers, @Nullable ContextHandler<WaterfallCommandContext> executorHandler, CommandContextSupplier<WaterfallCommandContext, net.md_5.bungee.api.CommandSender> contextSupplier) {
+		super(command, subCommandHandlers, executorHandler, contextSupplier);
 	}
 
 	@Override

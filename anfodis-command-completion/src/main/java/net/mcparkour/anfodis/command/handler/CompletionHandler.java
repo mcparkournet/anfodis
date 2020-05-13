@@ -37,43 +37,65 @@ import net.mcparkour.anfodis.command.mapper.argument.CompletionArgument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.craftmon.permission.PermissionBuilder;
+import org.jetbrains.annotations.Nullable;
 
-public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<?>> implements CompletionContextHandler<C> {
+public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<S>, S> implements CompletionContextHandler<C> {
 
 	private T command;
 	private CodecRegistry<CompletionCodec> completionCodecRegistry;
 	private Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap;
+	private CommandContextSupplier<C, S> contextSupplier;
 
-	public CompletionHandler(T command, CodecRegistry<CompletionCodec> completionCodecRegistry, Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap) {
+	public CompletionHandler(T command, CodecRegistry<CompletionCodec> completionCodecRegistry, Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap, CommandContextSupplier<C, S> contextSupplier) {
 		this.command = command;
 		this.completionCodecRegistry = completionCodecRegistry;
 		this.subCommandHandlerMap = subCommandHandlerMap;
+		this.contextSupplier = contextSupplier;
 	}
 
 	@Override
 	public List<String> handle(C context) {
 		List<String> arguments = context.getArguments();
-		if (arguments.size() >= 2) {
-			String firstArgument = arguments.get(0);
-			List<T> subCommands = this.command.getSubCommands();
-			T subCommand = subCommands.stream()
-				.filter(item -> isMatching(firstArgument, item))
-				.findFirst()
-				.orElse(null);
-			if (subCommand != null) {
-				CompletionContextHandler<C> handler = this.subCommandHandlerMap.get(subCommand);
-				if (handler != null) {
-					context.removeFirstArgument();
-					CommandProperties properties = subCommand.getProperties();
-					String permissionName = properties.getPermission();
-					if (permissionName != null) {
-						context.appendPermissionNode(permissionName);
-					}
-					return handler.handle(context);
-				}
-			}
+		if (arguments.size() < 2) {
+			return getCompletions(context);
 		}
-		return getCompletions(context);
+		String firstArgument = arguments.get(0);
+		List<T> subCommands = this.command.getSubCommands();
+		T subCommand = subCommands.stream()
+			.filter(item -> isMatching(firstArgument, item))
+			.findFirst()
+			.orElse(null);
+		if (subCommand == null) {
+			return getCompletions(context);
+		}
+		CompletionContextHandler<C> handler = this.subCommandHandlerMap.get(subCommand);
+		if (handler == null) {
+			return getCompletions(context);
+		}
+		C subCommandContext = createSubCommandContext(arguments, context, subCommand);
+		return handler.handle(subCommandContext);
+	}
+
+	private C createSubCommandContext(List<String> subCommandArguments, C context, T subCommand) {
+		CommandSender<S> sender = context.getSender();
+		int size = subCommandArguments.size();
+		List<String> arguments = subCommandArguments.subList(1, size);
+		Permission permission = createSubCommandPermission(context, subCommand);
+		return this.contextSupplier.supply(sender, arguments, permission);
+	}
+
+	@Nullable
+	private Permission createSubCommandPermission(C context, T subCommand) {
+		Permission permission = context.getPermission();
+		CommandProperties properties = subCommand.getProperties();
+		String permissionName = properties.getPermission();
+		if (permissionName == null || permission == null) {
+			return permission;
+		}
+		return new PermissionBuilder()
+			.with(permission)
+			.node(permissionName)
+			.build();
 	}
 
 	private boolean isMatching(String argument, T command) {

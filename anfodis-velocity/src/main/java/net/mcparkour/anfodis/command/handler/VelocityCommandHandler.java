@@ -35,16 +35,16 @@ import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
-public class VelocityCommandHandler extends CommandHandler<VelocityCommand, VelocityCommandContext> {
+public class VelocityCommandHandler extends CommandHandler<VelocityCommand, VelocityCommandContext, CommandSource> {
 
-	public VelocityCommandHandler(VelocityCommand command, Map<VelocityCommand, ? extends CommandContextHandler<VelocityCommandContext>> subCommandHandlers, @Nullable ContextHandler<VelocityCommandContext> executorHandler) {
-		super(command, subCommandHandlers, executorHandler);
+	public VelocityCommandHandler(VelocityCommand command, Map<VelocityCommand, ? extends CommandContextHandler<VelocityCommandContext>> subCommandHandlers, @Nullable ContextHandler<VelocityCommandContext> executorHandler, CommandContextSupplier<VelocityCommandContext, CommandSource> contextSupplier) {
+		super(command, subCommandHandlers, executorHandler, contextSupplier);
 	}
 
 	@Override
 	public void handle(VelocityCommandContext context) {
 		if (!checkSenders(context)) {
-			CommandSender<?> sender = context.getSender();
+			CommandSender<CommandSource> sender = context.getSender();
 			MessageReceiver receiver = sender.getReceiver();
 			receiver.receivePlain("You are not a valid sender.");
 			return;

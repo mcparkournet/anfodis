@@ -32,8 +32,7 @@ import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
-import net.mcparkour.anfodis.command.handler.CommandExecutorHandler;
-import net.mcparkour.anfodis.command.handler.CommandHandler;
+import net.mcparkour.anfodis.command.handler.CommandContextSupplier;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
@@ -45,22 +44,20 @@ import net.mcparkour.craftmon.permission.PermissionBuilder;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>, S> extends AbstractRegistry<T, C> {
+public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S> extends AbstractRegistry<T, C> {
 
-	private CommandHandlerSupplier<T, C> commandHandlerSupplier;
+	private CommandHandlerSupplier<T, C, S> commandHandlerSupplier;
 	private CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier;
+	private CommandContextSupplier<C, S> contextSupplier;
 	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
 	private MessageReceiverFactory<S> messageReceiverFactory;
 	private String permissionPrefix;
 
-	public AbstractCommandRegistry(RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, String permissionPrefix) {
-		this(mapper, CommandHandler::new, CommandExecutorHandler::new, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, permissionPrefix);
-	}
-
-	public AbstractCommandRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, String permissionPrefix) {
+	public AbstractCommandRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C, S> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CommandContextSupplier<C, S> contextSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, String permissionPrefix) {
 		super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
 		this.commandHandlerSupplier = commandHandlerSupplier;
 		this.commandExecutorHandlerSupplier = commandExecutorHandlerSupplier;
+		this.contextSupplier = contextSupplier;
 		this.argumentCodecRegistry = argumentCodecRegistry;
 		this.messageReceiverFactory = messageReceiverFactory;
 		this.permissionPrefix = permissionPrefix;
@@ -89,7 +86,7 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
 			handlers.put(subCommand, handler);
 		}
 		ContextHandler<C> executorHandler = createCommandExecutorHandler(command);
-		return this.commandHandlerSupplier.supply(command, handlers, executorHandler);
+		return this.commandHandlerSupplier.supply(command, handlers, executorHandler, this.contextSupplier);
 	}
 
 	@Nullable

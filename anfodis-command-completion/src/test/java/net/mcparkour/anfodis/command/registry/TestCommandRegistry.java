@@ -36,6 +36,7 @@ import net.mcparkour.anfodis.command.context.TestCommandSender;
 import net.mcparkour.anfodis.command.context.TestCompletionContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
+import net.mcparkour.anfodis.command.handler.CompletionHandler;
 import net.mcparkour.anfodis.command.handler.TestCommandExecutorHandler;
 import net.mcparkour.anfodis.command.handler.TestCommandHandler;
 import net.mcparkour.anfodis.command.mapper.TestCommand;
@@ -52,8 +53,13 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
 
 	private Map<String, CommandWrapper> commandManager;
 
-	public TestCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory, String permissionPrefix, Map<String, CommandWrapper> commandManager) {
-		super(COMMAND_MAPPER, TestCommandHandler::new, TestCommandExecutorHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
+	public TestCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+		CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
+		CodecRegistry<CompletionCodec> completionCodecRegistry,
+		MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory,
+		String permissionPrefix,
+		Map<String, CommandWrapper> commandManager) {
+		super(COMMAND_MAPPER, TestCommandHandler::new, TestCommandExecutorHandler::new, TestCommandContext::new, CompletionHandler::new, TestCompletionContext::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
 		this.commandManager = commandManager;
 	}
 

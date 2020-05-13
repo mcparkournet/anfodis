@@ -27,11 +27,12 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.Map;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
+import net.mcparkour.anfodis.command.handler.CommandContextSupplier;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.mapper.CompletionCommand;
 
-public interface CompletionHandlerSupplier<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<?>> {
+public interface CompletionHandlerSupplier<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<S>, S> {
 
-	CompletionContextHandler<C> supply(T command, CodecRegistry<CompletionCodec> completionCodecRegistry, Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap);
+	CompletionContextHandler<C> supply(T command, CodecRegistry<CompletionCodec> completionCodecRegistry, Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap, CommandContextSupplier<C, S> contextSupplier);
 }

@@ -22,15 +22,15 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.context;
+package net.mcparkour.anfodis.command.handler;
 
 import java.util.List;
+import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
-public class PaperCommandContext extends CommandContext<org.bukkit.command.CommandSender> {
+public interface CommandContextSupplier<C extends CommandContext<S>, S> {
 
-	public PaperCommandContext(CommandSender<org.bukkit.command.CommandSender> sender, List<String> arguments, @Nullable Permission permission) {
-		super(sender, arguments, permission);
-	}
+	C supply(CommandSender<S> sender, List<String> arguments, @Nullable Permission permission);
 }

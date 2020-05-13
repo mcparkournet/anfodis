@@ -32,6 +32,8 @@ import net.mcparkour.anfodis.command.PermissionMap;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.JDACommandContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.handler.CommandExecutorHandler;
+import net.mcparkour.anfodis.command.handler.CommandHandler;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.JDACommandMapper;
 import net.mcparkour.intext.message.MessageReceiverFactory;
@@ -45,7 +47,7 @@ public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDAC
 	private CommandMap commandMap;
 
 	public JDACommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<ChannelSender> messageReceiverFactory, String permissionPrefix, JDA jda, PermissionMap permissionMap) {
-		super(COMMAND_MAPPER, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, permissionPrefix);
+		super(COMMAND_MAPPER, CommandHandler::new, CommandExecutorHandler::new, JDACommandContext::new, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, permissionPrefix);
 		this.jda = jda;
 		this.permissionMap = permissionMap;
 		this.commandMap = new CommandMap();

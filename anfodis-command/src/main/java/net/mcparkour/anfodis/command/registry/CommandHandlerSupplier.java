@@ -27,11 +27,12 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.Map;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.handler.CommandContextSupplier;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import org.jetbrains.annotations.Nullable;
 
-public interface CommandHandlerSupplier<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> {
+public interface CommandHandlerSupplier<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S> {
 
-	CommandContextHandler<C> supply(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler);
+	CommandContextHandler<C> supply(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler, CommandContextSupplier<C, S> contextSupplier);
 }
