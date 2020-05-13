@@ -48,6 +48,6 @@ public class PaperChannelListenerContextMapper implements Mapper<Field, PaperCha
 			.build()
 			.mapFirstOptional(elements)
 			.map(PaperChannelListenerContext::new)
-			.get();
+			.orElseThrow();
 	}
 }

@@ -71,6 +71,6 @@ public class CommandPropertiesMapper<P extends CommandProperties, D extends Comm
 			.build()
 			.mapFirstOptional(elements)
 			.map(this.propertiesSupplier)
-			.get();
+			.orElseThrow();
 	}
 }

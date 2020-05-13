@@ -68,6 +68,6 @@ public class ListenerPropertiesMapper<P extends ListenerProperties<E>, D extends
 			.build()
 			.mapFirstOptional(elements)
 			.map(this.propertiesSupplier)
-			.get();
+			.orElseThrow();
 	}
 }

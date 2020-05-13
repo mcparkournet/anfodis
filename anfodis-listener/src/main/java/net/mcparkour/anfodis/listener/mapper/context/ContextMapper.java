@@ -53,6 +53,6 @@ public class ContextMapper<C extends Context, D extends ContextData> implements 
 			.build()
 			.mapFirstOptional(elements)
 			.map(this.contextSupplier)
-			.get();
+			.orElseThrow();
 	}
 }

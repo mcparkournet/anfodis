@@ -41,6 +41,6 @@ public class PaperChannelListenerPropertiesMapper implements Mapper<Class<?>, Pa
 			.build()
 			.mapFirstOptional(elements)
 			.map(PaperChannelListenerProperties::new)
-			.get();
+			.orElseThrow();
 	}
 }

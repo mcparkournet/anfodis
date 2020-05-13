@@ -76,6 +76,6 @@ public class ContextMapper<C extends Context, D extends ContextData> implements 
 		return builder.build()
 			.mapFirstOptional(elements)
 			.map(this.contextSupplier)
-			.get();
+			.orElseThrow();
 	}
 }
