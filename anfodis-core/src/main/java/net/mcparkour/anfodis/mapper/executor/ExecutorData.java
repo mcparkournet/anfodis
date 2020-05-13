@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.mapper.executor;
 import java.lang.reflect.Method;
 import org.jetbrains.annotations.Nullable;
 
-public class ExecutorData {
+class ExecutorData {
 
 	@Nullable
 	private Method beforeMethod;

@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.listener.mapper.properties;
 import net.md_5.bungee.api.plugin.Event;
 import org.jetbrains.annotations.Nullable;
 
-public class WaterfallListenerPropertiesData extends ListenerPropertiesData<Event> {
+class WaterfallListenerPropertiesData extends ListenerPropertiesData<Event> {
 
 	@Nullable
 	private Byte priority;

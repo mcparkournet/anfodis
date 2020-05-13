@@ -44,7 +44,7 @@ public class ListenerHandler<T extends Listener<?, ?>, C extends ListenerContext
 
 	private void setContext(C context, Object listenerInstance) {
 		Listener<?, ?> listener = getRoot();
-		Context<?> listenerContext = listener.getContext();
+		Context listenerContext = listener.getContext();
 		E event = context.getEvent();
 		listenerContext.setEventField(listenerInstance, event);
 	}

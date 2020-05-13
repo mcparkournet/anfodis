@@ -36,7 +36,7 @@ import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
-public class ContextMapper<C extends Context<D>, D extends ContextData> implements Mapper<Field, C> {
+public class ContextMapper<C extends Context, D extends ContextData> implements Mapper<Field, C> {
 
 	private Function<D, C> contextSupplier;
 	private Supplier<D> contextDataSupplier;

@@ -24,7 +24,7 @@
 
 package net.mcparkour.anfodis.command.mapper.context;
 
-public class TestContext extends Context<TestContextData> {
+public class TestContext extends Context {
 
 	public TestContext(TestContextData contextData) {
 		super(contextData);

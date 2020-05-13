@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.channel.mapper.context;
 import java.lang.reflect.Field;
 import org.jetbrains.annotations.Nullable;
 
-public class PaperChannelListenerContextData {
+class PaperChannelListenerContextData {
 
 	@Nullable
 	private Field messageField;

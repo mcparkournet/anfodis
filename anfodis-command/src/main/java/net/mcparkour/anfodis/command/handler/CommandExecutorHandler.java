@@ -58,12 +58,12 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 
 	private void setArguments(C context, Object commandInstance) {
 		T command = getRoot();
-		List<? extends Argument<?>> commandArguments = command.getArguments();
+		List<? extends Argument> commandArguments = command.getArguments();
 		int commandArgumentsSize = commandArguments.size();
 		List<String> arguments = context.getArguments();
 		int argumentsSize = arguments.size();
 		for (int index = 0; index < commandArgumentsSize; index++) {
-			Argument<?> commandArgument = commandArguments.get(index);
+			Argument commandArgument = commandArguments.get(index);
 			if (index >= argumentsSize) {
 				commandArgument.setEmptyArgumentField(commandInstance);
 			} else {
@@ -74,7 +74,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 	}
 
 	@Nullable
-	private Object getArgumentValue(List<String> arguments, Argument<?> commandArgument, int index) {
+	private Object getArgumentValue(List<String> arguments, Argument commandArgument, int index) {
 		if (commandArgument.isList()) {
 			return getListArgumentValue(arguments, commandArgument, index);
 		}
@@ -83,7 +83,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 		return codec.parse(argument);
 	}
 
-	private List<?> getListArgumentValue(List<String> arguments, Argument<?> commandArgument, int startIndex) {
+	private List<?> getListArgumentValue(List<String> arguments, Argument commandArgument, int startIndex) {
 		int size = arguments.size();
 		ArgumentCodec<?> codec = commandArgument.getGenericTypeArgumentCodec(this.argumentCodecRegistry, 0);
 		return IntStream.range(startIndex, size)
@@ -94,7 +94,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 
 	private void setContext(C context, Object commandInstance) {
 		T command = getRoot();
-		Context<?> commandContext = command.getContext();
+		Context commandContext = command.getContext();
 		List<String> arguments = context.getArguments();
 		commandContext.setArgumentsField(commandInstance, arguments);
 		Permission permission = context.getPermission();

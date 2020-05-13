@@ -36,7 +36,7 @@ import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 
-public class ListenerMapper<T extends Listener<C, P>, C extends Context<?>, P extends ListenerProperties<?, ?>> implements RootMapper<T> {
+public class ListenerMapper<T extends Listener<C, P>, C extends Context, P extends ListenerProperties<?>> implements RootMapper<T> {
 
 	private ContextMapper<C, ?> contextMapper;
 	private ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper;

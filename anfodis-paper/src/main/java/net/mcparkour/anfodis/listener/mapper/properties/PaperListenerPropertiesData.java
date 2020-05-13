@@ -28,7 +28,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.Nullable;
 
-public class PaperListenerPropertiesData extends ListenerPropertiesData<Event> {
+class PaperListenerPropertiesData extends ListenerPropertiesData<Event> {
 
 	@Nullable
 	private EventPriority priority;

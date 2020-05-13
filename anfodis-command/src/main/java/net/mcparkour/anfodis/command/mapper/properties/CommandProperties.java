@@ -24,78 +24,80 @@
 
 package net.mcparkour.anfodis.command.mapper.properties;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandProperties<D extends CommandPropertiesData> {
+public class CommandProperties {
 
-	private D propertiesData;
+	private String name;
+	private String description;
+	@Nullable
+	private String descriptionTranslationId;
+	private Set<String> aliases;
+	private Set<String> lowerCaseAliases;
+	@Nullable
+	private String aliasesTranslationId;
+	@Nullable
+	private String permission;
 
-	public CommandProperties(D propertiesData) {
-		this.propertiesData = propertiesData;
+	public CommandProperties(CommandPropertiesData propertiesData) {
+		String name = propertiesData.getName();
+		this.name = Objects.requireNonNull(name, "Command name is null");
+		String description = propertiesData.getDescription();
+		this.description = description == null ? "" : description;
+		this.descriptionTranslationId = propertiesData.getDescriptionTranslationId();
+		String[] aliases = propertiesData.getAliases();
+		this.aliases = aliases == null ? Set.of() : Set.of(aliases);
+		this.lowerCaseAliases = this.aliases.stream()
+			.map(String::toLowerCase)
+			.collect(Collectors.toUnmodifiableSet());
+		this.aliasesTranslationId = propertiesData.getAliasesTranslationId();
+		String permission = propertiesData.getPermission();
+		this.permission = permission == null ? null : permission.isEmpty() ? this.name : permission;
 	}
 
 	@Nullable
 	public String getPermission() {
-		String permission = this.propertiesData.getPermission();
-		if (permission == null) {
-			return null;
-		}
-		if (permission.isEmpty()) {
-			return getName();
-		}
-		return permission;
+		return this.permission;
 	}
 
-	public String getDefaultUsage() {
-		return "/" + getName();
-	}
-
-	public List<String> getAllNames() {
-		List<String> names = new ArrayList<>(1);
-		String name = getName();
-		names.add(name);
-		List<String> aliases = getAliases();
-		names.addAll(aliases);
+	public Set<String> getAllNames() {
+		Set<String> names = new HashSet<>(1);
+		names.add(this.name);
+		names.addAll(this.aliases);
 		return names;
 	}
 
+	public String getDefaultUsage() {
+		return "/" + this.name;
+	}
+
 	public String getName() {
-		String name = this.propertiesData.getName();
-		if (name == null) {
-			throw new RuntimeException("Command name is null");
-		}
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		String description = this.propertiesData.getDescription();
-		if (description == null) {
-			return "";
-		}
-		return description;
+		return this.description;
 	}
 
 	@Nullable
 	public String getDescriptionTranslationId() {
-		return this.propertiesData.getDescriptionTranslationId();
+		return this.descriptionTranslationId;
 	}
 
-	public List<String> getAliases() {
-		String[] aliases = this.propertiesData.getAliases();
-		if (aliases == null) {
-			return List.of();
-		}
-		return List.of(aliases);
+	public Set<String> getAliases() {
+		return this.aliases;
+	}
+
+	public Set<String> getLowerCaseAliases() {
+		return this.lowerCaseAliases;
 	}
 
 	@Nullable
 	public String getAliasesTranslationId() {
-		return this.propertiesData.getAliasesTranslationId();
-	}
-
-	protected D getPropertiesData() {
-		return this.propertiesData;
+		return this.aliasesTranslationId;
 	}
 }

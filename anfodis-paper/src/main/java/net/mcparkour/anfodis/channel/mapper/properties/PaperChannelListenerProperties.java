@@ -24,21 +24,18 @@
 
 package net.mcparkour.anfodis.channel.mapper.properties;
 
-import java.util.List;
+import java.util.Set;
 
 public class PaperChannelListenerProperties {
 
-	private PaperChannelListenerPropertiesData data;
+	private Set<String> channels;
 
 	public PaperChannelListenerProperties(PaperChannelListenerPropertiesData data) {
-		this.data = data;
+		String[] channels = data.getChannels();
+		this.channels = channels == null ? Set.of() : Set.of(channels);
 	}
 
-	public List<String> getChannels() {
-		String[] channels = this.data.getChannels();
-		if (channels == null) {
-			return List.of();
-		}
-		return List.of(channels);
+	public Set<String> getChannels() {
+		return this.channels;
 	}
 }

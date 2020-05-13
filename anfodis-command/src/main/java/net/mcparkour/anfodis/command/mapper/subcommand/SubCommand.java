@@ -25,20 +25,18 @@
 package net.mcparkour.anfodis.command.mapper.subcommand;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 public class SubCommand {
 
-	private SubCommandData subCommandData;
+	private Field field;
 
 	public SubCommand(SubCommandData subCommandData) {
-		this.subCommandData = subCommandData;
+		Field field = subCommandData.getSubCommandField();
+		this.field = Objects.requireNonNull(field, "Sub-command field is null");
 	}
 
 	public Class<?> getFieldType() {
-		Field field = this.subCommandData.getSubCommandField();
-		if (field == null) {
-			throw new RuntimeException("Field is null");
-		}
-		return field.getType();
+		return this.field.getType();
 	}
 }

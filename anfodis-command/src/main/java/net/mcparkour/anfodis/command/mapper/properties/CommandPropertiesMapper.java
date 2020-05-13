@@ -37,7 +37,7 @@ import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
-public class CommandPropertiesMapper<P extends CommandProperties<D>, D extends CommandPropertiesData> implements Mapper<Class<?>, P> {
+public class CommandPropertiesMapper<P extends CommandProperties, D extends CommandPropertiesData> implements Mapper<Class<?>, P> {
 
 	private Function<D, P> propertiesSupplier;
 	private Supplier<D> propertiesDataSupplier;

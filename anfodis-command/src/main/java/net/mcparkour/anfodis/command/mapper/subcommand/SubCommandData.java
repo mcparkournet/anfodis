@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.command.mapper.subcommand;
 import java.lang.reflect.Field;
 import org.jetbrains.annotations.Nullable;
 
-public class SubCommandData {
+class SubCommandData {
 
 	@Nullable
 	private Field subCommandField;

@@ -37,7 +37,7 @@ import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
-public class ArgumentMapper<A extends net.mcparkour.anfodis.command.mapper.argument.Argument<D>, D extends ArgumentData> implements Mapper<Field, List<A>> {
+public class ArgumentMapper<A extends net.mcparkour.anfodis.command.mapper.argument.Argument, D extends ArgumentData> implements Mapper<Field, List<A>> {
 
 	private Function<D, A> argumentSupplier;
 	private Supplier<D> argumentDataSupplier;

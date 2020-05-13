@@ -32,7 +32,7 @@ import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
-public class ListenerPropertiesMapper<P extends ListenerProperties<D, E>, D extends ListenerPropertiesData<E>, E, A extends Annotation> implements Mapper<Class<?>, P> {
+public class ListenerPropertiesMapper<P extends ListenerProperties<E>, D extends ListenerPropertiesData<E>, E, A extends Annotation> implements Mapper<Class<?>, P> {
 
 	private Class<A> listenerAnnotationType;
 	private Function<A, Class<? extends E>[]> listenedEventsExtractor;

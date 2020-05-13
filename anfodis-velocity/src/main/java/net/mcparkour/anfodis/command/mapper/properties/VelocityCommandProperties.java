@@ -24,21 +24,20 @@
 
 package net.mcparkour.anfodis.command.mapper.properties;
 
-import java.util.List;
+import java.util.Set;
 import com.velocitypowered.api.command.CommandSource;
 
-public class VelocityCommandProperties extends CommandProperties<VelocityCommandPropertiesData> {
+public class VelocityCommandProperties extends CommandProperties {
+
+	private Set<Class<? extends CommandSource>> senderTypes;
 
 	public VelocityCommandProperties(VelocityCommandPropertiesData propertiesData) {
 		super(propertiesData);
+		Class<? extends CommandSource>[] senderTypes = propertiesData.getSenderTypes();
+		this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
 	}
 
-	public List<Class<? extends CommandSource>> getSendersTypes() {
-		VelocityCommandPropertiesData propertiesData = getPropertiesData();
-		Class<? extends CommandSource>[] sendersTypes = propertiesData.getSendersTypes();
-		if (sendersTypes == null) {
-			return List.of();
-		}
-		return List.of(sendersTypes);
+	public Set<Class<? extends CommandSource>> getSenderTypes() {
+		return this.senderTypes;
 	}
 }

@@ -26,18 +26,17 @@ package net.mcparkour.anfodis.listener.mapper.properties;
 
 import com.velocitypowered.api.event.PostOrder;
 
-public class VelocityListenerProperties extends ListenerProperties<VelocityListenerPropertiesData, Object> {
+public class VelocityListenerProperties extends ListenerProperties<Object> {
+
+	private PostOrder priority;
 
 	public VelocityListenerProperties(VelocityListenerPropertiesData propertiesData) {
 		super(propertiesData);
+		PostOrder priority = propertiesData.getPriority();
+		this.priority = priority == null ? PostOrder.NORMAL : priority;
 	}
 
 	public PostOrder getPriority() {
-		VelocityListenerPropertiesData propertiesData = getPropertiesData();
-		PostOrder priority = propertiesData.getPriority();
-		if (priority == null) {
-			return PostOrder.NORMAL;
-		}
-		return priority;
+		return this.priority;
 	}
 }

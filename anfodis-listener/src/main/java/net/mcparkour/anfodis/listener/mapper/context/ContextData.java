@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.listener.mapper.context;
 import java.lang.reflect.Field;
 import org.jetbrains.annotations.Nullable;
 
-public class ContextData {
+class ContextData {
 
 	@Nullable
 	private Field eventField;

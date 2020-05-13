@@ -29,6 +29,6 @@ import net.mcparkour.anfodis.command.annotation.properties.Senders;
 public class WaterfallCommandPropertiesMapper extends CommandPropertiesMapper<WaterfallCommandProperties, WaterfallCommandPropertiesData> {
 
 	public WaterfallCommandPropertiesMapper() {
-		super(WaterfallCommandProperties::new, WaterfallCommandPropertiesData::new, (data, builder) -> builder.annotation(Senders.class, senders -> data.setSendersTypes(senders.value())));
+		super(WaterfallCommandProperties::new, WaterfallCommandPropertiesData::new, (data, builder) -> builder.annotation(Senders.class, senders -> data.setSenderTypes(senders.value())));
 	}
 }

@@ -24,4 +24,4 @@
 
 package net.mcparkour.anfodis.command.mapper.context;
 
-public class TestContextData extends ContextData {}
+class TestContextData extends ContextData {}

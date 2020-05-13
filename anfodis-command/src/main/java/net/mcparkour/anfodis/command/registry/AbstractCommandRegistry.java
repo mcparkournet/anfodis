@@ -91,7 +91,7 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
 	public abstract void register(T command, CommandContextHandler<C> commandHandler);
 
 	@Nullable
-	protected Permission createPermission(CommandProperties<?> properties) {
+	protected Permission createPermission(CommandProperties properties) {
 		String commandPermission = properties.getPermission();
 		if (commandPermission == null) {
 			return null;

@@ -24,7 +24,7 @@
 
 package net.mcparkour.anfodis.channel.registry;
 
-import java.util.List;
+import java.util.Set;
 import net.mcparkour.anfodis.channel.ChannelMessage;
 import net.mcparkour.anfodis.channel.handler.ChannelListenerContext;
 import net.mcparkour.anfodis.channel.handler.PaperChannelListenerHandler;
@@ -64,7 +64,7 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
 	@Override
 	public void register(PaperChannelListener root, ContextHandler<ChannelListenerContext> handler) {
 		PaperChannelListenerProperties properties = root.getProperties();
-		List<String> channels = properties.getChannels();
+		Set<String> channels = properties.getChannels();
 		for (String channel : channels) {
 			register(root, channel, handler);
 		}

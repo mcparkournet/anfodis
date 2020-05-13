@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.channel.mapper.properties;
 
 import org.jetbrains.annotations.Nullable;
 
-public class PaperChannelListenerPropertiesData {
+class PaperChannelListenerPropertiesData {
 
 	@Nullable
 	private String[] channels;

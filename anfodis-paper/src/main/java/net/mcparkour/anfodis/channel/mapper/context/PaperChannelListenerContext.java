@@ -28,28 +28,31 @@ import java.lang.reflect.Field;
 import net.mcparkour.anfodis.channel.ChannelMessage;
 import net.mcparkour.common.reflection.Reflections;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 public class PaperChannelListenerContext {
 
-	private PaperChannelListenerContextData data;
+	@Nullable
+	private Field messageField;
+	@Nullable
+	private Field sourceField;
 
 	public PaperChannelListenerContext(PaperChannelListenerContextData data) {
-		this.data = data;
+		this.messageField = data.getMessageField();
+		this.sourceField = data.getSourceField();
 	}
 
 	public void setMessageField(Object instance, ChannelMessage message) {
-		Field field = this.data.getMessageField();
-		if (field == null) {
+		if (this.messageField == null) {
 			return;
 		}
-		Reflections.setFieldValue(field, instance, message);
+		Reflections.setFieldValue(this.messageField, instance, message);
 	}
 
 	public void setSourceField(Object instance, Player source) {
-		Field field = this.data.getMessageField();
-		if (field == null) {
+		if (this.sourceField == null) {
 			return;
 		}
-		Reflections.setFieldValue(field, instance, source);
+		Reflections.setFieldValue(this.sourceField, instance, source);
 	}
 }

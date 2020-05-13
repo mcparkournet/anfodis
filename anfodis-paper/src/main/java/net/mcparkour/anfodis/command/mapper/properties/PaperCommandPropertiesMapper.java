@@ -30,7 +30,7 @@ public class PaperCommandPropertiesMapper extends CommandPropertiesMapper<PaperC
 
 	public PaperCommandPropertiesMapper() {
 		super(PaperCommandProperties::new, PaperCommandPropertiesData::new, (data, builder) -> {
-			builder.annotation(Senders.class, senders -> data.setSendersTypes(senders.value()));
+			builder.annotation(Senders.class, senders -> data.setSenderTypes(senders.value()));
 		});
 	}
 }

@@ -24,7 +24,7 @@
 
 package net.mcparkour.anfodis.listener.mapper.context;
 
-public class PaperContext extends Context<PaperContextData> {
+public class PaperContext extends Context {
 
 	public PaperContext(PaperContextData contextData) {
 		super(contextData);

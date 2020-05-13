@@ -24,7 +24,8 @@
 
 package net.mcparkour.anfodis.command.registry;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
@@ -72,12 +73,12 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
 	public void register(WaterfallCommand command, CommandContextHandler<WaterfallCommandContext> commandHandler, CompletionContextHandler<WaterfallCompletionContext> completionHandler) {
 		WaterfallCommandProperties properties = command.getProperties();
 		String name = properties.getName();
-		List<String> aliases = properties.getAliases();
+		Set<String> aliases = properties.getAliases();
 		Permission permission = createPermission(properties);
 		register(name, aliases, permission, commandHandler, completionHandler);
 	}
 
-	private void register(String name, List<String> aliases, @Nullable Permission permission, CommandContextHandler<WaterfallCommandContext> commandHandler, CompletionContextHandler<WaterfallCompletionContext> completionHandler) {
+	private void register(String name, Collection<String> aliases, @Nullable Permission permission, CommandContextHandler<WaterfallCommandContext> commandHandler, CompletionContextHandler<WaterfallCompletionContext> completionHandler) {
 		MessageReceiverFactory<CommandSender> messageReceiverFactory = getMessageReceiverFactory();
 		WaterfallCommandExecutor commandExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
@@ -94,11 +95,11 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
 		register(name, aliases, permission, commandExecutor, completionExecutor);
 	}
 
-	public void register(String name, List<String> aliases, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
+	public void register(String name, Collection<String> aliases, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
 		register(name, aliases, null, commandExecutor, completionExecutor);
 	}
 
-	public void register(String name, List<String> aliases, @Nullable Permission permission, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
+	public void register(String name, Collection<String> aliases, @Nullable Permission permission, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
 		String permissionName = permission == null ? null : permission.getName();
 		String[] aliasesArray = aliases.toArray(String[]::new);
 		CommandWrapper command = new CommandWrapper(name, permissionName, aliasesArray, commandExecutor, completionExecutor);

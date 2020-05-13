@@ -24,7 +24,9 @@
 
 package net.mcparkour.anfodis.command.registry;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
@@ -73,12 +75,12 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
 		String name = properties.getName();
 		String description = properties.getDescription();
 		String usage = properties.getDefaultUsage();
-		List<String> aliases = properties.getAliases();
+		Set<String> aliases = properties.getAliases();
 		Permission permission = createPermission(properties);
 		register(name, description, usage, aliases, permission, commandHandler, completionHandler);
 	}
 
-	private void register(String name, String description, String usage, List<String> aliases, @Nullable Permission permission, CommandContextHandler<PaperCommandContext> commandHandler, CompletionContextHandler<PaperCompletionContext> completionHandler) {
+	private void register(String name, String description, String usage, Collection<String> aliases, @Nullable Permission permission, CommandContextHandler<PaperCommandContext> commandHandler, CompletionContextHandler<PaperCompletionContext> completionHandler) {
 		MessageReceiverFactory<CommandSender> receiverFactory = getMessageReceiverFactory();
 		PaperCommandExecutor commandExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = receiverFactory.createMessageReceiver(sender);
@@ -95,13 +97,14 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
 		register(name, description, usage, aliases, permission, commandExecutor, completionExecutor);
 	}
 
-	public void register(String name, String description, String usage, List<String> aliases, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
+	public void register(String name, String description, String usage, Collection<String> aliases, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
 		register(name, description, usage, aliases, null, commandExecutor, completionExecutor);
 	}
 
-	public void register(String name, String description, String usage, List<String> aliases, @Nullable Permission permission, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
+	public void register(String name, String description, String usage, Collection<String> aliases, @Nullable Permission permission, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
 		String permissionPrefix = getPermissionPrefix();
-		Command command = new CommandWrapper(name, description, usage, aliases, permission, commandExecutor, completionExecutor);
+		List<String> aliasesList = List.copyOf(aliases);
+		Command command = new CommandWrapper(name, description, usage, aliasesList, permission, commandExecutor, completionExecutor);
 		this.commandMap.register(permissionPrefix, command);
 	}
 }

@@ -25,34 +25,31 @@
 package net.mcparkour.anfodis.mapper.injection;
 
 import java.lang.reflect.Field;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import java.util.Objects;
 import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.common.reflection.Reflections;
+import org.jetbrains.annotations.Nullable;
 
 public class Injection {
 
-	private InjectionData injectionData;
+	private Field field;
+	@Nullable
+	private String codecKey;
 
 	public Injection(InjectionData injectionData) {
-		this.injectionData = injectionData;
+		Field field = injectionData.getInjectionField();
+		this.field = Objects.requireNonNull(field, "Injection field is null");
+		this.codecKey = injectionData.getCodecKey();
 	}
 
 	public void setInjectionField(Object instance, Object injection) {
-		Field field = this.injectionData.getInjectionField();
-		if (field == null) {
-			throw new RuntimeException("Field is null");
-		}
-		Reflections.setFieldValue(field, instance, injection);
+		Reflections.setFieldValue(this.field, instance, injection);
 	}
 
 	public InjectionCodec<?> getCodec(CodecRegistry<InjectionCodec<?>> registry) {
-		Field field = this.injectionData.getInjectionField();
-		if (field == null) {
-			throw new RuntimeException("Field is null");
-		}
-		Class<?> type = field.getType();
-		String codecKey = this.injectionData.getCodecKey();
-		InjectionCodec<?> codec = codecKey == null || codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(codecKey);
+		Class<?> type = this.field.getType();
+		InjectionCodec<?> codec = this.codecKey == null || this.codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(this.codecKey);
 		if (codec == null) {
 			throw new RuntimeException("Cannot find injection codec for type " + type);
 		}

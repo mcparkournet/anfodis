@@ -31,47 +31,49 @@ import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
-public class Context<D extends ContextData> {
+public class Context {
 
-	private D contextData;
+	@Nullable
+	private Field argumentsField;
+	@Nullable
+	private Field requiredPermissionField;
+	@Nullable
+	private Field senderField;
+	@Nullable
+	private Field receiverField;
 
-	public Context(D contextData) {
-		this.contextData = contextData;
+	public Context(ContextData contextData) {
+		this.argumentsField = contextData.getArgumentsField();
+		this.requiredPermissionField = contextData.getRequiredPermissionField();
+		this.senderField = contextData.getSenderField();
+		this.receiverField = contextData.getReceiverField();
 	}
 
 	public void setArgumentsField(Object instance, List<String> arguments) {
-		Field field = this.contextData.getArgumentsField();
-		if (field == null) {
+		if (this.argumentsField == null) {
 			return;
 		}
-		Reflections.setFieldValue(field, instance, arguments);
+		Reflections.setFieldValue(this.argumentsField, instance, arguments);
 	}
 
 	public void setRequiredPermissionField(Object instance, @Nullable Permission requiredPermission) {
-		Field field = this.contextData.getRequiredPermissionField();
-		if (field == null) {
+		if (this.requiredPermissionField == null) {
 			return;
 		}
-		Reflections.setFieldValue(field, instance, requiredPermission);
+		Reflections.setFieldValue(this.requiredPermissionField, instance, requiredPermission);
 	}
 
 	public void setSenderField(Object instance, Object sender) {
-		Field field = this.contextData.getSenderField();
-		if (field == null) {
+		if (this.senderField == null) {
 			return;
 		}
-		Reflections.setFieldValue(field, instance, sender);
+		Reflections.setFieldValue(this.senderField, instance, sender);
 	}
 
 	public void setReceiverField(Object instance, MessageReceiver receiver) {
-		Field field = this.contextData.getReceiverField();
-		if (field == null) {
+		if (this.receiverField == null) {
 			return;
 		}
-		Reflections.setFieldValue(field, instance, receiver);
-	}
-
-	protected D getContextData() {
-		return this.contextData;
+		Reflections.setFieldValue(this.receiverField, instance, receiver);
 	}
 }

@@ -27,17 +27,17 @@ package net.mcparkour.anfodis.command.mapper.properties;
 import com.velocitypowered.api.command.CommandSource;
 import org.jetbrains.annotations.Nullable;
 
-public class VelocityCommandPropertiesData extends CommandPropertiesData {
+class VelocityCommandPropertiesData extends CommandPropertiesData {
 
 	@Nullable
-	private Class<? extends CommandSource>[] sendersTypes;
+	private Class<? extends CommandSource>[] senderTypes;
 
 	@Nullable
-	public Class<? extends CommandSource>[] getSendersTypes() {
-		return this.sendersTypes;
+	public Class<? extends CommandSource>[] getSenderTypes() {
+		return this.senderTypes;
 	}
 
-	public void setSendersTypes(@Nullable Class<? extends CommandSource>[] sendersTypes) {
-		this.sendersTypes = sendersTypes;
+	public void setSenderTypes(@Nullable Class<? extends CommandSource>[] senderTypes) {
+		this.senderTypes = senderTypes;
 	}
 }

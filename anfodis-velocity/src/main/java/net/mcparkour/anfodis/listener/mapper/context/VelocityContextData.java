@@ -24,4 +24,4 @@
 
 package net.mcparkour.anfodis.listener.mapper.context;
 
-public class VelocityContextData extends ContextData {}
+class VelocityContextData extends ContextData {}

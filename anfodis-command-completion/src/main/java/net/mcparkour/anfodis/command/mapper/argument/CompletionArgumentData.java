@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.argument;
 
 import org.jetbrains.annotations.Nullable;
 
-public class CompletionArgumentData extends ArgumentData {
+class CompletionArgumentData extends ArgumentData {
 
 	@Nullable
 	private String completionCodecKey;

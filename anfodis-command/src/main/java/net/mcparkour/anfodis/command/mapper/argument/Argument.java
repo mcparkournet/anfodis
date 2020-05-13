@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Objects;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.command.OptionalArgument;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
@@ -35,88 +36,27 @@ import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
 import org.jetbrains.annotations.Nullable;
 
-public class Argument<D extends ArgumentData> {
+public class Argument {
 
-	private D argumentData;
+	private Field field;
+	private Type argumentType;
+	@Nullable
+	private String codecKey;
+	private String name;
+	private boolean optional;
 
-	public Argument(D argumentData) {
-		this.argumentData = argumentData;
+	public Argument(ArgumentData argumentData) {
+		Field field = argumentData.getArgumentField();
+		this.field = Objects.requireNonNull(field, "Argument field is null");
+		this.argumentType = getArgumentType(field);
+		this.codecKey = argumentData.getArgumentCodecKey();
+		String name = argumentData.getName();
+		this.name = Objects.requireNonNull(name, "Argument name is null").isEmpty() ? field.getName() : name;
+		Boolean optional = argumentData.getOptional();
+		this.optional = optional == null ? false : optional;
 	}
 
-	public void setEmptyArgumentField(Object instance) {
-		Field field = this.argumentData.getArgumentField();
-		if (field == null) {
-			throw new RuntimeException("Field is null");
-		}
-		Object value = isOptionalArgument() ? MappedOptionalArgument.EMPTY_OPTIONAL_ARGUMENT : null;
-		Reflections.setFieldValue(field, instance, value);
-	}
-
-	public void setArgumentField(Object instance, @Nullable Object argument) {
-		Field field = this.argumentData.getArgumentField();
-		if (field == null) {
-			throw new RuntimeException("Field is null");
-		}
-		Object value = isOptionalArgument() ? MappedOptionalArgument.of(argument) : argument;
-		Reflections.setFieldValue(field, instance, value);
-	}
-
-	public boolean isList() {
-		Field field = this.argumentData.getArgumentField();
-		if (field == null) {
-			throw new RuntimeException("Field is null");
-		}
-		Class<?> fieldType = field.getType();
-		return fieldType.isAssignableFrom(List.class);
-	}
-
-	public boolean isOptionalArgument() {
-		Field field = this.argumentData.getArgumentField();
-		if (field == null) {
-			throw new RuntimeException("Field is null");
-		}
-		Class<?> fieldType = field.getType();
-		return fieldType.isAssignableFrom(OptionalArgument.class);
-	}
-
-	public ArgumentCodec<?> getArgumentCodec(CodecRegistry<ArgumentCodec<?>> registry) {
-		Class<?> type = getArgumentClassType();
-		String codecKey = this.argumentData.getArgumentCodecKey();
-		ArgumentCodec<?> codec = codecKey == null ? registry.getTypedCodec(type) : registry.getKeyedCodec(codecKey);
-		if (codec == null) {
-			throw new RuntimeException("Cannot find argument codec for type " + type);
-		}
-		return codec;
-	}
-
-	public Class<?> getArgumentClassType() {
-		Type fieldType = getFieldType();
-		return Types.getRawClassType(fieldType);
-	}
-
-	public ArgumentCodec<?> getGenericTypeArgumentCodec(CodecRegistry<ArgumentCodec<?>> registry, int genericTypeIndex) {
-		Type[] genericTypes = getArgumentGenericTypes();
-		Type genericType = genericTypes[genericTypeIndex];
-		Class<?> type = Types.getRawClassType(genericType);
-		String codecKey = this.argumentData.getArgumentCodecKey();
-		ArgumentCodec<?> codec = codecKey == null ? registry.getTypedCodec(type) : registry.getKeyedCodec(codecKey);
-		if (codec == null) {
-			throw new RuntimeException("Cannot find argument codec for generic type " + type);
-		}
-		return codec;
-	}
-
-	public Type[] getArgumentGenericTypes() {
-		Type fieldType = getFieldType();
-		ParameterizedType parameterizedType = Types.asParametrizedType(fieldType);
-		return parameterizedType.getActualTypeArguments();
-	}
-
-	private Type getFieldType() {
-		Field field = this.argumentData.getArgumentField();
-		if (field == null) {
-			throw new RuntimeException("Field is null");
-		}
+	private static Type getArgumentType(Field field) {
 		Type genericType = field.getGenericType();
 		Class<?> classGenericType = Types.getRawClassType(genericType);
 		if (!classGenericType.isAssignableFrom(OptionalArgument.class)) {
@@ -127,34 +67,60 @@ public class Argument<D extends ArgumentData> {
 		return typeArguments[0];
 	}
 
-	public String getName() {
-		String name = this.argumentData.getName();
-		if (name == null) {
-			throw new RuntimeException("Argument name is null");
-		}
-		if (name.isEmpty()) {
-			return getFieldName();
-		}
-		return name;
+	public void setEmptyArgumentField(Object instance) {
+		Object value = isOptionalArgument() ? MappedOptionalArgument.EMPTY_OPTIONAL_ARGUMENT : null;
+		Reflections.setFieldValue(this.field, instance, value);
 	}
 
-	private String getFieldName() {
-		Field field = this.argumentData.getArgumentField();
-		if (field == null) {
-			throw new RuntimeException("Field is null");
+	public void setArgumentField(Object instance, @Nullable Object argument) {
+		Object value = isOptionalArgument() ? MappedOptionalArgument.of(argument) : argument;
+		Reflections.setFieldValue(this.field, instance, value);
+	}
+
+	public boolean isList() {
+		Class<?> type = getArgumentClass();
+		return type.isAssignableFrom(List.class);
+	}
+
+	public boolean isOptionalArgument() {
+		Class<?> fieldType = this.field.getType();
+		return fieldType.isAssignableFrom(OptionalArgument.class);
+	}
+
+	public ArgumentCodec<?> getArgumentCodec(CodecRegistry<ArgumentCodec<?>> registry) {
+		Class<?> type = getArgumentClass();
+		ArgumentCodec<?> codec = this.codecKey == null || this.codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(this.codecKey);
+		if (codec == null) {
+			throw new RuntimeException("Cannot find argument codec for type " + type);
 		}
-		return field.getName();
+		return codec;
+	}
+
+	public Class<?> getArgumentClass() {
+		return Types.getRawClassType(this.argumentType);
+	}
+
+	public ArgumentCodec<?> getGenericTypeArgumentCodec(CodecRegistry<ArgumentCodec<?>> registry, int genericTypeIndex) {
+		Type[] genericTypes = getArgumentGenericTypes();
+		Type genericType = genericTypes[genericTypeIndex];
+		Class<?> type = Types.getRawClassType(genericType);
+		ArgumentCodec<?> codec = this.codecKey == null || this.codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(this.codecKey);
+		if (codec == null) {
+			throw new RuntimeException("Cannot find argument codec for generic type " + type);
+		}
+		return codec;
+	}
+
+	public Type[] getArgumentGenericTypes() {
+		ParameterizedType parameterizedType = Types.asParametrizedType(this.argumentType);
+		return parameterizedType.getActualTypeArguments();
+	}
+
+	public String getName() {
+		return this.name;
 	}
 
 	public boolean isOptional() {
-		Boolean optional = this.argumentData.getOptional();
-		if (optional == null) {
-			return false;
-		}
-		return optional;
-	}
-
-	protected D getArgumentData() {
-		return this.argumentData;
+		return this.optional;
 	}
 }

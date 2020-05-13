@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 import net.mcparkour.anfodis.command.annotation.argument.Completion;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
-public class CompletionArgumentMapper<A extends CompletionArgument<D>, D extends CompletionArgumentData> extends ArgumentMapper<A, D> {
+public class CompletionArgumentMapper<A extends CompletionArgument, D extends CompletionArgumentData> extends ArgumentMapper<A, D> {
 
 	public CompletionArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier) {
 		this(argumentSupplier, argumentDataSupplier, (data, builder) -> {});

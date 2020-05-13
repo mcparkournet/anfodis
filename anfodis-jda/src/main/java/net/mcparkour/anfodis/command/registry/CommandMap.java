@@ -25,8 +25,8 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.mcparkour.anfodis.command.context.JDACommandContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
@@ -44,7 +44,7 @@ public class CommandMap {
 	public void register(JDACommand command, CommandContextHandler<JDACommandContext> handler) {
 		CommandMapEntry entry = new CommandMapEntry(command, handler);
 		JDACommandProperties properties = command.getProperties();
-		List<String> names = properties.getAllNames();
+		Set<String> names = properties.getAllNames();
 		for (String name : names) {
 			this.commandMap.put(name, entry);
 		}

@@ -27,17 +27,17 @@ package net.mcparkour.anfodis.command.mapper.properties;
 import net.md_5.bungee.api.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
-public class WaterfallCommandPropertiesData extends CommandPropertiesData {
+class WaterfallCommandPropertiesData extends CommandPropertiesData {
 
 	@Nullable
-	private Class<? extends CommandSender>[] sendersTypes;
+	private Class<? extends CommandSender>[] senderTypes;
 
 	@Nullable
-	public Class<? extends CommandSender>[] getSendersTypes() {
-		return this.sendersTypes;
+	public Class<? extends CommandSender>[] getSenderTypes() {
+		return this.senderTypes;
 	}
 
-	public void setSendersTypes(@Nullable Class<? extends CommandSender>[] sendersTypes) {
-		this.sendersTypes = sendersTypes;
+	public void setSenderTypes(@Nullable Class<? extends CommandSender>[] senderTypes) {
+		this.senderTypes = senderTypes;
 	}
 }

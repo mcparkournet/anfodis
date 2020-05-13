@@ -26,20 +26,21 @@ package net.mcparkour.anfodis.listener.mapper.context;
 
 import java.lang.reflect.Field;
 import net.mcparkour.common.reflection.Reflections;
+import org.jetbrains.annotations.Nullable;
 
-public class Context<D extends ContextData> {
+public class Context {
 
-	private D contextData;
+	@Nullable
+	private Field eventField;
 
-	public Context(D contextData) {
-		this.contextData = contextData;
+	public Context(ContextData contextData) {
+		this.eventField = contextData.getEventField();
 	}
 
 	public void setEventField(Object instance, Object event) {
-		Field field = this.contextData.getEventField();
-		if (field == null) {
+		if (this.eventField == null) {
 			return;
 		}
-		Reflections.setFieldValue(field, instance, event);
+		Reflections.setFieldValue(this.eventField, instance, event);
 	}
 }

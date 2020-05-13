@@ -24,7 +24,7 @@
 
 package net.mcparkour.anfodis.command.mapper.context;
 
-public class WaterfallContext extends Context<WaterfallContextData> {
+public class WaterfallContext extends Context {
 
 	public WaterfallContext(WaterfallContextData contextData) {
 		super(contextData);

@@ -28,21 +28,23 @@ import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import org.jetbrains.annotations.Nullable;
 
-public class CompletionArgument<D extends CompletionArgumentData> extends Argument<D> {
+public class CompletionArgument extends Argument {
 
-	public CompletionArgument(D argumentData) {
+	@Nullable
+	private String codecKey;
+
+	public CompletionArgument(CompletionArgumentData argumentData) {
 		super(argumentData);
+		this.codecKey = argumentData.getCompletionCodecKey();
 	}
 
 	@Nullable
 	public CompletionCodec getCompletionCodec(CodecRegistry<CompletionCodec> registry) {
-		D argumentData = getArgumentData();
-		String codecKey = argumentData.getCompletionCodecKey();
-		if (codecKey == null) {
+		if (this.codecKey == null) {
 			return null;
 		}
-		Class<?> type = getArgumentClassType();
-		CompletionCodec codec = codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(codecKey);
+		Class<?> type = getArgumentClass();
+		CompletionCodec codec = this.codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(this.codecKey);
 		if (codec == null) {
 			throw new RuntimeException("Cannot find completion codec for type " + type);
 		}

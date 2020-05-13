@@ -26,6 +26,7 @@ package net.mcparkour.anfodis.command.handler;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
@@ -80,7 +81,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 				CommandContextHandler<C> handler = this.subCommandHandlers.get(subCommand);
 				if (handler != null) {
 					context.removeFirstArgument();
-					CommandProperties<?> properties = subCommand.getProperties();
+					CommandProperties properties = subCommand.getProperties();
 					String permissionName = properties.getPermission();
 					if (permissionName != null) {
 						context.appendPermissionNode(permissionName);
@@ -106,7 +107,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 	private boolean checkLength(C context) {
 		List<String> arguments = context.getArguments();
 		int entrySize = arguments.size();
-		List<? extends Argument<?>> commandArguments = this.command.getArguments();
+		List<? extends Argument> commandArguments = this.command.getArguments();
 		int minSize = (int) commandArguments.stream()
 			.filter(argument -> !argument.isOptional())
 			.count();
@@ -127,18 +128,19 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 	}
 
 	private boolean isMatching(String argument, T command) {
-		CommandProperties<?> properties = command.getProperties();
+		CommandProperties properties = command.getProperties();
 		String name = properties.getName();
 		if (argument.equalsIgnoreCase(name)) {
 			return true;
 		}
-		List<String> aliases = properties.getAliases();
-		return aliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(argument));
+		String lowerCaseArgument = argument.toLowerCase();
+		Set<String> aliases = properties.getLowerCaseAliases();
+		return aliases.contains(lowerCaseArgument);
 	}
 
 	private void sendHelpMessage(C context) {
 		StringBuilder usage = new StringBuilder();
-		CommandProperties<?> properties = this.command.getProperties();
+		CommandProperties properties = this.command.getProperties();
 		String name = properties.getName();
 		usage.append("Correct usage: " + name);
 		String description = properties.getDescription();
@@ -152,10 +154,10 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 		List<T> subCommands = this.command.getSubCommands();
 		for (T subCommand : subCommands) {
 			StringBuilder subCommandUsage = new StringBuilder();
-			CommandProperties<?> subCommandProperties = subCommand.getProperties();
+			CommandProperties subCommandProperties = subCommand.getProperties();
 			String subCommandName = subCommandProperties.getName();
 			subCommandUsage.append(subCommandName);
-			List<? extends Argument<?>> subCommandArguments = subCommand.getArguments();
+			List<? extends Argument> subCommandArguments = subCommand.getArguments();
 			if (!subCommandArguments.isEmpty()) {
 				subCommandUsage.append(" ");
 				String collect = subCommandArguments.stream()

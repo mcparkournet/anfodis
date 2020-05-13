@@ -29,6 +29,6 @@ import net.mcparkour.anfodis.command.annotation.properties.Senders;
 public class VelocityCommandPropertiesMapper extends CommandPropertiesMapper<VelocityCommandProperties, VelocityCommandPropertiesData> {
 
 	public VelocityCommandPropertiesMapper() {
-		super(VelocityCommandProperties::new, VelocityCommandPropertiesData::new, (data, builder) -> builder.annotation(Senders.class, senders -> data.setSendersTypes(senders.value())));
+		super(VelocityCommandProperties::new, VelocityCommandPropertiesData::new, (data, builder) -> builder.annotation(Senders.class, senders -> data.setSenderTypes(senders.value())));
 	}
 }

@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.command.mapper.argument;
 import java.lang.reflect.Field;
 import org.jetbrains.annotations.Nullable;
 
-public class ArgumentData {
+class ArgumentData {
 
 	@Nullable
 	private Field argumentField;

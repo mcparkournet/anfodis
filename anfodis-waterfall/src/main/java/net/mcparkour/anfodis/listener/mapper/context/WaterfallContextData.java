@@ -24,4 +24,4 @@
 
 package net.mcparkour.anfodis.listener.mapper.context;
 
-public class WaterfallContextData extends ContextData {}
+class WaterfallContextData extends ContextData {}

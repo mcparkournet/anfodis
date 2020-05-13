@@ -27,6 +27,7 @@ package net.mcparkour.anfodis.command.handler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
@@ -63,7 +64,7 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 				CompletionContextHandler<C> handler = this.subCommandHandlerMap.get(subCommand);
 				if (handler != null) {
 					context.removeFirstArgument();
-					CommandProperties<?> properties = subCommand.getProperties();
+					CommandProperties properties = subCommand.getProperties();
 					String permissionName = properties.getPermission();
 					if (permissionName != null) {
 						context.appendPermissionNode(permissionName);
@@ -76,14 +77,14 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 	}
 
 	private boolean isMatching(String argument, T command) {
-		CommandProperties<?> properties = command.getProperties();
+		CommandProperties properties = command.getProperties();
 		String name = properties.getName();
 		if (argument.equalsIgnoreCase(name)) {
 			return true;
 		}
-		List<String> aliases = properties.getAliases();
-		return aliases.stream()
-			.anyMatch(alias -> alias.equalsIgnoreCase(argument));
+		String lowerCaseArgument = argument.toLowerCase();
+		Set<String> aliases = properties.getLowerCaseAliases();
+		return aliases.contains(lowerCaseArgument);
 	}
 
 	private List<String> getCompletions(C context) {
@@ -107,7 +108,7 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 		String firstArgument = arguments.get(0);
 		List<String> completions = new ArrayList<>(0);
 		for (T subCommand : this.command.getSubCommands()) {
-			CommandProperties<?> properties = subCommand.getProperties();
+			CommandProperties properties = subCommand.getProperties();
 			String commandPermission = properties.getPermission();
 			if (commandPermission != null && hasPermission(context, commandPermission)) {
 				String name = properties.getName();
@@ -139,9 +140,9 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 	private List<String> handleExecutor(C context) {
 		List<String> arguments = context.getArguments();
 		int argumentsCount = arguments.size();
-		List<? extends CompletionArgument<?>> commandArguments = this.command.getArguments();
+		List<? extends CompletionArgument> commandArguments = this.command.getArguments();
 		if (!arguments.isEmpty() && !commandArguments.isEmpty() && argumentsCount <= commandArguments.size()) {
-			CompletionArgument<?> commandArgument = commandArguments.get(argumentsCount - 1);
+			CompletionArgument commandArgument = commandArguments.get(argumentsCount - 1);
 			CompletionCodec codec = commandArgument.getCompletionCodec(this.completionCodecRegistry);
 			if (codec != null) {
 				String argument = arguments.get(argumentsCount - 1);

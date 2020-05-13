@@ -24,8 +24,8 @@
 
 package net.mcparkour.anfodis.command.handler;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
@@ -55,7 +55,7 @@ public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperComma
 	private boolean checkSenders(PaperCommandContext context) {
 		PaperCommand command = getCommand();
 		PaperCommandProperties properties = command.getProperties();
-		List<Class<? extends org.bukkit.command.CommandSender>> senders = properties.getSendersTypes();
+		Set<Class<? extends org.bukkit.command.CommandSender>> senders = properties.getSenderTypes();
 		if (senders.isEmpty()) {
 			return true;
 		}

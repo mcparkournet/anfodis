@@ -24,7 +24,8 @@
 
 package net.mcparkour.anfodis.command.registry;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.command.CommandSource;
@@ -65,12 +66,12 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
 	@Override
 	public void register(VelocityCommand command, CommandContextHandler<VelocityCommandContext> commandHandler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
 		VelocityCommandProperties properties = command.getProperties();
-		List<String> names = properties.getAllNames();
+		Set<String> names = properties.getAllNames();
 		Permission permission = createPermission(properties);
 		register(names, permission, commandHandler, completionHandler);
 	}
 
-	private void register(List<String> aliases, @Nullable Permission permission, CommandContextHandler<VelocityCommandContext> commandHandler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
+	private void register(Collection<String> aliases, @Nullable Permission permission, CommandContextHandler<VelocityCommandContext> commandHandler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
 		MessageReceiverFactory<CommandSource> messageReceiverFactory = getMessageReceiverFactory();
 		VelocityCommandExecutor commandExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
@@ -87,7 +88,7 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
 		register(aliases, commandExecutor, completionExecutor);
 	}
 
-	public void register(List<String> aliases, VelocityCommandExecutor commandExecutor, VelocityCompletionExecutor completionExecutor) {
+	public void register(Collection<String> aliases, VelocityCommandExecutor commandExecutor, VelocityCompletionExecutor completionExecutor) {
 		String[] aliasesArray = aliases.toArray(String[]::new);
 		register(aliasesArray, commandExecutor, completionExecutor);
 	}

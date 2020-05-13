@@ -24,8 +24,9 @@
 
 package net.mcparkour.anfodis.command.registry;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
@@ -58,12 +59,12 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
 	@Override
 	public void register(TestCommand command, CommandContextHandler<TestCommandContext> commandHandler, CompletionContextHandler<TestCompletionContext> completionHandler) {
 		TestCommandProperties properties = command.getProperties();
-		List<String> names = properties.getAllNames();
+		Set<String> names = properties.getAllNames();
 		Permission permission = createPermission(properties);
 		register(names, permission, commandHandler, completionHandler);
 	}
 
-	private void register(List<String> aliases, @Nullable Permission permission, CommandContextHandler<TestCommandContext> commandHandler, CompletionContextHandler<TestCompletionContext> completionHandler) {
+	private void register(Collection<String> aliases, @Nullable Permission permission, CommandContextHandler<TestCommandContext> commandHandler, CompletionContextHandler<TestCompletionContext> completionHandler) {
 		MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory = getMessageReceiverFactory();
 		TestCommandExecutor commandExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
@@ -80,11 +81,11 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
 		register(aliases, commandExecutor, completionExecutor);
 	}
 
-	public void register(List<String> aliases, TestCommandExecutor commandExecutor, TestCompletionExecutor completionExecutor) {
+	public void register(Collection<String> aliases, TestCommandExecutor commandExecutor, TestCompletionExecutor completionExecutor) {
 		register(aliases, null, commandExecutor, completionExecutor);
 	}
 
-	public void register(List<String> aliases, @Nullable Permission permission, TestCommandExecutor commandExecutor, TestCompletionExecutor completionExecutor) {
+	public void register(Collection<String> aliases, @Nullable Permission permission, TestCommandExecutor commandExecutor, TestCompletionExecutor completionExecutor) {
 		CommandWrapper command = new CommandWrapper(commandExecutor, completionExecutor);
 		for (String alias : aliases) {
 			this.commandManager.put(alias, command);

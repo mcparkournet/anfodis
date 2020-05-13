@@ -25,44 +25,46 @@
 package net.mcparkour.anfodis.mapper.executor;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 import net.mcparkour.common.reflection.Reflections;
 import org.jetbrains.annotations.Nullable;
 
 public class Executor {
 
-	private ExecutorData executorData;
+	@Nullable
+	private Method beforeMethod;
+	@Nullable
+	private Method executorMethod;
+	@Nullable
+	private Method afterMethod;
 
 	public Executor(ExecutorData executorData) {
-		this.executorData = executorData;
+		this.beforeMethod = executorData.getBeforeMethod();
+		this.executorMethod = executorData.getExecutorMethod();
+		this.afterMethod = executorData.getAfterMethod();
 	}
 
 	public void invokeBefore(Object instance) {
-		Method method = this.executorData.getBeforeMethod();
-		if (method == null) {
+		if (this.beforeMethod == null) {
 			return;
 		}
-		Reflections.invokeMethod(method, instance);
+		Reflections.invokeMethod(this.beforeMethod, instance);
 	}
 
 	public boolean hasExecutor() {
-		Method method = this.executorData.getExecutorMethod();
-		return method != null;
+		return this.executorMethod != null;
 	}
 
 	@Nullable
 	public Object invokeExecutor(Object instance) {
-		Method method = this.executorData.getExecutorMethod();
-		if (method == null) {
-			return null;
-		}
-		return Reflections.invokeMethod(method, instance);
+		Objects.requireNonNull(this.executorMethod, "Executor method is null");
+		return Reflections.invokeMethod(this.executorMethod, instance);
 	}
 
 	public void invokeAfter(Object instance) {
-		Method method = this.executorData.getAfterMethod();
-		if (method == null) {
+		if (this.afterMethod == null) {
 			return;
 		}
-		Reflections.invokeMethod(method, instance);
+		Reflections.invokeMethod(this.afterMethod, instance);
 	}
 }

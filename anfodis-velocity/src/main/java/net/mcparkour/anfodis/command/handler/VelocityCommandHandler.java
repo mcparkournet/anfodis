@@ -24,8 +24,8 @@
 
 package net.mcparkour.anfodis.command.handler;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import com.velocitypowered.api.command.CommandSource;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
@@ -56,14 +56,13 @@ public class VelocityCommandHandler extends CommandHandler<VelocityCommand, Velo
 	private boolean checkSenders(VelocityCommandContext context) {
 		VelocityCommand command = getCommand();
 		VelocityCommandProperties properties = command.getProperties();
-		List<Class<? extends CommandSource>> senders = properties.getSendersTypes();
+		Set<Class<? extends CommandSource>> senders = properties.getSenderTypes();
 		if (senders.isEmpty()) {
 			return true;
 		}
 		CommandSender<CommandSource> commandSender = context.getSender();
 		CommandSource source = commandSender.getSender();
 		Class<?> sourceType = source.getClass();
-		return senders.stream()
-			.anyMatch(sender -> sender.isAssignableFrom(sourceType));
+		return senders.stream().anyMatch(sender -> sender.isAssignableFrom(sourceType));
 	}
 }

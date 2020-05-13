@@ -24,25 +24,18 @@
 
 package net.mcparkour.anfodis.listener.mapper.properties;
 
-import java.util.List;
+import java.util.Set;
 
-public class ListenerProperties<D extends ListenerPropertiesData<E>, E> {
+public class ListenerProperties<E> {
 
-	private D propertiesData;
+	private Set<Class<? extends E>> listenedEvents;
 
-	public ListenerProperties(D propertiesData) {
-		this.propertiesData = propertiesData;
+	public ListenerProperties(ListenerPropertiesData<E> propertiesData) {
+		Class<? extends E>[] listenedEvents = propertiesData.getListenedEvents();
+		this.listenedEvents = listenedEvents == null ? Set.of() : Set.of(listenedEvents);
 	}
 
-	public Iterable<Class<? extends E>> getListenedEvents() {
-		Class<? extends E>[] listenedEvents = this.propertiesData.getListenedEvents();
-		if (listenedEvents == null) {
-			return List.of();
-		}
-		return List.of(listenedEvents);
-	}
-
-	protected D getPropertiesData() {
-		return this.propertiesData;
+	public Set<Class<? extends E>> getListenedEvents() {
+		return this.listenedEvents;
 	}
 }

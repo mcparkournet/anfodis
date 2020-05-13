@@ -24,4 +24,4 @@
 
 package net.mcparkour.anfodis.command.mapper.argument;
 
-public class VelocityArgumentData extends CompletionArgumentData {}
+class VelocityArgumentData extends CompletionArgumentData {}

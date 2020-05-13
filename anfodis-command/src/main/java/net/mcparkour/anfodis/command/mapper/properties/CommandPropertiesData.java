@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.properties;
 
 import org.jetbrains.annotations.Nullable;
 
-public class CommandPropertiesData {
+class CommandPropertiesData {
 
 	@Nullable
 	private String name;

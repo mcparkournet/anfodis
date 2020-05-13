@@ -24,7 +24,7 @@
 
 package net.mcparkour.anfodis.command.mapper.properties;
 
-public class JDACommandProperties extends CommandProperties<JDACommandPropertiesData> {
+public class JDACommandProperties extends CommandProperties {
 
 	public JDACommandProperties(JDACommandPropertiesData propertiesData) {
 		super(propertiesData);

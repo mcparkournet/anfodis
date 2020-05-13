@@ -24,8 +24,8 @@
 
 package net.mcparkour.anfodis.command.handler;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
@@ -55,14 +55,13 @@ public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, Wa
 	private boolean checkSenders(WaterfallCommandContext context) {
 		WaterfallCommand command = getCommand();
 		WaterfallCommandProperties properties = command.getProperties();
-		List<Class<? extends net.md_5.bungee.api.CommandSender>> senders = properties.getSendersTypes();
+		Set<Class<? extends net.md_5.bungee.api.CommandSender>> senders = properties.getSenderTypes();
 		if (senders.isEmpty()) {
 			return true;
 		}
 		CommandSender<net.md_5.bungee.api.CommandSender> commandSender = context.getSender();
 		Object rawSender = commandSender.getSender();
 		Class<?> rawSenderType = rawSender.getClass();
-		return senders.stream()
-			.anyMatch(sender -> sender.isAssignableFrom(rawSenderType));
+		return senders.stream().anyMatch(sender -> sender.isAssignableFrom(rawSenderType));
 	}
 }

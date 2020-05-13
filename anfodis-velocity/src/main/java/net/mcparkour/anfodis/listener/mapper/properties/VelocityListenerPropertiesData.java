@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.listener.mapper.properties;
 import com.velocitypowered.api.event.PostOrder;
 import org.jetbrains.annotations.Nullable;
 
-public class VelocityListenerPropertiesData extends ListenerPropertiesData<Object> {
+class VelocityListenerPropertiesData extends ListenerPropertiesData<Object> {
 
 	@Nullable
 	private PostOrder priority;

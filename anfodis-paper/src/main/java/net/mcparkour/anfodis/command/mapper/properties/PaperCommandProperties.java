@@ -24,21 +24,20 @@
 
 package net.mcparkour.anfodis.command.mapper.properties;
 
-import java.util.List;
+import java.util.Set;
 import org.bukkit.command.CommandSender;
 
-public class PaperCommandProperties extends CommandProperties<PaperCommandPropertiesData> {
+public class PaperCommandProperties extends CommandProperties {
+
+	private Set<Class<? extends CommandSender>> senderTypes;
 
 	public PaperCommandProperties(PaperCommandPropertiesData propertiesData) {
 		super(propertiesData);
+		Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
+		this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
 	}
 
-	public List<Class<? extends CommandSender>> getSendersTypes() {
-		PaperCommandPropertiesData propertiesData = getPropertiesData();
-		Class<? extends CommandSender>[] sendersTypes = propertiesData.getSendersTypes();
-		if (sendersTypes == null) {
-			return List.of();
-		}
-		return List.of(sendersTypes);
+	public Set<Class<? extends CommandSender>> getSenderTypes() {
+		return this.senderTypes;
 	}
 }

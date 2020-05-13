@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.mapper.injection;
 import java.lang.reflect.Field;
 import org.jetbrains.annotations.Nullable;
 
-public class InjectionData {
+class InjectionData {
 
 	@Nullable
 	private Field injectionField;
