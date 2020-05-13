@@ -24,33 +24,14 @@
 
 package net.mcparkour.anfodis.listener.registry;
 
-import java.lang.annotation.Annotation;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.listener.handler.ListenerContext;
-import net.mcparkour.anfodis.listener.handler.ListenerHandler;
 import net.mcparkour.anfodis.listener.mapper.Listener;
-import net.mcparkour.anfodis.mapper.RootMapper;
-import net.mcparkour.anfodis.registry.AbstractRegistry;
 
-public abstract class AbstractListenerRegistry<T extends Listener<?, ?>, C extends ListenerContext<?>> extends AbstractRegistry<T, C> {
+@FunctionalInterface
+public interface ListenerHandlerSupplier<T extends Listener<?, ?>, C extends ListenerContext<?>> {
 
-	private ListenerHandlerSupplier<T, C> listenerHandlerSupplier;
-
-	public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		this(annotation, mapper, ListenerHandler::new, injectionCodecRegistry);
-	}
-
-	public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, ListenerHandlerSupplier<T, C> listenerHandlerSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		super(annotation, mapper, injectionCodecRegistry);
-		this.listenerHandlerSupplier = listenerHandlerSupplier;
-	}
-
-	@Override
-	public void register(T root) {
-		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		ContextHandler<C> handler = this.listenerHandlerSupplier.supply(root, injectionCodecRegistry);
-		register(root, handler);
-	}
+	ContextHandler<C> supply(T listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry);
 }

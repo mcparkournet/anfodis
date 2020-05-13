@@ -34,6 +34,7 @@ import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
 import net.mcparkour.anfodis.command.context.WaterfallCommandSender;
 import net.mcparkour.anfodis.command.context.WaterfallCompletionContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.handler.CommandExecutorHandler;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.WaterfallCommandHandler;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
@@ -64,7 +65,7 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
 	}
 
 	public WaterfallCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSender> messageReceiverFactory, String permissionPrefix, PluginManager pluginManager, Plugin plugin) {
-		super(COMMAND_MAPPER, WaterfallCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
+		super(COMMAND_MAPPER, WaterfallCommandHandler::new, CommandExecutorHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
 		this.pluginManager = pluginManager;
 		this.plugin = plugin;
 	}

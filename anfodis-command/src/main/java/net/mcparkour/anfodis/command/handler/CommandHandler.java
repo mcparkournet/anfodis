@@ -28,30 +28,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
+import org.jetbrains.annotations.Nullable;
 
 public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> implements CommandContextHandler<C> {
 
 	private T command;
 	private Map<T, ? extends CommandContextHandler<C>> subCommandHandlers;
+	@Nullable
 	private ContextHandler<C> executorHandler;
 
-	public CommandHandler(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers) {
-		this(command, subCommandHandlers, new CommandExecutorHandler<>(command, injectionCodecRegistry, argumentCodecRegistry));
-	}
-
-	public CommandHandler(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, ContextHandler<C> executorHandler) {
+	public CommandHandler(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler) {
 		this.command = command;
 		this.subCommandHandlers = subCommandHandlers;
 		this.executorHandler = executorHandler;
@@ -87,8 +81,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 				}
 			}
 		}
-		Executor executor = this.command.getExecutor();
-		if (!executor.hasExecutor()) {
+		if (this.executorHandler == null) {
 			sendHelpMessage(context);
 			return;
 		}

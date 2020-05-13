@@ -22,15 +22,16 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.listener.handler;
+package net.mcparkour.anfodis.command.registry;
 
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.anfodis.listener.mapper.Listener;
 
-@FunctionalInterface
-public interface ListenerHandlerSupplier<T extends Listener<?, ?>, C extends ListenerContext<?>> {
+public interface CommandExecutorHandlerSupplier<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> {
 
-	ContextHandler<C> supply(T listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry);
+	ContextHandler<C> supply(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry);
 }

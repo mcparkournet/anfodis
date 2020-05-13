@@ -27,19 +27,18 @@ package net.mcparkour.anfodis.command.handler;
 import java.util.Map;
 import java.util.Set;
 import com.velocitypowered.api.command.CommandSource;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.VelocityCommandContext;
 import net.mcparkour.anfodis.command.mapper.VelocityCommand;
 import net.mcparkour.anfodis.command.mapper.properties.VelocityCommandProperties;
+import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiver;
+import org.jetbrains.annotations.Nullable;
 
 public class VelocityCommandHandler extends CommandHandler<VelocityCommand, VelocityCommandContext> {
 
-	public VelocityCommandHandler(VelocityCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<VelocityCommand, ? extends CommandContextHandler<VelocityCommandContext>> subCommandHandlers) {
-		super(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers);
+	public VelocityCommandHandler(VelocityCommand command, Map<VelocityCommand, ? extends CommandContextHandler<VelocityCommandContext>> subCommandHandlers, @Nullable ContextHandler<VelocityCommandContext> executorHandler) {
+		super(command, subCommandHandlers, executorHandler);
 	}
 
 	@Override

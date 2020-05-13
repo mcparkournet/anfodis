@@ -25,14 +25,13 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.Map;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.mapper.Command;
+import net.mcparkour.anfodis.handler.ContextHandler;
+import org.jetbrains.annotations.Nullable;
 
 public interface CommandHandlerSupplier<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> {
 
-	CommandContextHandler<C> supply(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers);
+	CommandContextHandler<C> supply(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler);
 }

@@ -38,6 +38,7 @@ import net.mcparkour.anfodis.command.context.VelocityCommandContext;
 import net.mcparkour.anfodis.command.context.VelocityCommandSender;
 import net.mcparkour.anfodis.command.context.VelocityCompletionContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.handler.CommandExecutorHandler;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.VelocityCommandHandler;
 import net.mcparkour.anfodis.command.mapper.VelocityCommand;
@@ -59,7 +60,7 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
 	}
 
 	public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSource> messageReceiverFactory, String permissionPrefix, CommandManager commandManager) {
-		super(COMMAND_MAPPER, VelocityCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
+		super(COMMAND_MAPPER, VelocityCommandHandler::new, CommandExecutorHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
 		this.commandManager = commandManager;
 	}
 

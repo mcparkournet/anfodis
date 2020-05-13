@@ -35,6 +35,7 @@ import net.mcparkour.anfodis.command.context.PaperCommandContext;
 import net.mcparkour.anfodis.command.context.PaperCommandSender;
 import net.mcparkour.anfodis.command.context.PaperCompletionContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.handler.CommandExecutorHandler;
 import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
 import net.mcparkour.anfodis.command.handler.PaperCommandHandler;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
@@ -65,7 +66,7 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
 	}
 
 	public PaperCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSender> messageReceiverFactory, String permissionPrefix, CommandMap commandMap) {
-		super(COMMAND_MAPPER, PaperCommandHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
+		super(COMMAND_MAPPER, PaperCommandHandler::new, CommandExecutorHandler::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
 		this.commandMap = commandMap;
 	}
 

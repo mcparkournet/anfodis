@@ -24,15 +24,15 @@
 
 package net.mcparkour.anfodis.command.handler;
 
-import java.util.Map;
+import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.TestCommandContext;
 import net.mcparkour.anfodis.command.mapper.TestCommand;
-import net.mcparkour.anfodis.handler.ContextHandler;
-import org.jetbrains.annotations.Nullable;
 
-public class TestCommandHandler extends CommandHandler<TestCommand, TestCommandContext> {
+public class TestCommandExecutorHandler extends CommandExecutorHandler<TestCommand, TestCommandContext> {
 
-	public TestCommandHandler(TestCommand command, Map<TestCommand, ? extends CommandContextHandler<TestCommandContext>> subCommandHandlers, @Nullable ContextHandler<TestCommandContext> executorHandler) {
-		super(command, subCommandHandlers, executorHandler);
+	public TestCommandExecutorHandler(TestCommand root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
+		super(root, injectionCodecRegistry, argumentCodecRegistry);
 	}
 }

@@ -26,19 +26,18 @@ package net.mcparkour.anfodis.command.handler;
 
 import java.util.Map;
 import java.util.Set;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.PaperCommandContext;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
+import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiver;
+import org.jetbrains.annotations.Nullable;
 
 public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperCommandContext> {
 
-	public PaperCommandHandler(PaperCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers) {
-		super(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers);
+	public PaperCommandHandler(PaperCommand command, Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers, @Nullable ContextHandler<PaperCommandContext> executorHandler) {
+		super(command, subCommandHandlers, executorHandler);
 	}
 
 	@Override

@@ -26,19 +26,18 @@ package net.mcparkour.anfodis.command.handler;
 
 import java.util.Map;
 import java.util.Set;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.injection.InjectionCodec;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.anfodis.command.mapper.properties.WaterfallCommandProperties;
+import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiver;
+import org.jetbrains.annotations.Nullable;
 
 public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, WaterfallCommandContext> {
 
-	public WaterfallCommandHandler(WaterfallCommand command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers) {
-		super(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers);
+	public WaterfallCommandHandler(WaterfallCommand command, Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers, @Nullable ContextHandler<WaterfallCommandContext> executorHandler) {
+		super(command, subCommandHandlers, executorHandler);
 	}
 
 	@Override
