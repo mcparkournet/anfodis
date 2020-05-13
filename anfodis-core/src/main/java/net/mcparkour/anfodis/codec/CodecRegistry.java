@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 public class CodecRegistry<T> {
 
 	private Map<Class<?>, T> typedCodecs;
-	private Map<Object, T> keyedCodecs;
+	private Map<String, T> keyedCodecs;
 
-	public CodecRegistry(Map<Class<?>, T> typedCodecs, Map<Object, T> keyedCodecs) {
+	public CodecRegistry(Map<Class<?>, T> typedCodecs, Map<String, T> keyedCodecs) {
 		this.typedCodecs = typedCodecs;
 		this.keyedCodecs = keyedCodecs;
 	}
@@ -43,7 +43,7 @@ public class CodecRegistry<T> {
 	}
 
 	@Nullable
-	public T getKeyedCodec(Object key) {
+	public T getKeyedCodec(String key) {
 		return this.keyedCodecs.get(key);
 	}
 
@@ -51,7 +51,7 @@ public class CodecRegistry<T> {
 		return Map.copyOf(this.typedCodecs);
 	}
 
-	Map<Object, T> getKeyedCodecs() {
+	Map<String, T> getKeyedCodecs() {
 		return Map.copyOf(this.keyedCodecs);
 	}
 }
