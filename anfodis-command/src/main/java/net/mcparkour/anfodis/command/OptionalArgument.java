@@ -22,21 +22,15 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command;
 
-import net.mcparkour.anfodis.command.mapper.argument.Argument;
+import org.jetbrains.annotations.Nullable;
 
-public class ArgumentParseException extends RuntimeException {
+public interface OptionalArgument<T> {
 
-	private static final long serialVersionUID = 2037607635796336250L;
+	boolean isPresent();
 
-	private final transient Argument<?> argument;
+	@Nullable T orElse(@Nullable T other);
 
-	public ArgumentParseException(Argument<?> argument) {
-		this.argument = argument;
-	}
-
-	public Argument<?> getArgument() {
-		return this.argument;
-	}
+	@Nullable T get();
 }

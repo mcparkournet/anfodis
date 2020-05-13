@@ -27,7 +27,9 @@ package net.mcparkour.anfodis.command.mapper.argument;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.command.OptionalArgument;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
@@ -41,16 +43,44 @@ public class Argument<D extends ArgumentData> {
 		this.argumentData = argumentData;
 	}
 
+	public void setEmptyArgumentField(Object instance) {
+		Field field = this.argumentData.getArgumentField();
+		if (field == null) {
+			throw new RuntimeException("Field is null");
+		}
+		Object value = isOptionalArgument() ? MappedOptionalArgument.EMPTY_OPTIONAL_ARGUMENT : null;
+		Reflections.setFieldValue(field, instance, value);
+	}
+
 	public void setArgumentField(Object instance, @Nullable Object argument) {
 		Field field = this.argumentData.getArgumentField();
 		if (field == null) {
 			throw new RuntimeException("Field is null");
 		}
-		Reflections.setFieldValue(field, instance, argument);
+		Object value = isOptionalArgument() ? MappedOptionalArgument.of(argument) : argument;
+		Reflections.setFieldValue(field, instance, value);
+	}
+
+	public boolean isList() {
+		Field field = this.argumentData.getArgumentField();
+		if (field == null) {
+			throw new RuntimeException("Field is null");
+		}
+		Class<?> fieldType = field.getType();
+		return fieldType.isAssignableFrom(List.class);
+	}
+
+	public boolean isOptionalArgument() {
+		Field field = this.argumentData.getArgumentField();
+		if (field == null) {
+			throw new RuntimeException("Field is null");
+		}
+		Class<?> fieldType = field.getType();
+		return fieldType.isAssignableFrom(OptionalArgument.class);
 	}
 
 	public ArgumentCodec<?> getArgumentCodec(CodecRegistry<ArgumentCodec<?>> registry) {
-		Class<?> type = getFieldType();
+		Class<?> type = getArgumentClassType();
 		String codecKey = this.argumentData.getArgumentCodecKey();
 		ArgumentCodec<?> codec = codecKey == null ? registry.getTypedCodec(type) : registry.getKeyedCodec(codecKey);
 		if (codec == null) {
@@ -59,18 +89,15 @@ public class Argument<D extends ArgumentData> {
 		return codec;
 	}
 
-	public Class<?> getFieldType() {
-		Field field = this.argumentData.getArgumentField();
-		if (field == null) {
-			throw new RuntimeException("Field is null");
-		}
-		return field.getType();
+	public Class<?> getArgumentClassType() {
+		Type fieldType = getFieldType();
+		return Types.getRawClassType(fieldType);
 	}
 
 	public ArgumentCodec<?> getGenericTypeArgumentCodec(CodecRegistry<ArgumentCodec<?>> registry, int genericTypeIndex) {
-		Type[] genericTypes = getFieldGenericTypes();
+		Type[] genericTypes = getArgumentGenericTypes();
 		Type genericType = genericTypes[genericTypeIndex];
-		Class<?> type = Types.asClassType(genericType);
+		Class<?> type = Types.getRawClassType(genericType);
 		String codecKey = this.argumentData.getArgumentCodecKey();
 		ArgumentCodec<?> codec = codecKey == null ? registry.getTypedCodec(type) : registry.getKeyedCodec(codecKey);
 		if (codec == null) {
@@ -79,14 +106,25 @@ public class Argument<D extends ArgumentData> {
 		return codec;
 	}
 
-	public Type[] getFieldGenericTypes() {
+	public Type[] getArgumentGenericTypes() {
+		Type fieldType = getFieldType();
+		ParameterizedType parameterizedType = Types.asParametrizedType(fieldType);
+		return parameterizedType.getActualTypeArguments();
+	}
+
+	private Type getFieldType() {
 		Field field = this.argumentData.getArgumentField();
 		if (field == null) {
 			throw new RuntimeException("Field is null");
 		}
 		Type genericType = field.getGenericType();
+		Class<?> classGenericType = Types.getRawClassType(genericType);
+		if (!classGenericType.isAssignableFrom(OptionalArgument.class)) {
+			return genericType;
+		}
 		ParameterizedType parameterizedType = Types.asParametrizedType(genericType);
-		return parameterizedType.getActualTypeArguments();
+		Type[] typeArguments = parameterizedType.getActualTypeArguments();
+		return typeArguments[0];
 	}
 
 	public String getName() {
@@ -99,7 +137,6 @@ public class Argument<D extends ArgumentData> {
 		}
 		return name;
 	}
-
 
 	private String getFieldName() {
 		Field field = this.argumentData.getArgumentField();

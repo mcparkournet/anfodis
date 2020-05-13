@@ -110,10 +110,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 		int minSize = (int) commandArguments.stream()
 			.filter(argument -> !argument.isOptional())
 			.count();
-		boolean containList = commandArguments.stream()
-			.map(Argument::getFieldType)
-			.anyMatch(type -> type.isAssignableFrom(List.class));
-		if (containList) {
+		if (commandArguments.stream().anyMatch(Argument::isList)) {
 			return entrySize >= minSize;
 		}
 		int maxSize = commandArguments.size();
@@ -136,8 +133,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 			return true;
 		}
 		List<String> aliases = properties.getAliases();
-		return aliases.stream()
-			.anyMatch(alias -> alias.equalsIgnoreCase(argument));
+		return aliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(argument));
 	}
 
 	private void sendHelpMessage(C context) {

@@ -66,6 +66,7 @@ public class CommandCompletionTest {
 			.typed(String.class, ArgumentCodec.identity())
 			.typed(Locale.class, Locale::forLanguageTag)
 			.keyed("arg", String::strip)
+			.keyed("null", stringValue -> null)
 			.build();
 		CodecRegistry<CompletionCodec> completionCodecRegistry = new CodecRegistryBuilder<CompletionCodec>()
 			.typed(Locale.class, CompletionCodec.entries("en-US", "pl-PL"))
@@ -113,5 +114,18 @@ public class CommandCompletionTest {
 		Assertions.assertEquals("1", sender.getLastMessage());
 		Assertions.assertEquals("2", sender.getLastMessage());
 		Assertions.assertEquals(List.of("1", "2", "3"), barSuggestions);
+	}
+
+	@Test
+	public void testOptionalArgumentCommand() {
+		this.commandRegistry.register(TestOptionalArgumentCommand.class);
+		CommandWrapper command = this.commandManager.get("optional");
+		TestCommandSender sender = new TestCommandSender(Locale.US);
+		command.execute(sender, new String[] {"test", "test2"});
+		Assertions.assertNull(sender.getLastMessage());
+		Assertions.assertEquals("true", sender.getLastMessage());
+		Assertions.assertEquals("test2", sender.getLastMessage());
+		Assertions.assertEquals("false", sender.getLastMessage());
+		Assertions.assertEquals("empty", sender.getLastMessage());
 	}
 }

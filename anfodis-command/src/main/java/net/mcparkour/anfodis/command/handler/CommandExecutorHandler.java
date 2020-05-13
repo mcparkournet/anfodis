@@ -24,8 +24,9 @@
 
 package net.mcparkour.anfodis.command.handler;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
@@ -37,6 +38,7 @@ import net.mcparkour.anfodis.command.mapper.context.Context;
 import net.mcparkour.anfodis.handler.RootHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
+import org.jetbrains.annotations.Nullable;
 
 public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> extends RootHandler<T, C> {
 
@@ -49,53 +51,45 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 
 	@Override
 	public void handle(C context, Object instance) {
-		try {
-			setArguments(context, instance);
-			setContext(context, instance);
-			super.handle(context, instance);
-		} catch (ArgumentParseException exception) {
-			Argument<?> argument = exception.getArgument();
-			CommandSender<?> sender = context.getSender();
-			MessageReceiver receiver = sender.getReceiver();
-			receiver.receivePlain("Could not parse the argument " + argument.getName() + ".");
-		}
+		setArguments(context, instance);
+		setContext(context, instance);
+		super.handle(context, instance);
 	}
 
 	private void setArguments(C context, Object commandInstance) {
-		List<String> arguments = context.getArguments();
 		T command = getRoot();
 		List<? extends Argument<?>> commandArguments = command.getArguments();
-		for (int index = 0; index < arguments.size(); index++) {
+		int commandArgumentsSize = commandArguments.size();
+		List<String> arguments = context.getArguments();
+		int argumentsSize = arguments.size();
+		for (int index = 0; index < commandArgumentsSize; index++) {
 			Argument<?> commandArgument = commandArguments.get(index);
-			Class<?> type = commandArgument.getFieldType();
-			if (type.isAssignableFrom(List.class)) {
-				setListArgument(context, commandArgument, index, commandInstance);
-				return;
+			if (index >= argumentsSize) {
+				commandArgument.setEmptyArgumentField(commandInstance);
+			} else {
+				Object argumentValue = getArgumentValue(arguments, commandArgument, index);
+				commandArgument.setArgumentField(commandInstance, argumentValue);
 			}
-			String argument = arguments.get(index);
-			ArgumentCodec<?> codec = commandArgument.getArgumentCodec(this.argumentCodecRegistry);
-			Object parsedArgument = codec.parse(argument);
-			if (parsedArgument == null) {
-				throw new ArgumentParseException(commandArgument);
-			}
-			commandArgument.setArgumentField(commandInstance, parsedArgument);
 		}
 	}
 
-	private void setListArgument(C context, Argument<?> commandArgument, int startIndex, Object commandInstance) {
-		List<String> arguments = context.getArguments();
+	@Nullable
+	private Object getArgumentValue(List<String> arguments, Argument<?> commandArgument, int index) {
+		if (commandArgument.isList()) {
+			return getListArgumentValue(arguments, commandArgument, index);
+		}
+		String argument = arguments.get(index);
+		ArgumentCodec<?> codec = commandArgument.getArgumentCodec(this.argumentCodecRegistry);
+		return codec.parse(argument);
+	}
+
+	private List<?> getListArgumentValue(List<String> arguments, Argument<?> commandArgument, int startIndex) {
 		int size = arguments.size();
 		ArgumentCodec<?> codec = commandArgument.getGenericTypeArgumentCodec(this.argumentCodecRegistry, 0);
-		List<Object> list = new ArrayList<>(size - startIndex);
-		for (int index = startIndex; index < size; index++) {
-			String argument = arguments.get(index);
-			Object parsedArgument = codec.parse(argument);
-			if (parsedArgument == null) {
-				throw new ArgumentParseException(commandArgument);
-			}
-			list.add(parsedArgument);
-		}
-		commandArgument.setArgumentField(commandInstance, list);
+		return IntStream.range(startIndex, size)
+			.mapToObj(arguments::get)
+			.map(codec::parse)
+			.collect(Collectors.toList());
 	}
 
 	private void setContext(C context, Object commandInstance) {

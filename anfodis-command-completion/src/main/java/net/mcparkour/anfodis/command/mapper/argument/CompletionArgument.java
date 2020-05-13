@@ -41,7 +41,7 @@ public class CompletionArgument<D extends CompletionArgumentData> extends Argume
 		if (codecKey == null) {
 			return null;
 		}
-		Class<?> type = getFieldType();
+		Class<?> type = getArgumentClassType();
 		CompletionCodec codec = codecKey.isEmpty() ? registry.getTypedCodec(type) : registry.getKeyedCodec(codecKey);
 		if (codec == null) {
 			throw new RuntimeException("Cannot find completion codec for type " + type);
