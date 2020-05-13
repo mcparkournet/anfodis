@@ -102,10 +102,6 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
 			.build();
 	}
 
-	protected CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {
-		return this.argumentCodecRegistry;
-	}
-
 	protected MessageReceiverFactory<S> getMessageReceiverFactory() {
 		return this.messageReceiverFactory;
 	}

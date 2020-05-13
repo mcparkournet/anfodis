@@ -44,19 +44,15 @@ import net.mcparkour.intext.message.MessageReceiver;
 public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> implements CommandContextHandler<C> {
 
 	private T command;
-	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
-	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
 	private Map<T, ? extends CommandContextHandler<C>> subCommandHandlers;
 	private ContextHandler<C> executorHandler;
 
 	public CommandHandler(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers) {
-		this(command, injectionCodecRegistry, argumentCodecRegistry, subCommandHandlers, new CommandExecutorHandler<>(command, injectionCodecRegistry, argumentCodecRegistry));
+		this(command, subCommandHandlers, new CommandExecutorHandler<>(command, injectionCodecRegistry, argumentCodecRegistry));
 	}
 
-	public CommandHandler(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, ContextHandler<C> executorHandler) {
+	public CommandHandler(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, ContextHandler<C> executorHandler) {
 		this.command = command;
-		this.injectionCodecRegistry = injectionCodecRegistry;
-		this.argumentCodecRegistry = argumentCodecRegistry;
 		this.subCommandHandlers = subCommandHandlers;
 		this.executorHandler = executorHandler;
 	}
@@ -176,13 +172,5 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 
 	protected T getCommand() {
 		return this.command;
-	}
-
-	protected CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {
-		return this.injectionCodecRegistry;
-	}
-
-	protected CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {
-		return this.argumentCodecRegistry;
 	}
 }

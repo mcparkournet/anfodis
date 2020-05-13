@@ -105,8 +105,4 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 		MessageReceiver receiver = sender.getReceiver();
 		commandContext.setReceiverField(commandInstance, receiver);
 	}
-
-	protected CodecRegistry<ArgumentCodec<?>> getArgumentCodecRegistry() {
-		return this.argumentCodecRegistry;
-	}
 }

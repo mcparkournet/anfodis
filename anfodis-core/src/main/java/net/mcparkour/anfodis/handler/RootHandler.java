@@ -69,8 +69,4 @@ public class RootHandler<T extends Root, C extends RootContext> implements Conte
 	protected T getRoot() {
 		return this.root;
 	}
-
-	protected CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {
-		return this.injectionCodecRegistry;
-	}
 }
