@@ -56,7 +56,7 @@ public class Context {
 		Reflections.setFieldValue(this.argumentsField, instance, arguments);
 	}
 
-	public void setRequiredPermissionField(Object instance, @Nullable Permission requiredPermission) {
+	public void setRequiredPermissionField(Object instance, Permission requiredPermission) {
 		if (this.requiredPermissionField == null) {
 			return;
 		}

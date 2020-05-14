@@ -28,11 +28,10 @@ import java.util.List;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.craftmon.permission.Permission;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.Nullable;
 
 public class PaperCompletionContext extends CompletionContext<CommandSender> {
 
-	public PaperCompletionContext(net.mcparkour.anfodis.command.context.CommandSender<CommandSender> sender, List<String> arguments, @Nullable Permission permission) {
+	public PaperCompletionContext(net.mcparkour.anfodis.command.context.CommandSender<CommandSender> sender, List<String> arguments, Permission permission) {
 		super(sender, arguments, permission);
 	}
 }

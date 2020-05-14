@@ -27,11 +27,10 @@ package net.mcparkour.anfodis.command.context;
 import java.util.List;
 import net.mcparkour.anfodis.TestCommandSender;
 import net.mcparkour.craftmon.permission.Permission;
-import org.jetbrains.annotations.Nullable;
 
 public class TestCommandContext extends CommandContext<TestCommandSender> {
 
-	public TestCommandContext(CommandSender<TestCommandSender> sender, List<String> arguments, @Nullable Permission permission) {
+	public TestCommandContext(CommandSender<TestCommandSender> sender, List<String> arguments, Permission permission) {
 		super(sender, arguments, permission);
 	}
 }

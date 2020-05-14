@@ -34,13 +34,11 @@ import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.handler.CommandContextSupplier;
 import net.mcparkour.anfodis.command.mapper.Command;
-import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.registry.AbstractRegistry;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.craftmon.permission.PermissionBuilder;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,16 +49,16 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
 	private CommandContextSupplier<C, S> contextSupplier;
 	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
 	private MessageReceiverFactory<S> messageReceiverFactory;
-	private String permissionPrefix;
+	private Permission basePermission;
 
-	public AbstractCommandRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C, S> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CommandContextSupplier<C, S> contextSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, String permissionPrefix) {
+	public AbstractCommandRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C, S> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CommandContextSupplier<C, S> contextSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, Permission basePermission) {
 		super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
 		this.commandHandlerSupplier = commandHandlerSupplier;
 		this.commandExecutorHandlerSupplier = commandExecutorHandlerSupplier;
 		this.contextSupplier = contextSupplier;
 		this.argumentCodecRegistry = argumentCodecRegistry;
 		this.messageReceiverFactory = messageReceiverFactory;
-		this.permissionPrefix = permissionPrefix;
+		this.basePermission = basePermission;
 	}
 
 	@Override
@@ -101,23 +99,11 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
 
 	public abstract void register(T command, CommandContextHandler<C> commandHandler);
 
-	@Nullable
-	protected Permission createPermission(CommandProperties properties) {
-		String commandPermission = properties.getPermission();
-		if (commandPermission == null) {
-			return null;
-		}
-		return new PermissionBuilder()
-			.node(this.permissionPrefix)
-			.node(commandPermission)
-			.build();
-	}
-
 	protected MessageReceiverFactory<S> getMessageReceiverFactory() {
 		return this.messageReceiverFactory;
 	}
 
-	protected String getPermissionPrefix() {
-		return this.permissionPrefix;
+	protected Permission getBasePermission() {
+		return this.basePermission;
 	}
 }

@@ -28,9 +28,8 @@ import java.util.List;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.craftmon.permission.Permission;
-import org.jetbrains.annotations.Nullable;
 
 public interface CommandContextSupplier<C extends CommandContext<S>, S> {
 
-	C supply(CommandSender<S> sender, List<String> arguments, @Nullable Permission permission);
+	C supply(CommandSender<S> sender, List<String> arguments, Permission permission);
 }

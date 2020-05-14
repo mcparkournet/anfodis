@@ -34,7 +34,6 @@ import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.craftmon.permission.PermissionBuilder;
 import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,13 +56,15 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 	public void handle(C context) {
 		CommandSender<S> sender = context.getSender();
 		MessageReceiver receiver = sender.getReceiver();
-		if (!checkPermission(context)) {
+		Permission permission = context.getPermission();
+		if (!sender.hasPermission(permission)) {
 			receiver.receivePlain("You do not have permission.");
 			return;
 		}
 		List<String> arguments = context.getArguments();
+		int argumentsLength = arguments.size();
 		if (arguments.isEmpty()) {
-			execute(context, receiver);
+			execute(context, argumentsLength);
 			return;
 		}
 		String firstArgument = arguments.get(0);
@@ -73,25 +74,28 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 			.findFirst()
 			.orElse(null);
 		if (subCommand == null) {
-			execute(context, receiver);
+			execute(context, argumentsLength);
 			return;
 		}
 		CommandContextHandler<C> subCommandHandler = this.subCommandHandlers.get(subCommand);
 		if (subCommandHandler == null) {
-			execute(context, receiver);
+			execute(context, argumentsLength);
 			return;
 		}
 		C subCommandContext = createSubCommandContext(arguments, context, subCommand);
 		subCommandHandler.handle(subCommandContext);
 	}
 
-	private void execute(C context, MessageReceiver receiver) {
+	private void execute(C context, int argumentsSize) {
 		if (this.executorHandler == null) {
-			sendUsage(receiver);
+			getUsage(context);
 			return;
 		}
-		if (!checkLength(context)) {
-			sendUsage(receiver, this.command);
+		if (!checkLength(argumentsSize)) {
+			CommandSender<S> sender = context.getSender();
+			MessageReceiver receiver = sender.getReceiver();
+			String usage = getUsage(this.command);
+			receiver.receivePlain(usage);
 			return;
 		}
 		Object instance = this.command.createInstance();
@@ -106,41 +110,23 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 		return this.contextSupplier.supply(sender, arguments, permission);
 	}
 
-	@Nullable
 	private Permission createSubCommandPermission(C context, T subCommand) {
 		Permission permission = context.getPermission();
 		CommandProperties properties = subCommand.getProperties();
-		String permissionName = properties.getPermission();
-		if (permissionName == null || permission == null) {
-			return permission;
-		}
-		return new PermissionBuilder()
-			.with(permission)
-			.node(permissionName)
-			.build();
+		Permission subCommandPermission = properties.getPermission();
+		return permission.withLast(subCommandPermission);
 	}
 
-	private boolean checkLength(C context) {
-		List<String> arguments = context.getArguments();
-		int entrySize = arguments.size();
+	private boolean checkLength(int argumentsLength) {
 		List<? extends Argument> commandArguments = this.command.getArguments();
-		int minSize = (int) commandArguments.stream()
-			.filter(argument -> !argument.isOptional())
+		long minimumSize = commandArguments.stream()
+			.filter(Argument::isNotOptional)
 			.count();
 		if (commandArguments.stream().anyMatch(Argument::isList)) {
-			return entrySize >= minSize;
+			return argumentsLength >= minimumSize;
 		}
-		int maxSize = commandArguments.size();
-		return entrySize >= minSize && entrySize <= maxSize;
-	}
-
-	private boolean checkPermission(C context) {
-		Permission permission = context.getPermission();
-		if (permission == null) {
-			return true;
-		}
-		CommandSender<?> sender = context.getSender();
-		return sender.hasPermission(permission);
+		int maximumSize = commandArguments.size();
+		return argumentsLength >= minimumSize && argumentsLength <= maximumSize;
 	}
 
 	private boolean isMatching(String argument, T command) {
@@ -154,7 +140,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 		return aliases.contains(lowerCaseArgument);
 	}
 
-	private void sendUsage(MessageReceiver receiver) {
+	private void getUsage(C context) {
 		StringBuilder builder = new StringBuilder();
 		CommandProperties properties = this.command.getProperties();
 		String name = properties.getName();
@@ -165,34 +151,52 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 		}
 		builder.append(".");
 		String usage = builder.toString();
+		CommandSender<S> sender = context.getSender();
+		MessageReceiver receiver = sender.getReceiver();
 		receiver.receivePlain(usage);
 		List<T> subCommands = this.command.getSubCommands();
+		Permission contextPermission = context.getPermission();
 		for (T subCommand : subCommands) {
-			sendUsage(receiver, subCommand);
+			CommandProperties subCommandProperties = subCommand.getProperties();
+			Permission subCommandPermission = subCommandProperties.getPermission();
+			Permission permission = contextPermission.withLast(subCommandPermission);
+			if (sender.hasPermission(permission)) {
+				String subCommandUsage = getUsage(subCommand);
+				receiver.receivePlain(subCommandUsage);
+			}
 		}
 	}
 
-	private void sendUsage(MessageReceiver receiver, T command) {
+	private String getUsage(T command) {
 		StringBuilder builder = new StringBuilder();
 		CommandProperties properties = command.getProperties();
 		String name = properties.getName();
 		builder.append(name);
 		List<? extends Argument> arguments = command.getArguments();
 		for (Argument argument : arguments) {
-			String argumentName = argument.getName();
-			boolean optional = argument.isOptional();
-			builder.append(" ")
-				.append(optional ? '[' : '<')
-				.append(argumentName)
-				.append(optional ? ']' : '>');
+			builder.append(" ");
+			String usage = getUsage(argument);
+			builder.append(usage);
 		}
 		String description = properties.getDescription();
 		if (description != null) {
 			builder.append(" - " + description);
 		}
 		builder.append(".");
-		String usage = builder.toString();
-		receiver.receivePlain(usage);
+		return builder.toString();
+	}
+
+	private String getUsage(Argument argument) {
+		StringBuilder builder = new StringBuilder();
+		String argumentName = argument.getName();
+		boolean optional = argument.isOptional();
+		builder.append(optional ? '[' : '<');
+		builder.append(argumentName);
+		if (argument.isList()) {
+			builder.append("...");
+		}
+		builder.append(optional ? ']' : '>');
+		return builder.toString();
 	}
 
 	protected T getCommand() {

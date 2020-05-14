@@ -48,7 +48,6 @@ import net.mcparkour.anfodis.command.mapper.properties.VelocityCommandProperties
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class VelocityCommandRegistry extends AbstractCompletionRegistry<VelocityCommand, VelocityCommandContext, VelocityCompletionContext, CommandSource> {
 
@@ -56,12 +55,12 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
 
 	private CommandManager commandManager;
 
-	public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSource> messageReceiverFactory, String permissionPrefix, ProxyServer server) {
-		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix, server.getCommandManager());
+	public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSource> messageReceiverFactory, Permission basePermission, ProxyServer server) {
+		this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, basePermission, server.getCommandManager());
 	}
 
-	public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSource> messageReceiverFactory, String permissionPrefix, CommandManager commandManager) {
-		super(COMMAND_MAPPER, VelocityCommandHandler::new, CommandExecutorHandler::new, VelocityCommandContext::new, CompletionHandler::new, VelocityCompletionContext::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
+	public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSource> messageReceiverFactory, Permission basePermission, CommandManager commandManager) {
+		super(COMMAND_MAPPER, VelocityCommandHandler::new, CommandExecutorHandler::new, VelocityCommandContext::new, CompletionHandler::new, VelocityCompletionContext::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, basePermission);
 		this.commandManager = commandManager;
 	}
 
@@ -69,11 +68,13 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
 	public void register(VelocityCommand command, CommandContextHandler<VelocityCommandContext> commandHandler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
 		VelocityCommandProperties properties = command.getProperties();
 		Set<String> names = properties.getAllNames();
-		Permission permission = createPermission(properties);
+		Permission basePermission = getBasePermission();
+		Permission commandPermission = properties.getPermission();
+		Permission permission = commandPermission.withFirst(basePermission);
 		register(names, permission, commandHandler, completionHandler);
 	}
 
-	private void register(Collection<String> aliases, @Nullable Permission permission, CommandContextHandler<VelocityCommandContext> commandHandler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
+	private void register(Collection<String> aliases, Permission permission, CommandContextHandler<VelocityCommandContext> commandHandler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
 		MessageReceiverFactory<CommandSource> messageReceiverFactory = getMessageReceiverFactory();
 		VelocityCommandExecutor commandExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);

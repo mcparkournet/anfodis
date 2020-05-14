@@ -34,6 +34,7 @@ public class TestCommandSender extends AbstractCommandSender<net.mcparkour.anfod
 
 	@Override
 	public boolean hasPermission(String name) {
-		return true;
+		net.mcparkour.anfodis.TestCommandSender sender = getSender();
+		return sender.hasPermission(name);
 	}
 }

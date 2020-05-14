@@ -24,19 +24,34 @@
 
 package net.mcparkour.anfodis;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Queue;
+import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 
 public class TestCommandSender {
 
 	private Locale language;
+	private Set<String> permissions;
+	private boolean operator;
 	private Queue<String> messages;
 
-	public TestCommandSender(Locale language) {
+	public TestCommandSender() {
+		this(Locale.US, Set.of(), true);
+	}
+
+	public TestCommandSender(Locale language, Set<String> permissions, boolean operator) {
 		this.language = language;
+		this.permissions = permissions;
+		this.operator = operator;
 		this.messages = new LinkedList<>();
+	}
+
+	public boolean hasPermission(String permission) {
+		return this.operator || this.permissions.contains(permission);
 	}
 
 	public void receiveMessage(String message) {
@@ -46,6 +61,16 @@ public class TestCommandSender {
 	@Nullable
 	public String getLastMessage() {
 		return this.messages.poll();
+	}
+
+	public List<String> getMessages() {
+		int size = this.messages.size();
+		List<String> messages = new ArrayList<>(size);
+		while (!this.messages.isEmpty()) {
+			String message = this.messages.poll();
+			messages.add(message);
+		}
+		return messages;
 	}
 
 	public Locale getLanguage() {

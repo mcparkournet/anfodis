@@ -42,7 +42,7 @@ public class CommandWrapper {
 		this.commandExecutor.execute(sender, arguments);
 	}
 
-	public List<String> suggest(TestCommandSender sender, String[] args) {
+	public List<String> complete(TestCommandSender sender, String[] args) {
 		List<String> arguments = List.of(args);
 		return this.completionExecutor.execute(sender, arguments);
 	}

@@ -30,6 +30,9 @@ import net.mcparkour.intext.message.MessageReceiver;
 public interface CommandSender<T> {
 
 	default boolean hasPermission(Permission permission) {
+		if (permission.isEmpty()) {
+			return true;
+		}
 		String name = permission.getName();
 		return hasPermission(name);
 	}

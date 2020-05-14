@@ -46,7 +46,7 @@ import net.mcparkour.intext.message.MessageReceiverFactory;
 
 @Command("foo")
 @Description("foo")
-@Permission("foo")
+@Permission("fooo")
 @Aliases("fooo")
 public class TestFooCommand {
 
@@ -73,7 +73,7 @@ public class TestFooCommand {
 
 	@Executor
 	public void execute() {
-		this.receiver.receivePlain(this.locale.toLanguageTag());
+		this.receiver.receivePlain(this.locale == null ? "null" : this.locale.toLanguageTag());
 	}
 
 	@After

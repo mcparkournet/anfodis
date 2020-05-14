@@ -42,20 +42,18 @@ import net.mcparkour.anfodis.command.handler.CommandContextHandler;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.craftmon.permission.PermissionBuilder;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class PrivateMessageReceivedListener implements EventListener {
 
-	private String permissionPrefix;
+	private Permission basePermission;
 	private PermissionMap permissionMap;
 	private CommandMap commandMap;
 	private MessageReceiverFactory<ChannelSender> messageReceiverFactory;
 
-	public PrivateMessageReceivedListener(String permissionPrefix, PermissionMap permissionMap, CommandMap commandMap, MessageReceiverFactory<ChannelSender> messageReceiverFactory) {
-		this.permissionPrefix = permissionPrefix;
+	public PrivateMessageReceivedListener(Permission basePermission, PermissionMap permissionMap, CommandMap commandMap, MessageReceiverFactory<ChannelSender> messageReceiverFactory) {
+		this.basePermission = basePermission;
 		this.permissionMap = permissionMap;
 		this.commandMap = commandMap;
 		this.messageReceiverFactory = messageReceiverFactory;
@@ -97,19 +95,8 @@ public class PrivateMessageReceivedListener implements EventListener {
 		String[] argumentsArray = Arrays.copyOfRange(split, 1, split.length);
 		List<String> arguments = List.of(argumentsArray);
 		JDACommandProperties properties = command.getProperties();
-		Permission permission = createPermission(properties);
+		Permission commandPermission = properties.getPermission();
+		Permission permission = commandPermission.withFirst(this.basePermission);
 		return new JDACommandContext(commandSender, arguments, permission);
-	}
-
-	@Nullable
-	private Permission createPermission(JDACommandProperties properties) {
-		String commandPermission = properties.getPermission();
-		if (commandPermission == null) {
-			return null;
-		}
-		return new PermissionBuilder()
-			.node(this.permissionPrefix)
-			.node(commandPermission)
-			.build();
 	}
 }

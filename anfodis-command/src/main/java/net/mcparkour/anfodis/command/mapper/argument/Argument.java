@@ -133,6 +133,10 @@ public class Argument {
 		return this.name;
 	}
 
+	public boolean isNotOptional() {
+		return !this.optional;
+	}
+
 	public boolean isOptional() {
 		return this.optional;
 	}

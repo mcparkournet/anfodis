@@ -28,11 +28,10 @@ import java.util.List;
 import com.velocitypowered.api.command.CommandSource;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.craftmon.permission.Permission;
-import org.jetbrains.annotations.Nullable;
 
 public class VelocityCompletionContext extends CompletionContext<CommandSource> {
 
-	public VelocityCompletionContext(CommandSender<CommandSource> sender, List<String> arguments, @Nullable Permission permission) {
+	public VelocityCompletionContext(CommandSender<CommandSource> sender, List<String> arguments, Permission permission) {
 		super(sender, arguments, permission);
 	}
 }

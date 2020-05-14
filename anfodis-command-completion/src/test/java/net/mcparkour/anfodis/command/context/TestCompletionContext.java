@@ -28,11 +28,10 @@ import java.util.List;
 import net.mcparkour.anfodis.TestCommandSender;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.craftmon.permission.Permission;
-import org.jetbrains.annotations.Nullable;
 
 public class TestCompletionContext extends CompletionContext<TestCommandSender> {
 
-	public TestCompletionContext(CommandSender<TestCommandSender> sender, List<String> arguments, @Nullable Permission permission) {
+	public TestCompletionContext(CommandSender<TestCommandSender> sender, List<String> arguments, Permission permission) {
 		super(sender, arguments, permission);
 	}
 }

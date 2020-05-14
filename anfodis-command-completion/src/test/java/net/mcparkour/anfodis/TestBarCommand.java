@@ -31,9 +31,13 @@ import net.mcparkour.anfodis.command.annotation.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.annotation.argument.Completion;
 import net.mcparkour.anfodis.command.annotation.context.Receiver;
 import net.mcparkour.anfodis.command.annotation.properties.Command;
+import net.mcparkour.anfodis.command.annotation.properties.Description;
+import net.mcparkour.anfodis.command.annotation.properties.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 
 @Command("bar")
+@Description("bar")
+@Permission
 public class TestBarCommand {
 
 	@Receiver

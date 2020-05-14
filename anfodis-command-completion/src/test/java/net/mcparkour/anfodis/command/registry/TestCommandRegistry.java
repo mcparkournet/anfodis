@@ -45,7 +45,6 @@ import net.mcparkour.anfodis.command.mapper.properties.TestCommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand, TestCommandContext, TestCompletionContext, net.mcparkour.anfodis.TestCommandSender> {
 
@@ -53,13 +52,8 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
 
 	private Map<String, CommandWrapper> commandManager;
 
-	public TestCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
-		CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
-		CodecRegistry<CompletionCodec> completionCodecRegistry,
-		MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory,
-		String permissionPrefix,
-		Map<String, CommandWrapper> commandManager) {
-		super(COMMAND_MAPPER, TestCommandHandler::new, TestCommandExecutorHandler::new, TestCommandContext::new, CompletionHandler::new, TestCompletionContext::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, permissionPrefix);
+	public TestCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory, Permission basePermission, Map<String, CommandWrapper> commandManager) {
+		super(COMMAND_MAPPER, TestCommandHandler::new, TestCommandExecutorHandler::new, TestCommandContext::new, CompletionHandler::new, TestCompletionContext::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, basePermission);
 		this.commandManager = commandManager;
 	}
 
@@ -67,11 +61,13 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
 	public void register(TestCommand command, CommandContextHandler<TestCommandContext> commandHandler, CompletionContextHandler<TestCompletionContext> completionHandler) {
 		TestCommandProperties properties = command.getProperties();
 		Set<String> names = properties.getAllNames();
-		Permission permission = createPermission(properties);
+		Permission basePermission = getBasePermission();
+		Permission commandPermission = properties.getPermission();
+		Permission permission = commandPermission.withFirst(basePermission);
 		register(names, permission, commandHandler, completionHandler);
 	}
 
-	private void register(Collection<String> aliases, @Nullable Permission permission, CommandContextHandler<TestCommandContext> commandHandler, CompletionContextHandler<TestCompletionContext> completionHandler) {
+	private void register(Collection<String> aliases, Permission permission, CommandContextHandler<TestCommandContext> commandHandler, CompletionContextHandler<TestCompletionContext> completionHandler) {
 		MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory = getMessageReceiverFactory();
 		TestCommandExecutor commandExecutor = (sender, arguments) -> {
 			MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
@@ -89,10 +85,10 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
 	}
 
 	public void register(Collection<String> aliases, TestCommandExecutor commandExecutor, TestCompletionExecutor completionExecutor) {
-		register(aliases, null, commandExecutor, completionExecutor);
+		register(aliases, Permission.empty(), commandExecutor, completionExecutor);
 	}
 
-	public void register(Collection<String> aliases, @Nullable Permission permission, TestCommandExecutor commandExecutor, TestCompletionExecutor completionExecutor) {
+	public void register(Collection<String> aliases, Permission permission, TestCommandExecutor commandExecutor, TestCompletionExecutor completionExecutor) {
 		CommandWrapper command = new CommandWrapper(commandExecutor, completionExecutor);
 		for (String alias : aliases) {
 			this.commandManager.put(alias, command);

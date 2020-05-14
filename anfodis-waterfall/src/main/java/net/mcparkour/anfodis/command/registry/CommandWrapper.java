@@ -28,15 +28,14 @@ import java.util.List;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
-import org.jetbrains.annotations.Nullable;
 
 class CommandWrapper extends Command implements TabExecutor {
 
 	private WaterfallCommandExecutor commandExecutor;
 	private WaterfallCompletionExecutor completionExecutor;
 
-	CommandWrapper(String name, @Nullable String permissionName, String[] aliases, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
-		super(name, permissionName, aliases);
+	CommandWrapper(String name, String permission, String[] aliases, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
+		super(name, permission, aliases);
 		this.commandExecutor = commandExecutor;
 		this.completionExecutor = completionExecutor;
 	}

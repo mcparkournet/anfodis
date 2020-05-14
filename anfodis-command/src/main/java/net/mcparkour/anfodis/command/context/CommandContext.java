@@ -27,16 +27,14 @@ package net.mcparkour.anfodis.command.context;
 import java.util.List;
 import net.mcparkour.anfodis.handler.RootContext;
 import net.mcparkour.craftmon.permission.Permission;
-import org.jetbrains.annotations.Nullable;
 
 public class CommandContext<T> extends RootContext {
 
 	private CommandSender<T> sender;
 	private List<String> arguments;
-	@Nullable
 	private Permission permission;
 
-	public CommandContext(CommandSender<T> sender, List<String> arguments, @Nullable Permission permission) {
+	public CommandContext(CommandSender<T> sender, List<String> arguments, Permission permission) {
 		this.sender = sender;
 		this.arguments = arguments;
 		this.permission = permission;
@@ -50,7 +48,6 @@ public class CommandContext<T> extends RootContext {
 		return List.copyOf(this.arguments);
 	}
 
-	@Nullable
 	public Permission getPermission() {
 		return this.permission;
 	}

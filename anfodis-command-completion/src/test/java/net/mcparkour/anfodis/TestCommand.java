@@ -26,8 +26,12 @@ package net.mcparkour.anfodis;
 
 import net.mcparkour.anfodis.command.annotation.SubCommand;
 import net.mcparkour.anfodis.command.annotation.properties.Command;
+import net.mcparkour.anfodis.command.annotation.properties.Description;
+import net.mcparkour.anfodis.command.annotation.properties.Permission;
 
 @Command("test")
+@Description("test")
+@Permission
 public class TestCommand {
 
 	@SubCommand

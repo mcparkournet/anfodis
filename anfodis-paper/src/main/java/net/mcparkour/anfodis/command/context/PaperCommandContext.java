@@ -26,11 +26,10 @@ package net.mcparkour.anfodis.command.context;
 
 import java.util.List;
 import net.mcparkour.craftmon.permission.Permission;
-import org.jetbrains.annotations.Nullable;
 
 public class PaperCommandContext extends CommandContext<org.bukkit.command.CommandSender> {
 
-	public PaperCommandContext(CommandSender<org.bukkit.command.CommandSender> sender, List<String> arguments, @Nullable Permission permission) {
+	public PaperCommandContext(CommandSender<org.bukkit.command.CommandSender> sender, List<String> arguments, Permission permission) {
 		super(sender, arguments, permission);
 	}
 }

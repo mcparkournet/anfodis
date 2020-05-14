@@ -25,7 +25,6 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.List;
-import net.mcparkour.craftmon.permission.Permission;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -37,14 +36,11 @@ final class CommandWrapper extends Command {
 	private PaperCommandExecutor commandExecutor;
 	private PaperCompletionExecutor completionExecutor;
 
-	CommandWrapper(String name, String description, String usageMessage, List<String> aliases, @Nullable Permission permission, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
+	CommandWrapper(String name, String description, String usageMessage, List<String> aliases, String permission, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
 		super(name, description, usageMessage, aliases);
+		setPermission(permission);
 		this.commandExecutor = commandExecutor;
 		this.completionExecutor = completionExecutor;
-		if (permission != null) {
-			String permissionName = permission.getName();
-			setPermission(permissionName);
-		}
 	}
 
 	@Override

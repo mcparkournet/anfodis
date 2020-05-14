@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
 public class CommandProperties {
@@ -40,8 +41,7 @@ public class CommandProperties {
 	private Set<String> lowerCaseAliases;
 	@Nullable
 	private String aliasesTranslationId;
-	@Nullable
-	private String permission;
+	private Permission permission;
 
 	public CommandProperties(CommandPropertiesData propertiesData) {
 		String name = propertiesData.getName();
@@ -55,12 +55,11 @@ public class CommandProperties {
 			.map(String::toLowerCase)
 			.collect(Collectors.toUnmodifiableSet());
 		this.aliasesTranslationId = propertiesData.getAliasesTranslationId();
-		String permission = propertiesData.getPermission();
-		this.permission = permission == null ? null : permission.isEmpty() ? this.name : permission;
+		String permissionName = propertiesData.getPermission();
+		this.permission = permissionName == null ? Permission.empty() : Permission.of(permissionName.isEmpty() ? this.name : permissionName);
 	}
 
-	@Nullable
-	public String getPermission() {
+	public Permission getPermission() {
 		return this.permission;
 	}
 
