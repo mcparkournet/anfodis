@@ -68,6 +68,17 @@ public class Argument {
 		return typeArguments[0];
 	}
 
+	public String getUsage() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.optional ? '[' : '<');
+		builder.append(this.name);
+		if (isList()) {
+			builder.append("...");
+		}
+		builder.append(this.optional ? ']' : '>');
+		return builder.toString();
+	}
+
 	public void setEmptyArgumentField(Object instance) {
 		Object value = isOptionalArgument() ? MappedOptionalArgument.EMPTY_OPTIONAL_ARGUMENT : null;
 		Reflections.setFieldValue(this.field, instance, value);

@@ -26,12 +26,14 @@ package net.mcparkour.anfodis.command.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.stream.Collectors;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.context.Context;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.mapper.Root;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.craftmon.permission.Permission;
 
 public class Command<T extends Command<T, A, C, P>, A extends Argument, C extends Context, P extends CommandProperties> extends Root {
 
@@ -46,6 +48,35 @@ public class Command<T extends Command<T, A, C, P>, A extends Argument, C extend
 		this.context = context;
 		this.properties = properties;
 		this.subCommands = subCommands;
+	}
+
+	public String getUsageHeader() {
+		String name = this.properties.getName();
+		String descriptionUsage = getDescriptionUsage();
+		return name + descriptionUsage;
+	}
+
+	public String getUsage() {
+		String name = this.properties.getName();
+		String argumentsUsage = getArgumentsUsage();
+		String descriptionUsage = getDescriptionUsage();
+		return name + " " + argumentsUsage + descriptionUsage;
+	}
+
+	private String getArgumentsUsage() {
+		return this.arguments.stream()
+			.map(Argument::getUsage)
+			.collect(Collectors.joining(" "));
+	}
+
+	private String getDescriptionUsage() {
+		String description = this.properties.getDescription();
+		return description.isEmpty() ? "" : " - " + description + ".";
+	}
+
+	public Permission getPermission(Permission prefix) {
+		Permission permission = this.properties.getPermission();
+		return prefix.withLast(permission);
 	}
 
 	public List<A> getArguments() {

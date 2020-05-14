@@ -146,7 +146,7 @@ public class CommandCompletionTest {
 		CommandWrapper test = this.commandManager.get("test");
 		TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.fooo", "test.test.bar"), false);
 		test.execute(sender, new String[] {});
-		Assertions.assertIterableEquals(List.of("test - test.", "foo [language] - foo.", "bar <arg> <args...> - bar."), sender.getMessages());
+		Assertions.assertEquals("test - test.\nfoo [language] - foo.\nbar <arg> <args...> - bar.", sender.getLastMessage());
 		test.execute(sender, new String[] {"foo", "pl"});
 		Assertions.assertEquals("pl", sender.getLastMessage());
 		test.execute(sender, new String[] {"bar"});
@@ -187,7 +187,7 @@ public class CommandCompletionTest {
 		CommandWrapper test = this.commandManager.get("test");
 		TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.bar"), false);
 		test.execute(sender, new String[] {});
-		Assertions.assertIterableEquals(List.of("test - test.", "bar <arg> <args...> - bar."), sender.getMessages());
+		Assertions.assertEquals("test - test.\nbar <arg> <args...> - bar.", sender.getLastMessage());
 		test.execute(sender, new String[] {"foo", "pl"});
 		Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
 		test.execute(sender, new String[] {"bar"});

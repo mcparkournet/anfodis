@@ -24,11 +24,17 @@
 
 package net.mcparkour.anfodis.command.context;
 
-import net.mcparkour.intext.message.MessageReceiver;
+import net.mcparkour.craftmon.permission.Permission;
 
-public interface CommandSender<T> extends Permissible {
+public interface Permissible {
 
-	T getSender();
+	default boolean hasPermission(Permission permission) {
+		if (permission.isEmpty()) {
+			return true;
+		}
+		String name = permission.getName();
+		return hasPermission(name);
+	}
 
-	MessageReceiver getReceiver();
+	boolean hasPermission(String name);
 }

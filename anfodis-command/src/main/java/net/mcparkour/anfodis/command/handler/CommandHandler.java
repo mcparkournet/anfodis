@@ -27,8 +27,10 @@ package net.mcparkour.anfodis.command.handler;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.Permissible;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
@@ -82,19 +84,21 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 			execute(context, argumentsLength);
 			return;
 		}
-		C subCommandContext = createSubCommandContext(arguments, context, subCommand);
+		C subCommandContext = createSubCommandContext(subCommand, context);
 		subCommandHandler.handle(subCommandContext);
 	}
 
 	private void execute(C context, int argumentsSize) {
+		CommandSender<S> sender = context.getSender();
+		MessageReceiver receiver = sender.getReceiver();
+		Permission permission = context.getPermission();
 		if (this.executorHandler == null) {
-			getUsage(context);
+			String usage = getUsage(sender, permission);
+			receiver.receivePlain(usage);
 			return;
 		}
 		if (!checkLength(argumentsSize)) {
-			CommandSender<S> sender = context.getSender();
-			MessageReceiver receiver = sender.getReceiver();
-			String usage = getUsage(this.command);
+			String usage = this.command.getUsage();
 			receiver.receivePlain(usage);
 			return;
 		}
@@ -102,19 +106,21 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 		this.executorHandler.handle(context, instance);
 	}
 
-	private C createSubCommandContext(List<String> subCommandArguments, C context, T subCommand) {
-		CommandSender<S> sender = context.getSender();
-		int size = subCommandArguments.size();
-		List<String> arguments = subCommandArguments.subList(1, size);
-		Permission permission = createSubCommandPermission(context, subCommand);
-		return this.contextSupplier.supply(sender, arguments, permission);
+	private String getUsage(Permissible permissible, Permission contextPermission) {
+		String header = this.command.getUsageHeader();
+		String subCommandsUsage = getSubCommandsUsage(permissible, contextPermission);
+		return header + '\n' + subCommandsUsage;
 	}
 
-	private Permission createSubCommandPermission(C context, T subCommand) {
-		Permission permission = context.getPermission();
-		CommandProperties properties = subCommand.getProperties();
-		Permission subCommandPermission = properties.getPermission();
-		return permission.withLast(subCommandPermission);
+	private String getSubCommandsUsage(Permissible permissible, Permission contextPermission) {
+		List<T> subCommands = this.command.getSubCommands();
+		return subCommands.stream()
+			.filter(subCommand -> {
+				Permission permission = subCommand.getPermission(contextPermission);
+				return permissible.hasPermission(permission);
+			})
+			.map(T::getUsage)
+			.collect(Collectors.joining("\n"));
 	}
 
 	private boolean checkLength(int argumentsLength) {
@@ -140,63 +146,14 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 		return aliases.contains(lowerCaseArgument);
 	}
 
-	private void getUsage(C context) {
-		StringBuilder builder = new StringBuilder();
-		CommandProperties properties = this.command.getProperties();
-		String name = properties.getName();
-		builder.append(name);
-		String description = properties.getDescription();
-		if (description != null) {
-			builder.append(" - " + description);
-		}
-		builder.append(".");
-		String usage = builder.toString();
+	private C createSubCommandContext(T subCommand, C context) {
 		CommandSender<S> sender = context.getSender();
-		MessageReceiver receiver = sender.getReceiver();
-		receiver.receivePlain(usage);
-		List<T> subCommands = this.command.getSubCommands();
+		List<String> contextArguments = context.getArguments();
+		int size = contextArguments.size();
+		List<String> arguments = contextArguments.subList(1, size);
 		Permission contextPermission = context.getPermission();
-		for (T subCommand : subCommands) {
-			CommandProperties subCommandProperties = subCommand.getProperties();
-			Permission subCommandPermission = subCommandProperties.getPermission();
-			Permission permission = contextPermission.withLast(subCommandPermission);
-			if (sender.hasPermission(permission)) {
-				String subCommandUsage = getUsage(subCommand);
-				receiver.receivePlain(subCommandUsage);
-			}
-		}
-	}
-
-	private String getUsage(T command) {
-		StringBuilder builder = new StringBuilder();
-		CommandProperties properties = command.getProperties();
-		String name = properties.getName();
-		builder.append(name);
-		List<? extends Argument> arguments = command.getArguments();
-		for (Argument argument : arguments) {
-			builder.append(" ");
-			String usage = getUsage(argument);
-			builder.append(usage);
-		}
-		String description = properties.getDescription();
-		if (description != null) {
-			builder.append(" - " + description);
-		}
-		builder.append(".");
-		return builder.toString();
-	}
-
-	private String getUsage(Argument argument) {
-		StringBuilder builder = new StringBuilder();
-		String argumentName = argument.getName();
-		boolean optional = argument.isOptional();
-		builder.append(optional ? '[' : '<');
-		builder.append(argumentName);
-		if (argument.isList()) {
-			builder.append("...");
-		}
-		builder.append(optional ? ']' : '>');
-		return builder.toString();
+		Permission permission = subCommand.getPermission(contextPermission);
+		return this.contextSupplier.supply(sender, arguments, permission);
 	}
 
 	protected T getCommand() {

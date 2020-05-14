@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import net.mcparkour.anfodis.codec.CodecRegistry;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.Permissible;
 import net.mcparkour.anfodis.command.mapper.CompletionCommand;
 import net.mcparkour.anfodis.command.mapper.argument.CompletionArgument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
@@ -53,9 +54,9 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 
 	@Override
 	public List<String> handle(C context) {
-		CommandSender<S> sender = context.getSender();
+		Permissible permissible = context.getSender();
 		Permission permission = context.getPermission();
-		if (!sender.hasPermission(permission)) {
+		if (!permissible.hasPermission(permission)) {
 			return List.of();
 		}
 		List<String> arguments = context.getArguments();
@@ -111,9 +112,9 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 			List<String> subCommandsCompletions = getSubCommandsCompletions(context, arguments);
 			completions.addAll(subCommandsCompletions);
 		}
-		CommandSender<S> sender = context.getSender();
+		Permissible permissible = context.getSender();
 		Permission permission = context.getPermission();
-		if (!arguments.isEmpty() && sender.hasPermission(permission)) {
+		if (!arguments.isEmpty() && permissible.hasPermission(permission)) {
 			List<String> executorCompletions = handleExecutor(context, arguments);
 			completions.addAll(executorCompletions);
 		}
@@ -122,14 +123,14 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
 
 	private List<String> getSubCommandsCompletions(C context, List<String> arguments) {
 		Permission contextPermission = context.getPermission();
-		CommandSender<S> sender = context.getSender();
+		Permissible permissible = context.getSender();
 		String firstArgument = arguments.get(0);
 		List<String> completions = new ArrayList<>(0);
 		for (T subCommand : this.command.getSubCommands()) {
 			CommandProperties properties = subCommand.getProperties();
 			Permission subCommandPermission = properties.getPermission();
 			Permission permission = contextPermission.withLast(subCommandPermission);
-			if (sender.hasPermission(permission)) {
+			if (permissible.hasPermission(permission)) {
 				String name = properties.getName();
 				if (name.startsWith(firstArgument)) {
 					completions.add(name);
