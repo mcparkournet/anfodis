@@ -7,13 +7,13 @@ import net.mcparkour.anfodis.command.handler.CompletionContext;
 @FunctionalInterface
 public interface CompletionCodec {
 
-	List<String> getCompletions(CompletionContext<?> context);
+    List<String> getCompletions(CompletionContext<?> context);
 
-	static CompletionCodec entries(String... completions) {
-		return context -> List.of(completions);
-	}
+    static CompletionCodec entries(String... completions) {
+        return context -> List.of(completions);
+    }
 
-	static CompletionCodec entries(Collection<String> completions) {
-		return context -> List.copyOf(completions);
-	}
+    static CompletionCodec entries(Collection<String> completions) {
+        return context -> List.copyOf(completions);
+    }
 }

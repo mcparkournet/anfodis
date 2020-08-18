@@ -28,13 +28,13 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public interface Permissible {
 
-	default boolean hasPermission(Permission permission) {
-		if (permission.isEmpty()) {
-			return true;
-		}
-		String name = permission.getName();
-		return hasPermission(name);
-	}
+    default boolean hasPermission(Permission permission) {
+        if (permission.isEmpty()) {
+            return true;
+        }
+        String name = permission.getName();
+        return hasPermission(name);
+    }
 
-	boolean hasPermission(String name);
+    boolean hasPermission(String name);
 }

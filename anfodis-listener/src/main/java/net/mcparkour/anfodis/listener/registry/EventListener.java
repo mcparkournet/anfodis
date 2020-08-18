@@ -27,5 +27,5 @@ package net.mcparkour.anfodis.listener.registry;
 @FunctionalInterface
 public interface EventListener<E> {
 
-	void listen(E event);
+    void listen(E event);
 }

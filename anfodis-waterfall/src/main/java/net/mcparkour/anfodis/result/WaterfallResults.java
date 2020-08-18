@@ -31,16 +31,16 @@ import net.md_5.bungee.api.plugin.Cancellable;
 
 public final class WaterfallResults {
 
-	private WaterfallResults() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
-	}
+    private WaterfallResults() {
+        throw new UnsupportedOperationException("Cannot create an instance of this class");
+    }
 
-	public static Result cancelEvent(Cancellable cancellableEvent) {
-		return () -> cancellableEvent.setCancelled(true);
-	}
+    public static Result cancelEvent(Cancellable cancellableEvent) {
+        return () -> cancellableEvent.setCancelled(true);
+    }
 
-	public static Result sendMessage(CommandSender receiver, String message) {
-		BaseComponent[] messageComponents = TextComponent.fromLegacyText(message);
-		return () -> receiver.sendMessage(messageComponents);
-	}
+    public static Result sendMessage(CommandSender receiver, String message) {
+        BaseComponent[] messageComponents = TextComponent.fromLegacyText(message);
+        return () -> receiver.sendMessage(messageComponents);
+    }
 }

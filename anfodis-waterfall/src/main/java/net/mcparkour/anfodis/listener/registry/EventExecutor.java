@@ -29,5 +29,5 @@ import net.md_5.bungee.api.plugin.Listener;
 
 public interface EventExecutor<E extends Event> extends Listener {
 
-	void execute(E event);
+    void execute(E event);
 }

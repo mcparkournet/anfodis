@@ -30,9 +30,9 @@ import net.md_5.bungee.api.plugin.Event;
 
 public class WaterfallListenerPropertiesMapper extends ListenerPropertiesMapper<WaterfallListenerProperties, WaterfallListenerPropertiesData, Event, Listener> {
 
-	public WaterfallListenerPropertiesMapper() {
-		super(Listener.class, Listener::value, WaterfallListenerProperties::new, WaterfallListenerPropertiesData::new, (data, builder) -> {
-			builder.annotation(Priority.class, priority -> data.setPriority(priority.value()));
-		});
-	}
+    public WaterfallListenerPropertiesMapper() {
+        super(Listener.class, Listener::value, WaterfallListenerProperties::new, WaterfallListenerPropertiesData::new, (data, builder) -> {
+            builder.annotation(Priority.class, priority -> data.setPriority(priority.value()));
+        });
+    }
 }

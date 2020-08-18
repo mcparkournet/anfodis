@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface ChannelListener {
 
-	/**
-	 * @return names of channels to listen
-	 */
-	String[] value();
+    /**
+     * @return names of channels to listen
+     */
+    String[] value();
 }

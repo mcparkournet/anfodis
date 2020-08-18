@@ -36,31 +36,31 @@ import org.jetbrains.annotations.Nullable;
 
 public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperCommandContext, org.bukkit.command.CommandSender> {
 
-	public PaperCommandHandler(PaperCommand command, Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers, @Nullable ContextHandler<PaperCommandContext> executorHandler, CommandContextSupplier<PaperCommandContext, org.bukkit.command.CommandSender> contextSupplier) {
-		super(command, subCommandHandlers, executorHandler, contextSupplier);
-	}
+    public PaperCommandHandler(PaperCommand command, Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers, @Nullable ContextHandler<PaperCommandContext> executorHandler, CommandContextSupplier<PaperCommandContext, org.bukkit.command.CommandSender> contextSupplier) {
+        super(command, subCommandHandlers, executorHandler, contextSupplier);
+    }
 
-	@Override
-	public void handle(PaperCommandContext context) {
-		CommandSender<org.bukkit.command.CommandSender> sender = context.getSender();
-		MessageReceiver receiver = sender.getReceiver();
-		if (!checkSenders(context)) {
-			receiver.receivePlain("You are not a valid sender.");
-			return;
-		}
-		super.handle(context);
-	}
+    @Override
+    public void handle(PaperCommandContext context) {
+        CommandSender<org.bukkit.command.CommandSender> sender = context.getSender();
+        MessageReceiver receiver = sender.getReceiver();
+        if (!checkSenders(context)) {
+            receiver.receivePlain("You are not a valid sender.");
+            return;
+        }
+        super.handle(context);
+    }
 
-	private boolean checkSenders(PaperCommandContext context) {
-		PaperCommand command = getCommand();
-		PaperCommandProperties properties = command.getProperties();
-		Set<Class<? extends org.bukkit.command.CommandSender>> senders = properties.getSenderTypes();
-		if (senders.isEmpty()) {
-			return true;
-		}
-		CommandSender<org.bukkit.command.CommandSender> commandSender = context.getSender();
-		org.bukkit.command.CommandSender bukkitSender = commandSender.getSender();
-		Class<?> bukkitSenderClass = bukkitSender.getClass();
-		return senders.stream().anyMatch(sender -> sender.isAssignableFrom(bukkitSenderClass));
-	}
+    private boolean checkSenders(PaperCommandContext context) {
+        PaperCommand command = getCommand();
+        PaperCommandProperties properties = command.getProperties();
+        Set<Class<? extends org.bukkit.command.CommandSender>> senders = properties.getSenderTypes();
+        if (senders.isEmpty()) {
+            return true;
+        }
+        CommandSender<org.bukkit.command.CommandSender> commandSender = context.getSender();
+        org.bukkit.command.CommandSender bukkitSender = commandSender.getSender();
+        Class<?> bukkitSenderClass = bukkitSender.getClass();
+        return senders.stream().anyMatch(sender -> sender.isAssignableFrom(bukkitSenderClass));
+    }
 }

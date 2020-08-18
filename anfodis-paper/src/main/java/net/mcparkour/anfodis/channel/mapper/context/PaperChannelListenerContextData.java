@@ -29,26 +29,26 @@ import org.jetbrains.annotations.Nullable;
 
 class PaperChannelListenerContextData {
 
-	@Nullable
-	private Field messageField;
-	@Nullable
-	private Field sourceField;
+    @Nullable
+    private Field messageField;
+    @Nullable
+    private Field sourceField;
 
-	@Nullable
-	public Field getMessageField() {
-		return this.messageField;
-	}
+    @Nullable
+    public Field getMessageField() {
+        return this.messageField;
+    }
 
-	public void setMessageField(@Nullable Field messageField) {
-		this.messageField = messageField;
-	}
+    public void setMessageField(@Nullable Field messageField) {
+        this.messageField = messageField;
+    }
 
-	@Nullable
-	public Field getSourceField() {
-		return this.sourceField;
-	}
+    @Nullable
+    public Field getSourceField() {
+        return this.sourceField;
+    }
 
-	public void setSourceField(@Nullable Field sourceField) {
-		this.sourceField = sourceField;
-	}
+    public void setSourceField(@Nullable Field sourceField) {
+        this.sourceField = sourceField;
+    }
 }

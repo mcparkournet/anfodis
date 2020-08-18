@@ -31,7 +31,7 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class TestCompletionContext extends CompletionContext<TestCommandSender> {
 
-	public TestCompletionContext(CommandSender<TestCommandSender> sender, List<String> arguments, Permission permission) {
-		super(sender, arguments, permission);
-	}
+    public TestCompletionContext(CommandSender<TestCommandSender> sender, List<String> arguments, Permission permission) {
+        super(sender, arguments, permission);
+    }
 }

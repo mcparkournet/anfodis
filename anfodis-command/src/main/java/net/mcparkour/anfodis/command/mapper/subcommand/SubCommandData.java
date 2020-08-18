@@ -29,15 +29,15 @@ import org.jetbrains.annotations.Nullable;
 
 class SubCommandData {
 
-	@Nullable
-	private Field subCommandField;
+    @Nullable
+    private Field subCommandField;
 
-	@Nullable
-	public Field getSubCommandField() {
-		return this.subCommandField;
-	}
+    @Nullable
+    public Field getSubCommandField() {
+        return this.subCommandField;
+    }
 
-	public void setSubCommandField(@Nullable Field subCommandField) {
-		this.subCommandField = subCommandField;
-	}
+    public void setSubCommandField(@Nullable Field subCommandField) {
+        this.subCommandField = subCommandField;
+    }
 }

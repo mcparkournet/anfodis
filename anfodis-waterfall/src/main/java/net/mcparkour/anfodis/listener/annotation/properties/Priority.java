@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Priority {
 
-	/**
-	 * @return listener priority
-	 */
-	byte value();
+    /**
+     * @return listener priority
+     */
+    byte value();
 }

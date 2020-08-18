@@ -29,5 +29,5 @@ import net.mcparkour.anfodis.command.context.CommandContext;
 @FunctionalInterface
 public interface CommandContextHandler<C extends CommandContext<?>> {
 
-	void handle(C context);
+    void handle(C context);
 }

@@ -33,11 +33,11 @@ import net.mcparkour.anfodis.command.mapper.properties.WaterfallCommandPropertie
 
 public class WaterfallCommandMapper extends CommandMapper<WaterfallCommand, WaterfallArgument, WaterfallContext, WaterfallCommandProperties> {
 
-	private static final WaterfallArgumentMapper ARGUMENT_MAPPER = new WaterfallArgumentMapper();
-	private static final WaterfallContextMapper CONTEXT_MAPPER = new WaterfallContextMapper();
-	private static final WaterfallCommandPropertiesMapper PROPERTIES_MAPPER = new WaterfallCommandPropertiesMapper();
+    private static final WaterfallArgumentMapper ARGUMENT_MAPPER = new WaterfallArgumentMapper();
+    private static final WaterfallContextMapper CONTEXT_MAPPER = new WaterfallContextMapper();
+    private static final WaterfallCommandPropertiesMapper PROPERTIES_MAPPER = new WaterfallCommandPropertiesMapper();
 
-	public WaterfallCommandMapper() {
-		super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, WaterfallCommand::new);
-	}
+    public WaterfallCommandMapper() {
+        super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, WaterfallCommand::new);
+    }
 }

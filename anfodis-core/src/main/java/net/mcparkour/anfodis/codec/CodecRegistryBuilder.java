@@ -29,30 +29,30 @@ import java.util.Map;
 
 public class CodecRegistryBuilder<T> {
 
-	private Map<Class<?>, T> typedCodecs = new HashMap<>(16);
-	private Map<String, T> keyedCodecs = new HashMap<>(4);
+    private Map<Class<?>, T> typedCodecs = new HashMap<>(16);
+    private Map<String, T> keyedCodecs = new HashMap<>(4);
 
-	public CodecRegistryBuilder<T> typed(Class<?> type, T codec) {
-		this.typedCodecs.put(type, codec);
-		return this;
-	}
+    public CodecRegistryBuilder<T> typed(Class<?> type, T codec) {
+        this.typedCodecs.put(type, codec);
+        return this;
+    }
 
-	public CodecRegistryBuilder<T> keyed(String key, T codec) {
-		this.keyedCodecs.put(key, codec);
-		return this;
-	}
+    public CodecRegistryBuilder<T> keyed(String key, T codec) {
+        this.keyedCodecs.put(key, codec);
+        return this;
+    }
 
-	public CodecRegistryBuilder<T> with(CodecRegistry<T> registry) {
-		Map<Class<?>, T> typedCodecs = registry.getTypedCodecs();
-		this.typedCodecs.putAll(typedCodecs);
-		Map<String, T> keyedCodecs = registry.getKeyedCodecs();
-		this.keyedCodecs.putAll(keyedCodecs);
-		return this;
-	}
+    public CodecRegistryBuilder<T> with(CodecRegistry<T> registry) {
+        Map<Class<?>, T> typedCodecs = registry.getTypedCodecs();
+        this.typedCodecs.putAll(typedCodecs);
+        Map<String, T> keyedCodecs = registry.getKeyedCodecs();
+        this.keyedCodecs.putAll(keyedCodecs);
+        return this;
+    }
 
-	public CodecRegistry<T> build() {
-		Map<Class<?>, T> typedCodecsCopy = Map.copyOf(this.typedCodecs);
-		Map<String, T> keyedCodecsCopy = Map.copyOf(this.keyedCodecs);
-		return new CodecRegistry<>(typedCodecsCopy, keyedCodecsCopy);
-	}
+    public CodecRegistry<T> build() {
+        Map<Class<?>, T> typedCodecsCopy = Map.copyOf(this.typedCodecs);
+        Map<String, T> keyedCodecsCopy = Map.copyOf(this.keyedCodecs);
+        return new CodecRegistry<>(typedCodecsCopy, keyedCodecsCopy);
+    }
 }

@@ -34,8 +34,8 @@ import org.bukkit.event.EventPriority;
 @Target(ElementType.TYPE)
 public @interface Priority {
 
-	/**
-	 * @return listener priority
-	 */
-	EventPriority value();
+    /**
+     * @return listener priority
+     */
+    EventPriority value();
 }

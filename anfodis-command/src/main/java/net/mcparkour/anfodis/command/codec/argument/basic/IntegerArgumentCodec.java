@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class IntegerArgumentCodec implements ArgumentCodec<Integer> {
 
-	@Override
-	@Nullable
-	public Integer parse(String stringValue) {
-		return NumericParser.parseInteger(stringValue);
-	}
+    @Override
+    @Nullable
+    public Integer parse(String stringValue) {
+        return NumericParser.parseInteger(stringValue);
+    }
 }

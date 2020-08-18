@@ -28,14 +28,14 @@ import java.util.List;
 
 public interface Registry {
 
-	default void register(Class<?>... annotatedClasses) {
-		List<Class<?>> annotatedClassesList = List.of(annotatedClasses);
-		register(annotatedClassesList);
-	}
+    default void register(Class<?>... annotatedClasses) {
+        List<Class<?>> annotatedClassesList = List.of(annotatedClasses);
+        register(annotatedClassesList);
+    }
 
-	default void register(List<Class<?>> annotatedClasses) {
-		annotatedClasses.forEach(this::register);
-	}
+    default void register(List<Class<?>> annotatedClasses) {
+        annotatedClasses.forEach(this::register);
+    }
 
-	void register(Class<?> annotatedClass);
+    void register(Class<?> annotatedClass);
 }

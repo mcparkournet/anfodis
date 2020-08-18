@@ -33,5 +33,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface TestClassAnnotationTwo {
 
-	String value();
+    String value();
 }

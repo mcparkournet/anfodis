@@ -43,39 +43,39 @@ import net.mcparkour.intext.message.MessageReceiverFactory;
 
 public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, ?, ?, ?>, C extends CommandContext<S>, D extends CompletionContext<S>, S> extends AbstractCommandRegistry<T, C, S> {
 
-	private CompletionHandlerSupplier<T, D, S> completionHandlerSupplier;
-	private CommandContextSupplier<D, S> completionContextSupplier;
-	private CodecRegistry<CompletionCodec> completionCodecRegistry;
+    private CompletionHandlerSupplier<T, D, S> completionHandlerSupplier;
+    private CommandContextSupplier<D, S> completionContextSupplier;
+    private CodecRegistry<CompletionCodec> completionCodecRegistry;
 
-	public AbstractCompletionRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C, S> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CommandContextSupplier<C, S> commandContextSupplier, CompletionHandlerSupplier<T, D, S> completionHandlerSupplier, CommandContextSupplier<D, S> completionContextSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, Permission basePermission) {
-		super(mapper, commandHandlerSupplier, commandExecutorHandlerSupplier, commandContextSupplier, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, basePermission);
-		this.completionContextSupplier = completionContextSupplier;
-		this.completionHandlerSupplier = completionHandlerSupplier;
-		this.completionCodecRegistry = completionCodecRegistry;
-	}
+    public AbstractCompletionRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C, S> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CommandContextSupplier<C, S> commandContextSupplier, CompletionHandlerSupplier<T, D, S> completionHandlerSupplier, CommandContextSupplier<D, S> completionContextSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, Permission basePermission) {
+        super(mapper, commandHandlerSupplier, commandExecutorHandlerSupplier, commandContextSupplier, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, basePermission);
+        this.completionContextSupplier = completionContextSupplier;
+        this.completionHandlerSupplier = completionHandlerSupplier;
+        this.completionCodecRegistry = completionCodecRegistry;
+    }
 
-	@Override
-	public void register(T root) {
-		CommandContextHandler<C> commandHandler = createCommandHandler(root);
-		CompletionContextHandler<D> completionHandler = createCompletionHandler(root);
-		register(root, commandHandler, completionHandler);
-	}
+    @Override
+    public void register(T root) {
+        CommandContextHandler<C> commandHandler = createCommandHandler(root);
+        CompletionContextHandler<D> completionHandler = createCompletionHandler(root);
+        register(root, commandHandler, completionHandler);
+    }
 
-	private CompletionContextHandler<D> createCompletionHandler(T command) {
-		List<T> subCommands = command.getSubCommands();
-		int size = subCommands.size();
-		Map<T, CompletionContextHandler<D>> handlers = new HashMap<>(size);
-		for (T subCommand : subCommands) {
-			CompletionContextHandler<D> handler = createCompletionHandler(subCommand);
-			handlers.put(subCommand, handler);
-		}
-		return this.completionHandlerSupplier.supply(command, this.completionCodecRegistry, handlers, this.completionContextSupplier);
-	}
+    private CompletionContextHandler<D> createCompletionHandler(T command) {
+        List<T> subCommands = command.getSubCommands();
+        int size = subCommands.size();
+        Map<T, CompletionContextHandler<D>> handlers = new HashMap<>(size);
+        for (T subCommand : subCommands) {
+            CompletionContextHandler<D> handler = createCompletionHandler(subCommand);
+            handlers.put(subCommand, handler);
+        }
+        return this.completionHandlerSupplier.supply(command, this.completionCodecRegistry, handlers, this.completionContextSupplier);
+    }
 
-	@Override
-	public void register(T command, CommandContextHandler<C> commandHandler) {
-		register(command, commandHandler, context -> List.of());
-	}
+    @Override
+    public void register(T command, CommandContextHandler<C> commandHandler) {
+        register(command, commandHandler, context -> List.of());
+    }
 
-	public abstract void register(T command, CommandContextHandler<C> commandHandler, CompletionContextHandler<D> completionHandler);
+    public abstract void register(T command, CommandContextHandler<C> commandHandler, CompletionContextHandler<D> completionHandler);
 }

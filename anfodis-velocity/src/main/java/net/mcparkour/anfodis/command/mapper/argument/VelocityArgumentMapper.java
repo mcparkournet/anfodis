@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.argument;
 
 public class VelocityArgumentMapper extends CompletionArgumentMapper<VelocityArgument, VelocityArgumentData> {
 
-	public VelocityArgumentMapper() {
-		super(VelocityArgument::new, VelocityArgumentData::new);
-	}
+    public VelocityArgumentMapper() {
+        super(VelocityArgument::new, VelocityArgumentData::new);
+    }
 }

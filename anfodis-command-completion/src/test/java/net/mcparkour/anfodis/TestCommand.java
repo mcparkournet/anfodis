@@ -34,8 +34,8 @@ import net.mcparkour.anfodis.command.annotation.properties.Permission;
 @Permission
 public class TestCommand {
 
-	@SubCommand
-	private TestFooCommand foo;
-	@SubCommand
-	private TestBarCommand bar;
+    @SubCommand
+    private TestFooCommand foo;
+    @SubCommand
+    private TestBarCommand bar;
 }

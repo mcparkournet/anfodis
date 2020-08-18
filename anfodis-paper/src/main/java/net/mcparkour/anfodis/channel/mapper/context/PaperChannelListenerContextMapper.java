@@ -33,21 +33,21 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class PaperChannelListenerContextMapper implements Mapper<Field, PaperChannelListenerContext> {
 
-	@Override
-	public PaperChannelListenerContext map(Iterable<Field> elements) {
-		return new ElementsMapperBuilder<Field, PaperChannelListenerContextData>()
-			.data(PaperChannelListenerContextData::new)
-			.singleElement(data -> new SingleElementMapperBuilder<Field>()
-				.annotation(Message.class)
-				.elementConsumer(data::setMessageField)
-				.build())
-			.singleElement(data -> new SingleElementMapperBuilder<Field>()
-				.annotation(Source.class)
-				.elementConsumer(data::setSourceField)
-				.build())
-			.build()
-			.mapFirstOptional(elements)
-			.map(PaperChannelListenerContext::new)
-			.orElseThrow();
-	}
+    @Override
+    public PaperChannelListenerContext map(Iterable<Field> elements) {
+        return new ElementsMapperBuilder<Field, PaperChannelListenerContextData>()
+            .data(PaperChannelListenerContextData::new)
+            .singleElement(data -> new SingleElementMapperBuilder<Field>()
+                .annotation(Message.class)
+                .elementConsumer(data::setMessageField)
+                .build())
+            .singleElement(data -> new SingleElementMapperBuilder<Field>()
+                .annotation(Source.class)
+                .elementConsumer(data::setSourceField)
+                .build())
+            .build()
+            .mapFirstOptional(elements)
+            .map(PaperChannelListenerContext::new)
+            .orElseThrow();
+    }
 }

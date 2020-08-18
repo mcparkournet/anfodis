@@ -31,36 +31,36 @@ import org.jetbrains.annotations.Nullable;
 
 public class CompletionArgument extends Argument {
 
-	@Nullable
-	private String codecKey;
+    @Nullable
+    private String codecKey;
 
-	public CompletionArgument(CompletionArgumentData argumentData) {
-		super(argumentData);
-		this.codecKey = argumentData.getCompletionCodecKey();
-	}
+    public CompletionArgument(CompletionArgumentData argumentData) {
+        super(argumentData);
+        this.codecKey = argumentData.getCompletionCodecKey();
+    }
 
-	@Nullable
-	public CompletionCodec getCompletionCodec(CodecRegistry<CompletionCodec> registry) {
-		if (this.codecKey == null) {
-			return null;
-		}
-		Class<?> argumentClass = getArgumentClass();
-		return this.codecKey.isEmpty() ? getTypedCodec(registry, argumentClass) : getKeyedCodec(registry, this.codecKey);
-	}
+    @Nullable
+    public CompletionCodec getCompletionCodec(CodecRegistry<CompletionCodec> registry) {
+        if (this.codecKey == null) {
+            return null;
+        }
+        Class<?> argumentClass = getArgumentClass();
+        return this.codecKey.isEmpty() ? getTypedCodec(registry, argumentClass) : getKeyedCodec(registry, this.codecKey);
+    }
 
-	private CompletionCodec getTypedCodec(CodecRegistry<CompletionCodec> registry, Class<?> type) {
-		CompletionCodec codec = registry.getTypedCodec(type);
-		if (codec == null) {
-			throw new UnknownCodecException("Cannot find completion codec for type " + type);
-		}
-		return codec;
-	}
+    private CompletionCodec getTypedCodec(CodecRegistry<CompletionCodec> registry, Class<?> type) {
+        CompletionCodec codec = registry.getTypedCodec(type);
+        if (codec == null) {
+            throw new UnknownCodecException("Cannot find completion codec for type " + type);
+        }
+        return codec;
+    }
 
-	private CompletionCodec getKeyedCodec(CodecRegistry<CompletionCodec> registry, String key) {
-		CompletionCodec codec = registry.getKeyedCodec(key);
-		if (codec == null) {
-			throw new UnknownCodecException("Cannot find completion codec for key '" + key + "'");
-		}
-		return codec;
-	}
+    private CompletionCodec getKeyedCodec(CodecRegistry<CompletionCodec> registry, String key) {
+        CompletionCodec codec = registry.getKeyedCodec(key);
+        if (codec == null) {
+            throw new UnknownCodecException("Cannot find completion codec for key '" + key + "'");
+        }
+        return codec;
+    }
 }

@@ -34,8 +34,8 @@ import org.bukkit.command.CommandSender;
 @Target(ElementType.TYPE)
 public @interface Senders {
 
-	/**
-	 * @return senders types
-	 */
-	Class<? extends CommandSender>[] value();
+    /**
+     * @return senders types
+     */
+    Class<? extends CommandSender>[] value();
 }

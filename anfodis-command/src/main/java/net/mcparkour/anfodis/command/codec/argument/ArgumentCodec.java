@@ -29,10 +29,10 @@ import org.jetbrains.annotations.Nullable;
 @FunctionalInterface
 public interface ArgumentCodec<T> {
 
-	@Nullable
-	T parse(String stringValue);
+    @Nullable
+    T parse(String stringValue);
 
-	static ArgumentCodec<String> identity() {
-		return stringValue -> stringValue;
-	}
+    static ArgumentCodec<String> identity() {
+        return stringValue -> stringValue;
+    }
 }

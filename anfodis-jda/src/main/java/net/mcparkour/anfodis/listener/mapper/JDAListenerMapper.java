@@ -31,10 +31,10 @@ import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerPropertiesMap
 
 public class JDAListenerMapper extends ListenerMapper<JDAListener, JDAContext, JDAListenerProperties> {
 
-	private static final JDAContextMapper CONTEXT_MAPPER = new JDAContextMapper();
-	private static final JDAListenerPropertiesMapper PROPERTIES_MAPPER = new JDAListenerPropertiesMapper();
+    private static final JDAContextMapper CONTEXT_MAPPER = new JDAContextMapper();
+    private static final JDAListenerPropertiesMapper PROPERTIES_MAPPER = new JDAListenerPropertiesMapper();
 
-	public JDAListenerMapper() {
-		super(CONTEXT_MAPPER, PROPERTIES_MAPPER, JDAListener::new);
-	}
+    public JDAListenerMapper() {
+        super(CONTEXT_MAPPER, PROPERTIES_MAPPER, JDAListener::new);
+    }
 }

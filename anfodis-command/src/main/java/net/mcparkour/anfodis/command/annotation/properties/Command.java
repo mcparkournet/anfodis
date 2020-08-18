@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Command {
 
-	/**
-	 * @return command name
-	 */
-	String value();
+    /**
+     * @return command name
+     */
+    String value();
 }

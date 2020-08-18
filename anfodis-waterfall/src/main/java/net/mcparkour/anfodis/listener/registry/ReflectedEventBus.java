@@ -36,39 +36,39 @@ import net.md_5.bungee.event.EventBus;
 
 public class ReflectedEventBus {
 
-	private EventBus eventBus;
-	private Map<Class<?>, Map<Byte, Map<Object, Method[]>>> byListenerAndPriority;
-	private Lock lock;
+    private EventBus eventBus;
+    private Map<Class<?>, Map<Byte, Map<Object, Method[]>>> byListenerAndPriority;
+    private Lock lock;
 
-	public ReflectedEventBus(EventBus eventBus) {
-		this.eventBus = eventBus;
-		this.byListenerAndPriority = getFieldValue("byListenerAndPriority", eventBus);
-		this.lock = getFieldValue("lock", eventBus);
-	}
+    public ReflectedEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+        this.byListenerAndPriority = getFieldValue("byListenerAndPriority", eventBus);
+        this.lock = getFieldValue("lock", eventBus);
+    }
 
-	@SuppressWarnings("unchecked")
-	private static <T> T getFieldValue(String fieldName, EventBus eventBus) {
-		Field field = Reflections.getField(EventBus.class, fieldName);
-		Object fieldValue = Reflections.getFieldValue(field, eventBus);
-		Objects.requireNonNull(fieldValue, "Value of field " + fieldName + " is null");
-		return (T) fieldValue;
-	}
+    @SuppressWarnings("unchecked")
+    private static <T> T getFieldValue(String fieldName, EventBus eventBus) {
+        Field field = Reflections.getField(EventBus.class, fieldName);
+        Object fieldValue = Reflections.getFieldValue(field, eventBus);
+        Objects.requireNonNull(fieldValue, "Value of field " + fieldName + " is null");
+        return (T) fieldValue;
+    }
 
-	public void register(Object listener, Method listenMethod, Class<? extends Event> listenedEventType, byte priority) {
-		this.lock.lock();
-		try {
-			Map<Byte, Map<Object, Method[]>> priorityListenerMap = this.byListenerAndPriority.computeIfAbsent(listenedEventType, key -> new HashMap<>(1));
-			Map<Object, Method[]> listenerMethodsMap = priorityListenerMap.computeIfAbsent(priority, key -> new HashMap<>(1));
-			Method[] methods = {listenMethod};
-			listenerMethodsMap.put(listener, methods);
-			bakeHandlers(listenedEventType);
-		} finally {
-			this.lock.unlock();
-		}
-	}
+    public void register(Object listener, Method listenMethod, Class<? extends Event> listenedEventType, byte priority) {
+        this.lock.lock();
+        try {
+            Map<Byte, Map<Object, Method[]>> priorityListenerMap = this.byListenerAndPriority.computeIfAbsent(listenedEventType, key -> new HashMap<>(1));
+            Map<Object, Method[]> listenerMethodsMap = priorityListenerMap.computeIfAbsent(priority, key -> new HashMap<>(1));
+            Method[] methods = {listenMethod};
+            listenerMethodsMap.put(listener, methods);
+            bakeHandlers(listenedEventType);
+        } finally {
+            this.lock.unlock();
+        }
+    }
 
-	private void bakeHandlers(Class<? extends Event> eventType) {
-		Method method = Reflections.getMethod(EventBus.class, "bakeHandlers", Class.class);
-		Reflections.invokeMethod(method, this.eventBus, eventType);
-	}
+    private void bakeHandlers(Class<? extends Event> eventType) {
+        Method method = Reflections.getMethod(EventBus.class, "bakeHandlers", Class.class);
+        Reflections.invokeMethod(method, this.eventBus, eventType);
+    }
 }

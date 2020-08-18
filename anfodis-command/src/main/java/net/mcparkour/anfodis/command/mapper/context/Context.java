@@ -33,47 +33,47 @@ import org.jetbrains.annotations.Nullable;
 
 public class Context {
 
-	@Nullable
-	private Field argumentsField;
-	@Nullable
-	private Field requiredPermissionField;
-	@Nullable
-	private Field senderField;
-	@Nullable
-	private Field receiverField;
+    @Nullable
+    private Field argumentsField;
+    @Nullable
+    private Field requiredPermissionField;
+    @Nullable
+    private Field senderField;
+    @Nullable
+    private Field receiverField;
 
-	public Context(ContextData contextData) {
-		this.argumentsField = contextData.getArgumentsField();
-		this.requiredPermissionField = contextData.getRequiredPermissionField();
-		this.senderField = contextData.getSenderField();
-		this.receiverField = contextData.getReceiverField();
-	}
+    public Context(ContextData contextData) {
+        this.argumentsField = contextData.getArgumentsField();
+        this.requiredPermissionField = contextData.getRequiredPermissionField();
+        this.senderField = contextData.getSenderField();
+        this.receiverField = contextData.getReceiverField();
+    }
 
-	public void setArgumentsField(Object instance, List<String> arguments) {
-		if (this.argumentsField == null) {
-			return;
-		}
-		Reflections.setFieldValue(this.argumentsField, instance, arguments);
-	}
+    public void setArgumentsField(Object instance, List<String> arguments) {
+        if (this.argumentsField == null) {
+            return;
+        }
+        Reflections.setFieldValue(this.argumentsField, instance, arguments);
+    }
 
-	public void setRequiredPermissionField(Object instance, Permission requiredPermission) {
-		if (this.requiredPermissionField == null) {
-			return;
-		}
-		Reflections.setFieldValue(this.requiredPermissionField, instance, requiredPermission);
-	}
+    public void setRequiredPermissionField(Object instance, Permission requiredPermission) {
+        if (this.requiredPermissionField == null) {
+            return;
+        }
+        Reflections.setFieldValue(this.requiredPermissionField, instance, requiredPermission);
+    }
 
-	public void setSenderField(Object instance, Object sender) {
-		if (this.senderField == null) {
-			return;
-		}
-		Reflections.setFieldValue(this.senderField, instance, sender);
-	}
+    public void setSenderField(Object instance, Object sender) {
+        if (this.senderField == null) {
+            return;
+        }
+        Reflections.setFieldValue(this.senderField, instance, sender);
+    }
 
-	public void setReceiverField(Object instance, MessageReceiver receiver) {
-		if (this.receiverField == null) {
-			return;
-		}
-		Reflections.setFieldValue(this.receiverField, instance, receiver);
-	}
+    public void setReceiverField(Object instance, MessageReceiver receiver) {
+        if (this.receiverField == null) {
+            return;
+        }
+        Reflections.setFieldValue(this.receiverField, instance, receiver);
+    }
 }

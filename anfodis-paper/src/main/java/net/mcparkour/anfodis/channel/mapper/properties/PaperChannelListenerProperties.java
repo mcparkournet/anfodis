@@ -28,14 +28,14 @@ import java.util.Set;
 
 public class PaperChannelListenerProperties {
 
-	private Set<String> channels;
+    private Set<String> channels;
 
-	public PaperChannelListenerProperties(PaperChannelListenerPropertiesData data) {
-		String[] channels = data.getChannels();
-		this.channels = channels == null ? Set.of() : Set.of(channels);
-	}
+    public PaperChannelListenerProperties(PaperChannelListenerPropertiesData data) {
+        String[] channels = data.getChannels();
+        this.channels = channels == null ? Set.of() : Set.of(channels);
+    }
 
-	public Set<String> getChannels() {
-		return this.channels;
-	}
+    public Set<String> getChannels() {
+        return this.channels;
+    }
 }

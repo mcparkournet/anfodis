@@ -29,5 +29,5 @@ import java.util.List;
 @FunctionalInterface
 public interface CompletionContextHandler<C extends CompletionContext<?>> {
 
-	List<String> handle(C context);
+    List<String> handle(C context);
 }

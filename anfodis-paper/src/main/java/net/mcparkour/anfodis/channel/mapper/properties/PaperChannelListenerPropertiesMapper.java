@@ -31,16 +31,16 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class PaperChannelListenerPropertiesMapper implements Mapper<Class<?>, PaperChannelListenerProperties> {
 
-	@Override
-	public PaperChannelListenerProperties map(Iterable<Class<?>> elements) {
-		return new ElementsMapperBuilder<Class<?>, PaperChannelListenerPropertiesData>()
-			.data(PaperChannelListenerPropertiesData::new)
-			.singleElement(data -> new SingleElementMapperBuilder<Class<?>>()
-				.annotation(ChannelListener.class, channelListener -> data.setChannels(channelListener.value()))
-				.build())
-			.build()
-			.mapFirstOptional(elements)
-			.map(PaperChannelListenerProperties::new)
-			.orElseThrow();
-	}
+    @Override
+    public PaperChannelListenerProperties map(Iterable<Class<?>> elements) {
+        return new ElementsMapperBuilder<Class<?>, PaperChannelListenerPropertiesData>()
+            .data(PaperChannelListenerPropertiesData::new)
+            .singleElement(data -> new SingleElementMapperBuilder<Class<?>>()
+                .annotation(ChannelListener.class, channelListener -> data.setChannels(channelListener.value()))
+                .build())
+            .build()
+            .mapFirstOptional(elements)
+            .map(PaperChannelListenerProperties::new)
+            .orElseThrow();
+    }
 }

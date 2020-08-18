@@ -38,18 +38,18 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class PaperChannelListenerMapper implements RootMapper<PaperChannelListener> {
 
-	private static final PaperChannelListenerContextMapper CONTEXT_MAPPER = new PaperChannelListenerContextMapper();
-	private static final PaperChannelListenerPropertiesMapper PROPERTIES_MAPPER = new PaperChannelListenerPropertiesMapper();
+    private static final PaperChannelListenerContextMapper CONTEXT_MAPPER = new PaperChannelListenerContextMapper();
+    private static final PaperChannelListenerPropertiesMapper PROPERTIES_MAPPER = new PaperChannelListenerPropertiesMapper();
 
-	@Override
-	public PaperChannelListener map(Class<?> annotatedClass) {
-		Field[] fields = annotatedClass.getDeclaredFields();
-		Method[] methods = annotatedClass.getDeclaredMethods();
-		Constructor<?> constructor = getConstructor(annotatedClass);
-		List<Injection> injections = getInjections(fields);
-		Executor executor = getExecutor(methods);
-		PaperChannelListenerContext context = CONTEXT_MAPPER.map(fields);
-		PaperChannelListenerProperties properties = PROPERTIES_MAPPER.map(annotatedClass);
-		return new PaperChannelListener(constructor, injections, executor, context, properties);
-	}
+    @Override
+    public PaperChannelListener map(Class<?> annotatedClass) {
+        Field[] fields = annotatedClass.getDeclaredFields();
+        Method[] methods = annotatedClass.getDeclaredMethods();
+        Constructor<?> constructor = getConstructor(annotatedClass);
+        List<Injection> injections = getInjections(fields);
+        Executor executor = getExecutor(methods);
+        PaperChannelListenerContext context = CONTEXT_MAPPER.map(fields);
+        PaperChannelListenerProperties properties = PROPERTIES_MAPPER.map(annotatedClass);
+        return new PaperChannelListener(constructor, injections, executor, context, properties);
+    }
 }

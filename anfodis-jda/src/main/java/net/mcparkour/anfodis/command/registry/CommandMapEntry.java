@@ -30,19 +30,19 @@ import net.mcparkour.anfodis.command.mapper.JDACommand;
 
 public class CommandMapEntry {
 
-	private JDACommand command;
-	private CommandContextHandler<JDACommandContext> handler;
+    private JDACommand command;
+    private CommandContextHandler<JDACommandContext> handler;
 
-	public CommandMapEntry(JDACommand command, CommandContextHandler<JDACommandContext> handler) {
-		this.command = command;
-		this.handler = handler;
-	}
+    public CommandMapEntry(JDACommand command, CommandContextHandler<JDACommandContext> handler) {
+        this.command = command;
+        this.handler = handler;
+    }
 
-	public JDACommand getCommand() {
-		return this.command;
-	}
+    public JDACommand getCommand() {
+        return this.command;
+    }
 
-	public CommandContextHandler<JDACommandContext> getHandler() {
-		return this.handler;
-	}
+    public CommandContextHandler<JDACommandContext> getHandler() {
+        return this.handler;
+    }
 }

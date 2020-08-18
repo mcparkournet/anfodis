@@ -34,25 +34,25 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class ContextMapper<C extends Context, D extends ContextData> implements Mapper<Field, C> {
 
-	private Function<D, C> contextSupplier;
-	private Supplier<D> contextDataSupplier;
+    private Function<D, C> contextSupplier;
+    private Supplier<D> contextDataSupplier;
 
-	public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier) {
-		this.contextSupplier = contextSupplier;
-		this.contextDataSupplier = contextDataSupplier;
-	}
+    public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier) {
+        this.contextSupplier = contextSupplier;
+        this.contextDataSupplier = contextDataSupplier;
+    }
 
-	@Override
-	public C map(Iterable<Field> elements) {
-		return new ElementsMapperBuilder<Field, D>()
-			.data(this.contextDataSupplier)
-			.singleElement(data -> new SingleElementMapperBuilder<Field>()
-				.annotation(Event.class)
-				.elementConsumer(data::setEventField)
-				.build())
-			.build()
-			.mapFirstOptional(elements)
-			.map(this.contextSupplier)
-			.orElseThrow();
-	}
+    @Override
+    public C map(Iterable<Field> elements) {
+        return new ElementsMapperBuilder<Field, D>()
+            .data(this.contextDataSupplier)
+            .singleElement(data -> new SingleElementMapperBuilder<Field>()
+                .annotation(Event.class)
+                .elementConsumer(data::setEventField)
+                .build())
+            .build()
+            .mapFirstOptional(elements)
+            .map(this.contextSupplier)
+            .orElseThrow();
+    }
 }

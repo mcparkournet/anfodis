@@ -33,20 +33,20 @@ import net.mcparkour.intext.message.MessageReceiver;
 
 public class JDACommandSender extends AbstractCommandSender<ChannelSender> {
 
-	private PermissionMap permissionMap;
+    private PermissionMap permissionMap;
 
-	public JDACommandSender(ChannelSender sender, MessageReceiver receiver, PermissionMap permissionMap) {
-		super(sender, receiver);
-		this.permissionMap = permissionMap;
-	}
+    public JDACommandSender(ChannelSender sender, MessageReceiver receiver, PermissionMap permissionMap) {
+        super(sender, receiver);
+        this.permissionMap = permissionMap;
+    }
 
-	@Override
-	public boolean hasPermission(String name) {
-		ChannelSender sender = getSender();
-		User user = sender.getUser();
-		List<Permission> permissions = this.permissionMap.getPermissions(user);
-		return permissions.stream()
-			.map(Permission::getName)
-			.anyMatch(permissionName -> permissionName.equals(name));
-	}
+    @Override
+    public boolean hasPermission(String name) {
+        ChannelSender sender = getSender();
+        User user = sender.getUser();
+        List<Permission> permissions = this.permissionMap.getPermissions(user);
+        return permissions.stream()
+            .map(Permission::getName)
+            .anyMatch(permissionName -> permissionName.equals(name));
+    }
 }

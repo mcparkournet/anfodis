@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface DescriptionTranslation {
 
-	/**
-	 * @return translation id
-	 */
-	String value();
+    /**
+     * @return translation id
+     */
+    String value();
 }

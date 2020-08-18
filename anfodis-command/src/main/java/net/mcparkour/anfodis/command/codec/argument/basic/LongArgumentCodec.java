@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class LongArgumentCodec implements ArgumentCodec<Long> {
 
-	@Override
-	@Nullable
-	public Long parse(String stringValue) {
-		return NumericParser.parseLong(stringValue);
-	}
+    @Override
+    @Nullable
+    public Long parse(String stringValue) {
+        return NumericParser.parseLong(stringValue);
+    }
 }

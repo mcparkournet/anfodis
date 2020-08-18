@@ -1,3 +1,3 @@
 dependencies {
-	api(project(":anfodis-core"))
+    api(project(":anfodis-core"))
 }

@@ -29,14 +29,14 @@ import java.util.Objects;
 
 public class SubCommand {
 
-	private Field field;
+    private Field field;
 
-	public SubCommand(SubCommandData subCommandData) {
-		Field field = subCommandData.getSubCommandField();
-		this.field = Objects.requireNonNull(field, "Sub-command field is null");
-	}
+    public SubCommand(SubCommandData subCommandData) {
+        Field field = subCommandData.getSubCommandField();
+        this.field = Objects.requireNonNull(field, "Sub-command field is null");
+    }
 
-	public Class<?> getFieldType() {
-		return this.field.getType();
-	}
+    public Class<?> getFieldType() {
+        return this.field.getType();
+    }
 }

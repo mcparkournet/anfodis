@@ -47,56 +47,56 @@ import net.mcparkour.intext.message.MessageReceiverFactory;
 
 public class PrivateMessageReceivedListener implements EventListener {
 
-	private Permission basePermission;
-	private PermissionMap permissionMap;
-	private CommandMap commandMap;
-	private MessageReceiverFactory<ChannelSender> messageReceiverFactory;
+    private Permission basePermission;
+    private PermissionMap permissionMap;
+    private CommandMap commandMap;
+    private MessageReceiverFactory<ChannelSender> messageReceiverFactory;
 
-	public PrivateMessageReceivedListener(Permission basePermission, PermissionMap permissionMap, CommandMap commandMap, MessageReceiverFactory<ChannelSender> messageReceiverFactory) {
-		this.basePermission = basePermission;
-		this.permissionMap = permissionMap;
-		this.commandMap = commandMap;
-		this.messageReceiverFactory = messageReceiverFactory;
-	}
+    public PrivateMessageReceivedListener(Permission basePermission, PermissionMap permissionMap, CommandMap commandMap, MessageReceiverFactory<ChannelSender> messageReceiverFactory) {
+        this.basePermission = basePermission;
+        this.permissionMap = permissionMap;
+        this.commandMap = commandMap;
+        this.messageReceiverFactory = messageReceiverFactory;
+    }
 
-	@Override
-	public void onEvent(@Nonnull GenericEvent event) {
-		if (event instanceof PrivateMessageReceivedEvent) {
-			PrivateMessageReceivedEvent privateMessageReceivedEvent = (PrivateMessageReceivedEvent) event;
-			onPrivateMessageReceivedEvent(privateMessageReceivedEvent);
-		}
-	}
+    @Override
+    public void onEvent(@Nonnull GenericEvent event) {
+        if (event instanceof PrivateMessageReceivedEvent) {
+            PrivateMessageReceivedEvent privateMessageReceivedEvent = (PrivateMessageReceivedEvent) event;
+            onPrivateMessageReceivedEvent(privateMessageReceivedEvent);
+        }
+    }
 
-	private void onPrivateMessageReceivedEvent(PrivateMessageReceivedEvent event) {
-		Message message = event.getMessage();
-		String rawMessage = message.getContentRaw();
-		if (rawMessage.isBlank() || rawMessage.charAt(0) != '/') {
-			return;
-		}
-		String[] split = rawMessage.split(" ");
-		String name = split[0];
-		String nameWithoutSlash = name.substring(1);
-		CommandMapEntry entry = this.commandMap.getCommand(nameWithoutSlash);
-		if (entry == null) {
-			return;
-		}
-		CommandContextHandler<JDACommandContext> handler = entry.getHandler();
-		JDACommand command = entry.getCommand();
-		JDACommandContext context = createContext(event, split, command);
-		handler.handle(context);
-	}
+    private void onPrivateMessageReceivedEvent(PrivateMessageReceivedEvent event) {
+        Message message = event.getMessage();
+        String rawMessage = message.getContentRaw();
+        if (rawMessage.isBlank() || rawMessage.charAt(0) != '/') {
+            return;
+        }
+        String[] split = rawMessage.split(" ");
+        String name = split[0];
+        String nameWithoutSlash = name.substring(1);
+        CommandMapEntry entry = this.commandMap.getCommand(nameWithoutSlash);
+        if (entry == null) {
+            return;
+        }
+        CommandContextHandler<JDACommandContext> handler = entry.getHandler();
+        JDACommand command = entry.getCommand();
+        JDACommandContext context = createContext(event, split, command);
+        handler.handle(context);
+    }
 
-	private JDACommandContext createContext(PrivateMessageReceivedEvent event, String[] split, JDACommand command) {
-		User sender = event.getAuthor();
-		PrivateChannel channel = event.getChannel();
-		ChannelSender channelSender = new JDAChannelSender(sender, channel);
-		MessageReceiver receiver = this.messageReceiverFactory.createMessageReceiver(channelSender);
-		JDACommandSender commandSender = new JDACommandSender(channelSender, receiver, this.permissionMap);
-		String[] argumentsArray = Arrays.copyOfRange(split, 1, split.length);
-		List<String> arguments = List.of(argumentsArray);
-		JDACommandProperties properties = command.getProperties();
-		Permission commandPermission = properties.getPermission();
-		Permission permission = commandPermission.withFirst(this.basePermission);
-		return new JDACommandContext(commandSender, arguments, permission);
-	}
+    private JDACommandContext createContext(PrivateMessageReceivedEvent event, String[] split, JDACommand command) {
+        User sender = event.getAuthor();
+        PrivateChannel channel = event.getChannel();
+        ChannelSender channelSender = new JDAChannelSender(sender, channel);
+        MessageReceiver receiver = this.messageReceiverFactory.createMessageReceiver(channelSender);
+        JDACommandSender commandSender = new JDACommandSender(channelSender, receiver, this.permissionMap);
+        String[] argumentsArray = Arrays.copyOfRange(split, 1, split.length);
+        List<String> arguments = List.of(argumentsArray);
+        JDACommandProperties properties = command.getProperties();
+        Permission commandPermission = properties.getPermission();
+        Permission permission = commandPermission.withFirst(this.basePermission);
+        return new JDACommandContext(commandSender, arguments, permission);
+    }
 }

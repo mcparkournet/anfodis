@@ -29,15 +29,15 @@ import org.bukkit.event.Cancellable;
 
 public final class PaperResults {
 
-	private PaperResults() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
-	}
+    private PaperResults() {
+        throw new UnsupportedOperationException("Cannot create an instance of this class");
+    }
 
-	public static Result cancelEvent(Cancellable cancellableEvent) {
-		return () -> cancellableEvent.setCancelled(true);
-	}
+    public static Result cancelEvent(Cancellable cancellableEvent) {
+        return () -> cancellableEvent.setCancelled(true);
+    }
 
-	public static Result sendMessage(CommandSender receiver, String message) {
-		return () -> receiver.sendMessage(message);
-	}
+    public static Result sendMessage(CommandSender receiver, String message) {
+        return () -> receiver.sendMessage(message);
+    }
 }

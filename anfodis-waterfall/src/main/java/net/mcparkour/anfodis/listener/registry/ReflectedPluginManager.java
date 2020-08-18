@@ -37,25 +37,25 @@ import net.md_5.bungee.event.EventBus;
 
 public class ReflectedPluginManager {
 
-	private ReflectedEventBus eventBus;
-	private Multimap<Plugin, Listener> listenersByPlugin;
+    private ReflectedEventBus eventBus;
+    private Multimap<Plugin, Listener> listenersByPlugin;
 
-	public ReflectedPluginManager(PluginManager pluginManager) {
-		EventBus eventBus = getFieldValue("eventBus", pluginManager);
-		this.eventBus = new ReflectedEventBus(eventBus);
-		this.listenersByPlugin = getFieldValue("listenersByPlugin", pluginManager);
-	}
+    public ReflectedPluginManager(PluginManager pluginManager) {
+        EventBus eventBus = getFieldValue("eventBus", pluginManager);
+        this.eventBus = new ReflectedEventBus(eventBus);
+        this.listenersByPlugin = getFieldValue("listenersByPlugin", pluginManager);
+    }
 
-	@SuppressWarnings("unchecked")
-	private static <T> T getFieldValue(String fieldName, PluginManager pluginManager) {
-		Field field = Reflections.getField(PluginManager.class, fieldName);
-		Object fieldValue = Reflections.getFieldValue(field, pluginManager);
-		Objects.requireNonNull(fieldValue, "Value of field " + fieldName + " is null");
-		return (T) fieldValue;
-	}
+    @SuppressWarnings("unchecked")
+    private static <T> T getFieldValue(String fieldName, PluginManager pluginManager) {
+        Field field = Reflections.getField(PluginManager.class, fieldName);
+        Object fieldValue = Reflections.getFieldValue(field, pluginManager);
+        Objects.requireNonNull(fieldValue, "Value of field " + fieldName + " is null");
+        return (T) fieldValue;
+    }
 
-	public void registerListener(Plugin plugin, Listener listener, Method listenMethod, Class<? extends Event> listenedEventType, byte priority) {
-		this.eventBus.register(listener, listenMethod, listenedEventType, priority);
-		this.listenersByPlugin.put(plugin, listener);
-	}
+    public void registerListener(Plugin plugin, Listener listener, Method listenMethod, Class<? extends Event> listenedEventType, byte priority) {
+        this.eventBus.register(listener, listenMethod, listenedEventType, priority);
+        this.listenersByPlugin.put(plugin, listener);
+    }
 }

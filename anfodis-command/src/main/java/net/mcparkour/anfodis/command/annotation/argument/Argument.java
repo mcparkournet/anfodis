@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Argument {
 
-	/**
-	 * @return name
-	 */
-	String value() default "";
+    /**
+     * @return name
+     */
+    String value() default "";
 }

@@ -34,7 +34,7 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class VelocityCommand extends CompletionCommand<VelocityCommand, VelocityArgument, VelocityContext, VelocityCommandProperties> {
 
-	public VelocityCommand(Constructor<?> constructor, List<Injection> injections, Executor executor, List<VelocityArgument> arguments, VelocityContext context, VelocityCommandProperties properties, List<VelocityCommand> subCommands) {
-		super(constructor, injections, executor, arguments, context, properties, subCommands);
-	}
+    public VelocityCommand(Constructor<?> constructor, List<Injection> injections, Executor executor, List<VelocityArgument> arguments, VelocityContext context, VelocityCommandProperties properties, List<VelocityCommand> subCommands) {
+        super(constructor, injections, executor, arguments, context, properties, subCommands);
+    }
 }

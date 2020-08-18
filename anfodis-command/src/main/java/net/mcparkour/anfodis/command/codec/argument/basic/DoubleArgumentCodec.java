@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class DoubleArgumentCodec implements ArgumentCodec<Double> {
 
-	@Override
-	@Nullable
-	public Double parse(String stringValue) {
-		return NumericParser.parseDouble(stringValue);
-	}
+    @Override
+    @Nullable
+    public Double parse(String stringValue) {
+        return NumericParser.parseDouble(stringValue);
+    }
 }

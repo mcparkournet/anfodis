@@ -34,20 +34,20 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class Listener<C extends Context, P extends ListenerProperties<?>> extends Root {
 
-	private C context;
-	private P properties;
+    private C context;
+    private P properties;
 
-	public Listener(Constructor<?> constructor, List<Injection> injections, Executor executor, C context, P properties) {
-		super(constructor, injections, executor);
-		this.context = context;
-		this.properties = properties;
-	}
+    public Listener(Constructor<?> constructor, List<Injection> injections, Executor executor, C context, P properties) {
+        super(constructor, injections, executor);
+        this.context = context;
+        this.properties = properties;
+    }
 
-	public C getContext() {
-		return this.context;
-	}
+    public C getContext() {
+        return this.context;
+    }
 
-	public P getProperties() {
-		return this.properties;
-	}
+    public P getProperties() {
+        return this.properties;
+    }
 }

@@ -28,13 +28,13 @@ import net.mcparkour.intext.message.MessageReceiver;
 
 public class TestCommandSender extends AbstractCommandSender<net.mcparkour.anfodis.TestCommandSender> {
 
-	public TestCommandSender(net.mcparkour.anfodis.TestCommandSender sender, MessageReceiver receiver) {
-		super(sender, receiver);
-	}
+    public TestCommandSender(net.mcparkour.anfodis.TestCommandSender sender, MessageReceiver receiver) {
+        super(sender, receiver);
+    }
 
-	@Override
-	public boolean hasPermission(String name) {
-		net.mcparkour.anfodis.TestCommandSender sender = getSender();
-		return sender.hasPermission(name);
-	}
+    @Override
+    public boolean hasPermission(String name) {
+        net.mcparkour.anfodis.TestCommandSender sender = getSender();
+        return sender.hasPermission(name);
+    }
 }

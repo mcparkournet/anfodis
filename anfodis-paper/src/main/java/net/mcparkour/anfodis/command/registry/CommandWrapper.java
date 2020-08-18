@@ -33,27 +33,27 @@ import org.jetbrains.annotations.Nullable;
 
 final class CommandWrapper extends Command {
 
-	private PaperCommandExecutor commandExecutor;
-	private PaperCompletionExecutor completionExecutor;
+    private PaperCommandExecutor commandExecutor;
+    private PaperCompletionExecutor completionExecutor;
 
-	CommandWrapper(String name, String description, String usageMessage, List<String> aliases, String permission, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
-		super(name, description, usageMessage, aliases);
-		setPermission(permission);
-		this.commandExecutor = commandExecutor;
-		this.completionExecutor = completionExecutor;
-	}
+    CommandWrapper(String name, String description, String usageMessage, List<String> aliases, String permission, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
+        super(name, description, usageMessage, aliases);
+        setPermission(permission);
+        this.commandExecutor = commandExecutor;
+        this.completionExecutor = completionExecutor;
+    }
 
-	@Override
-	public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
-		List<String> arguments = List.of(args);
-		this.commandExecutor.execute(sender, arguments);
-		return true;
-	}
+    @Override
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+        List<String> arguments = List.of(args);
+        this.commandExecutor.execute(sender, arguments);
+        return true;
+    }
 
-	@Override
-	@NotNull
-	public List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args, @Nullable Location location) {
-		List<String> arguments = List.of(args);
-		return this.completionExecutor.execute(sender, arguments);
-	}
+    @Override
+    @NotNull
+    public List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args, @Nullable Location location) {
+        List<String> arguments = List.of(args);
+        return this.completionExecutor.execute(sender, arguments);
+    }
 }

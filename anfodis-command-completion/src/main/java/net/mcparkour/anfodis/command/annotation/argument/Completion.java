@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Completion {
 
-	/**
-	 * @return codec key
-	 */
-	String value() default "";
+    /**
+     * @return codec key
+     */
+    String value() default "";
 }

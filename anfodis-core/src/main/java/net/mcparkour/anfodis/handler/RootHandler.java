@@ -33,40 +33,40 @@ import net.mcparkour.anfodis.result.Result;
 
 public class RootHandler<T extends Root, C extends RootContext> implements ContextHandler<C> {
 
-	private T root;
-	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
+    private T root;
+    private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 
-	public RootHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		this.root = root;
-		this.injectionCodecRegistry = injectionCodecRegistry;
-	}
+    public RootHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+        this.root = root;
+        this.injectionCodecRegistry = injectionCodecRegistry;
+    }
 
-	@Override
-	public void handle(C context, Object instance) {
-		setInjections(instance);
-		execute(instance);
-	}
+    @Override
+    public void handle(C context, Object instance) {
+        setInjections(instance);
+        execute(instance);
+    }
 
-	private void setInjections(Object instance) {
-		for (Injection injection : this.root.getInjections()) {
-			InjectionCodec<?> codec = injection.getCodec(this.injectionCodecRegistry);
-			Object codecInjection = codec.getInjection();
-			injection.setInjectionField(instance, codecInjection);
-		}
-	}
+    private void setInjections(Object instance) {
+        for (Injection injection : this.root.getInjections()) {
+            InjectionCodec<?> codec = injection.getCodec(this.injectionCodecRegistry);
+            Object codecInjection = codec.getInjection();
+            injection.setInjectionField(instance, codecInjection);
+        }
+    }
 
-	private void execute(Object instance) {
-		Executor executor = this.root.getExecutor();
-		executor.invokeBefore(instance);
-		Object invokeResult = executor.invokeExecutor(instance);
-		if (invokeResult instanceof Result) {
-			Result result = (Result) invokeResult;
-			result.onResult();
-		}
-		executor.invokeAfter(instance);
-	}
+    private void execute(Object instance) {
+        Executor executor = this.root.getExecutor();
+        executor.invokeBefore(instance);
+        Object invokeResult = executor.invokeExecutor(instance);
+        if (invokeResult instanceof Result) {
+            Result result = (Result) invokeResult;
+            result.onResult();
+        }
+        executor.invokeAfter(instance);
+    }
 
-	protected T getRoot() {
-		return this.root;
-	}
+    protected T getRoot() {
+        return this.root;
+    }
 }

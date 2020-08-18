@@ -29,5 +29,5 @@ import java.util.List;
 @FunctionalInterface
 public interface CompletionExecutor<S> {
 
-	List<String> execute(S sender, List<String> arguments);
+    List<String> execute(S sender, List<String> arguments);
 }

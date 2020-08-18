@@ -41,122 +41,122 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S> implements CommandContextHandler<C> {
 
-	private T command;
-	private Map<T, ? extends CommandContextHandler<C>> subCommandHandlers;
-	@Nullable
-	private ContextHandler<C> executorHandler;
-	private CommandContextSupplier<C, S> contextSupplier;
+    private T command;
+    private Map<T, ? extends CommandContextHandler<C>> subCommandHandlers;
+    @Nullable
+    private ContextHandler<C> executorHandler;
+    private CommandContextSupplier<C, S> contextSupplier;
 
-	public CommandHandler(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler, CommandContextSupplier<C, S> contextSupplier) {
-		this.command = command;
-		this.subCommandHandlers = subCommandHandlers;
-		this.executorHandler = executorHandler;
-		this.contextSupplier = contextSupplier;
-	}
+    public CommandHandler(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler, CommandContextSupplier<C, S> contextSupplier) {
+        this.command = command;
+        this.subCommandHandlers = subCommandHandlers;
+        this.executorHandler = executorHandler;
+        this.contextSupplier = contextSupplier;
+    }
 
-	@Override
-	public void handle(C context) {
-		CommandSender<S> sender = context.getSender();
-		MessageReceiver receiver = sender.getReceiver();
-		Permission permission = context.getPermission();
-		if (!sender.hasPermission(permission)) {
-			receiver.receivePlain("You do not have permission.");
-			return;
-		}
-		List<String> arguments = context.getArguments();
-		int argumentsLength = arguments.size();
-		if (arguments.isEmpty()) {
-			execute(context, argumentsLength);
-			return;
-		}
-		String firstArgument = arguments.get(0);
-		List<T> subCommands = this.command.getSubCommands();
-		T subCommand = subCommands.stream()
-			.filter(element -> isMatching(firstArgument, element))
-			.findFirst()
-			.orElse(null);
-		if (subCommand == null) {
-			execute(context, argumentsLength);
-			return;
-		}
-		CommandContextHandler<C> subCommandHandler = this.subCommandHandlers.get(subCommand);
-		if (subCommandHandler == null) {
-			execute(context, argumentsLength);
-			return;
-		}
-		C subCommandContext = createSubCommandContext(subCommand, context);
-		subCommandHandler.handle(subCommandContext);
-	}
+    @Override
+    public void handle(C context) {
+        CommandSender<S> sender = context.getSender();
+        MessageReceiver receiver = sender.getReceiver();
+        Permission permission = context.getPermission();
+        if (!sender.hasPermission(permission)) {
+            receiver.receivePlain("You do not have permission.");
+            return;
+        }
+        List<String> arguments = context.getArguments();
+        int argumentsLength = arguments.size();
+        if (arguments.isEmpty()) {
+            execute(context, argumentsLength);
+            return;
+        }
+        String firstArgument = arguments.get(0);
+        List<T> subCommands = this.command.getSubCommands();
+        T subCommand = subCommands.stream()
+            .filter(element -> isMatching(firstArgument, element))
+            .findFirst()
+            .orElse(null);
+        if (subCommand == null) {
+            execute(context, argumentsLength);
+            return;
+        }
+        CommandContextHandler<C> subCommandHandler = this.subCommandHandlers.get(subCommand);
+        if (subCommandHandler == null) {
+            execute(context, argumentsLength);
+            return;
+        }
+        C subCommandContext = createSubCommandContext(subCommand, context);
+        subCommandHandler.handle(subCommandContext);
+    }
 
-	private void execute(C context, int argumentsSize) {
-		CommandSender<S> sender = context.getSender();
-		MessageReceiver receiver = sender.getReceiver();
-		Permission permission = context.getPermission();
-		if (this.executorHandler == null) {
-			String usage = getUsage(sender, permission);
-			receiver.receivePlain(usage);
-			return;
-		}
-		if (!checkLength(argumentsSize)) {
-			String usage = this.command.getUsage();
-			receiver.receivePlain(usage);
-			return;
-		}
-		Object instance = this.command.createInstance();
-		this.executorHandler.handle(context, instance);
-	}
+    private void execute(C context, int argumentsSize) {
+        CommandSender<S> sender = context.getSender();
+        MessageReceiver receiver = sender.getReceiver();
+        Permission permission = context.getPermission();
+        if (this.executorHandler == null) {
+            String usage = getUsage(sender, permission);
+            receiver.receivePlain(usage);
+            return;
+        }
+        if (!checkLength(argumentsSize)) {
+            String usage = this.command.getUsage();
+            receiver.receivePlain(usage);
+            return;
+        }
+        Object instance = this.command.createInstance();
+        this.executorHandler.handle(context, instance);
+    }
 
-	private String getUsage(Permissible permissible, Permission contextPermission) {
-		String header = this.command.getUsageHeader();
-		String subCommandsUsage = getSubCommandsUsage(permissible, contextPermission);
-		return header + '\n' + subCommandsUsage;
-	}
+    private String getUsage(Permissible permissible, Permission contextPermission) {
+        String header = this.command.getUsageHeader();
+        String subCommandsUsage = getSubCommandsUsage(permissible, contextPermission);
+        return header + '\n' + subCommandsUsage;
+    }
 
-	private String getSubCommandsUsage(Permissible permissible, Permission contextPermission) {
-		List<T> subCommands = this.command.getSubCommands();
-		return subCommands.stream()
-			.filter(subCommand -> {
-				Permission permission = subCommand.getPermission(contextPermission);
-				return permissible.hasPermission(permission);
-			})
-			.map(T::getUsage)
-			.collect(Collectors.joining("\n"));
-	}
+    private String getSubCommandsUsage(Permissible permissible, Permission contextPermission) {
+        List<T> subCommands = this.command.getSubCommands();
+        return subCommands.stream()
+            .filter(subCommand -> {
+                Permission permission = subCommand.getPermission(contextPermission);
+                return permissible.hasPermission(permission);
+            })
+            .map(T::getUsage)
+            .collect(Collectors.joining("\n"));
+    }
 
-	private boolean checkLength(int argumentsLength) {
-		List<? extends Argument> commandArguments = this.command.getArguments();
-		long minimumSize = commandArguments.stream()
-			.filter(Argument::isNotOptional)
-			.count();
-		if (commandArguments.stream().anyMatch(Argument::isList)) {
-			return argumentsLength >= minimumSize;
-		}
-		int maximumSize = commandArguments.size();
-		return argumentsLength >= minimumSize && argumentsLength <= maximumSize;
-	}
+    private boolean checkLength(int argumentsLength) {
+        List<? extends Argument> commandArguments = this.command.getArguments();
+        long minimumSize = commandArguments.stream()
+            .filter(Argument::isNotOptional)
+            .count();
+        if (commandArguments.stream().anyMatch(Argument::isList)) {
+            return argumentsLength >= minimumSize;
+        }
+        int maximumSize = commandArguments.size();
+        return argumentsLength >= minimumSize && argumentsLength <= maximumSize;
+    }
 
-	private boolean isMatching(String argument, T command) {
-		CommandProperties properties = command.getProperties();
-		String name = properties.getName();
-		if (argument.equalsIgnoreCase(name)) {
-			return true;
-		}
-		String lowerCaseArgument = argument.toLowerCase();
-		Set<String> aliases = properties.getLowerCaseAliases();
-		return aliases.contains(lowerCaseArgument);
-	}
+    private boolean isMatching(String argument, T command) {
+        CommandProperties properties = command.getProperties();
+        String name = properties.getName();
+        if (argument.equalsIgnoreCase(name)) {
+            return true;
+        }
+        String lowerCaseArgument = argument.toLowerCase();
+        Set<String> aliases = properties.getLowerCaseAliases();
+        return aliases.contains(lowerCaseArgument);
+    }
 
-	private C createSubCommandContext(T subCommand, C context) {
-		CommandSender<S> sender = context.getSender();
-		List<String> contextArguments = context.getArguments();
-		int size = contextArguments.size();
-		List<String> arguments = contextArguments.subList(1, size);
-		Permission contextPermission = context.getPermission();
-		Permission permission = subCommand.getPermission(contextPermission);
-		return this.contextSupplier.supply(sender, arguments, permission);
-	}
+    private C createSubCommandContext(T subCommand, C context) {
+        CommandSender<S> sender = context.getSender();
+        List<String> contextArguments = context.getArguments();
+        int size = contextArguments.size();
+        List<String> arguments = contextArguments.subList(1, size);
+        Permission contextPermission = context.getPermission();
+        Permission permission = subCommand.getPermission(contextPermission);
+        return this.contextSupplier.supply(sender, arguments, permission);
+    }
 
-	protected T getCommand() {
-		return this.command;
-	}
+    protected T getCommand() {
+        return this.command;
+    }
 }

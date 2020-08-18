@@ -32,7 +32,7 @@ import net.mcparkour.anfodis.command.mapper.TestCommand;
 
 public class TestCommandExecutorHandler extends CommandExecutorHandler<TestCommand, TestCommandContext> {
 
-	public TestCommandExecutorHandler(TestCommand root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
-		super(root, injectionCodecRegistry, argumentCodecRegistry);
-	}
+    public TestCommandExecutorHandler(TestCommand root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
+        super(root, injectionCodecRegistry, argumentCodecRegistry);
+    }
 }

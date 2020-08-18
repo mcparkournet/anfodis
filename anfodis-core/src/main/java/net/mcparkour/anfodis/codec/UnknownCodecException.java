@@ -26,9 +26,9 @@ package net.mcparkour.anfodis.codec;
 
 public class UnknownCodecException extends RuntimeException {
 
-	private static final long serialVersionUID = -3196208203977782715L;
+    private static final long serialVersionUID = -3196208203977782715L;
 
-	public UnknownCodecException(String message) {
-		super(message);
-	}
+    public UnknownCodecException(String message) {
+        super(message);
+    }
 }

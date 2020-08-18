@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Aliases {
 
-	/**
-	 * @return aliases
-	 */
-	String[] value();
+    /**
+     * @return aliases
+     */
+    String[] value();
 }

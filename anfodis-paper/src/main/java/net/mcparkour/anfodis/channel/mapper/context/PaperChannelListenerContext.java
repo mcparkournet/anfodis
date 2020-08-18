@@ -32,27 +32,27 @@ import org.jetbrains.annotations.Nullable;
 
 public class PaperChannelListenerContext {
 
-	@Nullable
-	private Field messageField;
-	@Nullable
-	private Field sourceField;
+    @Nullable
+    private Field messageField;
+    @Nullable
+    private Field sourceField;
 
-	public PaperChannelListenerContext(PaperChannelListenerContextData data) {
-		this.messageField = data.getMessageField();
-		this.sourceField = data.getSourceField();
-	}
+    public PaperChannelListenerContext(PaperChannelListenerContextData data) {
+        this.messageField = data.getMessageField();
+        this.sourceField = data.getSourceField();
+    }
 
-	public void setMessageField(Object instance, ChannelMessage message) {
-		if (this.messageField == null) {
-			return;
-		}
-		Reflections.setFieldValue(this.messageField, instance, message);
-	}
+    public void setMessageField(Object instance, ChannelMessage message) {
+        if (this.messageField == null) {
+            return;
+        }
+        Reflections.setFieldValue(this.messageField, instance, message);
+    }
 
-	public void setSourceField(Object instance, Player source) {
-		if (this.sourceField == null) {
-			return;
-		}
-		Reflections.setFieldValue(this.sourceField, instance, source);
-	}
+    public void setSourceField(Object instance, Player source) {
+        if (this.sourceField == null) {
+            return;
+        }
+        Reflections.setFieldValue(this.sourceField, instance, source);
+    }
 }

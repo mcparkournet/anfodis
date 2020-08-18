@@ -34,5 +34,5 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public interface CommandMerger<T extends Command<T, A, C, P>, A extends Argument, C extends Context, P extends CommandProperties> {
 
-	T merge(Constructor<?> constructor, List<Injection> injections, Executor executor, List<A> arguments, C context, P properties, List<T> subCommands);
+    T merge(Constructor<?> constructor, List<Injection> injections, Executor executor, List<A> arguments, C context, P properties, List<T> subCommands);
 }

@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class ByteArgumentCodec implements ArgumentCodec<Byte> {
 
-	@Override
-	@Nullable
-	public Byte parse(String stringValue) {
-		return NumericParser.parseByte(stringValue);
-	}
+    @Override
+    @Nullable
+    public Byte parse(String stringValue) {
+        return NumericParser.parseByte(stringValue);
+    }
 }

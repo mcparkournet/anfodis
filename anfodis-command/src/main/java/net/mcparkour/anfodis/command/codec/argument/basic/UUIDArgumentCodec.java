@@ -31,16 +31,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class UUIDArgumentCodec implements ArgumentCodec<UUID> {
 
-	@Override
-	@Nullable
-	public UUID parse(String stringValue) {
-		if (UUIDConverter.isDashed(stringValue)) {
-			return UUID.fromString(stringValue);
-		}
-		if (UUIDConverter.isPlain(stringValue)) {
-			String dashed = UUIDConverter.toDashed(stringValue);
-			return UUID.fromString(dashed);
-		}
-		return null;
-	}
+    @Override
+    @Nullable
+    public UUID parse(String stringValue) {
+        if (UUIDConverter.isDashed(stringValue)) {
+            return UUID.fromString(stringValue);
+        }
+        if (UUIDConverter.isPlain(stringValue)) {
+            String dashed = UUIDConverter.toDashed(stringValue);
+            return UUID.fromString(dashed);
+        }
+        return null;
+    }
 }

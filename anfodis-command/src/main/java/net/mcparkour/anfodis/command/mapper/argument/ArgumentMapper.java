@@ -39,37 +39,37 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class ArgumentMapper<A extends net.mcparkour.anfodis.command.mapper.argument.Argument, D extends ArgumentData> implements Mapper<Field, List<A>> {
 
-	private Function<D, A> argumentSupplier;
-	private Supplier<D> argumentDataSupplier;
-	private BiConsumer<D, SingleElementMapperBuilder<Field>> additional;
+    private Function<D, A> argumentSupplier;
+    private Supplier<D> argumentDataSupplier;
+    private BiConsumer<D, SingleElementMapperBuilder<Field>> additional;
 
-	public ArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier) {
-		this(argumentSupplier, argumentDataSupplier, (data, builder) -> {});
-	}
+    public ArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier) {
+        this(argumentSupplier, argumentDataSupplier, (data, builder) -> {});
+    }
 
-	public ArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier, BiConsumer<D, SingleElementMapperBuilder<Field>> additional) {
-		this.argumentSupplier = argumentSupplier;
-		this.argumentDataSupplier = argumentDataSupplier;
-		this.additional = additional;
-	}
+    public ArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier, BiConsumer<D, SingleElementMapperBuilder<Field>> additional) {
+        this.argumentSupplier = argumentSupplier;
+        this.argumentDataSupplier = argumentDataSupplier;
+        this.additional = additional;
+    }
 
-	@Override
-	public List<A> map(Iterable<Field> elements) {
-		return new ElementsMapperBuilder<Field, D>()
-			.data(this.argumentDataSupplier)
-			.singleElement(data -> {
-				SingleElementMapperBuilder<Field> builder = new SingleElementMapperBuilder<Field>()
-					.annotation(Argument.class, argument -> data.setName(argument.value()))
-					.annotation(ArgumentCodec.class, argumentCodec -> data.setArgumentCodecKey(argumentCodec.value()))
-					.annotation(Optional.class, optional -> data.setOptional(true))
-					.elementConsumer(data::setArgumentField);
-				this.additional.accept(data, builder);
-				return builder.build();
-			})
-			.build()
-			.map(elements)
-			.stream()
-			.map(this.argumentSupplier)
-			.collect(Collectors.toUnmodifiableList());
-	}
+    @Override
+    public List<A> map(Iterable<Field> elements) {
+        return new ElementsMapperBuilder<Field, D>()
+            .data(this.argumentDataSupplier)
+            .singleElement(data -> {
+                SingleElementMapperBuilder<Field> builder = new SingleElementMapperBuilder<Field>()
+                    .annotation(Argument.class, argument -> data.setName(argument.value()))
+                    .annotation(ArgumentCodec.class, argumentCodec -> data.setArgumentCodecKey(argumentCodec.value()))
+                    .annotation(Optional.class, optional -> data.setOptional(true))
+                    .elementConsumer(data::setArgumentField);
+                this.additional.accept(data, builder);
+                return builder.build();
+            })
+            .build()
+            .map(elements)
+            .stream()
+            .map(this.argumentSupplier)
+            .collect(Collectors.toUnmodifiableList());
+    }
 }

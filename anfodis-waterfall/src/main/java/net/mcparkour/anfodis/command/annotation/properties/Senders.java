@@ -34,8 +34,8 @@ import net.md_5.bungee.api.CommandSender;
 @Target(ElementType.TYPE)
 public @interface Senders {
 
-	/**
-	 * @return senders types
-	 */
-	Class<? extends CommandSender>[] value();
+    /**
+     * @return senders types
+     */
+    Class<? extends CommandSender>[] value();
 }

@@ -39,116 +39,116 @@ import org.jetbrains.annotations.Nullable;
 
 public class Argument {
 
-	private Field field;
-	private Type argumentType;
-	@Nullable
-	private String codecKey;
-	private String name;
-	private boolean optional;
+    private Field field;
+    private Type argumentType;
+    @Nullable
+    private String codecKey;
+    private String name;
+    private boolean optional;
 
-	public Argument(ArgumentData argumentData) {
-		Field field = argumentData.getArgumentField();
-		this.field = Objects.requireNonNull(field, "Argument field is null");
-		this.argumentType = getArgumentType(field);
-		this.codecKey = argumentData.getArgumentCodecKey();
-		String name = argumentData.getName();
-		this.name = Objects.requireNonNull(name, "Argument name is null").isEmpty() ? field.getName() : name;
-		Boolean optional = argumentData.getOptional();
-		this.optional = optional == null ? false : optional;
-	}
+    public Argument(ArgumentData argumentData) {
+        Field field = argumentData.getArgumentField();
+        this.field = Objects.requireNonNull(field, "Argument field is null");
+        this.argumentType = getArgumentType(field);
+        this.codecKey = argumentData.getArgumentCodecKey();
+        String name = argumentData.getName();
+        this.name = Objects.requireNonNull(name, "Argument name is null").isEmpty() ? field.getName() : name;
+        Boolean optional = argumentData.getOptional();
+        this.optional = optional == null ? false : optional;
+    }
 
-	private static Type getArgumentType(Field field) {
-		Type genericType = field.getGenericType();
-		Class<?> classGenericType = Types.getRawClassType(genericType);
-		if (!classGenericType.isAssignableFrom(OptionalArgument.class)) {
-			return genericType;
-		}
-		ParameterizedType parameterizedType = Types.asParametrizedType(genericType);
-		Type[] typeArguments = parameterizedType.getActualTypeArguments();
-		return typeArguments[0];
-	}
+    private static Type getArgumentType(Field field) {
+        Type genericType = field.getGenericType();
+        Class<?> classGenericType = Types.getRawClassType(genericType);
+        if (!classGenericType.isAssignableFrom(OptionalArgument.class)) {
+            return genericType;
+        }
+        ParameterizedType parameterizedType = Types.asParametrizedType(genericType);
+        Type[] typeArguments = parameterizedType.getActualTypeArguments();
+        return typeArguments[0];
+    }
 
-	public String getUsage() {
-		StringBuilder builder = new StringBuilder();
-		builder.append(this.optional ? '[' : '<');
-		builder.append(this.name);
-		if (isList()) {
-			builder.append("...");
-		}
-		builder.append(this.optional ? ']' : '>');
-		return builder.toString();
-	}
+    public String getUsage() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.optional ? '[' : '<');
+        builder.append(this.name);
+        if (isList()) {
+            builder.append("...");
+        }
+        builder.append(this.optional ? ']' : '>');
+        return builder.toString();
+    }
 
-	public void setEmptyArgumentField(Object instance) {
-		Object value = isOptionalArgument() ? MappedOptionalArgument.EMPTY_OPTIONAL_ARGUMENT : null;
-		Reflections.setFieldValue(this.field, instance, value);
-	}
+    public void setEmptyArgumentField(Object instance) {
+        Object value = isOptionalArgument() ? MappedOptionalArgument.EMPTY_OPTIONAL_ARGUMENT : null;
+        Reflections.setFieldValue(this.field, instance, value);
+    }
 
-	public void setArgumentField(Object instance, @Nullable Object argument) {
-		Object value = isOptionalArgument() ? MappedOptionalArgument.of(argument) : argument;
-		Reflections.setFieldValue(this.field, instance, value);
-	}
+    public void setArgumentField(Object instance, @Nullable Object argument) {
+        Object value = isOptionalArgument() ? MappedOptionalArgument.of(argument) : argument;
+        Reflections.setFieldValue(this.field, instance, value);
+    }
 
-	private boolean isOptionalArgument() {
-		Class<?> fieldType = this.field.getType();
-		return fieldType.isAssignableFrom(OptionalArgument.class);
-	}
+    private boolean isOptionalArgument() {
+        Class<?> fieldType = this.field.getType();
+        return fieldType.isAssignableFrom(OptionalArgument.class);
+    }
 
-	public boolean isList() {
-		Class<?> argumentClass = getArgumentClass();
-		return argumentClass.isAssignableFrom(List.class);
-	}
+    public boolean isList() {
+        Class<?> argumentClass = getArgumentClass();
+        return argumentClass.isAssignableFrom(List.class);
+    }
 
-	public ArgumentCodec<?> getCodec(CodecRegistry<ArgumentCodec<?>> registry) {
-		Class<?> argumentClass = getArgumentClass();
-		return getCodec(registry, argumentClass);
-	}
+    public ArgumentCodec<?> getCodec(CodecRegistry<ArgumentCodec<?>> registry) {
+        Class<?> argumentClass = getArgumentClass();
+        return getCodec(registry, argumentClass);
+    }
 
-	public ArgumentCodec<?> getGenericTypeCodec(CodecRegistry<ArgumentCodec<?>> registry, int genericTypeIndex) {
-		Type[] genericTypes = getArgumentGenericTypes();
-		Type genericType = genericTypes[genericTypeIndex];
-		Class<?> type = Types.getRawClassType(genericType);
-		return getCodec(registry, type);
-	}
+    public ArgumentCodec<?> getGenericTypeCodec(CodecRegistry<ArgumentCodec<?>> registry, int genericTypeIndex) {
+        Type[] genericTypes = getArgumentGenericTypes();
+        Type genericType = genericTypes[genericTypeIndex];
+        Class<?> type = Types.getRawClassType(genericType);
+        return getCodec(registry, type);
+    }
 
-	private ArgumentCodec<?> getCodec(CodecRegistry<ArgumentCodec<?>> registry, Class<?> type) {
-		return this.codecKey == null || this.codecKey.isEmpty() ? getTypedCodec(registry, type) : getKeyedCodec(registry, this.codecKey);
-	}
+    private ArgumentCodec<?> getCodec(CodecRegistry<ArgumentCodec<?>> registry, Class<?> type) {
+        return this.codecKey == null || this.codecKey.isEmpty() ? getTypedCodec(registry, type) : getKeyedCodec(registry, this.codecKey);
+    }
 
-	private ArgumentCodec<?> getTypedCodec(CodecRegistry<ArgumentCodec<?>> registry, Class<?> type) {
-		ArgumentCodec<?> codec = registry.getTypedCodec(type);
-		if (codec == null) {
-			throw new UnknownCodecException("Cannot find argument codec for type " + type);
-		}
-		return codec;
-	}
+    private ArgumentCodec<?> getTypedCodec(CodecRegistry<ArgumentCodec<?>> registry, Class<?> type) {
+        ArgumentCodec<?> codec = registry.getTypedCodec(type);
+        if (codec == null) {
+            throw new UnknownCodecException("Cannot find argument codec for type " + type);
+        }
+        return codec;
+    }
 
-	private ArgumentCodec<?> getKeyedCodec(CodecRegistry<ArgumentCodec<?>> registry, String key) {
-		ArgumentCodec<?> codec = registry.getKeyedCodec(key);
-		if (codec == null) {
-			throw new UnknownCodecException("Cannot find argument codec for key '" + key + "'");
-		}
-		return codec;
-	}
+    private ArgumentCodec<?> getKeyedCodec(CodecRegistry<ArgumentCodec<?>> registry, String key) {
+        ArgumentCodec<?> codec = registry.getKeyedCodec(key);
+        if (codec == null) {
+            throw new UnknownCodecException("Cannot find argument codec for key '" + key + "'");
+        }
+        return codec;
+    }
 
-	private Type[] getArgumentGenericTypes() {
-		ParameterizedType parameterizedType = Types.asParametrizedType(this.argumentType);
-		return parameterizedType.getActualTypeArguments();
-	}
+    private Type[] getArgumentGenericTypes() {
+        ParameterizedType parameterizedType = Types.asParametrizedType(this.argumentType);
+        return parameterizedType.getActualTypeArguments();
+    }
 
-	protected Class<?> getArgumentClass() {
-		return Types.getRawClassType(this.argumentType);
-	}
+    protected Class<?> getArgumentClass() {
+        return Types.getRawClassType(this.argumentType);
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public boolean isNotOptional() {
-		return !this.optional;
-	}
+    public boolean isNotOptional() {
+        return !this.optional;
+    }
 
-	public boolean isOptional() {
-		return this.optional;
-	}
+    public boolean isOptional() {
+        return this.optional;
+    }
 }

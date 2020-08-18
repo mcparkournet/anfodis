@@ -34,8 +34,8 @@ import com.velocitypowered.api.command.CommandSource;
 @Target(ElementType.TYPE)
 public @interface Senders {
 
-	/**
-	 * @return senders types
-	 */
-	Class<? extends CommandSource>[] value();
+    /**
+     * @return senders types
+     */
+    Class<? extends CommandSource>[] value();
 }

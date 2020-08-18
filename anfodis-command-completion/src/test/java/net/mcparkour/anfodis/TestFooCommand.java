@@ -50,33 +50,33 @@ import net.mcparkour.intext.message.MessageReceiverFactory;
 @Aliases("fooo")
 public class TestFooCommand {
 
-	@Inject
-	private MessageReceiverFactory<TestCommandSender> messageReceiverFactory;
+    @Inject
+    private MessageReceiverFactory<TestCommandSender> messageReceiverFactory;
 
-	@Arguments
-	private List<String> arguments;
-	@RequiredPermission
-	private net.mcparkour.craftmon.permission.Permission permission;
-	@Sender
-	private TestCommandSender sender;
-	@Receiver
-	private MessageReceiver receiver;
+    @Arguments
+    private List<String> arguments;
+    @RequiredPermission
+    private net.mcparkour.craftmon.permission.Permission permission;
+    @Sender
+    private TestCommandSender sender;
+    @Receiver
+    private MessageReceiver receiver;
 
-	@Argument("language")
-	@Completion
-	@Optional
-	private Locale locale;
+    @Argument("language")
+    @Completion
+    @Optional
+    private Locale locale;
 
-	@Before
-	public void before() {
-	}
+    @Before
+    public void before() {
+    }
 
-	@Executor
-	public void execute() {
-		this.receiver.receivePlain(this.locale == null ? "null" : this.locale.toLanguageTag());
-	}
+    @Executor
+    public void execute() {
+        this.receiver.receivePlain(this.locale == null ? "null" : this.locale.toLanguageTag());
+    }
 
-	@After
-	public void after() {
-	}
+    @After
+    public void after() {
+    }
 }

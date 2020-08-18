@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.argument;
 
 public class TestArgumentMapper extends CompletionArgumentMapper<TestArgument, TestArgumentData> {
 
-	public TestArgumentMapper() {
-		super(TestArgument::new, TestArgumentData::new);
-	}
+    public TestArgumentMapper() {
+        super(TestArgument::new, TestArgumentData::new);
+    }
 }

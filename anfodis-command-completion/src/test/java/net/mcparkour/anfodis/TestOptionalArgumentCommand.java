@@ -36,24 +36,24 @@ import net.mcparkour.intext.message.MessageReceiver;
 @Command("optional")
 public class TestOptionalArgumentCommand {
 
-	@Receiver
-	private MessageReceiver receiver;
+    @Receiver
+    private MessageReceiver receiver;
 
-	@Argument
-	@ArgumentCodec("null")
-	private String arg1;
-	@Argument
-	private OptionalArgument<String> arg2;
-	@Argument
-	@Optional
-	private OptionalArgument<String> arg3;
+    @Argument
+    @ArgumentCodec("null")
+    private String arg1;
+    @Argument
+    private OptionalArgument<String> arg2;
+    @Argument
+    @Optional
+    private OptionalArgument<String> arg3;
 
-	@Executor
-	public void execute() {
-		this.receiver.receivePlain(this.arg1);
-		this.receiver.receivePlain(String.valueOf(this.arg2.isPresent()));
-		this.receiver.receivePlain(this.arg2.orElse("empty"));
-		this.receiver.receivePlain(String.valueOf(this.arg3.isPresent()));
-		this.receiver.receivePlain(this.arg3.orElse("empty"));
-	}
+    @Executor
+    public void execute() {
+        this.receiver.receivePlain(this.arg1);
+        this.receiver.receivePlain(String.valueOf(this.arg2.isPresent()));
+        this.receiver.receivePlain(this.arg2.orElse("empty"));
+        this.receiver.receivePlain(String.valueOf(this.arg3.isPresent()));
+        this.receiver.receivePlain(this.arg3.orElse("empty"));
+    }
 }

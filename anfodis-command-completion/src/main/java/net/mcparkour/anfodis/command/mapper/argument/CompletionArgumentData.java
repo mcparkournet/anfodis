@@ -28,15 +28,15 @@ import org.jetbrains.annotations.Nullable;
 
 class CompletionArgumentData extends ArgumentData {
 
-	@Nullable
-	private String completionCodecKey;
+    @Nullable
+    private String completionCodecKey;
 
-	@Nullable
-	public String getCompletionCodecKey() {
-		return this.completionCodecKey;
-	}
+    @Nullable
+    public String getCompletionCodecKey() {
+        return this.completionCodecKey;
+    }
 
-	public void setCompletionCodecKey(@Nullable String completionCodecKey) {
-		this.completionCodecKey = completionCodecKey;
-	}
+    public void setCompletionCodecKey(@Nullable String completionCodecKey) {
+        this.completionCodecKey = completionCodecKey;
+    }
 }

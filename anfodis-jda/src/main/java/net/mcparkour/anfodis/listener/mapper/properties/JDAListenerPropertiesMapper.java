@@ -29,7 +29,7 @@ import net.mcparkour.anfodis.listener.annotation.properties.Listener;
 
 public class JDAListenerPropertiesMapper extends ListenerPropertiesMapper<JDAListenerProperties, JDAListenerPropertiesData, GenericEvent, Listener> {
 
-	public JDAListenerPropertiesMapper() {
-		super(Listener.class, Listener::value, JDAListenerProperties::new, JDAListenerPropertiesData::new);
-	}
+    public JDAListenerPropertiesMapper() {
+        super(Listener.class, Listener::value, JDAListenerProperties::new, JDAListenerPropertiesData::new);
+    }
 }

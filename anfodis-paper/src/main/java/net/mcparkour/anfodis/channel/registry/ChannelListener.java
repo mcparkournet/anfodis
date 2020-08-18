@@ -30,5 +30,5 @@ import org.bukkit.entity.Player;
 @FunctionalInterface
 public interface ChannelListener {
 
-	void listen(Player source, ChannelMessage message);
+    void listen(Player source, ChannelMessage message);
 }

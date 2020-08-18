@@ -34,8 +34,8 @@ import com.velocitypowered.api.event.PostOrder;
 @Target(ElementType.TYPE)
 public @interface Priority {
 
-	/**
-	 * @return listener priority
-	 */
-	PostOrder value();
+    /**
+     * @return listener priority
+     */
+    PostOrder value();
 }

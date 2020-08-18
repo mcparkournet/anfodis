@@ -26,5 +26,5 @@ package net.mcparkour.anfodis.result;
 
 public interface Result {
 
-	void onResult();
+    void onResult();
 }

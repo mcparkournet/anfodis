@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class ShortArgumentCodec implements ArgumentCodec<Short> {
 
-	@Override
-	@Nullable
-	public Short parse(String stringValue) {
-		return NumericParser.parseShort(stringValue);
-	}
+    @Override
+    @Nullable
+    public Short parse(String stringValue) {
+        return NumericParser.parseShort(stringValue);
+    }
 }

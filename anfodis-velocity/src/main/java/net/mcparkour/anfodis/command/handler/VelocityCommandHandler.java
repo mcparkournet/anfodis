@@ -37,31 +37,31 @@ import org.jetbrains.annotations.Nullable;
 
 public class VelocityCommandHandler extends CommandHandler<VelocityCommand, VelocityCommandContext, CommandSource> {
 
-	public VelocityCommandHandler(VelocityCommand command, Map<VelocityCommand, ? extends CommandContextHandler<VelocityCommandContext>> subCommandHandlers, @Nullable ContextHandler<VelocityCommandContext> executorHandler, CommandContextSupplier<VelocityCommandContext, CommandSource> contextSupplier) {
-		super(command, subCommandHandlers, executorHandler, contextSupplier);
-	}
+    public VelocityCommandHandler(VelocityCommand command, Map<VelocityCommand, ? extends CommandContextHandler<VelocityCommandContext>> subCommandHandlers, @Nullable ContextHandler<VelocityCommandContext> executorHandler, CommandContextSupplier<VelocityCommandContext, CommandSource> contextSupplier) {
+        super(command, subCommandHandlers, executorHandler, contextSupplier);
+    }
 
-	@Override
-	public void handle(VelocityCommandContext context) {
-		if (!checkSenders(context)) {
-			CommandSender<CommandSource> sender = context.getSender();
-			MessageReceiver receiver = sender.getReceiver();
-			receiver.receivePlain("You are not a valid sender.");
-			return;
-		}
-		super.handle(context);
-	}
+    @Override
+    public void handle(VelocityCommandContext context) {
+        if (!checkSenders(context)) {
+            CommandSender<CommandSource> sender = context.getSender();
+            MessageReceiver receiver = sender.getReceiver();
+            receiver.receivePlain("You are not a valid sender.");
+            return;
+        }
+        super.handle(context);
+    }
 
-	private boolean checkSenders(VelocityCommandContext context) {
-		VelocityCommand command = getCommand();
-		VelocityCommandProperties properties = command.getProperties();
-		Set<Class<? extends CommandSource>> senders = properties.getSenderTypes();
-		if (senders.isEmpty()) {
-			return true;
-		}
-		CommandSender<CommandSource> commandSender = context.getSender();
-		CommandSource source = commandSender.getSender();
-		Class<?> sourceType = source.getClass();
-		return senders.stream().anyMatch(sender -> sender.isAssignableFrom(sourceType));
-	}
+    private boolean checkSenders(VelocityCommandContext context) {
+        VelocityCommand command = getCommand();
+        VelocityCommandProperties properties = command.getProperties();
+        Set<Class<? extends CommandSource>> senders = properties.getSenderTypes();
+        if (senders.isEmpty()) {
+            return true;
+        }
+        CommandSender<CommandSource> commandSender = context.getSender();
+        CommandSource source = commandSender.getSender();
+        Class<?> sourceType = source.getClass();
+        return senders.stream().anyMatch(sender -> sender.isAssignableFrom(sourceType));
+    }
 }

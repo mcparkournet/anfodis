@@ -29,15 +29,15 @@ import java.util.List;
 
 public interface Mapper<E extends AnnotatedElement, T> {
 
-	default T map(E element) {
-		List<E> list = List.of(element);
-		return map(list);
-	}
+    default T map(E element) {
+        List<E> list = List.of(element);
+        return map(list);
+    }
 
-	default T map(E[] elements) {
-		List<E> list = List.of(elements);
-		return map(list);
-	}
+    default T map(E[] elements) {
+        List<E> list = List.of(elements);
+        return map(list);
+    }
 
-	T map(Iterable<E> elements);
+    T map(Iterable<E> elements);
 }

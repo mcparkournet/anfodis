@@ -29,48 +29,48 @@ import org.jetbrains.annotations.Nullable;
 
 class ContextData {
 
-	@Nullable
-	private Field argumentsField;
-	@Nullable
-	private Field requiredPermissionField;
-	@Nullable
-	private Field senderField;
-	@Nullable
-	private Field receiverField;
+    @Nullable
+    private Field argumentsField;
+    @Nullable
+    private Field requiredPermissionField;
+    @Nullable
+    private Field senderField;
+    @Nullable
+    private Field receiverField;
 
-	@Nullable
-	public Field getArgumentsField() {
-		return this.argumentsField;
-	}
+    @Nullable
+    public Field getArgumentsField() {
+        return this.argumentsField;
+    }
 
-	public void setArgumentsField(@Nullable Field argumentsField) {
-		this.argumentsField = argumentsField;
-	}
+    public void setArgumentsField(@Nullable Field argumentsField) {
+        this.argumentsField = argumentsField;
+    }
 
-	@Nullable
-	public Field getRequiredPermissionField() {
-		return this.requiredPermissionField;
-	}
+    @Nullable
+    public Field getRequiredPermissionField() {
+        return this.requiredPermissionField;
+    }
 
-	public void setRequiredPermissionField(@Nullable Field requiredPermissionField) {
-		this.requiredPermissionField = requiredPermissionField;
-	}
+    public void setRequiredPermissionField(@Nullable Field requiredPermissionField) {
+        this.requiredPermissionField = requiredPermissionField;
+    }
 
-	@Nullable
-	public Field getSenderField() {
-		return this.senderField;
-	}
+    @Nullable
+    public Field getSenderField() {
+        return this.senderField;
+    }
 
-	public void setSenderField(@Nullable Field senderField) {
-		this.senderField = senderField;
-	}
+    public void setSenderField(@Nullable Field senderField) {
+        this.senderField = senderField;
+    }
 
-	@Nullable
-	public Field getReceiverField() {
-		return this.receiverField;
-	}
+    @Nullable
+    public Field getReceiverField() {
+        return this.receiverField;
+    }
 
-	public void setReceiverField(@Nullable Field receiverField) {
-		this.receiverField = receiverField;
-	}
+    public void setReceiverField(@Nullable Field receiverField) {
+        this.receiverField = receiverField;
+    }
 }

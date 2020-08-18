@@ -34,38 +34,38 @@ import org.jetbrains.annotations.Nullable;
 
 public class Injection {
 
-	private Field field;
-	@Nullable
-	private String codecKey;
+    private Field field;
+    @Nullable
+    private String codecKey;
 
-	public Injection(InjectionData injectionData) {
-		Field field = injectionData.getInjectionField();
-		this.field = Objects.requireNonNull(field, "Injection field is null");
-		this.codecKey = injectionData.getCodecKey();
-	}
+    public Injection(InjectionData injectionData) {
+        Field field = injectionData.getInjectionField();
+        this.field = Objects.requireNonNull(field, "Injection field is null");
+        this.codecKey = injectionData.getCodecKey();
+    }
 
-	public void setInjectionField(Object instance, Object injection) {
-		Reflections.setFieldValue(this.field, instance, injection);
-	}
+    public void setInjectionField(Object instance, Object injection) {
+        Reflections.setFieldValue(this.field, instance, injection);
+    }
 
-	public InjectionCodec<?> getCodec(CodecRegistry<InjectionCodec<?>> registry) {
-		Class<?> type = this.field.getType();
-		return this.codecKey == null || this.codecKey.isEmpty() ? getTypedCodec(registry, type) : getKeyedCodec(registry, this.codecKey);
-	}
+    public InjectionCodec<?> getCodec(CodecRegistry<InjectionCodec<?>> registry) {
+        Class<?> type = this.field.getType();
+        return this.codecKey == null || this.codecKey.isEmpty() ? getTypedCodec(registry, type) : getKeyedCodec(registry, this.codecKey);
+    }
 
-	private InjectionCodec<?> getTypedCodec(CodecRegistry<InjectionCodec<?>> registry, Class<?> type) {
-		InjectionCodec<?> codec = registry.getTypedCodec(type);
-		if (codec == null) {
-			throw new UnknownCodecException("Cannot find injection codec for type " + type);
-		}
-		return codec;
-	}
+    private InjectionCodec<?> getTypedCodec(CodecRegistry<InjectionCodec<?>> registry, Class<?> type) {
+        InjectionCodec<?> codec = registry.getTypedCodec(type);
+        if (codec == null) {
+            throw new UnknownCodecException("Cannot find injection codec for type " + type);
+        }
+        return codec;
+    }
 
-	private InjectionCodec<?> getKeyedCodec(CodecRegistry<InjectionCodec<?>> registry, String key) {
-		InjectionCodec<?> codec = registry.getKeyedCodec(key);
-		if (codec == null) {
-			throw new UnknownCodecException("Cannot find injection codec for key '" + key + "'");
-		}
-		return codec;
-	}
+    private InjectionCodec<?> getKeyedCodec(CodecRegistry<InjectionCodec<?>> registry, String key) {
+        InjectionCodec<?> codec = registry.getKeyedCodec(key);
+        if (codec == null) {
+            throw new UnknownCodecException("Cannot find injection codec for key '" + key + "'");
+        }
+        return codec;
+    }
 }

@@ -34,8 +34,8 @@ import net.dv8tion.jda.api.events.GenericEvent;
 @Target(ElementType.TYPE)
 public @interface Listener {
 
-	/**
-	 * @return types of events to listen
-	 */
-	Class<? extends GenericEvent>[] value();
+    /**
+     * @return types of events to listen
+     */
+    Class<? extends GenericEvent>[] value();
 }

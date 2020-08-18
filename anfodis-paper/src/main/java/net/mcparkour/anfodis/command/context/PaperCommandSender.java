@@ -29,13 +29,13 @@ import org.bukkit.command.CommandSender;
 
 public class PaperCommandSender extends AbstractCommandSender<CommandSender> {
 
-	public PaperCommandSender(CommandSender sender, MessageReceiver receiver) {
-		super(sender, receiver);
-	}
+    public PaperCommandSender(CommandSender sender, MessageReceiver receiver) {
+        super(sender, receiver);
+    }
 
-	@Override
-	public boolean hasPermission(String name) {
-		CommandSender sender = getSender();
-		return sender.hasPermission(name);
-	}
+    @Override
+    public boolean hasPermission(String name) {
+        CommandSender sender = getSender();
+        return sender.hasPermission(name);
+    }
 }

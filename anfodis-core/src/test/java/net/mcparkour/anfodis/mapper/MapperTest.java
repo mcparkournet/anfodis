@@ -36,54 +36,54 @@ import org.junit.jupiter.api.Test;
 
 public class MapperTest {
 
-	@Test
-	public void testMapFields() throws NoSuchFieldException {
-		Field[] fields = TestClass.class.getDeclaredFields();
-		List<FieldData> list = new ElementsMapperBuilder<Field, FieldData>()
-			.data(FieldData::new)
-			.singleElement(fieldData -> new SingleElementMapperBuilder<Field>()
-				.annotation(Inject.class, inject -> fieldData.setString1(inject.value()))
-				.annotation(TestAnnotation.class, testAnnotation -> fieldData.setString2(testAnnotation.value()))
-				.elementConsumer(fieldData::setField)
-				.build())
-			.build()
-			.map(fields);
-		Assertions.assertEquals(List.of(new FieldData(TestClass.class.getDeclaredField("string1"), "foo1", "bar1"), new FieldData(TestClass.class.getDeclaredField("string2"), "foo2", null)), list);
-	}
+    @Test
+    public void testMapFields() throws NoSuchFieldException {
+        Field[] fields = TestClass.class.getDeclaredFields();
+        List<FieldData> list = new ElementsMapperBuilder<Field, FieldData>()
+            .data(FieldData::new)
+            .singleElement(fieldData -> new SingleElementMapperBuilder<Field>()
+                .annotation(Inject.class, inject -> fieldData.setString1(inject.value()))
+                .annotation(TestAnnotation.class, testAnnotation -> fieldData.setString2(testAnnotation.value()))
+                .elementConsumer(fieldData::setField)
+                .build())
+            .build()
+            .map(fields);
+        Assertions.assertEquals(List.of(new FieldData(TestClass.class.getDeclaredField("string1"), "foo1", "bar1"), new FieldData(TestClass.class.getDeclaredField("string2"), "foo2", null)), list);
+    }
 
-	@Test
-	public void testMapMethods() throws NoSuchMethodException {
-		Method[] methods = TestClass.class.getDeclaredMethods();
-		MethodData data = new ElementsMapperBuilder<Method, MethodData>()
-			.data(MethodData::new)
-			.singleElement(methodData -> new SingleElementMapperBuilder<Method>()
-				.annotation(Before.class)
-				.elementConsumer(methodData::setBeforeMethod)
-				.build())
-			.singleElement(methodData -> new SingleElementMapperBuilder<Method>()
-				.annotation(Executor.class)
-				.elementConsumer(methodData::setExecutorMethod)
-				.build())
-			.singleElement(methodData -> new SingleElementMapperBuilder<Method>()
-				.annotation(After.class)
-				.elementConsumer(methodData::setAfterMethod)
-				.build())
-			.build()
-			.mapFirst(methods);
-		Assertions.assertEquals(new MethodData(TestClass.class.getDeclaredMethod("before"), TestClass.class.getDeclaredMethod("executor"), TestClass.class.getDeclaredMethod("after")), data);
-	}
+    @Test
+    public void testMapMethods() throws NoSuchMethodException {
+        Method[] methods = TestClass.class.getDeclaredMethods();
+        MethodData data = new ElementsMapperBuilder<Method, MethodData>()
+            .data(MethodData::new)
+            .singleElement(methodData -> new SingleElementMapperBuilder<Method>()
+                .annotation(Before.class)
+                .elementConsumer(methodData::setBeforeMethod)
+                .build())
+            .singleElement(methodData -> new SingleElementMapperBuilder<Method>()
+                .annotation(Executor.class)
+                .elementConsumer(methodData::setExecutorMethod)
+                .build())
+            .singleElement(methodData -> new SingleElementMapperBuilder<Method>()
+                .annotation(After.class)
+                .elementConsumer(methodData::setAfterMethod)
+                .build())
+            .build()
+            .mapFirst(methods);
+        Assertions.assertEquals(new MethodData(TestClass.class.getDeclaredMethod("before"), TestClass.class.getDeclaredMethod("executor"), TestClass.class.getDeclaredMethod("after")), data);
+    }
 
-	@Test
-	public void testMapClass() {
-		List<ClassData> list = new ElementsMapperBuilder<Class<?>, ClassData>()
-			.data(ClassData::new)
-			.singleElement(classData -> new SingleElementMapperBuilder<Class<?>>()
-				.annotation(TestClassAnnotation.class)
-				.annotation(TestClassAnnotationTwo.class, testClassAnnotationTwo -> classData.setSecond(testClassAnnotationTwo.value()))
-				.annotation(TestClassAnnotationThree.class, testClassAnnotationThree -> classData.setThird(testClassAnnotationThree.value()))
-				.build())
-			.build()
-			.map(new Class[] {TestClass.class});
-		Assertions.assertEquals(List.of(new ClassData(null, "foobar", null)), list);
-	}
+    @Test
+    public void testMapClass() {
+        List<ClassData> list = new ElementsMapperBuilder<Class<?>, ClassData>()
+            .data(ClassData::new)
+            .singleElement(classData -> new SingleElementMapperBuilder<Class<?>>()
+                .annotation(TestClassAnnotation.class)
+                .annotation(TestClassAnnotationTwo.class, testClassAnnotationTwo -> classData.setSecond(testClassAnnotationTwo.value()))
+                .annotation(TestClassAnnotationThree.class, testClassAnnotationThree -> classData.setThird(testClassAnnotationThree.value()))
+                .build())
+            .build()
+            .map(new Class[] {TestClass.class});
+        Assertions.assertEquals(List.of(new ClassData(null, "foobar", null)), list);
+    }
 }

@@ -30,9 +30,9 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public interface PermissionMap {
 
-	void addPermission(User user, Permission permission);
+    void addPermission(User user, Permission permission);
 
-	void addPermissions(User user, List<Permission> permissions);
+    void addPermissions(User user, List<Permission> permissions);
 
-	List<Permission> getPermissions(User user);
+    List<Permission> getPermissions(User user);
 }

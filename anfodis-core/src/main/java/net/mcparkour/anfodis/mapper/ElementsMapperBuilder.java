@@ -33,26 +33,26 @@ import java.util.function.Supplier;
 
 public class ElementsMapperBuilder<E extends AnnotatedElement, T> {
 
-	private Supplier<T> dataSupplier;
-	private List<Function<T, SingleElementMapper<E>>> singleElementMappers = new ArrayList<>();
+    private Supplier<T> dataSupplier;
+    private List<Function<T, SingleElementMapper<E>>> singleElementMappers = new ArrayList<>();
 
-	public ElementsMapperBuilder<E, T> data(T data) {
-		this.dataSupplier = () -> data;
-		return this;
-	}
+    public ElementsMapperBuilder<E, T> data(T data) {
+        this.dataSupplier = () -> data;
+        return this;
+    }
 
-	public ElementsMapperBuilder<E, T> data(Supplier<T> dataSupplier) {
-		this.dataSupplier = dataSupplier;
-		return this;
-	}
+    public ElementsMapperBuilder<E, T> data(Supplier<T> dataSupplier) {
+        this.dataSupplier = dataSupplier;
+        return this;
+    }
 
-	public ElementsMapperBuilder<E, T> singleElement(Function<T, SingleElementMapper<E>> elementMapper) {
-		this.singleElementMappers.add(elementMapper);
-		return this;
-	}
+    public ElementsMapperBuilder<E, T> singleElement(Function<T, SingleElementMapper<E>> elementMapper) {
+        this.singleElementMappers.add(elementMapper);
+        return this;
+    }
 
-	public ElementsMapper<E, T> build() {
-		Objects.requireNonNull(this.dataSupplier);
-		return new ElementsMapper<>(this.dataSupplier, this.singleElementMappers);
-	}
+    public ElementsMapper<E, T> build() {
+        Objects.requireNonNull(this.dataSupplier);
+        return new ElementsMapper<>(this.dataSupplier, this.singleElementMappers);
+    }
 }

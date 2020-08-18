@@ -31,24 +31,24 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 class CommandWrapper extends Command implements TabExecutor {
 
-	private WaterfallCommandExecutor commandExecutor;
-	private WaterfallCompletionExecutor completionExecutor;
+    private WaterfallCommandExecutor commandExecutor;
+    private WaterfallCompletionExecutor completionExecutor;
 
-	CommandWrapper(String name, String permission, String[] aliases, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
-		super(name, permission, aliases);
-		this.commandExecutor = commandExecutor;
-		this.completionExecutor = completionExecutor;
-	}
+    CommandWrapper(String name, String permission, String[] aliases, WaterfallCommandExecutor commandExecutor, WaterfallCompletionExecutor completionExecutor) {
+        super(name, permission, aliases);
+        this.commandExecutor = commandExecutor;
+        this.completionExecutor = completionExecutor;
+    }
 
-	@Override
-	public void execute(CommandSender sender, String[] args) {
-		List<String> arguments = List.of(args);
-		this.commandExecutor.execute(sender, arguments);
-	}
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        List<String> arguments = List.of(args);
+        this.commandExecutor.execute(sender, arguments);
+    }
 
-	@Override
-	public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-		List<String> arguments = List.of(args);
-		return this.completionExecutor.execute(sender, arguments);
-	}
+    @Override
+    public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+        List<String> arguments = List.of(args);
+        return this.completionExecutor.execute(sender, arguments);
+    }
 }

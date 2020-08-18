@@ -33,70 +33,70 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommandProperties {
 
-	private String name;
-	private String description;
-	@Nullable
-	private String descriptionTranslationId;
-	private Set<String> aliases;
-	private Set<String> lowerCaseAliases;
-	@Nullable
-	private String aliasesTranslationId;
-	private Permission permission;
+    private String name;
+    private String description;
+    @Nullable
+    private String descriptionTranslationId;
+    private Set<String> aliases;
+    private Set<String> lowerCaseAliases;
+    @Nullable
+    private String aliasesTranslationId;
+    private Permission permission;
 
-	public CommandProperties(CommandPropertiesData propertiesData) {
-		String name = propertiesData.getName();
-		this.name = Objects.requireNonNull(name, "Command name is null");
-		String description = propertiesData.getDescription();
-		this.description = description == null ? "" : description;
-		this.descriptionTranslationId = propertiesData.getDescriptionTranslationId();
-		String[] aliases = propertiesData.getAliases();
-		this.aliases = aliases == null ? Set.of() : Set.of(aliases);
-		this.lowerCaseAliases = this.aliases.stream()
-			.map(String::toLowerCase)
-			.collect(Collectors.toUnmodifiableSet());
-		this.aliasesTranslationId = propertiesData.getAliasesTranslationId();
-		String permissionName = propertiesData.getPermission();
-		this.permission = permissionName == null ? Permission.empty() : Permission.of(permissionName.isEmpty() ? this.name : permissionName);
-	}
+    public CommandProperties(CommandPropertiesData propertiesData) {
+        String name = propertiesData.getName();
+        this.name = Objects.requireNonNull(name, "Command name is null");
+        String description = propertiesData.getDescription();
+        this.description = description == null ? "" : description;
+        this.descriptionTranslationId = propertiesData.getDescriptionTranslationId();
+        String[] aliases = propertiesData.getAliases();
+        this.aliases = aliases == null ? Set.of() : Set.of(aliases);
+        this.lowerCaseAliases = this.aliases.stream()
+            .map(String::toLowerCase)
+            .collect(Collectors.toUnmodifiableSet());
+        this.aliasesTranslationId = propertiesData.getAliasesTranslationId();
+        String permissionName = propertiesData.getPermission();
+        this.permission = permissionName == null ? Permission.empty() : Permission.of(permissionName.isEmpty() ? this.name : permissionName);
+    }
 
-	public Permission getPermission() {
-		return this.permission;
-	}
+    public Permission getPermission() {
+        return this.permission;
+    }
 
-	public Set<String> getAllNames() {
-		Set<String> names = new HashSet<>(1);
-		names.add(this.name);
-		names.addAll(this.aliases);
-		return names;
-	}
+    public Set<String> getAllNames() {
+        Set<String> names = new HashSet<>(1);
+        names.add(this.name);
+        names.addAll(this.aliases);
+        return names;
+    }
 
-	public String getDefaultUsage() {
-		return "/" + this.name;
-	}
+    public String getDefaultUsage() {
+        return "/" + this.name;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	@Nullable
-	public String getDescriptionTranslationId() {
-		return this.descriptionTranslationId;
-	}
+    @Nullable
+    public String getDescriptionTranslationId() {
+        return this.descriptionTranslationId;
+    }
 
-	public Set<String> getAliases() {
-		return this.aliases;
-	}
+    public Set<String> getAliases() {
+        return this.aliases;
+    }
 
-	public Set<String> getLowerCaseAliases() {
-		return this.lowerCaseAliases;
-	}
+    public Set<String> getLowerCaseAliases() {
+        return this.lowerCaseAliases;
+    }
 
-	@Nullable
-	public String getAliasesTranslationId() {
-		return this.aliasesTranslationId;
-	}
+    @Nullable
+    public String getAliasesTranslationId() {
+        return this.aliasesTranslationId;
+    }
 }

@@ -33,5 +33,5 @@ import net.mcparkour.anfodis.listener.mapper.Listener;
 @FunctionalInterface
 public interface ListenerHandlerSupplier<T extends Listener<?, ?>, C extends ListenerContext<?>> {
 
-	ContextHandler<C> supply(T listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry);
+    ContextHandler<C> supply(T listener, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry);
 }

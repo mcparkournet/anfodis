@@ -29,29 +29,29 @@ import org.jetbrains.annotations.Nullable;
 
 public class CodecRegistry<T> {
 
-	private Map<Class<?>, T> typedCodecs;
-	private Map<String, T> keyedCodecs;
+    private Map<Class<?>, T> typedCodecs;
+    private Map<String, T> keyedCodecs;
 
-	public CodecRegistry(Map<Class<?>, T> typedCodecs, Map<String, T> keyedCodecs) {
-		this.typedCodecs = typedCodecs;
-		this.keyedCodecs = keyedCodecs;
-	}
+    public CodecRegistry(Map<Class<?>, T> typedCodecs, Map<String, T> keyedCodecs) {
+        this.typedCodecs = typedCodecs;
+        this.keyedCodecs = keyedCodecs;
+    }
 
-	@Nullable
-	public T getTypedCodec(Class<?> type) {
-		return this.typedCodecs.get(type);
-	}
+    @Nullable
+    public T getTypedCodec(Class<?> type) {
+        return this.typedCodecs.get(type);
+    }
 
-	@Nullable
-	public T getKeyedCodec(String key) {
-		return this.keyedCodecs.get(key);
-	}
+    @Nullable
+    public T getKeyedCodec(String key) {
+        return this.keyedCodecs.get(key);
+    }
 
-	Map<Class<?>, T> getTypedCodecs() {
-		return Map.copyOf(this.typedCodecs);
-	}
+    Map<Class<?>, T> getTypedCodecs() {
+        return Map.copyOf(this.typedCodecs);
+    }
 
-	Map<String, T> getKeyedCodecs() {
-		return Map.copyOf(this.keyedCodecs);
-	}
+    Map<String, T> getKeyedCodecs() {
+        return Map.copyOf(this.keyedCodecs);
+    }
 }

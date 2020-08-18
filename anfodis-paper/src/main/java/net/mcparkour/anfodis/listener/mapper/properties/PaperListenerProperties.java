@@ -29,22 +29,22 @@ import org.bukkit.event.EventPriority;
 
 public class PaperListenerProperties extends ListenerProperties<Event> {
 
-	private EventPriority priority;
-	private boolean ignoreCancelled;
+    private EventPriority priority;
+    private boolean ignoreCancelled;
 
-	public PaperListenerProperties(PaperListenerPropertiesData propertiesData) {
-		super(propertiesData);
-		EventPriority priority = propertiesData.getPriority();
-		this.priority = priority == null ? EventPriority.NORMAL : priority;
-		Boolean ignoreCancelled = propertiesData.getIgnoreCancelled();
-		this.ignoreCancelled = ignoreCancelled == null ? false : ignoreCancelled;
-	}
+    public PaperListenerProperties(PaperListenerPropertiesData propertiesData) {
+        super(propertiesData);
+        EventPriority priority = propertiesData.getPriority();
+        this.priority = priority == null ? EventPriority.NORMAL : priority;
+        Boolean ignoreCancelled = propertiesData.getIgnoreCancelled();
+        this.ignoreCancelled = ignoreCancelled == null ? false : ignoreCancelled;
+    }
 
-	public EventPriority getPriority() {
-		return this.priority;
-	}
+    public EventPriority getPriority() {
+        return this.priority;
+    }
 
-	public boolean isIgnoreCancelled() {
-		return this.ignoreCancelled;
-	}
+    public boolean isIgnoreCancelled() {
+        return this.ignoreCancelled;
+    }
 }

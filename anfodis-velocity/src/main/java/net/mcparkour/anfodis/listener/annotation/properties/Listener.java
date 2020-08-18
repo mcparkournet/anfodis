@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Listener {
 
-	/**
-	 * @return types of events to listen
-	 */
-	Class<?>[] value();
+    /**
+     * @return types of events to listen
+     */
+    Class<?>[] value();
 }

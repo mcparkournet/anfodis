@@ -35,27 +35,27 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommandMap {
 
-	private Map<String, CommandMapEntry> commandMap;
+    private Map<String, CommandMapEntry> commandMap;
 
-	public CommandMap() {
-		this.commandMap = new HashMap<>(16);
-	}
+    public CommandMap() {
+        this.commandMap = new HashMap<>(16);
+    }
 
-	public void register(JDACommand command, CommandContextHandler<JDACommandContext> handler) {
-		CommandMapEntry entry = new CommandMapEntry(command, handler);
-		JDACommandProperties properties = command.getProperties();
-		Set<String> names = properties.getAllNames();
-		for (String name : names) {
-			this.commandMap.put(name, entry);
-		}
-	}
+    public void register(JDACommand command, CommandContextHandler<JDACommandContext> handler) {
+        CommandMapEntry entry = new CommandMapEntry(command, handler);
+        JDACommandProperties properties = command.getProperties();
+        Set<String> names = properties.getAllNames();
+        for (String name : names) {
+            this.commandMap.put(name, entry);
+        }
+    }
 
-	@Nullable
-	public CommandMapEntry getCommand(String name) {
-		return this.commandMap.get(name);
-	}
+    @Nullable
+    public CommandMapEntry getCommand(String name) {
+        return this.commandMap.get(name);
+    }
 
-	public int getSize() {
-		return this.commandMap.size();
-	}
+    public int getSize() {
+        return this.commandMap.size();
+    }
 }

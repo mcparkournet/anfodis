@@ -32,25 +32,25 @@ import net.mcparkour.common.reflection.Reflections;
 
 public class Root {
 
-	private Constructor<?> constructor;
-	private List<Injection> injections;
-	private Executor executor;
+    private Constructor<?> constructor;
+    private List<Injection> injections;
+    private Executor executor;
 
-	public Root(Constructor<?> constructor, List<Injection> injections, Executor executor) {
-		this.constructor = constructor;
-		this.injections = injections;
-		this.executor = executor;
-	}
+    public Root(Constructor<?> constructor, List<Injection> injections, Executor executor) {
+        this.constructor = constructor;
+        this.injections = injections;
+        this.executor = executor;
+    }
 
-	public Object createInstance() {
-		return Reflections.newInstance(this.constructor);
-	}
+    public Object createInstance() {
+        return Reflections.newInstance(this.constructor);
+    }
 
-	public List<Injection> getInjections() {
-		return this.injections;
-	}
+    public List<Injection> getInjections() {
+        return this.injections;
+    }
 
-	public Executor getExecutor() {
-		return this.executor;
-	}
+    public Executor getExecutor() {
+        return this.executor;
+    }
 }

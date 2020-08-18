@@ -31,40 +31,40 @@ import org.jetbrains.annotations.Nullable;
 
 public class Executor {
 
-	@Nullable
-	private Method beforeMethod;
-	@Nullable
-	private Method executorMethod;
-	@Nullable
-	private Method afterMethod;
+    @Nullable
+    private Method beforeMethod;
+    @Nullable
+    private Method executorMethod;
+    @Nullable
+    private Method afterMethod;
 
-	public Executor(ExecutorData executorData) {
-		this.beforeMethod = executorData.getBeforeMethod();
-		this.executorMethod = executorData.getExecutorMethod();
-		this.afterMethod = executorData.getAfterMethod();
-	}
+    public Executor(ExecutorData executorData) {
+        this.beforeMethod = executorData.getBeforeMethod();
+        this.executorMethod = executorData.getExecutorMethod();
+        this.afterMethod = executorData.getAfterMethod();
+    }
 
-	public void invokeBefore(Object instance) {
-		if (this.beforeMethod == null) {
-			return;
-		}
-		Reflections.invokeMethod(this.beforeMethod, instance);
-	}
+    public void invokeBefore(Object instance) {
+        if (this.beforeMethod == null) {
+            return;
+        }
+        Reflections.invokeMethod(this.beforeMethod, instance);
+    }
 
-	public boolean hasExecutor() {
-		return this.executorMethod != null;
-	}
+    public boolean hasExecutor() {
+        return this.executorMethod != null;
+    }
 
-	@Nullable
-	public Object invokeExecutor(Object instance) {
-		Objects.requireNonNull(this.executorMethod, "Executor method is null");
-		return Reflections.invokeMethod(this.executorMethod, instance);
-	}
+    @Nullable
+    public Object invokeExecutor(Object instance) {
+        Objects.requireNonNull(this.executorMethod, "Executor method is null");
+        return Reflections.invokeMethod(this.executorMethod, instance);
+    }
 
-	public void invokeAfter(Object instance) {
-		if (this.afterMethod == null) {
-			return;
-		}
-		Reflections.invokeMethod(this.afterMethod, instance);
-	}
+    public void invokeAfter(Object instance) {
+        if (this.afterMethod == null) {
+            return;
+        }
+        Reflections.invokeMethod(this.afterMethod, instance);
+    }
 }

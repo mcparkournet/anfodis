@@ -36,31 +36,31 @@ import org.jetbrains.annotations.Nullable;
 
 public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, WaterfallCommandContext, net.md_5.bungee.api.CommandSender> {
 
-	public WaterfallCommandHandler(WaterfallCommand command, Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers, @Nullable ContextHandler<WaterfallCommandContext> executorHandler, CommandContextSupplier<WaterfallCommandContext, net.md_5.bungee.api.CommandSender> contextSupplier) {
-		super(command, subCommandHandlers, executorHandler, contextSupplier);
-	}
+    public WaterfallCommandHandler(WaterfallCommand command, Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers, @Nullable ContextHandler<WaterfallCommandContext> executorHandler, CommandContextSupplier<WaterfallCommandContext, net.md_5.bungee.api.CommandSender> contextSupplier) {
+        super(command, subCommandHandlers, executorHandler, contextSupplier);
+    }
 
-	@Override
-	public void handle(WaterfallCommandContext context) {
-		if (!checkSenders(context)) {
-			CommandSender<net.md_5.bungee.api.CommandSender> sender = context.getSender();
-			MessageReceiver receiver = sender.getReceiver();
-			receiver.receivePlain("You are not a valid sender.");
-			return;
-		}
-		super.handle(context);
-	}
+    @Override
+    public void handle(WaterfallCommandContext context) {
+        if (!checkSenders(context)) {
+            CommandSender<net.md_5.bungee.api.CommandSender> sender = context.getSender();
+            MessageReceiver receiver = sender.getReceiver();
+            receiver.receivePlain("You are not a valid sender.");
+            return;
+        }
+        super.handle(context);
+    }
 
-	private boolean checkSenders(WaterfallCommandContext context) {
-		WaterfallCommand command = getCommand();
-		WaterfallCommandProperties properties = command.getProperties();
-		Set<Class<? extends net.md_5.bungee.api.CommandSender>> senders = properties.getSenderTypes();
-		if (senders.isEmpty()) {
-			return true;
-		}
-		CommandSender<net.md_5.bungee.api.CommandSender> commandSender = context.getSender();
-		Object rawSender = commandSender.getSender();
-		Class<?> rawSenderType = rawSender.getClass();
-		return senders.stream().anyMatch(sender -> sender.isAssignableFrom(rawSenderType));
-	}
+    private boolean checkSenders(WaterfallCommandContext context) {
+        WaterfallCommand command = getCommand();
+        WaterfallCommandProperties properties = command.getProperties();
+        Set<Class<? extends net.md_5.bungee.api.CommandSender>> senders = properties.getSenderTypes();
+        if (senders.isEmpty()) {
+            return true;
+        }
+        CommandSender<net.md_5.bungee.api.CommandSender> commandSender = context.getSender();
+        Object rawSender = commandSender.getSender();
+        Class<?> rawSenderType = rawSender.getClass();
+        return senders.stream().anyMatch(sender -> sender.isAssignableFrom(rawSenderType));
+    }
 }

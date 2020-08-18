@@ -28,15 +28,15 @@ import org.jetbrains.annotations.Nullable;
 
 class PaperChannelListenerPropertiesData {
 
-	@Nullable
-	private String[] channels;
+    @Nullable
+    private String[] channels;
 
-	@Nullable
-	public String[] getChannels() {
-		return this.channels;
-	}
+    @Nullable
+    public String[] getChannels() {
+        return this.channels;
+    }
 
-	public void setChannels(@Nullable String[] channels) {
-		this.channels = channels;
-	}
+    public void setChannels(@Nullable String[] channels) {
+        this.channels = channels;
+    }
 }

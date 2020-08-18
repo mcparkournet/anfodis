@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface ArgumentCodec {
 
-	/**
-	 * @return codec key
-	 */
-	String value();
+    /**
+     * @return codec key
+     */
+    String value();
 }

@@ -30,38 +30,38 @@ import org.jetbrains.annotations.Nullable;
 
 final class MappedOptionalArgument<T> implements OptionalArgument<T> {
 
-	static final OptionalArgument<?> EMPTY_OPTIONAL_ARGUMENT = new MappedOptionalArgument<>(null, false);
+    static final OptionalArgument<?> EMPTY_OPTIONAL_ARGUMENT = new MappedOptionalArgument<>(null, false);
 
-	@Nullable
-	private final T value;
-	private final boolean present;
+    @Nullable
+    private final T value;
+    private final boolean present;
 
-	static <T> OptionalArgument<T> of(@Nullable T value) {
-		return new MappedOptionalArgument<>(value, true);
-	}
+    static <T> OptionalArgument<T> of(@Nullable T value) {
+        return new MappedOptionalArgument<>(value, true);
+    }
 
-	private MappedOptionalArgument(@Nullable T value, boolean present) {
-		this.value = value;
-		this.present = present;
-	}
+    private MappedOptionalArgument(@Nullable T value, boolean present) {
+        this.value = value;
+        this.present = present;
+    }
 
-	@Override
-	public boolean isPresent() {
-		return this.present;
-	}
+    @Override
+    public boolean isPresent() {
+        return this.present;
+    }
 
-	@Override
-	@Nullable
-	public T orElse(@Nullable T other) {
-		return this.present ? this.value : other;
-	}
+    @Override
+    @Nullable
+    public T orElse(@Nullable T other) {
+        return this.present ? this.value : other;
+    }
 
-	@Override
-	@Nullable
-	public T get() {
-		if (!this.present) {
-			throw new NoSuchElementException("Argument value is not present");
-		}
-		return this.value;
-	}
+    @Override
+    @Nullable
+    public T get() {
+        if (!this.present) {
+            throw new NoSuchElementException("Argument value is not present");
+        }
+        return this.value;
+    }
 }

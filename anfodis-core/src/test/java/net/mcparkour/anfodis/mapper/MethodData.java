@@ -29,67 +29,67 @@ import java.util.Objects;
 
 public class MethodData {
 
-	private Method beforeMethod;
-	private Method executorMethod;
-	private Method afterMethod;
+    private Method beforeMethod;
+    private Method executorMethod;
+    private Method afterMethod;
 
-	public MethodData() {}
+    public MethodData() {}
 
-	public MethodData(Method beforeMethod, Method executorMethod, Method afterMethod) {
-		this.beforeMethod = beforeMethod;
-		this.executorMethod = executorMethod;
-		this.afterMethod = afterMethod;
-	}
+    public MethodData(Method beforeMethod, Method executorMethod, Method afterMethod) {
+        this.beforeMethod = beforeMethod;
+        this.executorMethod = executorMethod;
+        this.afterMethod = afterMethod;
+    }
 
-	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
-			return true;
-		}
-		if (object == null || getClass() != object.getClass()) {
-			return false;
-		}
-		MethodData that = (MethodData) object;
-		return Objects.equals(this.beforeMethod, that.beforeMethod) &&
-			Objects.equals(this.executorMethod, that.executorMethod) &&
-			Objects.equals(this.afterMethod, that.afterMethod);
-	}
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        MethodData that = (MethodData) object;
+        return Objects.equals(this.beforeMethod, that.beforeMethod) &&
+            Objects.equals(this.executorMethod, that.executorMethod) &&
+            Objects.equals(this.afterMethod, that.afterMethod);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.beforeMethod, this.executorMethod, this.afterMethod);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.beforeMethod, this.executorMethod, this.afterMethod);
+    }
 
-	@Override
-	public String toString() {
-		return "MethodData{" +
-			"beforeMethod=" + this.beforeMethod +
-			", executorMethod=" + this.executorMethod +
-			", afterMethod=" + this.afterMethod +
-			"}";
-	}
+    @Override
+    public String toString() {
+        return "MethodData{" +
+            "beforeMethod=" + this.beforeMethod +
+            ", executorMethod=" + this.executorMethod +
+            ", afterMethod=" + this.afterMethod +
+            "}";
+    }
 
-	public Method getBeforeMethod() {
-		return this.beforeMethod;
-	}
+    public Method getBeforeMethod() {
+        return this.beforeMethod;
+    }
 
-	public void setBeforeMethod(Method beforeMethod) {
-		this.beforeMethod = beforeMethod;
-	}
+    public void setBeforeMethod(Method beforeMethod) {
+        this.beforeMethod = beforeMethod;
+    }
 
-	public Method getExecutorMethod() {
-		return this.executorMethod;
-	}
+    public Method getExecutorMethod() {
+        return this.executorMethod;
+    }
 
-	public void setExecutorMethod(Method executorMethod) {
-		this.executorMethod = executorMethod;
-	}
+    public void setExecutorMethod(Method executorMethod) {
+        this.executorMethod = executorMethod;
+    }
 
-	public Method getAfterMethod() {
-		return this.afterMethod;
-	}
+    public Method getAfterMethod() {
+        return this.afterMethod;
+    }
 
-	public void setAfterMethod(Method afterMethod) {
-		this.afterMethod = afterMethod;
-	}
+    public void setAfterMethod(Method afterMethod) {
+        this.afterMethod = afterMethod;
+    }
 }

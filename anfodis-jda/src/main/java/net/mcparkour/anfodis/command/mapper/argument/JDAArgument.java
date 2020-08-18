@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.argument;
 
 public class JDAArgument extends Argument {
 
-	public JDAArgument(JDAArgumentData argumentData) {
-		super(argumentData);
-	}
+    public JDAArgument(JDAArgumentData argumentData) {
+        super(argumentData);
+    }
 }

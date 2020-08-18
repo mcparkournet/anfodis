@@ -30,69 +30,69 @@ import org.jetbrains.annotations.Nullable;
 
 public class FieldData {
 
-	private Field field;
-	private String string1;
-	@Nullable
-	private String string2;
+    private Field field;
+    private String string1;
+    @Nullable
+    private String string2;
 
-	public FieldData() {}
+    public FieldData() {}
 
-	public FieldData(Field field, String string1, @Nullable String string2) {
-		this.field = field;
-		this.string1 = string1;
-		this.string2 = string2;
-	}
+    public FieldData(Field field, String string1, @Nullable String string2) {
+        this.field = field;
+        this.string1 = string1;
+        this.string2 = string2;
+    }
 
-	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
-			return true;
-		}
-		if (object == null || getClass() != object.getClass()) {
-			return false;
-		}
-		FieldData fieldData = (FieldData) object;
-		return Objects.equals(this.field, fieldData.field) &&
-			Objects.equals(this.string1, fieldData.string1) &&
-			Objects.equals(this.string2, fieldData.string2);
-	}
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        FieldData fieldData = (FieldData) object;
+        return Objects.equals(this.field, fieldData.field) &&
+            Objects.equals(this.string1, fieldData.string1) &&
+            Objects.equals(this.string2, fieldData.string2);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.field, this.string1, this.string2);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.field, this.string1, this.string2);
+    }
 
-	@Override
-	public String toString() {
-		return "FieldData{" +
-			"field=" + this.field +
-			", string1='" + this.string1 + "'" +
-			", string2='" + this.string2 + "'" +
-			"}";
-	}
+    @Override
+    public String toString() {
+        return "FieldData{" +
+            "field=" + this.field +
+            ", string1='" + this.string1 + "'" +
+            ", string2='" + this.string2 + "'" +
+            "}";
+    }
 
-	public Field getField() {
-		return this.field;
-	}
+    public Field getField() {
+        return this.field;
+    }
 
-	public void setField(Field field) {
-		this.field = field;
-	}
+    public void setField(Field field) {
+        this.field = field;
+    }
 
-	public String getString1() {
-		return this.string1;
-	}
+    public String getString1() {
+        return this.string1;
+    }
 
-	public void setString1(String string1) {
-		this.string1 = string1;
-	}
+    public void setString1(String string1) {
+        this.string1 = string1;
+    }
 
-	@Nullable
-	public String getString2() {
-		return this.string2;
-	}
+    @Nullable
+    public String getString2() {
+        return this.string2;
+    }
 
-	public void setString2(@Nullable String string2) {
-		this.string2 = string2;
-	}
+    public void setString2(@Nullable String string2) {
+        this.string2 = string2;
+    }
 }

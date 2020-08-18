@@ -29,15 +29,15 @@ import org.jetbrains.annotations.Nullable;
 
 class VelocityCommandPropertiesData extends CommandPropertiesData {
 
-	@Nullable
-	private Class<? extends CommandSource>[] senderTypes;
+    @Nullable
+    private Class<? extends CommandSource>[] senderTypes;
 
-	@Nullable
-	public Class<? extends CommandSource>[] getSenderTypes() {
-		return this.senderTypes;
-	}
+    @Nullable
+    public Class<? extends CommandSource>[] getSenderTypes() {
+        return this.senderTypes;
+    }
 
-	public void setSenderTypes(@Nullable Class<? extends CommandSource>[] senderTypes) {
-		this.senderTypes = senderTypes;
-	}
+    public void setSenderTypes(@Nullable Class<? extends CommandSource>[] senderTypes) {
+        this.senderTypes = senderTypes;
+    }
 }

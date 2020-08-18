@@ -29,15 +29,15 @@ import org.jetbrains.annotations.Nullable;
 
 class WaterfallListenerPropertiesData extends ListenerPropertiesData<Event> {
 
-	@Nullable
-	private Byte priority;
+    @Nullable
+    private Byte priority;
 
-	@Nullable
-	public Byte getPriority() {
-		return this.priority;
-	}
+    @Nullable
+    public Byte getPriority() {
+        return this.priority;
+    }
 
-	public void setPriority(@Nullable Byte priority) {
-		this.priority = priority;
-	}
+    public void setPriority(@Nullable Byte priority) {
+        this.priority = priority;
+    }
 }

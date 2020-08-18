@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class FloatArgumentCodec implements ArgumentCodec<Float> {
 
-	@Override
-	@Nullable
-	public Float parse(String stringValue) {
-		return NumericParser.parseFloat(stringValue);
-	}
+    @Override
+    @Nullable
+    public Float parse(String stringValue) {
+        return NumericParser.parseFloat(stringValue);
+    }
 }

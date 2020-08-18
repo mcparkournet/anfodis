@@ -38,47 +38,47 @@ import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerProperties;
 
 public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, ListenerContext<? extends GenericEvent>> {
 
-	private static final JDAListenerMapper LISTENER_MAPPER = new JDAListenerMapper();
+    private static final JDAListenerMapper LISTENER_MAPPER = new JDAListenerMapper();
 
-	private JDA jda;
+    private JDA jda;
 
-	public JDAListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, JDA jda) {
-		super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);
-		this.jda = jda;
-	}
+    public JDAListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, JDA jda) {
+        super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);
+        this.jda = jda;
+    }
 
-	@Override
-	public void register(JDAListener root, ContextHandler<ListenerContext<? extends GenericEvent>> handler) {
-		JDAListenerProperties properties = root.getProperties();
-		Iterable<Class<? extends GenericEvent>> eventTypes = properties.getListenedEvents();
-		for (Class<? extends GenericEvent> eventType : eventTypes) {
-			register(root, eventType, handler);
-		}
-	}
+    @Override
+    public void register(JDAListener root, ContextHandler<ListenerContext<? extends GenericEvent>> handler) {
+        JDAListenerProperties properties = root.getProperties();
+        Iterable<Class<? extends GenericEvent>> eventTypes = properties.getListenedEvents();
+        for (Class<? extends GenericEvent> eventType : eventTypes) {
+            register(root, eventType, handler);
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	private <E extends GenericEvent> void register(JDAListener listener, Class<? extends GenericEvent> eventType, ContextHandler<ListenerContext<? extends GenericEvent>> handler) {
-		Class<E> castedEventType = (Class<E>) eventType;
-		JDAEventListener<E> eventListener = event -> {
-			ListenerContext<E> context = new ListenerContext<>(event);
-			Object listenerInstance = listener.createInstance();
-			handler.handle(context, listenerInstance);
-		};
-		register(castedEventType, eventListener);
-	}
+    @SuppressWarnings("unchecked")
+    private <E extends GenericEvent> void register(JDAListener listener, Class<? extends GenericEvent> eventType, ContextHandler<ListenerContext<? extends GenericEvent>> handler) {
+        Class<E> castedEventType = (Class<E>) eventType;
+        JDAEventListener<E> eventListener = event -> {
+            ListenerContext<E> context = new ListenerContext<>(event);
+            Object listenerInstance = listener.createInstance();
+            handler.handle(context, listenerInstance);
+        };
+        register(castedEventType, eventListener);
+    }
 
-	public <E extends GenericEvent> void register(Class<E> eventType, JDAEventListener<E> listener) {
-		EventListener eventListener = createEventListener(eventType, listener);
-		this.jda.addEventListener(eventListener);
-	}
+    public <E extends GenericEvent> void register(Class<E> eventType, JDAEventListener<E> listener) {
+        EventListener eventListener = createEventListener(eventType, listener);
+        this.jda.addEventListener(eventListener);
+    }
 
-	@SuppressWarnings("unchecked")
-	private <E extends GenericEvent> EventListener createEventListener(Class<E> eventType, JDAEventListener<E> listener) {
-		return event -> {
-			if (eventType.isInstance(event)) {
-				E castedEvent = (E) event;
-				listener.listen(castedEvent);
-			}
-		};
-	}
+    @SuppressWarnings("unchecked")
+    private <E extends GenericEvent> EventListener createEventListener(Class<E> eventType, JDAEventListener<E> listener) {
+        return event -> {
+            if (eventType.isInstance(event)) {
+                E castedEvent = (E) event;
+                listener.listen(castedEvent);
+            }
+        };
+    }
 }

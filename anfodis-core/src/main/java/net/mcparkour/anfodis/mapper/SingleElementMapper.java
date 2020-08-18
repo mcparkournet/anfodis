@@ -32,26 +32,26 @@ import org.jetbrains.annotations.Nullable;
 
 public class SingleElementMapper<E extends AnnotatedElement> {
 
-	private List<AnnotationConsumer<? extends Annotation>> annotations;
-	@Nullable
-	private Consumer<E> elementConsumer;
+    private List<AnnotationConsumer<? extends Annotation>> annotations;
+    @Nullable
+    private Consumer<E> elementConsumer;
 
-	public static <E extends AnnotatedElement> SingleElementMapperBuilder<E> builder() {
-		return new SingleElementMapperBuilder<>();
-	}
+    public static <E extends AnnotatedElement> SingleElementMapperBuilder<E> builder() {
+        return new SingleElementMapperBuilder<>();
+    }
 
-	public SingleElementMapper(List<AnnotationConsumer<? extends Annotation>> annotations, @Nullable Consumer<E> elementConsumer) {
-		this.annotations = annotations;
-		this.elementConsumer = elementConsumer;
-	}
+    public SingleElementMapper(List<AnnotationConsumer<? extends Annotation>> annotations, @Nullable Consumer<E> elementConsumer) {
+        this.annotations = annotations;
+        this.elementConsumer = elementConsumer;
+    }
 
-	public void accept(E element) {
-		if (this.elementConsumer != null) {
-			this.elementConsumer.accept(element);
-		}
-	}
+    public void accept(E element) {
+        if (this.elementConsumer != null) {
+            this.elementConsumer.accept(element);
+        }
+    }
 
-	public List<AnnotationConsumer<? extends Annotation>> getAnnotations() {
-		return List.copyOf(this.annotations);
-	}
+    public List<AnnotationConsumer<? extends Annotation>> getAnnotations() {
+        return List.copyOf(this.annotations);
+    }
 }

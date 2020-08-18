@@ -30,24 +30,24 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 
 public final class JDAResults {
 
-	private JDAResults() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
-	}
+    private JDAResults() {
+        throw new UnsupportedOperationException("Cannot create an instance of this class");
+    }
 
-	public static Result sendMessage(MessageChannel channel, Object message) {
-		String string = message.toString();
-		return sendMessage(channel, string);
-	}
+    public static Result sendMessage(MessageChannel channel, Object message) {
+        String string = message.toString();
+        return sendMessage(channel, string);
+    }
 
-	public static Result sendMessage(MessageChannel channel, String message) {
-		return () -> channel.sendMessage(message).queue();
-	}
+    public static Result sendMessage(MessageChannel channel, String message) {
+        return () -> channel.sendMessage(message).queue();
+    }
 
-	public static Result sendMessage(MessageChannel channel, Message message) {
-		return () -> channel.sendMessage(message).queue();
-	}
+    public static Result sendMessage(MessageChannel channel, Message message) {
+        return () -> channel.sendMessage(message).queue();
+    }
 
-	public static Result sendMessage(MessageChannel channel, MessageEmbed message) {
-		return () -> channel.sendMessage(message).queue();
-	}
+    public static Result sendMessage(MessageChannel channel, MessageEmbed message) {
+        return () -> channel.sendMessage(message).queue();
+    }
 }

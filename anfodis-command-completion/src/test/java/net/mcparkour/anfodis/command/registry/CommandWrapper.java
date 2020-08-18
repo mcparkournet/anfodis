@@ -29,21 +29,21 @@ import net.mcparkour.anfodis.TestCommandSender;
 
 public class CommandWrapper {
 
-	private TestCommandExecutor commandExecutor;
-	private TestCompletionExecutor completionExecutor;
+    private TestCommandExecutor commandExecutor;
+    private TestCompletionExecutor completionExecutor;
 
-	public CommandWrapper(TestCommandExecutor commandExecutor, TestCompletionExecutor completionExecutor) {
-		this.commandExecutor = commandExecutor;
-		this.completionExecutor = completionExecutor;
-	}
+    public CommandWrapper(TestCommandExecutor commandExecutor, TestCompletionExecutor completionExecutor) {
+        this.commandExecutor = commandExecutor;
+        this.completionExecutor = completionExecutor;
+    }
 
-	public void execute(TestCommandSender sender, String[] args) {
-		List<String> arguments = List.of(args);
-		this.commandExecutor.execute(sender, arguments);
-	}
+    public void execute(TestCommandSender sender, String[] args) {
+        List<String> arguments = List.of(args);
+        this.commandExecutor.execute(sender, arguments);
+    }
 
-	public List<String> complete(TestCommandSender sender, String[] args) {
-		List<String> arguments = List.of(args);
-		return this.completionExecutor.execute(sender, arguments);
-	}
+    public List<String> complete(TestCommandSender sender, String[] args) {
+        List<String> arguments = List.of(args);
+        return this.completionExecutor.execute(sender, arguments);
+    }
 }

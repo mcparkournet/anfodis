@@ -29,13 +29,13 @@ import net.mcparkour.intext.message.MessageReceiver;
 
 public class VelocityCommandSender extends AbstractCommandSender<CommandSource> {
 
-	public VelocityCommandSender(CommandSource sender, MessageReceiver receiver) {
-		super(sender, receiver);
-	}
+    public VelocityCommandSender(CommandSource sender, MessageReceiver receiver) {
+        super(sender, receiver);
+    }
 
-	@Override
-	public boolean hasPermission(String name) {
-		CommandSource sender = getSender();
-		return sender.hasPermission(name);
-	}
+    @Override
+    public boolean hasPermission(String name) {
+        CommandSource sender = getSender();
+        return sender.hasPermission(name);
+    }
 }

@@ -26,17 +26,17 @@ package net.mcparkour.anfodis.channel;
 
 public class ChannelMessage {
 
-	private byte[] bytes;
+    private byte[] bytes;
 
-	public ChannelMessage(byte[] bytes) {
-		this.bytes = bytes;
-	}
+    public ChannelMessage(byte[] bytes) {
+        this.bytes = bytes;
+    }
 
-	public int getLength() {
-		return this.bytes.length;
-	}
+    public int getLength() {
+        return this.bytes.length;
+    }
 
-	public byte[] getBytes() {
-		return this.bytes.clone();
-	}
+    public byte[] getBytes() {
+        return this.bytes.clone();
+    }
 }

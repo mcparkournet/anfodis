@@ -48,162 +48,162 @@ import org.junit.jupiter.api.Test;
 
 public class CommandCompletionTest {
 
-	private static final Locale POLISH = new Locale("pl", "PL");
+    private static final Locale POLISH = new Locale("pl", "PL");
 
-	private Map<String, CommandWrapper> commandManager;
-	private Registry commandRegistry;
+    private Map<String, CommandWrapper> commandManager;
+    private Registry commandRegistry;
 
-	@BeforeEach
-	public void setUp() {
-		Map<Locale, TranslatedText> fooTexts = Map.of(Locale.US, new TranslatedText(Locale.US, "foo"), POLISH, new TranslatedText(POLISH, "foo"));
-		Map<Locale, TranslatedText> barTexts = Map.of(Locale.US, new TranslatedText(Locale.US, "bar"), POLISH, new TranslatedText(POLISH, "bar"));
-		Map<String, Translation> translationMap = Map.of("foo", new Translation("foo", fooTexts), "bar", new Translation("bar", barTexts));
-		Translations translations = new Translations(Locale.US, translationMap);
-		TestMessageReceiverFactory receiverFactory = new TestMessageReceiverFactory(translations, TestCommandSender::getLanguage);
-		this.commandManager = new HashMap<>(1);
-		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = new CodecRegistryBuilder<InjectionCodec<?>>()
-			.typed(MessageReceiverFactory.class, InjectionCodec.reference(receiverFactory))
-			.build();
-		CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = new CodecRegistryBuilder<ArgumentCodec<?>>()
-			.typed(String.class, ArgumentCodec.identity())
-			.typed(Locale.class, Locale::forLanguageTag)
-			.keyed("arg", String::strip)
-			.keyed("null", stringValue -> null)
-			.build();
-		CodecRegistry<CompletionCodec> completionCodecRegistry = new CodecRegistryBuilder<CompletionCodec>()
-			.typed(Locale.class, CompletionCodec.entries("en-US", "pl-PL"))
-			.keyed("args", CompletionCodec.entries("1", "2", "3"))
-			.build();
-		this.commandRegistry = new TestCommandRegistry(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, receiverFactory, Permission.of("test"), this.commandManager);
-	}
+    @BeforeEach
+    public void setUp() {
+        Map<Locale, TranslatedText> fooTexts = Map.of(Locale.US, new TranslatedText(Locale.US, "foo"), POLISH, new TranslatedText(POLISH, "foo"));
+        Map<Locale, TranslatedText> barTexts = Map.of(Locale.US, new TranslatedText(Locale.US, "bar"), POLISH, new TranslatedText(POLISH, "bar"));
+        Map<String, Translation> translationMap = Map.of("foo", new Translation("foo", fooTexts), "bar", new Translation("bar", barTexts));
+        Translations translations = new Translations(Locale.US, translationMap);
+        TestMessageReceiverFactory receiverFactory = new TestMessageReceiverFactory(translations, TestCommandSender::getLanguage);
+        this.commandManager = new HashMap<>(1);
+        CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = new CodecRegistryBuilder<InjectionCodec<?>>()
+            .typed(MessageReceiverFactory.class, InjectionCodec.reference(receiverFactory))
+            .build();
+        CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = new CodecRegistryBuilder<ArgumentCodec<?>>()
+            .typed(String.class, ArgumentCodec.identity())
+            .typed(Locale.class, Locale::forLanguageTag)
+            .keyed("arg", String::strip)
+            .keyed("null", stringValue -> null)
+            .build();
+        CodecRegistry<CompletionCodec> completionCodecRegistry = new CodecRegistryBuilder<CompletionCodec>()
+            .typed(Locale.class, CompletionCodec.entries("en-US", "pl-PL"))
+            .keyed("args", CompletionCodec.entries("1", "2", "3"))
+            .build();
+        this.commandRegistry = new TestCommandRegistry(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, receiverFactory, Permission.of("test"), this.commandManager);
+    }
 
-	@Test
-	public void testFooCommand() {
-		this.commandRegistry.register(TestFooCommand.class);
-		CommandWrapper fooCommand = this.commandManager.get("fooo");
-		TestCommandSender sender = new TestCommandSender();
-		fooCommand.execute(sender, new String[] {"pl-PL"});
-		List<String> completions = fooCommand.complete(sender, new String[] {""});
-		Assertions.assertEquals("pl-PL", sender.getLastMessage());
-		Assertions.assertIterableEquals(List.of("en-US", "pl-PL"), completions);
-	}
+    @Test
+    public void testFooCommand() {
+        this.commandRegistry.register(TestFooCommand.class);
+        CommandWrapper fooCommand = this.commandManager.get("fooo");
+        TestCommandSender sender = new TestCommandSender();
+        fooCommand.execute(sender, new String[] {"pl-PL"});
+        List<String> completions = fooCommand.complete(sender, new String[] {""});
+        Assertions.assertEquals("pl-PL", sender.getLastMessage());
+        Assertions.assertIterableEquals(List.of("en-US", "pl-PL"), completions);
+    }
 
-	@Test
-	public void testBarCommand() {
-		this.commandRegistry.register(TestBarCommand.class);
-		CommandWrapper fooCommand = this.commandManager.get("bar");
-		TestCommandSender sender = new TestCommandSender();
-		fooCommand.execute(sender, new String[] {"  te st  ", "1", "2"});
-		List<String> completions = fooCommand.complete(sender, new String[] {"  te st  ", ""});
-		Assertions.assertEquals("te st", sender.getLastMessage());
-		Assertions.assertEquals("1", sender.getLastMessage());
-		Assertions.assertEquals("2", sender.getLastMessage());
-		Assertions.assertIterableEquals(List.of("1", "2", "3"), completions);
-	}
+    @Test
+    public void testBarCommand() {
+        this.commandRegistry.register(TestBarCommand.class);
+        CommandWrapper fooCommand = this.commandManager.get("bar");
+        TestCommandSender sender = new TestCommandSender();
+        fooCommand.execute(sender, new String[] {"  te st  ", "1", "2"});
+        List<String> completions = fooCommand.complete(sender, new String[] {"  te st  ", ""});
+        Assertions.assertEquals("te st", sender.getLastMessage());
+        Assertions.assertEquals("1", sender.getLastMessage());
+        Assertions.assertEquals("2", sender.getLastMessage());
+        Assertions.assertIterableEquals(List.of("1", "2", "3"), completions);
+    }
 
-	@Test
-	public void testTestCommand() {
-		this.commandRegistry.register(TestCommand.class);
-		CommandWrapper test = this.commandManager.get("test");
-		TestCommandSender sender = new TestCommandSender();
-		test.execute(sender, new String[] {"foo", "pl-PL"});
-		List<String> fooSuggestions = test.complete(sender, new String[] {"foo", ""});
-		Assertions.assertEquals("pl-PL", sender.getLastMessage());
-		Assertions.assertEquals(List.of("en-US", "pl-PL"), fooSuggestions);
-		test.execute(sender, new String[] {"bar", "  te st  ", "1", "2"});
-		List<String> barSuggestions = test.complete(sender, new String[] {"bar", "  te st  ", ""});
-		Assertions.assertEquals("te st", sender.getLastMessage());
-		Assertions.assertEquals("1", sender.getLastMessage());
-		Assertions.assertEquals("2", sender.getLastMessage());
-		Assertions.assertIterableEquals(List.of("1", "2", "3"), barSuggestions);
-	}
+    @Test
+    public void testTestCommand() {
+        this.commandRegistry.register(TestCommand.class);
+        CommandWrapper test = this.commandManager.get("test");
+        TestCommandSender sender = new TestCommandSender();
+        test.execute(sender, new String[] {"foo", "pl-PL"});
+        List<String> fooSuggestions = test.complete(sender, new String[] {"foo", ""});
+        Assertions.assertEquals("pl-PL", sender.getLastMessage());
+        Assertions.assertEquals(List.of("en-US", "pl-PL"), fooSuggestions);
+        test.execute(sender, new String[] {"bar", "  te st  ", "1", "2"});
+        List<String> barSuggestions = test.complete(sender, new String[] {"bar", "  te st  ", ""});
+        Assertions.assertEquals("te st", sender.getLastMessage());
+        Assertions.assertEquals("1", sender.getLastMessage());
+        Assertions.assertEquals("2", sender.getLastMessage());
+        Assertions.assertIterableEquals(List.of("1", "2", "3"), barSuggestions);
+    }
 
-	@Test
-	public void testTestCommandCompletions() {
-		this.commandRegistry.register(TestCommand.class);
-		CommandWrapper test = this.commandManager.get("test");
-		TestCommandSender sender = new TestCommandSender();
-		List<String> completions = test.complete(sender, new String[] {""});
-		Assertions.assertIterableEquals(List.of("foo", "fooo", "bar"), completions);
-	}
+    @Test
+    public void testTestCommandCompletions() {
+        this.commandRegistry.register(TestCommand.class);
+        CommandWrapper test = this.commandManager.get("test");
+        TestCommandSender sender = new TestCommandSender();
+        List<String> completions = test.complete(sender, new String[] {""});
+        Assertions.assertIterableEquals(List.of("foo", "fooo", "bar"), completions);
+    }
 
-	@Test
-	public void testOptionalArgumentCommand() {
-		this.commandRegistry.register(TestOptionalArgumentCommand.class);
-		CommandWrapper command = this.commandManager.get("optional");
-		TestCommandSender sender = new TestCommandSender();
-		command.execute(sender, new String[] {"test", "test2"});
-		Assertions.assertNull(sender.getLastMessage());
-		Assertions.assertEquals("true", sender.getLastMessage());
-		Assertions.assertEquals("test2", sender.getLastMessage());
-		Assertions.assertEquals("false", sender.getLastMessage());
-		Assertions.assertEquals("empty", sender.getLastMessage());
-	}
+    @Test
+    public void testOptionalArgumentCommand() {
+        this.commandRegistry.register(TestOptionalArgumentCommand.class);
+        CommandWrapper command = this.commandManager.get("optional");
+        TestCommandSender sender = new TestCommandSender();
+        command.execute(sender, new String[] {"test", "test2"});
+        Assertions.assertNull(sender.getLastMessage());
+        Assertions.assertEquals("true", sender.getLastMessage());
+        Assertions.assertEquals("test2", sender.getLastMessage());
+        Assertions.assertEquals("false", sender.getLastMessage());
+        Assertions.assertEquals("empty", sender.getLastMessage());
+    }
 
-	@Test
-	public void testTestCommandPermissions() {
-		this.commandRegistry.register(TestCommand.class);
-		CommandWrapper test = this.commandManager.get("test");
-		TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.fooo", "test.test.bar"), false);
-		test.execute(sender, new String[] {});
-		Assertions.assertEquals("test - test.\nfoo [language] - foo.\nbar <arg> <args...> - bar.", sender.getLastMessage());
-		test.execute(sender, new String[] {"foo", "pl"});
-		Assertions.assertEquals("pl", sender.getLastMessage());
-		test.execute(sender, new String[] {"bar"});
-		Assertions.assertEquals("bar <arg> <args...> - bar.", sender.getLastMessage());
-	}
+    @Test
+    public void testTestCommandPermissions() {
+        this.commandRegistry.register(TestCommand.class);
+        CommandWrapper test = this.commandManager.get("test");
+        TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.fooo", "test.test.bar"), false);
+        test.execute(sender, new String[] {});
+        Assertions.assertEquals("test - test.\nfoo [language] - foo.\nbar <arg> <args...> - bar.", sender.getLastMessage());
+        test.execute(sender, new String[] {"foo", "pl"});
+        Assertions.assertEquals("pl", sender.getLastMessage());
+        test.execute(sender, new String[] {"bar"});
+        Assertions.assertEquals("bar <arg> <args...> - bar.", sender.getLastMessage());
+    }
 
-	@Test
-	public void testTestCommandCompletionPermissions() {
-		this.commandRegistry.register(TestCommand.class);
-		CommandWrapper test = this.commandManager.get("test");
-		TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.fooo", "test.test.bar"), false);
-		List<String> complete1 = test.complete(sender, new String[] {""});
-		Assertions.assertIterableEquals(List.of("foo", "fooo", "bar"), complete1);
-		List<String> complete2 = test.complete(sender, new String[] {"foo", ""});
-		Assertions.assertIterableEquals(List.of("en-US", "pl-PL"), complete2);
-		List<String> complete3 = test.complete(sender, new String[] {"bar", "", ""});
-		Assertions.assertIterableEquals(List.of("1", "2", "3"), complete3);
-	}
+    @Test
+    public void testTestCommandCompletionPermissions() {
+        this.commandRegistry.register(TestCommand.class);
+        CommandWrapper test = this.commandManager.get("test");
+        TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.fooo", "test.test.bar"), false);
+        List<String> complete1 = test.complete(sender, new String[] {""});
+        Assertions.assertIterableEquals(List.of("foo", "fooo", "bar"), complete1);
+        List<String> complete2 = test.complete(sender, new String[] {"foo", ""});
+        Assertions.assertIterableEquals(List.of("en-US", "pl-PL"), complete2);
+        List<String> complete3 = test.complete(sender, new String[] {"bar", "", ""});
+        Assertions.assertIterableEquals(List.of("1", "2", "3"), complete3);
+    }
 
-	@Test
-	public void testNoPermissions() {
-		this.commandRegistry.register(TestCommand.class);
-		CommandWrapper test = this.commandManager.get("test");
-		TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test.bar"), false);
-		test.execute(sender, new String[] {});
-		Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
-		List<String> complete1 = test.complete(sender, new String[] {""});
-		Assertions.assertIterableEquals(List.of(), complete1);
-		test.execute(sender, new String[] {"bar"});
-		Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
-		List<String> complete2 = test.complete(sender, new String[] {"bar", "", ""});
-		Assertions.assertIterableEquals(List.of(), complete2);
-	}
+    @Test
+    public void testNoPermissions() {
+        this.commandRegistry.register(TestCommand.class);
+        CommandWrapper test = this.commandManager.get("test");
+        TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test.bar"), false);
+        test.execute(sender, new String[] {});
+        Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
+        List<String> complete1 = test.complete(sender, new String[] {""});
+        Assertions.assertIterableEquals(List.of(), complete1);
+        test.execute(sender, new String[] {"bar"});
+        Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
+        List<String> complete2 = test.complete(sender, new String[] {"bar", "", ""});
+        Assertions.assertIterableEquals(List.of(), complete2);
+    }
 
-	@Test
-	public void testTestCommandNoPermissions() {
-		this.commandRegistry.register(TestCommand.class);
-		CommandWrapper test = this.commandManager.get("test");
-		TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.bar"), false);
-		test.execute(sender, new String[] {});
-		Assertions.assertEquals("test - test.\nbar <arg> <args...> - bar.", sender.getLastMessage());
-		test.execute(sender, new String[] {"foo", "pl"});
-		Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
-		test.execute(sender, new String[] {"bar"});
-		Assertions.assertEquals("bar <arg> <args...> - bar.", sender.getLastMessage());
-	}
+    @Test
+    public void testTestCommandNoPermissions() {
+        this.commandRegistry.register(TestCommand.class);
+        CommandWrapper test = this.commandManager.get("test");
+        TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.bar"), false);
+        test.execute(sender, new String[] {});
+        Assertions.assertEquals("test - test.\nbar <arg> <args...> - bar.", sender.getLastMessage());
+        test.execute(sender, new String[] {"foo", "pl"});
+        Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
+        test.execute(sender, new String[] {"bar"});
+        Assertions.assertEquals("bar <arg> <args...> - bar.", sender.getLastMessage());
+    }
 
-	@Test
-	public void testTestCommandCompletionNoPermissions() {
-		this.commandRegistry.register(TestCommand.class);
-		CommandWrapper test = this.commandManager.get("test");
-		TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.bar"), false);
-		List<String> complete1 = test.complete(sender, new String[] {""});
-		Assertions.assertIterableEquals(List.of("bar"), complete1);
-		List<String> complete2 = test.complete(sender, new String[] {"foo", ""});
-		Assertions.assertIterableEquals(List.of(), complete2);
-		List<String> complete3 = test.complete(sender, new String[] {"bar", "", ""});
-		Assertions.assertIterableEquals(List.of("1", "2", "3"), complete3);
-	}
+    @Test
+    public void testTestCommandCompletionNoPermissions() {
+        this.commandRegistry.register(TestCommand.class);
+        CommandWrapper test = this.commandManager.get("test");
+        TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.bar"), false);
+        List<String> complete1 = test.complete(sender, new String[] {""});
+        Assertions.assertIterableEquals(List.of("bar"), complete1);
+        List<String> complete2 = test.complete(sender, new String[] {"foo", ""});
+        Assertions.assertIterableEquals(List.of(), complete2);
+        List<String> complete3 = test.complete(sender, new String[] {"bar", "", ""});
+        Assertions.assertIterableEquals(List.of("1", "2", "3"), complete3);
+    }
 }

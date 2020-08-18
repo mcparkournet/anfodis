@@ -33,11 +33,11 @@ import net.mcparkour.anfodis.command.mapper.properties.VelocityCommandProperties
 
 public class VelocityCommandMapper extends CommandMapper<VelocityCommand, VelocityArgument, VelocityContext, VelocityCommandProperties> {
 
-	private static final VelocityArgumentMapper ARGUMENT_MAPPER = new VelocityArgumentMapper();
-	private static final VelocityContextMapper CONTEXT_MAPPER = new VelocityContextMapper();
-	private static final VelocityCommandPropertiesMapper PROPERTIES_MAPPER = new VelocityCommandPropertiesMapper();
+    private static final VelocityArgumentMapper ARGUMENT_MAPPER = new VelocityArgumentMapper();
+    private static final VelocityContextMapper CONTEXT_MAPPER = new VelocityContextMapper();
+    private static final VelocityCommandPropertiesMapper PROPERTIES_MAPPER = new VelocityCommandPropertiesMapper();
 
-	public VelocityCommandMapper() {
-		super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, VelocityCommand::new);
-	}
+    public VelocityCommandMapper() {
+        super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, VelocityCommand::new);
+    }
 }

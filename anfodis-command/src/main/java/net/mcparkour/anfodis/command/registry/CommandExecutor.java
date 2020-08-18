@@ -29,5 +29,5 @@ import java.util.List;
 @FunctionalInterface
 public interface CommandExecutor<S> {
 
-	void execute(S sender, List<String> arguments);
+    void execute(S sender, List<String> arguments);
 }

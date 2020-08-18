@@ -33,36 +33,36 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class JDAPermissionMap implements PermissionMap {
 
-	private Map<Long, List<Permission>> map;
+    private Map<Long, List<Permission>> map;
 
-	public JDAPermissionMap() {
-		this.map = new HashMap<>(4);
-	}
+    public JDAPermissionMap() {
+        this.map = new HashMap<>(4);
+    }
 
-	@Override
-	public void addPermission(User user, Permission permission) {
-		List<Permission> currentPermissions = getCurrentPermissions(user);
-		currentPermissions.add(permission);
-	}
+    @Override
+    public void addPermission(User user, Permission permission) {
+        List<Permission> currentPermissions = getCurrentPermissions(user);
+        currentPermissions.add(permission);
+    }
 
-	@Override
-	public void addPermissions(User user, List<Permission> permissions) {
-		List<Permission> currentPermissions = getCurrentPermissions(user);
-		currentPermissions.addAll(permissions);
-	}
+    @Override
+    public void addPermissions(User user, List<Permission> permissions) {
+        List<Permission> currentPermissions = getCurrentPermissions(user);
+        currentPermissions.addAll(permissions);
+    }
 
-	private List<Permission> getCurrentPermissions(User user) {
-		long id = user.getIdLong();
-		return this.map.computeIfAbsent(id, key -> new ArrayList<>(4));
-	}
+    private List<Permission> getCurrentPermissions(User user) {
+        long id = user.getIdLong();
+        return this.map.computeIfAbsent(id, key -> new ArrayList<>(4));
+    }
 
-	@Override
-	public List<Permission> getPermissions(User user) {
-		long id = user.getIdLong();
-		List<Permission> permissions = this.map.get(id);
-		if (permissions == null) {
-			return List.of();
-		}
-		return List.copyOf(permissions);
-	}
+    @Override
+    public List<Permission> getPermissions(User user) {
+        long id = user.getIdLong();
+        List<Permission> permissions = this.map.get(id);
+        if (permissions == null) {
+            return List.of();
+        }
+        return List.copyOf(permissions);
+    }
 }

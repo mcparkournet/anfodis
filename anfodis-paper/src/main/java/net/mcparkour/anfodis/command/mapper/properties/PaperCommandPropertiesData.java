@@ -29,15 +29,15 @@ import org.jetbrains.annotations.Nullable;
 
 class PaperCommandPropertiesData extends CommandPropertiesData {
 
-	@Nullable
-	private Class<? extends CommandSender>[] senderTypes;
+    @Nullable
+    private Class<? extends CommandSender>[] senderTypes;
 
-	@Nullable
-	public Class<? extends CommandSender>[] getSenderTypes() {
-		return this.senderTypes;
-	}
+    @Nullable
+    public Class<? extends CommandSender>[] getSenderTypes() {
+        return this.senderTypes;
+    }
 
-	public void setSenderTypes(@Nullable Class<? extends CommandSender>[] senderTypes) {
-		this.senderTypes = senderTypes;
-	}
+    public void setSenderTypes(@Nullable Class<? extends CommandSender>[] senderTypes) {
+        this.senderTypes = senderTypes;
+    }
 }

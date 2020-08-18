@@ -29,7 +29,7 @@ import net.dv8tion.jda.api.entities.User;
 
 public interface ChannelSender {
 
-	User getUser();
+    User getUser();
 
-	PrivateChannel getChannel();
+    PrivateChannel getChannel();
 }

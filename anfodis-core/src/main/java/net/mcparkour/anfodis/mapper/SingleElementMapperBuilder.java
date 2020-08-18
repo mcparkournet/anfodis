@@ -33,28 +33,28 @@ import org.jetbrains.annotations.Nullable;
 
 public class SingleElementMapperBuilder<E extends AnnotatedElement> {
 
-	private List<AnnotationConsumer<? extends Annotation>> annotations = new ArrayList<>();
-	@Nullable
-	private Consumer<E> elementConsumer;
+    private List<AnnotationConsumer<? extends Annotation>> annotations = new ArrayList<>();
+    @Nullable
+    private Consumer<E> elementConsumer;
 
-	public <A extends Annotation> SingleElementMapperBuilder<E> annotation(Class<A> annotation, Consumer<A> consumer) {
-		AnnotationConsumer<A> annotationConsumer = new AnnotationConsumer<>(annotation, consumer);
-		this.annotations.add(annotationConsumer);
-		return this;
-	}
+    public <A extends Annotation> SingleElementMapperBuilder<E> annotation(Class<A> annotation, Consumer<A> consumer) {
+        AnnotationConsumer<A> annotationConsumer = new AnnotationConsumer<>(annotation, consumer);
+        this.annotations.add(annotationConsumer);
+        return this;
+    }
 
-	public <A extends Annotation> SingleElementMapperBuilder<E> annotation(Class<A> annotation) {
-		AnnotationConsumer<A> annotationConsumer = new AnnotationConsumer<>(annotation, (a) -> {});
-		this.annotations.add(annotationConsumer);
-		return this;
-	}
+    public <A extends Annotation> SingleElementMapperBuilder<E> annotation(Class<A> annotation) {
+        AnnotationConsumer<A> annotationConsumer = new AnnotationConsumer<>(annotation, (a) -> {});
+        this.annotations.add(annotationConsumer);
+        return this;
+    }
 
-	public SingleElementMapperBuilder<E> elementConsumer(Consumer<E> elementConsumer) {
-		this.elementConsumer = elementConsumer;
-		return this;
-	}
+    public SingleElementMapperBuilder<E> elementConsumer(Consumer<E> elementConsumer) {
+        this.elementConsumer = elementConsumer;
+        return this;
+    }
 
-	public SingleElementMapper<E> build() {
-		return new SingleElementMapper<>(this.annotations, this.elementConsumer);
-	}
+    public SingleElementMapper<E> build() {
+        return new SingleElementMapper<>(this.annotations, this.elementConsumer);
+    }
 }

@@ -40,19 +40,19 @@ import net.mcparkour.intext.message.MessageReceiver;
 @Permission
 public class TestBarCommand {
 
-	@Receiver
-	private MessageReceiver receiver;
+    @Receiver
+    private MessageReceiver receiver;
 
-	@Argument
-	@ArgumentCodec("arg")
-	private String arg;
-	@Argument
-	@Completion("args")
-	private List<String> args;
+    @Argument
+    @ArgumentCodec("arg")
+    private String arg;
+    @Argument
+    @Completion("args")
+    private List<String> args;
 
-	@Executor
-	public void execute() {
-		this.receiver.receivePlain(this.arg);
-		this.receiver.receivePlain(this.args);
-	}
+    @Executor
+    public void execute() {
+        this.receiver.receivePlain(this.arg);
+        this.receiver.receivePlain(this.args);
+    }
 }

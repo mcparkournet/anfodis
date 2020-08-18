@@ -34,18 +34,18 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class InjectionMapper implements Mapper<Field, List<Injection>> {
 
-	@Override
-	public List<Injection> map(Iterable<Field> elements) {
-		return new ElementsMapperBuilder<Field, InjectionData>()
-			.data(InjectionData::new)
-			.singleElement(data -> new SingleElementMapperBuilder<Field>()
-				.annotation(Inject.class, inject -> data.setCodecKey(inject.value()))
-				.elementConsumer(data::setInjectionField)
-				.build())
-			.build()
-			.map(elements)
-			.stream()
-			.map(Injection::new)
-			.collect(Collectors.toUnmodifiableList());
-	}
+    @Override
+    public List<Injection> map(Iterable<Field> elements) {
+        return new ElementsMapperBuilder<Field, InjectionData>()
+            .data(InjectionData::new)
+            .singleElement(data -> new SingleElementMapperBuilder<Field>()
+                .annotation(Inject.class, inject -> data.setCodecKey(inject.value()))
+                .elementConsumer(data::setInjectionField)
+                .build())
+            .build()
+            .map(elements)
+            .stream()
+            .map(Injection::new)
+            .collect(Collectors.toUnmodifiableList());
+    }
 }

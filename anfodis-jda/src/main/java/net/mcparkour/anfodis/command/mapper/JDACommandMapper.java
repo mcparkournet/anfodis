@@ -33,11 +33,11 @@ import net.mcparkour.anfodis.command.mapper.properties.JDACommandPropertiesMappe
 
 public class JDACommandMapper extends CommandMapper<JDACommand, JDAArgument, JDAContext, JDACommandProperties> {
 
-	private static final JDAArgumentMapper ARGUMENT_MAPPER = new JDAArgumentMapper();
-	private static final JDAContextMapper CONTEXT_MAPPER = new JDAContextMapper();
-	private static final JDACommandPropertiesMapper PROPERTIES_MAPPER = new JDACommandPropertiesMapper();
+    private static final JDAArgumentMapper ARGUMENT_MAPPER = new JDAArgumentMapper();
+    private static final JDAContextMapper CONTEXT_MAPPER = new JDAContextMapper();
+    private static final JDACommandPropertiesMapper PROPERTIES_MAPPER = new JDACommandPropertiesMapper();
 
-	public JDACommandMapper() {
-		super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, JDACommand::new);
-	}
+    public JDACommandMapper() {
+        super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, JDACommand::new);
+    }
 }

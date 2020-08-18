@@ -34,8 +34,8 @@ import net.md_5.bungee.api.plugin.Event;
 @Target(ElementType.TYPE)
 public @interface Listener {
 
-	/**
-	 * @return types of events to listen
-	 */
-	Class<? extends Event>[] value();
+    /**
+     * @return types of events to listen
+     */
+    Class<? extends Event>[] value();
 }

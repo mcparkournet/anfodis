@@ -29,12 +29,12 @@ import net.kyori.text.TextComponent;
 
 public final class VelocityResults {
 
-	private VelocityResults() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
-	}
+    private VelocityResults() {
+        throw new UnsupportedOperationException("Cannot create an instance of this class");
+    }
 
-	public static Result sendMessage(CommandSource receiver, String message) {
-		TextComponent component = TextComponent.of(message);
-		return () -> receiver.sendMessage(component);
-	}
+    public static Result sendMessage(CommandSource receiver, String message) {
+        TextComponent component = TextComponent.of(message);
+        return () -> receiver.sendMessage(component);
+    }
 }

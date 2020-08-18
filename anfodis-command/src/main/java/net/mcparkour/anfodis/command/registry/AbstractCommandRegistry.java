@@ -44,66 +44,66 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S> extends AbstractRegistry<T, C> {
 
-	private CommandHandlerSupplier<T, C, S> commandHandlerSupplier;
-	private CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier;
-	private CommandContextSupplier<C, S> contextSupplier;
-	private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
-	private MessageReceiverFactory<S> messageReceiverFactory;
-	private Permission basePermission;
+    private CommandHandlerSupplier<T, C, S> commandHandlerSupplier;
+    private CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier;
+    private CommandContextSupplier<C, S> contextSupplier;
+    private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+    private MessageReceiverFactory<S> messageReceiverFactory;
+    private Permission basePermission;
 
-	public AbstractCommandRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C, S> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CommandContextSupplier<C, S> contextSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, Permission basePermission) {
-		super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
-		this.commandHandlerSupplier = commandHandlerSupplier;
-		this.commandExecutorHandlerSupplier = commandExecutorHandlerSupplier;
-		this.contextSupplier = contextSupplier;
-		this.argumentCodecRegistry = argumentCodecRegistry;
-		this.messageReceiverFactory = messageReceiverFactory;
-		this.basePermission = basePermission;
-	}
+    public AbstractCommandRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C, S> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CommandContextSupplier<C, S> contextSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, Permission basePermission) {
+        super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
+        this.commandHandlerSupplier = commandHandlerSupplier;
+        this.commandExecutorHandlerSupplier = commandExecutorHandlerSupplier;
+        this.contextSupplier = contextSupplier;
+        this.argumentCodecRegistry = argumentCodecRegistry;
+        this.messageReceiverFactory = messageReceiverFactory;
+        this.basePermission = basePermission;
+    }
 
-	@Override
-	public void register(T root) {
-		CommandContextHandler<C> handler = createCommandHandler(root);
-		register(root, handler);
-	}
+    @Override
+    public void register(T root) {
+        CommandContextHandler<C> handler = createCommandHandler(root);
+        register(root, handler);
+    }
 
-	@Override
-	public void register(T root, ContextHandler<C> handler) {
-		register(root, context -> {
-			Object instance = root.createInstance();
-			handler.handle(context, instance);
-		});
-	}
+    @Override
+    public void register(T root, ContextHandler<C> handler) {
+        register(root, context -> {
+            Object instance = root.createInstance();
+            handler.handle(context, instance);
+        });
+    }
 
-	protected CommandContextHandler<C> createCommandHandler(T command) {
-		List<T> subCommands = command.getSubCommands();
-		int size = subCommands.size();
-		Map<T, CommandContextHandler<C>> handlers = new HashMap<>(size);
-		for (T subCommand : subCommands) {
-			CommandContextHandler<C> handler = createCommandHandler(subCommand);
-			handlers.put(subCommand, handler);
-		}
-		ContextHandler<C> executorHandler = createCommandExecutorHandler(command);
-		return this.commandHandlerSupplier.supply(command, handlers, executorHandler, this.contextSupplier);
-	}
+    protected CommandContextHandler<C> createCommandHandler(T command) {
+        List<T> subCommands = command.getSubCommands();
+        int size = subCommands.size();
+        Map<T, CommandContextHandler<C>> handlers = new HashMap<>(size);
+        for (T subCommand : subCommands) {
+            CommandContextHandler<C> handler = createCommandHandler(subCommand);
+            handlers.put(subCommand, handler);
+        }
+        ContextHandler<C> executorHandler = createCommandExecutorHandler(command);
+        return this.commandHandlerSupplier.supply(command, handlers, executorHandler, this.contextSupplier);
+    }
 
-	@Nullable
-	private ContextHandler<C> createCommandExecutorHandler(T command) {
-		Executor executor = command.getExecutor();
-		if (!executor.hasExecutor()) {
-			return null;
-		}
-		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		return this.commandExecutorHandlerSupplier.supply(command, injectionCodecRegistry, this.argumentCodecRegistry);
-	}
+    @Nullable
+    private ContextHandler<C> createCommandExecutorHandler(T command) {
+        Executor executor = command.getExecutor();
+        if (!executor.hasExecutor()) {
+            return null;
+        }
+        CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
+        return this.commandExecutorHandlerSupplier.supply(command, injectionCodecRegistry, this.argumentCodecRegistry);
+    }
 
-	public abstract void register(T command, CommandContextHandler<C> commandHandler);
+    public abstract void register(T command, CommandContextHandler<C> commandHandler);
 
-	protected MessageReceiverFactory<S> getMessageReceiverFactory() {
-		return this.messageReceiverFactory;
-	}
+    protected MessageReceiverFactory<S> getMessageReceiverFactory() {
+        return this.messageReceiverFactory;
+    }
 
-	protected Permission getBasePermission() {
-		return this.basePermission;
-	}
+    protected Permission getBasePermission() {
+        return this.basePermission;
+    }
 }

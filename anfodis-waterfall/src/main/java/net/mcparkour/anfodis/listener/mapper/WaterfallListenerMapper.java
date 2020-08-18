@@ -31,10 +31,10 @@ import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerPropert
 
 public class WaterfallListenerMapper extends ListenerMapper<WaterfallListener, WaterfallContext, WaterfallListenerProperties> {
 
-	private static final WaterfallContextMapper CONTEXT_MAPPER = new WaterfallContextMapper();
-	private static final WaterfallListenerPropertiesMapper PROPERTIES_MAPPER = new WaterfallListenerPropertiesMapper();
+    private static final WaterfallContextMapper CONTEXT_MAPPER = new WaterfallContextMapper();
+    private static final WaterfallListenerPropertiesMapper PROPERTIES_MAPPER = new WaterfallListenerPropertiesMapper();
 
-	public WaterfallListenerMapper() {
-		super(CONTEXT_MAPPER, PROPERTIES_MAPPER, WaterfallListener::new);
-	}
+    public WaterfallListenerMapper() {
+        super(CONTEXT_MAPPER, PROPERTIES_MAPPER, WaterfallListener::new);
+    }
 }

@@ -29,71 +29,71 @@ import org.jetbrains.annotations.Nullable;
 
 public class ClassData {
 
-	@Nullable
-	private String first;
-	private String second;
-	@Nullable
-	private String third;
+    @Nullable
+    private String first;
+    private String second;
+    @Nullable
+    private String third;
 
-	public ClassData() {}
+    public ClassData() {}
 
-	public ClassData(@Nullable String first, String second, @Nullable String third) {
-		this.first = first;
-		this.second = second;
-		this.third = third;
-	}
+    public ClassData(@Nullable String first, String second, @Nullable String third) {
+        this.first = first;
+        this.second = second;
+        this.third = third;
+    }
 
-	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
-			return true;
-		}
-		if (object == null || getClass() != object.getClass()) {
-			return false;
-		}
-		ClassData classData = (ClassData) object;
-		return Objects.equals(this.first, classData.first) &&
-			Objects.equals(this.second, classData.second) &&
-			Objects.equals(this.third, classData.third);
-	}
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        ClassData classData = (ClassData) object;
+        return Objects.equals(this.first, classData.first) &&
+            Objects.equals(this.second, classData.second) &&
+            Objects.equals(this.third, classData.third);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.first, this.second, this.third);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.first, this.second, this.third);
+    }
 
-	@Override
-	public String toString() {
-		return "ClassData{" +
-			"first='" + this.first + "'" +
-			", second='" + this.second + "'" +
-			", third='" + this.third + "'" +
-			"}";
-	}
+    @Override
+    public String toString() {
+        return "ClassData{" +
+            "first='" + this.first + "'" +
+            ", second='" + this.second + "'" +
+            ", third='" + this.third + "'" +
+            "}";
+    }
 
-	@Nullable
-	public String getFirst() {
-		return this.first;
-	}
+    @Nullable
+    public String getFirst() {
+        return this.first;
+    }
 
-	public void setFirst(@Nullable String first) {
-		this.first = first;
-	}
+    public void setFirst(@Nullable String first) {
+        this.first = first;
+    }
 
-	public String getSecond() {
-		return this.second;
-	}
+    public String getSecond() {
+        return this.second;
+    }
 
-	public void setSecond(String second) {
-		this.second = second;
-	}
+    public void setSecond(String second) {
+        this.second = second;
+    }
 
-	@Nullable
-	public String getThird() {
-		return this.third;
-	}
+    @Nullable
+    public String getThird() {
+        return this.third;
+    }
 
-	public void setThird(@Nullable String third) {
-		this.third = third;
-	}
+    public void setThird(@Nullable String third) {
+        this.third = third;
+    }
 }

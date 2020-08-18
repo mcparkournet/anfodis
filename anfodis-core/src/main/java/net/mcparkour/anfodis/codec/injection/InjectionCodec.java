@@ -27,9 +27,9 @@ package net.mcparkour.anfodis.codec.injection;
 @FunctionalInterface
 public interface InjectionCodec<T> {
 
-	T getInjection();
+    T getInjection();
 
-	static <T> InjectionCodec<T> reference(T injection) {
-		return () -> injection;
-	}
+    static <T> InjectionCodec<T> reference(T injection) {
+        return () -> injection;
+    }
 }

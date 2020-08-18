@@ -33,11 +33,11 @@ import net.mcparkour.anfodis.command.mapper.properties.TestCommandPropertiesMapp
 
 public class TestCommandMapper extends CommandMapper<TestCommand, TestArgument, TestContext, TestCommandProperties> {
 
-	private static final TestArgumentMapper ARGUMENT_MAPPER = new TestArgumentMapper();
-	private static final TestContextMapper CONTEXT_MAPPER = new TestContextMapper();
-	private static final TestCommandPropertiesMapper PROPERTIES_MAPPER = new TestCommandPropertiesMapper();
+    private static final TestArgumentMapper ARGUMENT_MAPPER = new TestArgumentMapper();
+    private static final TestContextMapper CONTEXT_MAPPER = new TestContextMapper();
+    private static final TestCommandPropertiesMapper PROPERTIES_MAPPER = new TestCommandPropertiesMapper();
 
-	public TestCommandMapper() {
-		super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, TestCommand::new);
-	}
+    public TestCommandMapper() {
+        super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, TestCommand::new);
+    }
 }

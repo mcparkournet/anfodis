@@ -36,20 +36,20 @@ import net.mcparkour.common.reflection.Reflections;
 
 public interface RootMapper<T extends Root> {
 
-	InjectionMapper INJECTION_MAPPER = new InjectionMapper();
-	ExecutorMapper EXECUTOR_MAPPER = new ExecutorMapper();
+    InjectionMapper INJECTION_MAPPER = new InjectionMapper();
+    ExecutorMapper EXECUTOR_MAPPER = new ExecutorMapper();
 
-	T map(Class<?> annotatedClass);
+    T map(Class<?> annotatedClass);
 
-	default Constructor<?> getConstructor(Class<?> type) {
-		return Reflections.getSerializationConstructor(type);
-	}
+    default Constructor<?> getConstructor(Class<?> type) {
+        return Reflections.getSerializationConstructor(type);
+    }
 
-	default List<Injection> getInjections(Field[] fields) {
-		return INJECTION_MAPPER.map(fields);
-	}
+    default List<Injection> getInjections(Field[] fields) {
+        return INJECTION_MAPPER.map(fields);
+    }
 
-	default Executor getExecutor(Method[] methods) {
-		return EXECUTOR_MAPPER.map(methods);
-	}
+    default Executor getExecutor(Method[] methods) {
+        return EXECUTOR_MAPPER.map(methods);
+    }
 }

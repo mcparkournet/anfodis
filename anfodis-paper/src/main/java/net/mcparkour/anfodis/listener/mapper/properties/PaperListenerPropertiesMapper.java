@@ -31,10 +31,10 @@ import org.bukkit.event.Event;
 
 public class PaperListenerPropertiesMapper extends ListenerPropertiesMapper<PaperListenerProperties, PaperListenerPropertiesData, Event, Listener> {
 
-	public PaperListenerPropertiesMapper() {
-		super(Listener.class, Listener::value, PaperListenerProperties::new, PaperListenerPropertiesData::new, (data, builder) -> {
-			builder.annotation(IgnoreCancelled.class, ignoreCancelled -> data.setIgnoreCancelled(true));
-			builder.annotation(Priority.class, priority -> data.setPriority(priority.value()));
-		});
-	}
+    public PaperListenerPropertiesMapper() {
+        super(Listener.class, Listener::value, PaperListenerProperties::new, PaperListenerPropertiesData::new, (data, builder) -> {
+            builder.annotation(IgnoreCancelled.class, ignoreCancelled -> data.setIgnoreCancelled(true));
+            builder.annotation(Priority.class, priority -> data.setPriority(priority.value()));
+        });
+    }
 }

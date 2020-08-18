@@ -39,38 +39,38 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class CommandPropertiesMapper<P extends CommandProperties, D extends CommandPropertiesData> implements Mapper<Class<?>, P> {
 
-	private Function<D, P> propertiesSupplier;
-	private Supplier<D> propertiesDataSupplier;
-	private BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional;
+    private Function<D, P> propertiesSupplier;
+    private Supplier<D> propertiesDataSupplier;
+    private BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional;
 
-	public CommandPropertiesMapper(Function<D, P> propertiesSupplier, Supplier<D> propertiesDataSupplier) {
-		this(propertiesSupplier, propertiesDataSupplier, (data, builder) -> {});
-	}
+    public CommandPropertiesMapper(Function<D, P> propertiesSupplier, Supplier<D> propertiesDataSupplier) {
+        this(propertiesSupplier, propertiesDataSupplier, (data, builder) -> {});
+    }
 
-	public CommandPropertiesMapper(Function<D, P> propertiesSupplier, Supplier<D> propertiesDataSupplier, BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional) {
-		this.propertiesSupplier = propertiesSupplier;
-		this.propertiesDataSupplier = propertiesDataSupplier;
-		this.additional = additional;
-	}
+    public CommandPropertiesMapper(Function<D, P> propertiesSupplier, Supplier<D> propertiesDataSupplier, BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional) {
+        this.propertiesSupplier = propertiesSupplier;
+        this.propertiesDataSupplier = propertiesDataSupplier;
+        this.additional = additional;
+    }
 
-	@Override
-	public P map(Iterable<Class<?>> elements) {
-		return new ElementsMapperBuilder<Class<?>, D>()
-			.data(this.propertiesDataSupplier)
-			.singleElement(data -> {
-				SingleElementMapperBuilder<Class<?>> builder = new SingleElementMapperBuilder<Class<?>>()
-					.annotation(Command.class, command -> data.setName(command.value()))
-					.annotation(Description.class, description -> data.setDescription(description.value()))
-					.annotation(DescriptionTranslation.class, descriptionTranslation -> data.setDescriptionTranslationId(descriptionTranslation.value()))
-					.annotation(Aliases.class, aliases -> data.setAliases(aliases.value()))
-					.annotation(AliasesTranslation.class, aliasesTranslation -> data.setAliasesTranslationId(aliasesTranslation.value()))
-					.annotation(Permission.class, permission -> data.setPermission(permission.value()));
-				this.additional.accept(data, builder);
-				return builder.build();
-			})
-			.build()
-			.mapFirstOptional(elements)
-			.map(this.propertiesSupplier)
-			.orElseThrow();
-	}
+    @Override
+    public P map(Iterable<Class<?>> elements) {
+        return new ElementsMapperBuilder<Class<?>, D>()
+            .data(this.propertiesDataSupplier)
+            .singleElement(data -> {
+                SingleElementMapperBuilder<Class<?>> builder = new SingleElementMapperBuilder<Class<?>>()
+                    .annotation(Command.class, command -> data.setName(command.value()))
+                    .annotation(Description.class, description -> data.setDescription(description.value()))
+                    .annotation(DescriptionTranslation.class, descriptionTranslation -> data.setDescriptionTranslationId(descriptionTranslation.value()))
+                    .annotation(Aliases.class, aliases -> data.setAliases(aliases.value()))
+                    .annotation(AliasesTranslation.class, aliasesTranslation -> data.setAliasesTranslationId(aliasesTranslation.value()))
+                    .annotation(Permission.class, permission -> data.setPermission(permission.value()));
+                this.additional.accept(data, builder);
+                return builder.build();
+            })
+            .build()
+            .mapFirstOptional(elements)
+            .map(this.propertiesSupplier)
+            .orElseThrow();
+    }
 }

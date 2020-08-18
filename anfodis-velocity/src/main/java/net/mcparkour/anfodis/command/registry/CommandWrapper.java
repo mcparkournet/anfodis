@@ -31,28 +31,28 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 class CommandWrapper implements Command {
 
-	private final VelocityCommandExecutor commandExecutor;
-	private final VelocityCompletionExecutor completionExecutor;
+    private final VelocityCommandExecutor commandExecutor;
+    private final VelocityCompletionExecutor completionExecutor;
 
-	CommandWrapper(VelocityCommandExecutor commandExecutor, VelocityCompletionExecutor completionExecutor) {
-		this.commandExecutor = commandExecutor;
-		this.completionExecutor = completionExecutor;
-	}
+    CommandWrapper(VelocityCommandExecutor commandExecutor, VelocityCompletionExecutor completionExecutor) {
+        this.commandExecutor = commandExecutor;
+        this.completionExecutor = completionExecutor;
+    }
 
-	@Override
-	public void execute(CommandSource source, @NonNull String[] args) {
-		List<String> arguments = List.of(args);
-		this.commandExecutor.execute(source, arguments);
-	}
+    @Override
+    public void execute(CommandSource source, @NonNull String[] args) {
+        List<String> arguments = List.of(args);
+        this.commandExecutor.execute(source, arguments);
+    }
 
-	@Override
-	public List<String> suggest(CommandSource source, @NonNull String[] currentArgs) {
-		List<String> arguments = List.of(currentArgs);
-		return this.completionExecutor.execute(source, arguments);
-	}
+    @Override
+    public List<String> suggest(CommandSource source, @NonNull String[] currentArgs) {
+        List<String> arguments = List.of(currentArgs);
+        return this.completionExecutor.execute(source, arguments);
+    }
 
-	@Override
-	public boolean hasPermission(CommandSource source, @NonNull String[] args) {
-		return true;
-	}
+    @Override
+    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
+        return true;
+    }
 }

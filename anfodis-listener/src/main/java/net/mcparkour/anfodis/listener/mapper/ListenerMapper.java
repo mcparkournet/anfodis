@@ -38,33 +38,33 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class ListenerMapper<T extends Listener<C, P>, C extends Context, P extends ListenerProperties<?>> implements RootMapper<T> {
 
-	private ContextMapper<C, ?> contextMapper;
-	private ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper;
-	private ListenerMerger<T, C, P> listenerMerger;
+    private ContextMapper<C, ?> contextMapper;
+    private ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper;
+    private ListenerMerger<T, C, P> listenerMerger;
 
-	public ListenerMapper(ContextMapper<C, ?> contextMapper, ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper, ListenerMerger<T, C, P> listenerMerger) {
-		this.contextMapper = contextMapper;
-		this.propertiesMapper = propertiesMapper;
-		this.listenerMerger = listenerMerger;
-	}
+    public ListenerMapper(ContextMapper<C, ?> contextMapper, ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper, ListenerMerger<T, C, P> listenerMerger) {
+        this.contextMapper = contextMapper;
+        this.propertiesMapper = propertiesMapper;
+        this.listenerMerger = listenerMerger;
+    }
 
-	@Override
-	public T map(Class<?> annotatedClass) {
-		Field[] fields = annotatedClass.getDeclaredFields();
-		Method[] methods = annotatedClass.getDeclaredMethods();
-		Constructor<?> constructor = getConstructor(annotatedClass);
-		C context = getContext(fields);
-		P properties = getProperties(annotatedClass);
-		List<Injection> injections = getInjections(fields);
-		Executor executor = getExecutor(methods);
-		return this.listenerMerger.merge(constructor, injections, executor, context, properties);
-	}
+    @Override
+    public T map(Class<?> annotatedClass) {
+        Field[] fields = annotatedClass.getDeclaredFields();
+        Method[] methods = annotatedClass.getDeclaredMethods();
+        Constructor<?> constructor = getConstructor(annotatedClass);
+        C context = getContext(fields);
+        P properties = getProperties(annotatedClass);
+        List<Injection> injections = getInjections(fields);
+        Executor executor = getExecutor(methods);
+        return this.listenerMerger.merge(constructor, injections, executor, context, properties);
+    }
 
-	private C getContext(Field[] fields) {
-		return this.contextMapper.map(fields);
-	}
+    private C getContext(Field[] fields) {
+        return this.contextMapper.map(fields);
+    }
 
-	private P getProperties(Class<?> listenerClass) {
-		return this.propertiesMapper.map(listenerClass);
-	}
+    private P getProperties(Class<?> listenerClass) {
+        return this.propertiesMapper.map(listenerClass);
+    }
 }

@@ -34,20 +34,20 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class PaperChannelListener extends Root {
 
-	private PaperChannelListenerContext context;
-	private PaperChannelListenerProperties properties;
+    private PaperChannelListenerContext context;
+    private PaperChannelListenerProperties properties;
 
-	public PaperChannelListener(Constructor<?> constructor, List<Injection> injections, Executor executor, PaperChannelListenerContext context, PaperChannelListenerProperties properties) {
-		super(constructor, injections, executor);
-		this.context = context;
-		this.properties = properties;
-	}
+    public PaperChannelListener(Constructor<?> constructor, List<Injection> injections, Executor executor, PaperChannelListenerContext context, PaperChannelListenerProperties properties) {
+        super(constructor, injections, executor);
+        this.context = context;
+        this.properties = properties;
+    }
 
-	public PaperChannelListenerContext getContext() {
-		return this.context;
-	}
+    public PaperChannelListenerContext getContext() {
+        return this.context;
+    }
 
-	public PaperChannelListenerProperties getProperties() {
-		return this.properties;
-	}
+    public PaperChannelListenerProperties getProperties() {
+        return this.properties;
+    }
 }

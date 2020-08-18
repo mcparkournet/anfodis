@@ -34,7 +34,7 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class WaterfallCommand extends CompletionCommand<WaterfallCommand, WaterfallArgument, WaterfallContext, WaterfallCommandProperties> {
 
-	public WaterfallCommand(Constructor<?> constructor, List<Injection> injections, Executor executor, List<WaterfallArgument> arguments, WaterfallContext context, WaterfallCommandProperties properties, List<WaterfallCommand> subCommands) {
-		super(constructor, injections, executor, arguments, context, properties, subCommands);
-	}
+    public WaterfallCommand(Constructor<?> constructor, List<Injection> injections, Executor executor, List<WaterfallArgument> arguments, WaterfallContext context, WaterfallCommandProperties properties, List<WaterfallCommand> subCommands) {
+        super(constructor, injections, executor, arguments, context, properties, subCommands);
+    }
 }

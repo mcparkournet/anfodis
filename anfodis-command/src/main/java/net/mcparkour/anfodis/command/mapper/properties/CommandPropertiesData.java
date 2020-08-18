@@ -28,70 +28,70 @@ import org.jetbrains.annotations.Nullable;
 
 class CommandPropertiesData {
 
-	@Nullable
-	private String name;
-	@Nullable
-	private String description;
-	@Nullable
-	private String descriptionTranslationId;
-	@Nullable
-	private String[] aliases;
-	@Nullable
-	private String aliasesTranslationId;
-	@Nullable
-	private String permission;
+    @Nullable
+    private String name;
+    @Nullable
+    private String description;
+    @Nullable
+    private String descriptionTranslationId;
+    @Nullable
+    private String[] aliases;
+    @Nullable
+    private String aliasesTranslationId;
+    @Nullable
+    private String permission;
 
-	@Nullable
-	public String getName() {
-		return this.name;
-	}
+    @Nullable
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(@Nullable String name) {
-		this.name = name;
-	}
+    public void setName(@Nullable String name) {
+        this.name = name;
+    }
 
-	@Nullable
-	public String getDescription() {
-		return this.description;
-	}
+    @Nullable
+    public String getDescription() {
+        return this.description;
+    }
 
-	public void setDescription(@Nullable String description) {
-		this.description = description;
-	}
+    public void setDescription(@Nullable String description) {
+        this.description = description;
+    }
 
-	@Nullable
-	public String getDescriptionTranslationId() {
-		return this.descriptionTranslationId;
-	}
+    @Nullable
+    public String getDescriptionTranslationId() {
+        return this.descriptionTranslationId;
+    }
 
-	public void setDescriptionTranslationId(@Nullable String descriptionTranslationId) {
-		this.descriptionTranslationId = descriptionTranslationId;
-	}
+    public void setDescriptionTranslationId(@Nullable String descriptionTranslationId) {
+        this.descriptionTranslationId = descriptionTranslationId;
+    }
 
-	@Nullable
-	public String[] getAliases() {
-		return this.aliases;
-	}
+    @Nullable
+    public String[] getAliases() {
+        return this.aliases;
+    }
 
-	public void setAliases(@Nullable String[] aliases) {
-		this.aliases = aliases;
-	}
+    public void setAliases(@Nullable String[] aliases) {
+        this.aliases = aliases;
+    }
 
-	@Nullable
-	public String getAliasesTranslationId() {
-		return this.aliasesTranslationId;
-	}
+    @Nullable
+    public String getAliasesTranslationId() {
+        return this.aliasesTranslationId;
+    }
 
-	public void setAliasesTranslationId(@Nullable String aliasesTranslationId) {
-		this.aliasesTranslationId = aliasesTranslationId;
-	}
+    public void setAliasesTranslationId(@Nullable String aliasesTranslationId) {
+        this.aliasesTranslationId = aliasesTranslationId;
+    }
 
-	@Nullable
-	public String getPermission() {
-		return this.permission;
-	}
+    @Nullable
+    public String getPermission() {
+        return this.permission;
+    }
 
-	public void setPermission(@Nullable String permission) {
-		this.permission = permission;
-	}
+    public void setPermission(@Nullable String permission) {
+        this.permission = permission;
+    }
 }

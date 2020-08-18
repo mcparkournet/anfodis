@@ -33,11 +33,11 @@ import net.mcparkour.anfodis.command.mapper.properties.PaperCommandPropertiesMap
 
 public class PaperCommandMapper extends CommandMapper<PaperCommand, PaperArgument, PaperContext, PaperCommandProperties> {
 
-	private static final PaperArgumentMapper ARGUMENT_MAPPER = new PaperArgumentMapper();
-	private static final PaperContextMapper CONTEXT_MAPPER = new PaperContextMapper();
-	private static final PaperCommandPropertiesMapper PROPERTIES_MAPPER = new PaperCommandPropertiesMapper();
+    private static final PaperArgumentMapper ARGUMENT_MAPPER = new PaperArgumentMapper();
+    private static final PaperContextMapper CONTEXT_MAPPER = new PaperContextMapper();
+    private static final PaperCommandPropertiesMapper PROPERTIES_MAPPER = new PaperCommandPropertiesMapper();
 
-	public PaperCommandMapper() {
-		super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, PaperCommand::new);
-	}
+    public PaperCommandMapper() {
+        super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, PaperCommand::new);
+    }
 }

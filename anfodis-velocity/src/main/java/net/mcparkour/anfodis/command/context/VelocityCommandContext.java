@@ -30,7 +30,7 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class VelocityCommandContext extends CommandContext<CommandSource> {
 
-	public VelocityCommandContext(CommandSender<CommandSource> sender, List<String> arguments, Permission permission) {
-		super(sender, arguments, permission);
-	}
+    public VelocityCommandContext(CommandSender<CommandSource> sender, List<String> arguments, Permission permission) {
+        super(sender, arguments, permission);
+    }
 }

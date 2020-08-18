@@ -34,5 +34,5 @@ import org.jetbrains.annotations.Nullable;
 
 public interface CommandHandlerSupplier<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S> {
 
-	CommandContextHandler<C> supply(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler, CommandContextSupplier<C, S> contextSupplier);
+    CommandContextHandler<C> supply(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler, CommandContextSupplier<C, S> contextSupplier);
 }

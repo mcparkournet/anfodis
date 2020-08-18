@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Description {
 
-	/**
-	 * @return description
-	 */
-	String value();
+    /**
+     * @return description
+     */
+    String value();
 }

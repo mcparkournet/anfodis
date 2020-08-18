@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.argument;
 
 public class WaterfallArgumentMapper extends CompletionArgumentMapper<WaterfallArgument, WaterfallArgumentData> {
 
-	public WaterfallArgumentMapper() {
-		super(WaterfallArgument::new, WaterfallArgumentData::new);
-	}
+    public WaterfallArgumentMapper() {
+        super(WaterfallArgument::new, WaterfallArgumentData::new);
+    }
 }

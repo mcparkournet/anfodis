@@ -29,48 +29,48 @@ import org.jetbrains.annotations.Nullable;
 
 class ArgumentData {
 
-	@Nullable
-	private Field argumentField;
-	@Nullable
-	private String argumentCodecKey;
-	@Nullable
-	private String name;
-	@Nullable
-	private Boolean optional;
+    @Nullable
+    private Field argumentField;
+    @Nullable
+    private String argumentCodecKey;
+    @Nullable
+    private String name;
+    @Nullable
+    private Boolean optional;
 
-	@Nullable
-	public Field getArgumentField() {
-		return this.argumentField;
-	}
+    @Nullable
+    public Field getArgumentField() {
+        return this.argumentField;
+    }
 
-	public void setArgumentField(@Nullable Field argumentField) {
-		this.argumentField = argumentField;
-	}
+    public void setArgumentField(@Nullable Field argumentField) {
+        this.argumentField = argumentField;
+    }
 
-	@Nullable
-	public String getName() {
-		return this.name;
-	}
+    @Nullable
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(@Nullable String name) {
-		this.name = name;
-	}
+    public void setName(@Nullable String name) {
+        this.name = name;
+    }
 
-	@Nullable
-	public String getArgumentCodecKey() {
-		return this.argumentCodecKey;
-	}
+    @Nullable
+    public String getArgumentCodecKey() {
+        return this.argumentCodecKey;
+    }
 
-	public void setArgumentCodecKey(@Nullable String argumentCodecKey) {
-		this.argumentCodecKey = argumentCodecKey;
-	}
+    public void setArgumentCodecKey(@Nullable String argumentCodecKey) {
+        this.argumentCodecKey = argumentCodecKey;
+    }
 
-	@Nullable
-	public Boolean getOptional() {
-		return this.optional;
-	}
+    @Nullable
+    public Boolean getOptional() {
+        return this.optional;
+    }
 
-	public void setOptional(@Nullable Boolean optional) {
-		this.optional = optional;
-	}
+    public void setOptional(@Nullable Boolean optional) {
+        this.optional = optional;
+    }
 }

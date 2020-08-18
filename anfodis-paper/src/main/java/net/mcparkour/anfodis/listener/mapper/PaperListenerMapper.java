@@ -31,10 +31,10 @@ import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerPropertiesM
 
 public class PaperListenerMapper extends ListenerMapper<PaperListener, PaperContext, PaperListenerProperties> {
 
-	private static final PaperContextMapper CONTEXT_MAPPER = new PaperContextMapper();
-	private static final PaperListenerPropertiesMapper PROPERTIES_MAPPER = new PaperListenerPropertiesMapper();
+    private static final PaperContextMapper CONTEXT_MAPPER = new PaperContextMapper();
+    private static final PaperListenerPropertiesMapper PROPERTIES_MAPPER = new PaperListenerPropertiesMapper();
 
-	public PaperListenerMapper() {
-		super(CONTEXT_MAPPER, PROPERTIES_MAPPER, PaperListener::new);
-	}
+    public PaperListenerMapper() {
+        super(CONTEXT_MAPPER, PROPERTIES_MAPPER, PaperListener::new);
+    }
 }

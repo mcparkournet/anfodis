@@ -29,15 +29,15 @@ import org.jetbrains.annotations.Nullable;
 
 class ContextData {
 
-	@Nullable
-	private Field eventField;
+    @Nullable
+    private Field eventField;
 
-	@Nullable
-	public Field getEventField() {
-		return this.eventField;
-	}
+    @Nullable
+    public Field getEventField() {
+        return this.eventField;
+    }
 
-	public void setEventField(@Nullable Field eventField) {
-		this.eventField = eventField;
-	}
+    public void setEventField(@Nullable Field eventField) {
+        this.eventField = eventField;
+    }
 }

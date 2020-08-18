@@ -38,44 +38,44 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class ContextMapper<C extends Context, D extends ContextData> implements Mapper<Field, C> {
 
-	private Function<D, C> contextSupplier;
-	private Supplier<D> contextDataSupplier;
-	private Consumer<ElementsMapperBuilder<Field, D>> additional;
+    private Function<D, C> contextSupplier;
+    private Supplier<D> contextDataSupplier;
+    private Consumer<ElementsMapperBuilder<Field, D>> additional;
 
-	public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier) {
-		this(contextSupplier, contextDataSupplier, builder -> {});
-	}
+    public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier) {
+        this(contextSupplier, contextDataSupplier, builder -> {});
+    }
 
-	public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier, Consumer<ElementsMapperBuilder<Field, D>> additional) {
-		this.contextSupplier = contextSupplier;
-		this.contextDataSupplier = contextDataSupplier;
-		this.additional = additional;
-	}
+    public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier, Consumer<ElementsMapperBuilder<Field, D>> additional) {
+        this.contextSupplier = contextSupplier;
+        this.contextDataSupplier = contextDataSupplier;
+        this.additional = additional;
+    }
 
-	@Override
-	public C map(Iterable<Field> elements) {
-		ElementsMapperBuilder<Field, D> builder = new ElementsMapperBuilder<Field, D>()
-			.data(this.contextDataSupplier)
-			.singleElement(data -> new SingleElementMapperBuilder<Field>()
-				.annotation(Arguments.class)
-				.elementConsumer(data::setArgumentsField)
-				.build())
-			.singleElement(data -> new SingleElementMapperBuilder<Field>()
-				.annotation(RequiredPermission.class)
-				.elementConsumer(data::setRequiredPermissionField)
-				.build())
-			.singleElement(data -> new SingleElementMapperBuilder<Field>()
-				.annotation(Sender.class)
-				.elementConsumer(data::setSenderField)
-				.build())
-			.singleElement(data -> new SingleElementMapperBuilder<Field>()
-				.annotation(Receiver.class)
-				.elementConsumer(data::setReceiverField)
-				.build());
-		this.additional.accept(builder);
-		return builder.build()
-			.mapFirstOptional(elements)
-			.map(this.contextSupplier)
-			.orElseThrow();
-	}
+    @Override
+    public C map(Iterable<Field> elements) {
+        ElementsMapperBuilder<Field, D> builder = new ElementsMapperBuilder<Field, D>()
+            .data(this.contextDataSupplier)
+            .singleElement(data -> new SingleElementMapperBuilder<Field>()
+                .annotation(Arguments.class)
+                .elementConsumer(data::setArgumentsField)
+                .build())
+            .singleElement(data -> new SingleElementMapperBuilder<Field>()
+                .annotation(RequiredPermission.class)
+                .elementConsumer(data::setRequiredPermissionField)
+                .build())
+            .singleElement(data -> new SingleElementMapperBuilder<Field>()
+                .annotation(Sender.class)
+                .elementConsumer(data::setSenderField)
+                .build())
+            .singleElement(data -> new SingleElementMapperBuilder<Field>()
+                .annotation(Receiver.class)
+                .elementConsumer(data::setReceiverField)
+                .build());
+        this.additional.accept(builder);
+        return builder.build()
+            .mapFirstOptional(elements)
+            .map(this.contextSupplier)
+            .orElseThrow();
+    }
 }

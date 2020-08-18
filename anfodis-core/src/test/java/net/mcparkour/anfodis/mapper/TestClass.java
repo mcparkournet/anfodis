@@ -33,19 +33,19 @@ import net.mcparkour.anfodis.annotation.executor.Executor;
 @TestClassAnnotationTwo("foobar")
 public class TestClass {
 
-	@Inject("foo1")
-	@TestAnnotation("bar1")
-	private String string1;
+    @Inject("foo1")
+    @TestAnnotation("bar1")
+    private String string1;
 
-	@Inject("foo2")
-	private String string2;
+    @Inject("foo2")
+    private String string2;
 
-	@Before
-	private void before() {}
+    @Before
+    private void before() {}
 
-	@Executor
-	private void executor() {}
+    @Executor
+    private void executor() {}
 
-	@After
-	private void after() {}
+    @After
+    private void after() {}
 }

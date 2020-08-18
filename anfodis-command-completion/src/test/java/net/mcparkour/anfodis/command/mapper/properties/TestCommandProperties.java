@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.properties;
 
 public class TestCommandProperties extends CommandProperties {
 
-	public TestCommandProperties(TestCommandPropertiesData propertiesData) {
-		super(propertiesData);
-	}
+    public TestCommandProperties(TestCommandPropertiesData propertiesData) {
+        super(propertiesData);
+    }
 }

@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.context;
 
 public class WaterfallContextMapper extends ContextMapper<WaterfallContext, WaterfallContextData> {
 
-	public WaterfallContextMapper() {
-		super(WaterfallContext::new, WaterfallContextData::new);
-	}
+    public WaterfallContextMapper() {
+        super(WaterfallContext::new, WaterfallContextData::new);
+    }
 }

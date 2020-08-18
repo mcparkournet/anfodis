@@ -30,17 +30,17 @@ import org.jetbrains.annotations.Nullable;
 
 public class Context {
 
-	@Nullable
-	private Field eventField;
+    @Nullable
+    private Field eventField;
 
-	public Context(ContextData contextData) {
-		this.eventField = contextData.getEventField();
-	}
+    public Context(ContextData contextData) {
+        this.eventField = contextData.getEventField();
+    }
 
-	public void setEventField(Object instance, Object event) {
-		if (this.eventField == null) {
-			return;
-		}
-		Reflections.setFieldValue(this.eventField, instance, event);
-	}
+    public void setEventField(Object instance, Object event) {
+        if (this.eventField == null) {
+            return;
+        }
+        Reflections.setFieldValue(this.eventField, instance, event);
+    }
 }

@@ -29,26 +29,26 @@ import org.jetbrains.annotations.Nullable;
 
 class InjectionData {
 
-	@Nullable
-	private Field injectionField;
-	@Nullable
-	private String codecKey;
+    @Nullable
+    private Field injectionField;
+    @Nullable
+    private String codecKey;
 
-	@Nullable
-	public Field getInjectionField() {
-		return this.injectionField;
-	}
+    @Nullable
+    public Field getInjectionField() {
+        return this.injectionField;
+    }
 
-	public void setInjectionField(@Nullable Field injectionField) {
-		this.injectionField = injectionField;
-	}
+    public void setInjectionField(@Nullable Field injectionField) {
+        this.injectionField = injectionField;
+    }
 
-	@Nullable
-	public String getCodecKey() {
-		return this.codecKey;
-	}
+    @Nullable
+    public String getCodecKey() {
+        return this.codecKey;
+    }
 
-	public void setCodecKey(@Nullable String codecKey) {
-		this.codecKey = codecKey;
-	}
+    public void setCodecKey(@Nullable String codecKey) {
+        this.codecKey = codecKey;
+    }
 }

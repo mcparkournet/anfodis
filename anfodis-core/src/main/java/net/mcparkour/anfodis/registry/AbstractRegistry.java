@@ -34,30 +34,30 @@ import net.mcparkour.anfodis.mapper.RootMapper;
 
 public abstract class AbstractRegistry<T extends Root, C extends RootContext> implements Registry {
 
-	private Class<? extends Annotation> annotationClass;
-	private RootMapper<T> mapper;
-	private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
+    private Class<? extends Annotation> annotationClass;
+    private RootMapper<T> mapper;
+    private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 
-	public AbstractRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		this.annotationClass = annotation;
-		this.mapper = mapper;
-		this.injectionCodecRegistry = injectionCodecRegistry;
-	}
+    public AbstractRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+        this.annotationClass = annotation;
+        this.mapper = mapper;
+        this.injectionCodecRegistry = injectionCodecRegistry;
+    }
 
-	@Override
-	public void register(Class<?> annotatedClass) {
-		if (!annotatedClass.isAnnotationPresent(this.annotationClass)) {
-			throw new IllegalArgumentException("Class " + annotatedClass.getName() + " is not annotated with " + this.annotationClass.getName() + " annotation");
-		}
-		T root = this.mapper.map(annotatedClass);
-		register(root);
-	}
+    @Override
+    public void register(Class<?> annotatedClass) {
+        if (!annotatedClass.isAnnotationPresent(this.annotationClass)) {
+            throw new IllegalArgumentException("Class " + annotatedClass.getName() + " is not annotated with " + this.annotationClass.getName() + " annotation");
+        }
+        T root = this.mapper.map(annotatedClass);
+        register(root);
+    }
 
-	public abstract void register(T root);
+    public abstract void register(T root);
 
-	public abstract void register(T root, ContextHandler<C> handler);
+    public abstract void register(T root, ContextHandler<C> handler);
 
-	protected CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {
-		return this.injectionCodecRegistry;
-	}
+    protected CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {
+        return this.injectionCodecRegistry;
+    }
 }

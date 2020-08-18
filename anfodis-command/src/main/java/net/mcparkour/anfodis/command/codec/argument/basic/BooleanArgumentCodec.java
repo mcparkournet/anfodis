@@ -29,9 +29,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class BooleanArgumentCodec implements ArgumentCodec<Boolean> {
 
-	@Override
-	@Nullable
-	public Boolean parse(String stringValue) {
-		return Boolean.parseBoolean(stringValue);
-	}
+    @Override
+    @Nullable
+    public Boolean parse(String stringValue) {
+        return Boolean.parseBoolean(stringValue);
+    }
 }

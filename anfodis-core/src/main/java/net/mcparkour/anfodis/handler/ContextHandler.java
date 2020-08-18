@@ -27,5 +27,5 @@ package net.mcparkour.anfodis.handler;
 @FunctionalInterface
 public interface ContextHandler<C extends RootContext> {
 
-	void handle(C context, Object instance);
+    void handle(C context, Object instance);
 }

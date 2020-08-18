@@ -36,21 +36,21 @@ import net.mcparkour.anfodis.registry.AbstractRegistry;
 
 public abstract class AbstractListenerRegistry<T extends Listener<?, ?>, C extends ListenerContext<?>> extends AbstractRegistry<T, C> {
 
-	private ListenerHandlerSupplier<T, C> listenerHandlerSupplier;
+    private ListenerHandlerSupplier<T, C> listenerHandlerSupplier;
 
-	public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		this(annotation, mapper, ListenerHandler::new, injectionCodecRegistry);
-	}
+    public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+        this(annotation, mapper, ListenerHandler::new, injectionCodecRegistry);
+    }
 
-	public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, ListenerHandlerSupplier<T, C> listenerHandlerSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-		super(annotation, mapper, injectionCodecRegistry);
-		this.listenerHandlerSupplier = listenerHandlerSupplier;
-	}
+    public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, ListenerHandlerSupplier<T, C> listenerHandlerSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+        super(annotation, mapper, injectionCodecRegistry);
+        this.listenerHandlerSupplier = listenerHandlerSupplier;
+    }
 
-	@Override
-	public void register(T root) {
-		CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-		ContextHandler<C> handler = this.listenerHandlerSupplier.supply(root, injectionCodecRegistry);
-		register(root, handler);
-	}
+    @Override
+    public void register(T root) {
+        CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
+        ContextHandler<C> handler = this.listenerHandlerSupplier.supply(root, injectionCodecRegistry);
+        register(root, handler);
+    }
 }

@@ -28,9 +28,9 @@ import org.jetbrains.annotations.Nullable;
 
 public interface OptionalArgument<T> {
 
-	boolean isPresent();
+    boolean isPresent();
 
-	@Nullable T orElse(@Nullable T other);
+    @Nullable T orElse(@Nullable T other);
 
-	@Nullable T get();
+    @Nullable T get();
 }

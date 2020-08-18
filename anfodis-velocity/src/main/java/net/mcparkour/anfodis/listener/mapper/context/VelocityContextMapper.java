@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.listener.mapper.context;
 
 public class VelocityContextMapper extends ContextMapper<VelocityContext, VelocityContextData> {
 
-	public VelocityContextMapper() {
-		super(VelocityContext::new, VelocityContextData::new);
-	}
+    public VelocityContextMapper() {
+        super(VelocityContext::new, VelocityContextData::new);
+    }
 }

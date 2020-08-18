@@ -26,15 +26,15 @@ package net.mcparkour.anfodis.result;
 
 public final class Results {
 
-	private Results() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
-	}
+    private Results() {
+        throw new UnsupportedOperationException("Cannot create an instance of this class");
+    }
 
-	public static Result empty() {
-		return () -> {};
-	}
+    public static Result empty() {
+        return () -> {};
+    }
 
-	public static Result println(String message) {
-		return () -> System.out.println(message);
-	}
+    public static Result println(String message) {
+        return () -> System.out.println(message);
+    }
 }

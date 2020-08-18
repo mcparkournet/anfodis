@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.context;
 
 public class JDAContext extends Context {
 
-	public JDAContext(JDAContextData contextData) {
-		super(contextData);
-	}
+    public JDAContext(JDAContextData contextData) {
+        super(contextData);
+    }
 }

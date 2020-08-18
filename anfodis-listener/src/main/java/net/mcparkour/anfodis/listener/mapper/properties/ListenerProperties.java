@@ -28,14 +28,14 @@ import java.util.Set;
 
 public class ListenerProperties<E> {
 
-	private Set<Class<? extends E>> listenedEvents;
+    private Set<Class<? extends E>> listenedEvents;
 
-	public ListenerProperties(ListenerPropertiesData<E> propertiesData) {
-		Class<? extends E>[] listenedEvents = propertiesData.getListenedEvents();
-		this.listenedEvents = listenedEvents == null ? Set.of() : Set.of(listenedEvents);
-	}
+    public ListenerProperties(ListenerPropertiesData<E> propertiesData) {
+        Class<? extends E>[] listenedEvents = propertiesData.getListenedEvents();
+        this.listenedEvents = listenedEvents == null ? Set.of() : Set.of(listenedEvents);
+    }
 
-	public Set<Class<? extends E>> getListenedEvents() {
-		return this.listenedEvents;
-	}
+    public Set<Class<? extends E>> getListenedEvents() {
+        return this.listenedEvents;
+    }
 }

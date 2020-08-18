@@ -29,13 +29,13 @@ import net.md_5.bungee.api.CommandSender;
 
 public class WaterfallCommandSender extends AbstractCommandSender<CommandSender> {
 
-	public WaterfallCommandSender(CommandSender sender, MessageReceiver receiver) {
-		super(sender, receiver);
-	}
+    public WaterfallCommandSender(CommandSender sender, MessageReceiver receiver) {
+        super(sender, receiver);
+    }
 
-	@Override
-	public boolean hasPermission(String name) {
-		CommandSender sender = getSender();
-		return sender.hasPermission(name);
-	}
+    @Override
+    public boolean hasPermission(String name) {
+        CommandSender sender = getSender();
+        return sender.hasPermission(name);
+    }
 }

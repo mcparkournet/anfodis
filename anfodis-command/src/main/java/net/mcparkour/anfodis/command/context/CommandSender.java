@@ -28,7 +28,7 @@ import net.mcparkour.intext.message.MessageReceiver;
 
 public interface CommandSender<T> extends Permissible {
 
-	T getSender();
+    T getSender();
 
-	MessageReceiver getReceiver();
+    MessageReceiver getReceiver();
 }

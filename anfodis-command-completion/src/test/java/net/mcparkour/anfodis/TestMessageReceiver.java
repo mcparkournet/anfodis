@@ -31,30 +31,30 @@ import net.mcparkour.intext.translation.Translations;
 
 public class TestMessageReceiver extends AbstractMessageReceiver {
 
-	private TestCommandSender receiver;
+    private TestCommandSender receiver;
 
-	public TestMessageReceiver(Translations translations, Locale language, TestCommandSender receiver) {
-		super(translations, language);
-		this.receiver = receiver;
-	}
+    public TestMessageReceiver(Translations translations, Locale language, TestCommandSender receiver) {
+        super(translations, language);
+        this.receiver = receiver;
+    }
 
-	@Override
-	public void receiveComponent(Component component) {
-		throw new UnsupportedOperationException("Not supported");
-	}
+    @Override
+    public void receiveComponent(Component component) {
+        throw new UnsupportedOperationException("Not supported");
+    }
 
-	@Override
-	public void receiveSerializedComponent(String serializedComponent) {
-		throw new UnsupportedOperationException("Not supported");
-	}
+    @Override
+    public void receiveSerializedComponent(String serializedComponent) {
+        throw new UnsupportedOperationException("Not supported");
+    }
 
-	@Override
-	public void receivePlainColorized(String message) {
-		receivePlain(message);
-	}
+    @Override
+    public void receivePlainColorized(String message) {
+        receivePlain(message);
+    }
 
-	@Override
-	public void receivePlain(String message) {
-		this.receiver.receiveMessage(message);
-	}
+    @Override
+    public void receivePlain(String message) {
+        this.receiver.receiveMessage(message);
+    }
 }

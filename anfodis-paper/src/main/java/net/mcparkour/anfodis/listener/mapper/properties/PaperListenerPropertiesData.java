@@ -30,26 +30,26 @@ import org.jetbrains.annotations.Nullable;
 
 class PaperListenerPropertiesData extends ListenerPropertiesData<Event> {
 
-	@Nullable
-	private EventPriority priority;
-	@Nullable
-	private Boolean ignoreCancelled;
+    @Nullable
+    private EventPriority priority;
+    @Nullable
+    private Boolean ignoreCancelled;
 
-	@Nullable
-	public EventPriority getPriority() {
-		return this.priority;
-	}
+    @Nullable
+    public EventPriority getPriority() {
+        return this.priority;
+    }
 
-	public void setPriority(@Nullable EventPriority priority) {
-		this.priority = priority;
-	}
+    public void setPriority(@Nullable EventPriority priority) {
+        this.priority = priority;
+    }
 
-	@Nullable
-	public Boolean getIgnoreCancelled() {
-		return this.ignoreCancelled;
-	}
+    @Nullable
+    public Boolean getIgnoreCancelled() {
+        return this.ignoreCancelled;
+    }
 
-	public void setIgnoreCancelled(boolean ignoreCancelled) {
-		this.ignoreCancelled = ignoreCancelled;
-	}
+    public void setIgnoreCancelled(boolean ignoreCancelled) {
+        this.ignoreCancelled = ignoreCancelled;
+    }
 }

@@ -29,15 +29,15 @@ import org.bukkit.command.CommandSender;
 
 public class PaperCommandProperties extends CommandProperties {
 
-	private Set<Class<? extends CommandSender>> senderTypes;
+    private Set<Class<? extends CommandSender>> senderTypes;
 
-	public PaperCommandProperties(PaperCommandPropertiesData propertiesData) {
-		super(propertiesData);
-		Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
-		this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
-	}
+    public PaperCommandProperties(PaperCommandPropertiesData propertiesData) {
+        super(propertiesData);
+        Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
+        this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
+    }
 
-	public Set<Class<? extends CommandSender>> getSenderTypes() {
-		return this.senderTypes;
-	}
+    public Set<Class<? extends CommandSender>> getSenderTypes() {
+        return this.senderTypes;
+    }
 }

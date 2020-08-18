@@ -31,7 +31,7 @@ import org.bukkit.command.CommandSender;
 
 public class PaperCompletionContext extends CompletionContext<CommandSender> {
 
-	public PaperCompletionContext(net.mcparkour.anfodis.command.context.CommandSender<CommandSender> sender, List<String> arguments, Permission permission) {
-		super(sender, arguments, permission);
-	}
+    public PaperCompletionContext(net.mcparkour.anfodis.command.context.CommandSender<CommandSender> sender, List<String> arguments, Permission permission) {
+        super(sender, arguments, permission);
+    }
 }

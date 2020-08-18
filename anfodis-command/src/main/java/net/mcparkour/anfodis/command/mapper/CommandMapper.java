@@ -43,51 +43,51 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class CommandMapper<T extends Command<T, A, C, P>, A extends Argument, C extends Context, P extends CommandProperties> implements RootMapper<T> {
 
-	private static final SubCommandMapper SUB_COMMAND_MAPPER = new SubCommandMapper();
+    private static final SubCommandMapper SUB_COMMAND_MAPPER = new SubCommandMapper();
 
-	private ArgumentMapper<A, ?> argumentMapper;
-	private ContextMapper<C, ?> contextMapper;
-	private CommandPropertiesMapper<P, ?> propertiesMapper;
-	private CommandMerger<T, A, C, P> commandMerger;
+    private ArgumentMapper<A, ?> argumentMapper;
+    private ContextMapper<C, ?> contextMapper;
+    private CommandPropertiesMapper<P, ?> propertiesMapper;
+    private CommandMerger<T, A, C, P> commandMerger;
 
-	public CommandMapper(ArgumentMapper<A, ?> argumentMapper, ContextMapper<C, ?> contextMapper, CommandPropertiesMapper<P, ?> propertiesMapper, CommandMerger<T, A, C, P> commandMerger) {
-		this.argumentMapper = argumentMapper;
-		this.contextMapper = contextMapper;
-		this.propertiesMapper = propertiesMapper;
-		this.commandMerger = commandMerger;
-	}
+    public CommandMapper(ArgumentMapper<A, ?> argumentMapper, ContextMapper<C, ?> contextMapper, CommandPropertiesMapper<P, ?> propertiesMapper, CommandMerger<T, A, C, P> commandMerger) {
+        this.argumentMapper = argumentMapper;
+        this.contextMapper = contextMapper;
+        this.propertiesMapper = propertiesMapper;
+        this.commandMerger = commandMerger;
+    }
 
-	@Override
-	public T map(Class<?> annotatedClass) {
-		Field[] fields = annotatedClass.getDeclaredFields();
-		Method[] methods = annotatedClass.getDeclaredMethods();
-		Constructor<?> constructor = getConstructor(annotatedClass);
-		List<Injection> injections = getInjections(fields);
-		Executor executor = getExecutor(methods);
-		List<A> arguments = getArguments(fields);
-		C context = getContext(fields);
-		P properties = getProperties(annotatedClass);
-		List<T> subCommands = getSubCommands(fields);
-		return this.commandMerger.merge(constructor, injections, executor, arguments, context, properties, subCommands);
-	}
+    @Override
+    public T map(Class<?> annotatedClass) {
+        Field[] fields = annotatedClass.getDeclaredFields();
+        Method[] methods = annotatedClass.getDeclaredMethods();
+        Constructor<?> constructor = getConstructor(annotatedClass);
+        List<Injection> injections = getInjections(fields);
+        Executor executor = getExecutor(methods);
+        List<A> arguments = getArguments(fields);
+        C context = getContext(fields);
+        P properties = getProperties(annotatedClass);
+        List<T> subCommands = getSubCommands(fields);
+        return this.commandMerger.merge(constructor, injections, executor, arguments, context, properties, subCommands);
+    }
 
-	private List<A> getArguments(Field[] fields) {
-		return this.argumentMapper.map(fields);
-	}
+    private List<A> getArguments(Field[] fields) {
+        return this.argumentMapper.map(fields);
+    }
 
-	private C getContext(Field[] fields) {
-		return this.contextMapper.map(fields);
-	}
+    private C getContext(Field[] fields) {
+        return this.contextMapper.map(fields);
+    }
 
-	private P getProperties(Class<?> commandClass) {
-		return this.propertiesMapper.map(commandClass);
-	}
+    private P getProperties(Class<?> commandClass) {
+        return this.propertiesMapper.map(commandClass);
+    }
 
-	private List<T> getSubCommands(Field[] fields) {
-		return SUB_COMMAND_MAPPER.map(fields)
-			.stream()
-			.map(SubCommand::getFieldType)
-			.map(this::map)
-			.collect(Collectors.toUnmodifiableList());
-	}
+    private List<T> getSubCommands(Field[] fields) {
+        return SUB_COMMAND_MAPPER.map(fields)
+            .stream()
+            .map(SubCommand::getFieldType)
+            .map(this::map)
+            .collect(Collectors.toUnmodifiableList());
+    }
 }

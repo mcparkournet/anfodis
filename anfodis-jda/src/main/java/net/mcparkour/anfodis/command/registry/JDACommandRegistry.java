@@ -41,29 +41,29 @@ import net.mcparkour.intext.message.MessageReceiverFactory;
 
 public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDACommandContext, ChannelSender> {
 
-	private static final JDACommandMapper COMMAND_MAPPER = new JDACommandMapper();
+    private static final JDACommandMapper COMMAND_MAPPER = new JDACommandMapper();
 
-	private JDA jda;
-	private PermissionMap permissionMap;
-	private CommandMap commandMap;
+    private JDA jda;
+    private PermissionMap permissionMap;
+    private CommandMap commandMap;
 
-	public JDACommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<ChannelSender> messageReceiverFactory, Permission basePermission, JDA jda, PermissionMap permissionMap) {
-		super(COMMAND_MAPPER, CommandHandler::new, CommandExecutorHandler::new, JDACommandContext::new, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, basePermission);
-		this.jda = jda;
-		this.permissionMap = permissionMap;
-		this.commandMap = new CommandMap();
-		registerCommandListener();
-	}
+    public JDACommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<ChannelSender> messageReceiverFactory, Permission basePermission, JDA jda, PermissionMap permissionMap) {
+        super(COMMAND_MAPPER, CommandHandler::new, CommandExecutorHandler::new, JDACommandContext::new, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, basePermission);
+        this.jda = jda;
+        this.permissionMap = permissionMap;
+        this.commandMap = new CommandMap();
+        registerCommandListener();
+    }
 
-	private void registerCommandListener() {
-		Permission basePermission = getBasePermission();
-		MessageReceiverFactory<ChannelSender> messageReceiverFactory = getMessageReceiverFactory();
-		PrivateMessageReceivedListener listener = new PrivateMessageReceivedListener(basePermission, this.permissionMap, this.commandMap, messageReceiverFactory);
-		this.jda.addEventListener(listener);
-	}
+    private void registerCommandListener() {
+        Permission basePermission = getBasePermission();
+        MessageReceiverFactory<ChannelSender> messageReceiverFactory = getMessageReceiverFactory();
+        PrivateMessageReceivedListener listener = new PrivateMessageReceivedListener(basePermission, this.permissionMap, this.commandMap, messageReceiverFactory);
+        this.jda.addEventListener(listener);
+    }
 
-	@Override
-	public void register(JDACommand command, CommandContextHandler<JDACommandContext> commandHandler) {
-		this.commandMap.register(command, commandHandler);
-	}
+    @Override
+    public void register(JDACommand command, CommandContextHandler<JDACommandContext> commandHandler) {
+        this.commandMap.register(command, commandHandler);
+    }
 }

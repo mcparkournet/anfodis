@@ -29,15 +29,15 @@ import net.md_5.bungee.api.CommandSender;
 
 public class WaterfallCommandProperties extends CommandProperties {
 
-	private Set<Class<? extends CommandSender>> senderTypes;
+    private Set<Class<? extends CommandSender>> senderTypes;
 
-	public WaterfallCommandProperties(WaterfallCommandPropertiesData propertiesData) {
-		super(propertiesData);
-		Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
-		this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
-	}
+    public WaterfallCommandProperties(WaterfallCommandPropertiesData propertiesData) {
+        super(propertiesData);
+        Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
+        this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
+    }
 
-	public Set<Class<? extends CommandSender>> getSenderTypes() {
-		return this.senderTypes;
-	}
+    public Set<Class<? extends CommandSender>> getSenderTypes() {
+        return this.senderTypes;
+    }
 }

@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Permission {
 
-	/**
-	 * @return permission
-	 */
-	String value() default "";
+    /**
+     * @return permission
+     */
+    String value() default "";
 }

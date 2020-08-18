@@ -29,15 +29,15 @@ import com.velocitypowered.api.command.CommandSource;
 
 public class VelocityCommandProperties extends CommandProperties {
 
-	private Set<Class<? extends CommandSource>> senderTypes;
+    private Set<Class<? extends CommandSource>> senderTypes;
 
-	public VelocityCommandProperties(VelocityCommandPropertiesData propertiesData) {
-		super(propertiesData);
-		Class<? extends CommandSource>[] senderTypes = propertiesData.getSenderTypes();
-		this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
-	}
+    public VelocityCommandProperties(VelocityCommandPropertiesData propertiesData) {
+        super(propertiesData);
+        Class<? extends CommandSource>[] senderTypes = propertiesData.getSenderTypes();
+        this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
+    }
 
-	public Set<Class<? extends CommandSource>> getSenderTypes() {
-		return this.senderTypes;
-	}
+    public Set<Class<? extends CommandSource>> getSenderTypes() {
+        return this.senderTypes;
+    }
 }

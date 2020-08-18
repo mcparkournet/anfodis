@@ -34,50 +34,50 @@ import org.jetbrains.annotations.Nullable;
 
 public class TestCommandSender {
 
-	private Locale language;
-	private Set<String> permissions;
-	private boolean operator;
-	private Queue<String> messages;
+    private Locale language;
+    private Set<String> permissions;
+    private boolean operator;
+    private Queue<String> messages;
 
-	public TestCommandSender() {
-		this(Locale.US, Set.of(), true);
-	}
+    public TestCommandSender() {
+        this(Locale.US, Set.of(), true);
+    }
 
-	public TestCommandSender(Locale language, Set<String> permissions, boolean operator) {
-		this.language = language;
-		this.permissions = permissions;
-		this.operator = operator;
-		this.messages = new LinkedList<>();
-	}
+    public TestCommandSender(Locale language, Set<String> permissions, boolean operator) {
+        this.language = language;
+        this.permissions = permissions;
+        this.operator = operator;
+        this.messages = new LinkedList<>();
+    }
 
-	public boolean hasPermission(String permission) {
-		return this.operator || this.permissions.contains(permission);
-	}
+    public boolean hasPermission(String permission) {
+        return this.operator || this.permissions.contains(permission);
+    }
 
-	public void receiveMessage(String message) {
-		this.messages.add(message);
-	}
+    public void receiveMessage(String message) {
+        this.messages.add(message);
+    }
 
-	@Nullable
-	public String getLastMessage() {
-		return this.messages.poll();
-	}
+    @Nullable
+    public String getLastMessage() {
+        return this.messages.poll();
+    }
 
-	public List<String> getMessages() {
-		int size = this.messages.size();
-		List<String> messages = new ArrayList<>(size);
-		while (!this.messages.isEmpty()) {
-			String message = this.messages.poll();
-			messages.add(message);
-		}
-		return messages;
-	}
+    public List<String> getMessages() {
+        int size = this.messages.size();
+        List<String> messages = new ArrayList<>(size);
+        while (!this.messages.isEmpty()) {
+            String message = this.messages.poll();
+            messages.add(message);
+        }
+        return messages;
+    }
 
-	public Locale getLanguage() {
-		return this.language;
-	}
+    public Locale getLanguage() {
+        return this.language;
+    }
 
-	public void setLanguage(Locale language) {
-		this.language = language;
-	}
+    public void setLanguage(Locale language) {
+        this.language = language;
+    }
 }

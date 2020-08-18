@@ -31,10 +31,10 @@ import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerProperti
 
 public class VelocityListenerMapper extends ListenerMapper<VelocityListener, VelocityContext, VelocityListenerProperties> {
 
-	private static final VelocityContextMapper CONTEXT_MAPPER = new VelocityContextMapper();
-	private static final VelocityListenerPropertiesMapper PROPERTIES_MAPPER = new VelocityListenerPropertiesMapper();
+    private static final VelocityContextMapper CONTEXT_MAPPER = new VelocityContextMapper();
+    private static final VelocityListenerPropertiesMapper PROPERTIES_MAPPER = new VelocityListenerPropertiesMapper();
 
-	public VelocityListenerMapper() {
-		super(CONTEXT_MAPPER, PROPERTIES_MAPPER, VelocityListener::new);
-	}
+    public VelocityListenerMapper() {
+        super(CONTEXT_MAPPER, PROPERTIES_MAPPER, VelocityListener::new);
+    }
 }
