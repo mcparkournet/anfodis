@@ -39,7 +39,7 @@ class PaperChannelListenerContextData {
         return this.messageField;
     }
 
-    public void setMessageField(@Nullable Field messageField) {
+    public void setMessageField(@Nullable final Field messageField) {
         this.messageField = messageField;
     }
 
@@ -48,7 +48,7 @@ class PaperChannelListenerContextData {
         return this.sourceField;
     }
 
-    public void setSourceField(@Nullable Field sourceField) {
+    public void setSourceField(@Nullable final Field sourceField) {
         this.sourceField = sourceField;
     }
 }

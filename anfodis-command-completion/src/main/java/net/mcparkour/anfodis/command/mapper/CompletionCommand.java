@@ -34,7 +34,7 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class CompletionCommand<T extends CompletionCommand<T, A, C, P>, A extends CompletionArgument, C extends Context, P extends CommandProperties> extends Command<T, A, C, P> {
 
-    public CompletionCommand(Constructor<?> constructor, List<Injection> injections, Executor executor, List<A> arguments, C context, P properties, List<T> subCommands) {
+    public CompletionCommand(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final List<A> arguments, final C context, final P properties, final List<T> subCommands) {
         super(constructor, injections, executor, arguments, context, properties, subCommands);
     }
 }

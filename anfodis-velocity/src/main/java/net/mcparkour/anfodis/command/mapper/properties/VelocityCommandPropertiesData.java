@@ -37,7 +37,7 @@ class VelocityCommandPropertiesData extends CommandPropertiesData {
         return this.senderTypes;
     }
 
-    public void setSenderTypes(@Nullable Class<? extends CommandSource>[] senderTypes) {
+    public void setSenderTypes(@Nullable final Class<? extends CommandSource>[] senderTypes) {
         this.senderTypes = senderTypes;
     }
 }

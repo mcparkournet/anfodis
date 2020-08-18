@@ -34,20 +34,20 @@ public final class JDAResults {
         throw new UnsupportedOperationException("Cannot create an instance of this class");
     }
 
-    public static Result sendMessage(MessageChannel channel, Object message) {
+    public static Result sendMessage(final MessageChannel channel, final Object message) {
         String string = message.toString();
         return sendMessage(channel, string);
     }
 
-    public static Result sendMessage(MessageChannel channel, String message) {
+    public static Result sendMessage(final MessageChannel channel, final String message) {
         return () -> channel.sendMessage(message).queue();
     }
 
-    public static Result sendMessage(MessageChannel channel, Message message) {
+    public static Result sendMessage(final MessageChannel channel, final Message message) {
         return () -> channel.sendMessage(message).queue();
     }
 
-    public static Result sendMessage(MessageChannel channel, MessageEmbed message) {
+    public static Result sendMessage(final MessageChannel channel, final MessageEmbed message) {
         return () -> channel.sendMessage(message).queue();
     }
 }

@@ -33,7 +33,7 @@ public class UUIDArgumentCodec implements ArgumentCodec<UUID> {
 
     @Override
     @Nullable
-    public UUID parse(String stringValue) {
+    public UUID parse(final String stringValue) {
         if (UUIDConverter.isDashed(stringValue)) {
             return UUID.fromString(stringValue);
         }

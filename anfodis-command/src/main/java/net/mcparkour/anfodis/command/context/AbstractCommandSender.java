@@ -31,7 +31,7 @@ public abstract class AbstractCommandSender<T> implements CommandSender<T> {
     private T sender;
     private MessageReceiver receiver;
 
-    public AbstractCommandSender(T sender, MessageReceiver receiver) {
+    public AbstractCommandSender(final T sender, final MessageReceiver receiver) {
         this.sender = sender;
         this.receiver = receiver;
     }

@@ -32,17 +32,17 @@ import net.mcparkour.anfodis.listener.mapper.context.Context;
 
 public class ListenerHandler<T extends Listener<?, ?>, C extends ListenerContext<? extends E>, E> extends RootHandler<T, C> {
 
-    public ListenerHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+    public ListenerHandler(final T root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
         super(root, injectionCodecRegistry);
     }
 
     @Override
-    public void handle(C context, Object instance) {
+    public void handle(final C context, final Object instance) {
         setContext(context, instance);
         super.handle(context, instance);
     }
 
-    private void setContext(C context, Object listenerInstance) {
+    private void setContext(final C context, final Object listenerInstance) {
         Listener<?, ?> listener = getRoot();
         Context listenerContext = listener.getContext();
         E event = context.getEvent();

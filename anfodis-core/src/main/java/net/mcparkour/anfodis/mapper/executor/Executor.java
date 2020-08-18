@@ -38,13 +38,13 @@ public class Executor {
     @Nullable
     private Method afterMethod;
 
-    public Executor(ExecutorData executorData) {
+    public Executor(final ExecutorData executorData) {
         this.beforeMethod = executorData.getBeforeMethod();
         this.executorMethod = executorData.getExecutorMethod();
         this.afterMethod = executorData.getAfterMethod();
     }
 
-    public void invokeBefore(Object instance) {
+    public void invokeBefore(final Object instance) {
         if (this.beforeMethod == null) {
             return;
         }
@@ -56,12 +56,12 @@ public class Executor {
     }
 
     @Nullable
-    public Object invokeExecutor(Object instance) {
+    public Object invokeExecutor(final Object instance) {
         Objects.requireNonNull(this.executorMethod, "Executor method is null");
         return Reflections.invokeMethod(this.executorMethod, instance);
     }
 
-    public void invokeAfter(Object instance) {
+    public void invokeAfter(final Object instance) {
         if (this.afterMethod == null) {
             return;
         }

@@ -31,7 +31,7 @@ public class WaterfallListenerProperties extends ListenerProperties<Event> {
 
     private byte priority;
 
-    public WaterfallListenerProperties(WaterfallListenerPropertiesData propertiesData) {
+    public WaterfallListenerProperties(final WaterfallListenerPropertiesData propertiesData) {
         super(propertiesData);
         Byte priority = propertiesData.getPriority();
         this.priority = priority == null ? EventPriority.NORMAL : priority;

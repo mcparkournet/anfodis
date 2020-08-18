@@ -42,18 +42,18 @@ public class ContextMapper<C extends Context, D extends ContextData> implements 
     private Supplier<D> contextDataSupplier;
     private Consumer<ElementsMapperBuilder<Field, D>> additional;
 
-    public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier) {
+    public ContextMapper(final Function<D, C> contextSupplier, final Supplier<D> contextDataSupplier) {
         this(contextSupplier, contextDataSupplier, builder -> {});
     }
 
-    public ContextMapper(Function<D, C> contextSupplier, Supplier<D> contextDataSupplier, Consumer<ElementsMapperBuilder<Field, D>> additional) {
+    public ContextMapper(final Function<D, C> contextSupplier, final Supplier<D> contextDataSupplier, final Consumer<ElementsMapperBuilder<Field, D>> additional) {
         this.contextSupplier = contextSupplier;
         this.contextDataSupplier = contextDataSupplier;
         this.additional = additional;
     }
 
     @Override
-    public C map(Iterable<Field> elements) {
+    public C map(final Iterable<Field> elements) {
         ElementsMapperBuilder<Field, D> builder = new ElementsMapperBuilder<Field, D>()
             .data(this.contextDataSupplier)
             .singleElement(data -> new SingleElementMapperBuilder<Field>()

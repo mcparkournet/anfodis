@@ -33,7 +33,7 @@ public final class VelocityResults {
         throw new UnsupportedOperationException("Cannot create an instance of this class");
     }
 
-    public static Result sendMessage(CommandSource receiver, String message) {
+    public static Result sendMessage(final CommandSource receiver, final String message) {
         TextComponent component = TextComponent.of(message);
         return () -> receiver.sendMessage(component);
     }

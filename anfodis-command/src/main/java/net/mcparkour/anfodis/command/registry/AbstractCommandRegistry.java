@@ -51,7 +51,7 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
     private MessageReceiverFactory<S> messageReceiverFactory;
     private Permission basePermission;
 
-    public AbstractCommandRegistry(RootMapper<T> mapper, CommandHandlerSupplier<T, C, S> commandHandlerSupplier, CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, CommandContextSupplier<C, S> contextSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, MessageReceiverFactory<S> messageReceiverFactory, Permission basePermission) {
+    public AbstractCommandRegistry(final RootMapper<T> mapper, final CommandHandlerSupplier<T, C, S> commandHandlerSupplier, final CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, final CommandContextSupplier<C, S> contextSupplier, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final MessageReceiverFactory<S> messageReceiverFactory, final Permission basePermission) {
         super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
         this.commandHandlerSupplier = commandHandlerSupplier;
         this.commandExecutorHandlerSupplier = commandExecutorHandlerSupplier;
@@ -62,24 +62,24 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
     }
 
     @Override
-    public void register(T root) {
+    public void register(final T root) {
         CommandContextHandler<C> handler = createCommandHandler(root);
         register(root, handler);
     }
 
     @Override
-    public void register(T root, ContextHandler<C> handler) {
+    public void register(final T root, final ContextHandler<C> handler) {
         register(root, context -> {
             Object instance = root.createInstance();
             handler.handle(context, instance);
         });
     }
 
-    protected CommandContextHandler<C> createCommandHandler(T command) {
+    protected CommandContextHandler<C> createCommandHandler(final T command) {
         List<T> subCommands = command.getSubCommands();
         int size = subCommands.size();
         Map<T, CommandContextHandler<C>> handlers = new HashMap<>(size);
-        for (T subCommand : subCommands) {
+        for (final T subCommand : subCommands) {
             CommandContextHandler<C> handler = createCommandHandler(subCommand);
             handlers.put(subCommand, handler);
         }
@@ -88,7 +88,7 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
     }
 
     @Nullable
-    private ContextHandler<C> createCommandExecutorHandler(T command) {
+    private ContextHandler<C> createCommandExecutorHandler(final T command) {
         Executor executor = command.getExecutor();
         if (!executor.hasExecutor()) {
             return null;

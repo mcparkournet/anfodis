@@ -37,7 +37,7 @@ class WaterfallListenerPropertiesData extends ListenerPropertiesData<Event> {
         return this.priority;
     }
 
-    public void setPriority(@Nullable Byte priority) {
+    public void setPriority(@Nullable final Byte priority) {
         this.priority = priority;
     }
 }

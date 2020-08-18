@@ -36,17 +36,17 @@ public class ElementsMapperBuilder<E extends AnnotatedElement, T> {
     private Supplier<T> dataSupplier;
     private List<Function<T, SingleElementMapper<E>>> singleElementMappers = new ArrayList<>();
 
-    public ElementsMapperBuilder<E, T> data(T data) {
+    public ElementsMapperBuilder<E, T> data(final T data) {
         this.dataSupplier = () -> data;
         return this;
     }
 
-    public ElementsMapperBuilder<E, T> data(Supplier<T> dataSupplier) {
+    public ElementsMapperBuilder<E, T> data(final Supplier<T> dataSupplier) {
         this.dataSupplier = dataSupplier;
         return this;
     }
 
-    public ElementsMapperBuilder<E, T> singleElement(Function<T, SingleElementMapper<E>> elementMapper) {
+    public ElementsMapperBuilder<E, T> singleElement(final Function<T, SingleElementMapper<E>> elementMapper) {
         this.singleElementMappers.add(elementMapper);
         return this;
     }

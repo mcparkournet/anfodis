@@ -33,7 +33,7 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class JDAListener extends Listener<JDAContext, JDAListenerProperties> {
 
-    public JDAListener(Constructor<?> constructor, List<Injection> injections, Executor executor, JDAContext context, JDAListenerProperties properties) {
+    public JDAListener(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final JDAContext context, final JDAListenerProperties properties) {
         super(constructor, injections, executor, context, properties);
     }
 }

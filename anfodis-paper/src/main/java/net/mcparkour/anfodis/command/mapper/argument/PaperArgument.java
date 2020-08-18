@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.argument;
 
 public class PaperArgument extends CompletionArgument {
 
-    public PaperArgument(PaperArgumentData argumentData) {
+    public PaperArgument(final PaperArgumentData argumentData) {
         super(argumentData);
     }
 }

@@ -34,25 +34,25 @@ class CommandWrapper implements Command {
     private final VelocityCommandExecutor commandExecutor;
     private final VelocityCompletionExecutor completionExecutor;
 
-    CommandWrapper(VelocityCommandExecutor commandExecutor, VelocityCompletionExecutor completionExecutor) {
+    CommandWrapper(final VelocityCommandExecutor commandExecutor, final VelocityCompletionExecutor completionExecutor) {
         this.commandExecutor = commandExecutor;
         this.completionExecutor = completionExecutor;
     }
 
     @Override
-    public void execute(CommandSource source, @NonNull String[] args) {
+    public void execute(final CommandSource source, @NonNull final String[] args) {
         List<String> arguments = List.of(args);
         this.commandExecutor.execute(source, arguments);
     }
 
     @Override
-    public List<String> suggest(CommandSource source, @NonNull String[] currentArgs) {
+    public List<String> suggest(final CommandSource source, @NonNull final String[] currentArgs) {
         List<String> arguments = List.of(currentArgs);
         return this.completionExecutor.execute(source, arguments);
     }
 
     @Override
-    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
+    public boolean hasPermission(final CommandSource source, @NonNull final String[] args) {
         return true;
     }
 }

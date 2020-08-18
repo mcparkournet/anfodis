@@ -43,18 +43,18 @@ public class TestCommandSender {
         this(Locale.US, Set.of(), true);
     }
 
-    public TestCommandSender(Locale language, Set<String> permissions, boolean operator) {
+    public TestCommandSender(final Locale language, final Set<String> permissions, final boolean operator) {
         this.language = language;
         this.permissions = permissions;
         this.operator = operator;
         this.messages = new LinkedList<>();
     }
 
-    public boolean hasPermission(String permission) {
+    public boolean hasPermission(final String permission) {
         return this.operator || this.permissions.contains(permission);
     }
 
-    public void receiveMessage(String message) {
+    public void receiveMessage(final String message) {
         this.messages.add(message);
     }
 
@@ -77,7 +77,7 @@ public class TestCommandSender {
         return this.language;
     }
 
-    public void setLanguage(Locale language) {
+    public void setLanguage(final Locale language) {
         this.language = language;
     }
 }

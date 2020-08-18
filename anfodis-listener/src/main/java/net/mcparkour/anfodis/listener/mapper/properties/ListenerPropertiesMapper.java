@@ -40,11 +40,11 @@ public class ListenerPropertiesMapper<P extends ListenerProperties<E>, D extends
     private Supplier<D> propertiesDataSupplier;
     private BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional;
 
-    public ListenerPropertiesMapper(Class<A> listenerAnnotationType, Function<A, Class<? extends E>[]> listenedEventsExtractor, Function<D, P> propertiesSupplier, Supplier<D> propertiesDataSupplier) {
+    public ListenerPropertiesMapper(final Class<A> listenerAnnotationType, final Function<A, Class<? extends E>[]> listenedEventsExtractor, final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier) {
         this(listenerAnnotationType, listenedEventsExtractor, propertiesSupplier, propertiesDataSupplier, (data, builder) -> {});
     }
 
-    public ListenerPropertiesMapper(Class<A> listenerAnnotationType, Function<A, Class<? extends E>[]> listenedEventsExtractor, Function<D, P> propertiesSupplier, Supplier<D> propertiesDataSupplier, BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional) {
+    public ListenerPropertiesMapper(final Class<A> listenerAnnotationType, final Function<A, Class<? extends E>[]> listenedEventsExtractor, final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier, final BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional) {
         this.listenerAnnotationType = listenerAnnotationType;
         this.listenedEventsExtractor = listenedEventsExtractor;
         this.propertiesSupplier = propertiesSupplier;
@@ -53,7 +53,7 @@ public class ListenerPropertiesMapper<P extends ListenerProperties<E>, D extends
     }
 
     @Override
-    public P map(Iterable<Class<?>> elements) {
+    public P map(final Iterable<Class<?>> elements) {
         return new ElementsMapperBuilder<Class<?>, D>()
             .data(this.propertiesDataSupplier)
             .singleElement(data -> {

@@ -33,19 +33,19 @@ public class AnnotationConsumer<A extends Annotation> {
     private Class<A> annotationClass;
     private Consumer<A> annotationConsumer;
 
-    public AnnotationConsumer(Class<A> annotationClass, Consumer<A> annotationConsumer) {
+    public AnnotationConsumer(final Class<A> annotationClass, final Consumer<A> annotationConsumer) {
         this.annotationClass = annotationClass;
         this.annotationConsumer = annotationConsumer;
     }
 
-    public void accept(AnnotatedElement member) {
+    public void accept(final AnnotatedElement member) {
         A annotation = member.getAnnotation(this.annotationClass);
         if (annotation != null) {
             this.annotationConsumer.accept(annotation);
         }
     }
 
-    public boolean isAnnotationPresent(AnnotatedElement member) {
+    public boolean isAnnotationPresent(final AnnotatedElement member) {
         return member.isAnnotationPresent(this.annotationClass);
     }
 }

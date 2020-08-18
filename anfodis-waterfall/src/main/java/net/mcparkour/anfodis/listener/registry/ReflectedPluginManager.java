@@ -40,21 +40,21 @@ public class ReflectedPluginManager {
     private ReflectedEventBus eventBus;
     private Multimap<Plugin, Listener> listenersByPlugin;
 
-    public ReflectedPluginManager(PluginManager pluginManager) {
+    public ReflectedPluginManager(final PluginManager pluginManager) {
         EventBus eventBus = getFieldValue("eventBus", pluginManager);
         this.eventBus = new ReflectedEventBus(eventBus);
         this.listenersByPlugin = getFieldValue("listenersByPlugin", pluginManager);
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T getFieldValue(String fieldName, PluginManager pluginManager) {
+    private static <T> T getFieldValue(final String fieldName, final PluginManager pluginManager) {
         Field field = Reflections.getField(PluginManager.class, fieldName);
         Object fieldValue = Reflections.getFieldValue(field, pluginManager);
         Objects.requireNonNull(fieldValue, "Value of field " + fieldName + " is null");
         return (T) fieldValue;
     }
 
-    public void registerListener(Plugin plugin, Listener listener, Method listenMethod, Class<? extends Event> listenedEventType, byte priority) {
+    public void registerListener(final Plugin plugin, final Listener listener, final Method listenMethod, final Class<? extends Event> listenedEventType, final byte priority) {
         this.eventBus.register(listener, listenMethod, listenedEventType, priority);
         this.listenersByPlugin.put(plugin, listener);
     }

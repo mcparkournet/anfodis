@@ -37,14 +37,14 @@ public class ClassData {
 
     public ClassData() {}
 
-    public ClassData(@Nullable String first, String second, @Nullable String third) {
+    public ClassData(@Nullable final String first, final String second, @Nullable final String third) {
         this.first = first;
         this.second = second;
         this.third = third;
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (this == object) {
             return true;
         }
@@ -76,7 +76,7 @@ public class ClassData {
         return this.first;
     }
 
-    public void setFirst(@Nullable String first) {
+    public void setFirst(@Nullable final String first) {
         this.first = first;
     }
 
@@ -84,7 +84,7 @@ public class ClassData {
         return this.second;
     }
 
-    public void setSecond(String second) {
+    public void setSecond(final String second) {
         this.second = second;
     }
 
@@ -93,7 +93,7 @@ public class ClassData {
         return this.third;
     }
 
-    public void setThird(@Nullable String third) {
+    public void setThird(@Nullable final String third) {
         this.third = third;
     }
 }

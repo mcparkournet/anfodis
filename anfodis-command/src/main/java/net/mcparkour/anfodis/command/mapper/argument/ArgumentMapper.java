@@ -43,18 +43,18 @@ public class ArgumentMapper<A extends net.mcparkour.anfodis.command.mapper.argum
     private Supplier<D> argumentDataSupplier;
     private BiConsumer<D, SingleElementMapperBuilder<Field>> additional;
 
-    public ArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier) {
+    public ArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier) {
         this(argumentSupplier, argumentDataSupplier, (data, builder) -> {});
     }
 
-    public ArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier, BiConsumer<D, SingleElementMapperBuilder<Field>> additional) {
+    public ArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier, final BiConsumer<D, SingleElementMapperBuilder<Field>> additional) {
         this.argumentSupplier = argumentSupplier;
         this.argumentDataSupplier = argumentDataSupplier;
         this.additional = additional;
     }
 
     @Override
-    public List<A> map(Iterable<Field> elements) {
+    public List<A> map(final Iterable<Field> elements) {
         return new ElementsMapperBuilder<Field, D>()
             .data(this.argumentDataSupplier)
             .singleElement(data -> {

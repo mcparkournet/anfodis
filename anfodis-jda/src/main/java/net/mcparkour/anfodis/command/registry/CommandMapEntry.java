@@ -33,7 +33,7 @@ public class CommandMapEntry {
     private JDACommand command;
     private CommandContextHandler<JDACommandContext> handler;
 
-    public CommandMapEntry(JDACommand command, CommandContextHandler<JDACommandContext> handler) {
+    public CommandMapEntry(final JDACommand command, final CommandContextHandler<JDACommandContext> handler) {
         this.command = command;
         this.handler = handler;
     }

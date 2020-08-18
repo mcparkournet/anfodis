@@ -33,11 +33,11 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class CompletionArgumentMapper<A extends CompletionArgument, D extends CompletionArgumentData> extends ArgumentMapper<A, D> {
 
-    public CompletionArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier) {
+    public CompletionArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier) {
         this(argumentSupplier, argumentDataSupplier, (data, builder) -> {});
     }
 
-    public CompletionArgumentMapper(Function<D, A> argumentSupplier, Supplier<D> argumentDataSupplier, BiConsumer<D, SingleElementMapperBuilder<Field>> additional) {
+    public CompletionArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier, final BiConsumer<D, SingleElementMapperBuilder<Field>> additional) {
         super(argumentSupplier, argumentDataSupplier, (data, builder) -> {
             builder.annotation(Completion.class, completion -> data.setCompletionCodecKey(completion.value()));
             additional.accept(data, builder);

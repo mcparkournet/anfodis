@@ -32,18 +32,18 @@ public class CodecRegistry<T> {
     private Map<Class<?>, T> typedCodecs;
     private Map<String, T> keyedCodecs;
 
-    public CodecRegistry(Map<Class<?>, T> typedCodecs, Map<String, T> keyedCodecs) {
+    public CodecRegistry(final Map<Class<?>, T> typedCodecs, final Map<String, T> keyedCodecs) {
         this.typedCodecs = typedCodecs;
         this.keyedCodecs = keyedCodecs;
     }
 
     @Nullable
-    public T getTypedCodec(Class<?> type) {
+    public T getTypedCodec(final Class<?> type) {
         return this.typedCodecs.get(type);
     }
 
     @Nullable
-    public T getKeyedCodec(String key) {
+    public T getKeyedCodec(final String key) {
         return this.keyedCodecs.get(key);
     }
 

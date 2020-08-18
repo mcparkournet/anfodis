@@ -45,7 +45,7 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
     private Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap;
     private CommandContextSupplier<C, S> contextSupplier;
 
-    public CompletionHandler(T command, CodecRegistry<CompletionCodec> completionCodecRegistry, Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap, CommandContextSupplier<C, S> contextSupplier) {
+    public CompletionHandler(final T command, final CodecRegistry<CompletionCodec> completionCodecRegistry, final Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap, final CommandContextSupplier<C, S> contextSupplier) {
         this.command = command;
         this.completionCodecRegistry = completionCodecRegistry;
         this.subCommandHandlerMap = subCommandHandlerMap;
@@ -53,7 +53,7 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
     }
 
     @Override
-    public List<String> handle(C context) {
+    public List<String> handle(final C context) {
         Permissible permissible = context.getSender();
         Permission permission = context.getPermission();
         if (!permissible.hasPermission(permission)) {
@@ -80,7 +80,7 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
         return handler.handle(subCommandContext);
     }
 
-    private C createSubCommandContext(List<String> subCommandArguments, C context, T subCommand) {
+    private C createSubCommandContext(final List<String> subCommandArguments, final C context, final T subCommand) {
         CommandSender<S> sender = context.getSender();
         int size = subCommandArguments.size();
         List<String> arguments = subCommandArguments.subList(1, size);
@@ -88,14 +88,14 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
         return this.contextSupplier.supply(sender, arguments, permission);
     }
 
-    private Permission createSubCommandPermission(C context, T subCommand) {
+    private Permission createSubCommandPermission(final C context, final T subCommand) {
         Permission permission = context.getPermission();
         CommandProperties properties = subCommand.getProperties();
         Permission subCommandPermission = properties.getPermission();
         return permission.withLast(subCommandPermission);
     }
 
-    private boolean isMatching(String argument, T command) {
+    private boolean isMatching(final String argument, final T command) {
         CommandProperties properties = command.getProperties();
         String name = properties.getName();
         if (argument.equalsIgnoreCase(name)) {
@@ -106,7 +106,7 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
         return aliases.contains(lowerCaseArgument);
     }
 
-    private List<String> getCompletions(C context, List<String> arguments) {
+    private List<String> getCompletions(final C context, final List<String> arguments) {
         List<String> completions = new ArrayList<>(0);
         if (arguments.size() == 1) {
             List<String> subCommandsCompletions = getSubCommandsCompletions(context, arguments);
@@ -121,12 +121,12 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
         return completions;
     }
 
-    private List<String> getSubCommandsCompletions(C context, List<String> arguments) {
+    private List<String> getSubCommandsCompletions(final C context, final List<String> arguments) {
         Permission contextPermission = context.getPermission();
         Permissible permissible = context.getSender();
         String firstArgument = arguments.get(0);
         List<String> completions = new ArrayList<>(0);
-        for (T subCommand : this.command.getSubCommands()) {
+        for (final T subCommand : this.command.getSubCommands()) {
             CommandProperties properties = subCommand.getProperties();
             Permission subCommandPermission = properties.getPermission();
             Permission permission = contextPermission.withLast(subCommandPermission);
@@ -144,7 +144,7 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
         return completions;
     }
 
-    private List<String> handleExecutor(C context, List<String> arguments) {
+    private List<String> handleExecutor(final C context, final List<String> arguments) {
         List<? extends CompletionArgument> commandArguments = this.command.getArguments();
         int argumentsCount = arguments.size();
         if (commandArguments.isEmpty() || argumentsCount > commandArguments.size()) {

@@ -30,7 +30,7 @@ public class VelocityListenerProperties extends ListenerProperties<Object> {
 
     private PostOrder priority;
 
-    public VelocityListenerProperties(VelocityListenerPropertiesData propertiesData) {
+    public VelocityListenerProperties(final VelocityListenerPropertiesData propertiesData) {
         super(propertiesData);
         PostOrder priority = propertiesData.getPriority();
         this.priority = priority == null ? PostOrder.NORMAL : priority;

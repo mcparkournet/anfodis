@@ -42,35 +42,35 @@ public class Context {
     @Nullable
     private Field receiverField;
 
-    public Context(ContextData contextData) {
+    public Context(final ContextData contextData) {
         this.argumentsField = contextData.getArgumentsField();
         this.requiredPermissionField = contextData.getRequiredPermissionField();
         this.senderField = contextData.getSenderField();
         this.receiverField = contextData.getReceiverField();
     }
 
-    public void setArgumentsField(Object instance, List<String> arguments) {
+    public void setArgumentsField(final Object instance, final List<String> arguments) {
         if (this.argumentsField == null) {
             return;
         }
         Reflections.setFieldValue(this.argumentsField, instance, arguments);
     }
 
-    public void setRequiredPermissionField(Object instance, Permission requiredPermission) {
+    public void setRequiredPermissionField(final Object instance, final Permission requiredPermission) {
         if (this.requiredPermissionField == null) {
             return;
         }
         Reflections.setFieldValue(this.requiredPermissionField, instance, requiredPermission);
     }
 
-    public void setSenderField(Object instance, Object sender) {
+    public void setSenderField(final Object instance, final Object sender) {
         if (this.senderField == null) {
             return;
         }
         Reflections.setFieldValue(this.senderField, instance, sender);
     }
 
-    public void setReceiverField(Object instance, MessageReceiver receiver) {
+    public void setReceiverField(final Object instance, final MessageReceiver receiver) {
         if (this.receiverField == null) {
             return;
         }

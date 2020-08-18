@@ -44,19 +44,19 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 
     private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
 
-    public CommandExecutorHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
+    public CommandExecutorHandler(final T root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
         super(root, injectionCodecRegistry);
         this.argumentCodecRegistry = argumentCodecRegistry;
     }
 
     @Override
-    public void handle(C context, Object instance) {
+    public void handle(final C context, final Object instance) {
         setArguments(context, instance);
         setContext(context, instance);
         super.handle(context, instance);
     }
 
-    private void setArguments(C context, Object commandInstance) {
+    private void setArguments(final C context, final Object commandInstance) {
         T command = getRoot();
         List<? extends Argument> commandArguments = command.getArguments();
         int commandArgumentsSize = commandArguments.size();
@@ -74,7 +74,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
     }
 
     @Nullable
-    private Object getArgumentValue(List<String> arguments, Argument commandArgument, int index) {
+    private Object getArgumentValue(final List<String> arguments, final Argument commandArgument, final int index) {
         if (commandArgument.isList()) {
             return getListArgumentValue(arguments, commandArgument, index);
         }
@@ -83,7 +83,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
         return codec.parse(argument);
     }
 
-    private List<?> getListArgumentValue(List<String> arguments, Argument commandArgument, int startIndex) {
+    private List<?> getListArgumentValue(final List<String> arguments, final Argument commandArgument, final int startIndex) {
         int size = arguments.size();
         ArgumentCodec<?> codec = commandArgument.getGenericTypeCodec(this.argumentCodecRegistry, 0);
         return IntStream.range(startIndex, size)
@@ -92,7 +92,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
             .collect(Collectors.toList());
     }
 
-    private void setContext(C context, Object commandInstance) {
+    private void setContext(final C context, final Object commandInstance) {
         T command = getRoot();
         Context commandContext = command.getContext();
         List<String> arguments = context.getArguments();

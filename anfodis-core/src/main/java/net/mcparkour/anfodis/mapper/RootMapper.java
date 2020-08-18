@@ -41,15 +41,15 @@ public interface RootMapper<T extends Root> {
 
     T map(Class<?> annotatedClass);
 
-    default Constructor<?> getConstructor(Class<?> type) {
+    default Constructor<?> getConstructor(final Class<?> type) {
         return Reflections.getSerializationConstructor(type);
     }
 
-    default List<Injection> getInjections(Field[] fields) {
+    default List<Injection> getInjections(final Field[] fields) {
         return INJECTION_MAPPER.map(fields);
     }
 
-    default Executor getExecutor(Method[] methods) {
+    default Executor getExecutor(final Method[] methods) {
         return EXECUTOR_MAPPER.map(methods);
     }
 }

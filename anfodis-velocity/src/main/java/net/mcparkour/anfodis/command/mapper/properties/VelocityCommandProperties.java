@@ -31,7 +31,7 @@ public class VelocityCommandProperties extends CommandProperties {
 
     private Set<Class<? extends CommandSource>> senderTypes;
 
-    public VelocityCommandProperties(VelocityCommandPropertiesData propertiesData) {
+    public VelocityCommandProperties(final VelocityCommandPropertiesData propertiesData) {
         super(propertiesData);
         Class<? extends CommandSource>[] senderTypes = propertiesData.getSenderTypes();
         this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);

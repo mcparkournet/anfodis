@@ -32,7 +32,7 @@ public class FloatArgumentCodec implements ArgumentCodec<Float> {
 
     @Override
     @Nullable
-    public Float parse(String stringValue) {
+    public Float parse(final String stringValue) {
         return NumericParser.parseFloat(stringValue);
     }
 }

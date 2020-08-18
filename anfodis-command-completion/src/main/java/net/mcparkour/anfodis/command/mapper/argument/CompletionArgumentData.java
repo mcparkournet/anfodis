@@ -36,7 +36,7 @@ class CompletionArgumentData extends ArgumentData {
         return this.completionCodecKey;
     }
 
-    public void setCompletionCodecKey(@Nullable String completionCodecKey) {
+    public void setCompletionCodecKey(@Nullable final String completionCodecKey) {
         this.completionCodecKey = completionCodecKey;
     }
 }

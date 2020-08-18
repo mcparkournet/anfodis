@@ -39,7 +39,7 @@ class InjectionData {
         return this.injectionField;
     }
 
-    public void setInjectionField(@Nullable Field injectionField) {
+    public void setInjectionField(@Nullable final Field injectionField) {
         this.injectionField = injectionField;
     }
 
@@ -48,7 +48,7 @@ class InjectionData {
         return this.codecKey;
     }
 
-    public void setCodecKey(@Nullable String codecKey) {
+    public void setCodecKey(@Nullable final String codecKey) {
         this.codecKey = codecKey;
     }
 }

@@ -35,14 +35,14 @@ public class MethodData {
 
     public MethodData() {}
 
-    public MethodData(Method beforeMethod, Method executorMethod, Method afterMethod) {
+    public MethodData(final Method beforeMethod, final Method executorMethod, final Method afterMethod) {
         this.beforeMethod = beforeMethod;
         this.executorMethod = executorMethod;
         this.afterMethod = afterMethod;
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (this == object) {
             return true;
         }
@@ -73,7 +73,7 @@ public class MethodData {
         return this.beforeMethod;
     }
 
-    public void setBeforeMethod(Method beforeMethod) {
+    public void setBeforeMethod(final Method beforeMethod) {
         this.beforeMethod = beforeMethod;
     }
 
@@ -81,7 +81,7 @@ public class MethodData {
         return this.executorMethod;
     }
 
-    public void setExecutorMethod(Method executorMethod) {
+    public void setExecutorMethod(final Method executorMethod) {
         this.executorMethod = executorMethod;
     }
 
@@ -89,7 +89,7 @@ public class MethodData {
         return this.afterMethod;
     }
 
-    public void setAfterMethod(Method afterMethod) {
+    public void setAfterMethod(final Method afterMethod) {
         this.afterMethod = afterMethod;
     }
 }

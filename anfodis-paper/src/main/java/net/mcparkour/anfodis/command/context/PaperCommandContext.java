@@ -29,7 +29,7 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class PaperCommandContext extends CommandContext<org.bukkit.command.CommandSender> {
 
-    public PaperCommandContext(CommandSender<org.bukkit.command.CommandSender> sender, List<String> arguments, Permission permission) {
+    public PaperCommandContext(final CommandSender<org.bukkit.command.CommandSender> sender, final List<String> arguments, final Permission permission) {
         super(sender, arguments, permission);
     }
 }

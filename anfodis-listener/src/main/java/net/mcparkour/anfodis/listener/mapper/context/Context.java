@@ -33,11 +33,11 @@ public class Context {
     @Nullable
     private Field eventField;
 
-    public Context(ContextData contextData) {
+    public Context(final ContextData contextData) {
         this.eventField = contextData.getEventField();
     }
 
-    public void setEventField(Object instance, Object event) {
+    public void setEventField(final Object instance, final Object event) {
         if (this.eventField == null) {
             return;
         }

@@ -37,7 +37,7 @@ class WaterfallCommandPropertiesData extends CommandPropertiesData {
         return this.senderTypes;
     }
 
-    public void setSenderTypes(@Nullable Class<? extends CommandSender>[] senderTypes) {
+    public void setSenderTypes(@Nullable final Class<? extends CommandSender>[] senderTypes) {
         this.senderTypes = senderTypes;
     }
 }

@@ -29,7 +29,7 @@ public interface InjectionCodec<T> {
 
     T getInjection();
 
-    static <T> InjectionCodec<T> reference(T injection) {
+    static <T> InjectionCodec<T> reference(final T injection) {
         return () -> injection;
     }
 }

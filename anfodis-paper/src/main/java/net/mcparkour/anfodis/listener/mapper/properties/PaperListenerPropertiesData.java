@@ -40,7 +40,7 @@ class PaperListenerPropertiesData extends ListenerPropertiesData<Event> {
         return this.priority;
     }
 
-    public void setPriority(@Nullable EventPriority priority) {
+    public void setPriority(@Nullable final EventPriority priority) {
         this.priority = priority;
     }
 
@@ -49,7 +49,7 @@ class PaperListenerPropertiesData extends ListenerPropertiesData<Event> {
         return this.ignoreCancelled;
     }
 
-    public void setIgnoreCancelled(boolean ignoreCancelled) {
+    public void setIgnoreCancelled(final boolean ignoreCancelled) {
         this.ignoreCancelled = ignoreCancelled;
     }
 }

@@ -46,7 +46,7 @@ class CommandPropertiesData {
         return this.name;
     }
 
-    public void setName(@Nullable String name) {
+    public void setName(@Nullable final String name) {
         this.name = name;
     }
 
@@ -55,7 +55,7 @@ class CommandPropertiesData {
         return this.description;
     }
 
-    public void setDescription(@Nullable String description) {
+    public void setDescription(@Nullable final String description) {
         this.description = description;
     }
 
@@ -64,7 +64,7 @@ class CommandPropertiesData {
         return this.descriptionTranslationId;
     }
 
-    public void setDescriptionTranslationId(@Nullable String descriptionTranslationId) {
+    public void setDescriptionTranslationId(@Nullable final String descriptionTranslationId) {
         this.descriptionTranslationId = descriptionTranslationId;
     }
 
@@ -73,7 +73,7 @@ class CommandPropertiesData {
         return this.aliases;
     }
 
-    public void setAliases(@Nullable String[] aliases) {
+    public void setAliases(@Nullable final String[] aliases) {
         this.aliases = aliases;
     }
 
@@ -82,7 +82,7 @@ class CommandPropertiesData {
         return this.aliasesTranslationId;
     }
 
-    public void setAliasesTranslationId(@Nullable String aliasesTranslationId) {
+    public void setAliasesTranslationId(@Nullable final String aliasesTranslationId) {
         this.aliasesTranslationId = aliasesTranslationId;
     }
 
@@ -91,7 +91,7 @@ class CommandPropertiesData {
         return this.permission;
     }
 
-    public void setPermission(@Nullable String permission) {
+    public void setPermission(@Nullable final String permission) {
         this.permission = permission;
     }
 }

@@ -32,7 +32,7 @@ public class JDAChannelSender implements ChannelSender {
     private User user;
     private PrivateChannel channel;
 
-    public JDAChannelSender(User user, PrivateChannel channel) {
+    public JDAChannelSender(final User user, final PrivateChannel channel) {
         this.user = user;
         this.channel = channel;
     }

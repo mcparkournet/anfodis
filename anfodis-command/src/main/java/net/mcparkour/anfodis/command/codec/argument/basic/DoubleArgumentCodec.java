@@ -32,7 +32,7 @@ public class DoubleArgumentCodec implements ArgumentCodec<Double> {
 
     @Override
     @Nullable
-    public Double parse(String stringValue) {
+    public Double parse(final String stringValue) {
         return NumericParser.parseDouble(stringValue);
     }
 }

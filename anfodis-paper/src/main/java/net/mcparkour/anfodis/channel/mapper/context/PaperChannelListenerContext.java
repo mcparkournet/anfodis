@@ -37,19 +37,19 @@ public class PaperChannelListenerContext {
     @Nullable
     private Field sourceField;
 
-    public PaperChannelListenerContext(PaperChannelListenerContextData data) {
+    public PaperChannelListenerContext(final PaperChannelListenerContextData data) {
         this.messageField = data.getMessageField();
         this.sourceField = data.getSourceField();
     }
 
-    public void setMessageField(Object instance, ChannelMessage message) {
+    public void setMessageField(final Object instance, final ChannelMessage message) {
         if (this.messageField == null) {
             return;
         }
         Reflections.setFieldValue(this.messageField, instance, message);
     }
 
-    public void setSourceField(Object instance, Player source) {
+    public void setSourceField(final Object instance, final Player source) {
         if (this.sourceField == null) {
             return;
         }

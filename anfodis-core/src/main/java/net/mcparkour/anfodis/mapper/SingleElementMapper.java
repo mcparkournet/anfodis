@@ -40,12 +40,12 @@ public class SingleElementMapper<E extends AnnotatedElement> {
         return new SingleElementMapperBuilder<>();
     }
 
-    public SingleElementMapper(List<AnnotationConsumer<? extends Annotation>> annotations, @Nullable Consumer<E> elementConsumer) {
+    public SingleElementMapper(final List<AnnotationConsumer<? extends Annotation>> annotations, @Nullable final Consumer<E> elementConsumer) {
         this.annotations = annotations;
         this.elementConsumer = elementConsumer;
     }
 
-    public void accept(E element) {
+    public void accept(final E element) {
         if (this.elementConsumer != null) {
             this.elementConsumer.accept(element);
         }

@@ -34,7 +34,7 @@ public class CommandContext<T> extends RootContext {
     private List<String> arguments;
     private Permission permission;
 
-    public CommandContext(CommandSender<T> sender, List<String> arguments, Permission permission) {
+    public CommandContext(final CommandSender<T> sender, final List<String> arguments, final Permission permission) {
         this.sender = sender;
         this.arguments = arguments;
         this.permission = permission;

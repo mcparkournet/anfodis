@@ -38,17 +38,17 @@ public abstract class AbstractListenerRegistry<T extends Listener<?, ?>, C exten
 
     private ListenerHandlerSupplier<T, C> listenerHandlerSupplier;
 
-    public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+    public AbstractListenerRegistry(final Class<? extends Annotation> annotation, final RootMapper<T> mapper, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
         this(annotation, mapper, ListenerHandler::new, injectionCodecRegistry);
     }
 
-    public AbstractListenerRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, ListenerHandlerSupplier<T, C> listenerHandlerSupplier, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+    public AbstractListenerRegistry(final Class<? extends Annotation> annotation, final RootMapper<T> mapper, final ListenerHandlerSupplier<T, C> listenerHandlerSupplier, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
         super(annotation, mapper, injectionCodecRegistry);
         this.listenerHandlerSupplier = listenerHandlerSupplier;
     }
 
     @Override
-    public void register(T root) {
+    public void register(final T root) {
         CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
         ContextHandler<C> handler = this.listenerHandlerSupplier.supply(root, injectionCodecRegistry);
         register(root, handler);

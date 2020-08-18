@@ -33,7 +33,7 @@ public class ChannelListenerContext extends RootContext {
     private Player source;
     private ChannelMessage message;
 
-    public ChannelListenerContext(Player source, ChannelMessage message) {
+    public ChannelListenerContext(final Player source, final ChannelMessage message) {
         this.source = source;
         this.message = message;
     }

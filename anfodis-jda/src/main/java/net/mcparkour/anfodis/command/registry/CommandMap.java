@@ -41,17 +41,17 @@ public class CommandMap {
         this.commandMap = new HashMap<>(16);
     }
 
-    public void register(JDACommand command, CommandContextHandler<JDACommandContext> handler) {
+    public void register(final JDACommand command, final CommandContextHandler<JDACommandContext> handler) {
         CommandMapEntry entry = new CommandMapEntry(command, handler);
         JDACommandProperties properties = command.getProperties();
         Set<String> names = properties.getAllNames();
-        for (String name : names) {
+        for (final String name : names) {
             this.commandMap.put(name, entry);
         }
     }
 
     @Nullable
-    public CommandMapEntry getCommand(String name) {
+    public CommandMapEntry getCommand(final String name) {
         return this.commandMap.get(name);
     }
 

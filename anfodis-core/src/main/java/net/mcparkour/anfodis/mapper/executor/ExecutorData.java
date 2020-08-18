@@ -41,7 +41,7 @@ class ExecutorData {
         return this.beforeMethod;
     }
 
-    public void setBeforeMethod(@Nullable Method beforeMethod) {
+    public void setBeforeMethod(@Nullable final Method beforeMethod) {
         this.beforeMethod = beforeMethod;
     }
 
@@ -50,7 +50,7 @@ class ExecutorData {
         return this.executorMethod;
     }
 
-    public void setExecutorMethod(@Nullable Method executorMethod) {
+    public void setExecutorMethod(@Nullable final Method executorMethod) {
         this.executorMethod = executorMethod;
     }
 
@@ -59,7 +59,7 @@ class ExecutorData {
         return this.afterMethod;
     }
 
-    public void setAfterMethod(@Nullable Method afterMethod) {
+    public void setAfterMethod(@Nullable final Method afterMethod) {
         this.afterMethod = afterMethod;
     }
 }

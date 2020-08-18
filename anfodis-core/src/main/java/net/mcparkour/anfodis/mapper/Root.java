@@ -36,7 +36,7 @@ public class Root {
     private List<Injection> injections;
     private Executor executor;
 
-    public Root(Constructor<?> constructor, List<Injection> injections, Executor executor) {
+    public Root(final Constructor<?> constructor, final List<Injection> injections, final Executor executor) {
         this.constructor = constructor;
         this.injections = injections;
         this.executor = executor;

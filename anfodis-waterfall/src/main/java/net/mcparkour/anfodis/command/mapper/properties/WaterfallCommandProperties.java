@@ -31,7 +31,7 @@ public class WaterfallCommandProperties extends CommandProperties {
 
     private Set<Class<? extends CommandSender>> senderTypes;
 
-    public WaterfallCommandProperties(WaterfallCommandPropertiesData propertiesData) {
+    public WaterfallCommandProperties(final WaterfallCommandPropertiesData propertiesData) {
         super(propertiesData);
         Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
         this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);

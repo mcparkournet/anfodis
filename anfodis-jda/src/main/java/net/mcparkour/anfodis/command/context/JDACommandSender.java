@@ -35,13 +35,13 @@ public class JDACommandSender extends AbstractCommandSender<ChannelSender> {
 
     private PermissionMap permissionMap;
 
-    public JDACommandSender(ChannelSender sender, MessageReceiver receiver, PermissionMap permissionMap) {
+    public JDACommandSender(final ChannelSender sender, final MessageReceiver receiver, final PermissionMap permissionMap) {
         super(sender, receiver);
         this.permissionMap = permissionMap;
     }
 
     @Override
-    public boolean hasPermission(String name) {
+    public boolean hasPermission(final String name) {
         ChannelSender sender = getSender();
         User user = sender.getUser();
         List<Permission> permissions = this.permissionMap.getPermissions(user);

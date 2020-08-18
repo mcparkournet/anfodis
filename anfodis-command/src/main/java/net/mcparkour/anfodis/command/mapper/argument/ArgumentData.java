@@ -43,7 +43,7 @@ class ArgumentData {
         return this.argumentField;
     }
 
-    public void setArgumentField(@Nullable Field argumentField) {
+    public void setArgumentField(@Nullable final Field argumentField) {
         this.argumentField = argumentField;
     }
 
@@ -52,7 +52,7 @@ class ArgumentData {
         return this.name;
     }
 
-    public void setName(@Nullable String name) {
+    public void setName(@Nullable final String name) {
         this.name = name;
     }
 
@@ -61,7 +61,7 @@ class ArgumentData {
         return this.argumentCodecKey;
     }
 
-    public void setArgumentCodecKey(@Nullable String argumentCodecKey) {
+    public void setArgumentCodecKey(@Nullable final String argumentCodecKey) {
         this.argumentCodecKey = argumentCodecKey;
     }
 
@@ -70,7 +70,7 @@ class ArgumentData {
         return this.optional;
     }
 
-    public void setOptional(@Nullable Boolean optional) {
+    public void setOptional(@Nullable final Boolean optional) {
         this.optional = optional;
     }
 }

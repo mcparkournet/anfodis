@@ -40,24 +40,24 @@ public class JDAPermissionMap implements PermissionMap {
     }
 
     @Override
-    public void addPermission(User user, Permission permission) {
+    public void addPermission(final User user, final Permission permission) {
         List<Permission> currentPermissions = getCurrentPermissions(user);
         currentPermissions.add(permission);
     }
 
     @Override
-    public void addPermissions(User user, List<Permission> permissions) {
+    public void addPermissions(final User user, final List<Permission> permissions) {
         List<Permission> currentPermissions = getCurrentPermissions(user);
         currentPermissions.addAll(permissions);
     }
 
-    private List<Permission> getCurrentPermissions(User user) {
+    private List<Permission> getCurrentPermissions(final User user) {
         long id = user.getIdLong();
         return this.map.computeIfAbsent(id, key -> new ArrayList<>(4));
     }
 
     @Override
-    public List<Permission> getPermissions(User user) {
+    public List<Permission> getPermissions(final User user) {
         long id = user.getIdLong();
         List<Permission> permissions = this.map.get(id);
         if (permissions == null) {

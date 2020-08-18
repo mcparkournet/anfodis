@@ -43,18 +43,18 @@ public class CommandPropertiesMapper<P extends CommandProperties, D extends Comm
     private Supplier<D> propertiesDataSupplier;
     private BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional;
 
-    public CommandPropertiesMapper(Function<D, P> propertiesSupplier, Supplier<D> propertiesDataSupplier) {
+    public CommandPropertiesMapper(final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier) {
         this(propertiesSupplier, propertiesDataSupplier, (data, builder) -> {});
     }
 
-    public CommandPropertiesMapper(Function<D, P> propertiesSupplier, Supplier<D> propertiesDataSupplier, BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional) {
+    public CommandPropertiesMapper(final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier, final BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional) {
         this.propertiesSupplier = propertiesSupplier;
         this.propertiesDataSupplier = propertiesDataSupplier;
         this.additional = additional;
     }
 
     @Override
-    public P map(Iterable<Class<?>> elements) {
+    public P map(final Iterable<Class<?>> elements) {
         return new ElementsMapperBuilder<Class<?>, D>()
             .data(this.propertiesDataSupplier)
             .singleElement(data -> {

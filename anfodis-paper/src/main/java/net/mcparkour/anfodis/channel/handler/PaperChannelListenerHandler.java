@@ -34,17 +34,17 @@ import org.bukkit.entity.Player;
 
 public class PaperChannelListenerHandler extends RootHandler<PaperChannelListener, ChannelListenerContext> {
 
-    public PaperChannelListenerHandler(PaperChannelListener root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+    public PaperChannelListenerHandler(final PaperChannelListener root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
         super(root, injectionCodecRegistry);
     }
 
     @Override
-    public void handle(ChannelListenerContext context, Object instance) {
+    public void handle(final ChannelListenerContext context, final Object instance) {
         setContext(context, instance);
         super.handle(context, instance);
     }
 
-    private void setContext(ChannelListenerContext context, Object channelListenerInstance) {
+    private void setContext(final ChannelListenerContext context, final Object channelListenerInstance) {
         PaperChannelListener channelListener = getRoot();
         PaperChannelListenerContext channelListenerContext = channelListener.getContext();
         ChannelMessage message = context.getMessage();

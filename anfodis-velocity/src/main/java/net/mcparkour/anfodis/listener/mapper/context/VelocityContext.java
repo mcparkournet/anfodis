@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.listener.mapper.context;
 
 public class VelocityContext extends Context {
 
-    public VelocityContext(VelocityContextData contextData) {
+    public VelocityContext(final VelocityContextData contextData) {
         super(contextData);
     }
 }

@@ -28,7 +28,7 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public interface Permissible {
 
-    default boolean hasPermission(Permission permission) {
+    default boolean hasPermission(final Permission permission) {
         if (permission.isEmpty()) {
             return true;
         }

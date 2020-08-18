@@ -36,12 +36,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, WaterfallCommandContext, net.md_5.bungee.api.CommandSender> {
 
-    public WaterfallCommandHandler(WaterfallCommand command, Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers, @Nullable ContextHandler<WaterfallCommandContext> executorHandler, CommandContextSupplier<WaterfallCommandContext, net.md_5.bungee.api.CommandSender> contextSupplier) {
+    public WaterfallCommandHandler(final WaterfallCommand command, final Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers, @Nullable final ContextHandler<WaterfallCommandContext> executorHandler, final CommandContextSupplier<WaterfallCommandContext, net.md_5.bungee.api.CommandSender> contextSupplier) {
         super(command, subCommandHandlers, executorHandler, contextSupplier);
     }
 
     @Override
-    public void handle(WaterfallCommandContext context) {
+    public void handle(final WaterfallCommandContext context) {
         if (!checkSenders(context)) {
             CommandSender<net.md_5.bungee.api.CommandSender> sender = context.getSender();
             MessageReceiver receiver = sender.getReceiver();
@@ -51,7 +51,7 @@ public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, Wa
         super.handle(context);
     }
 
-    private boolean checkSenders(WaterfallCommandContext context) {
+    private boolean checkSenders(final WaterfallCommandContext context) {
         WaterfallCommand command = getCommand();
         WaterfallCommandProperties properties = command.getProperties();
         Set<Class<? extends net.md_5.bungee.api.CommandSender>> senders = properties.getSenderTypes();

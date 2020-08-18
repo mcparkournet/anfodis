@@ -32,7 +32,7 @@ public class ByteArgumentCodec implements ArgumentCodec<Byte> {
 
     @Override
     @Nullable
-    public Byte parse(String stringValue) {
+    public Byte parse(final String stringValue) {
         return NumericParser.parseByte(stringValue);
     }
 }

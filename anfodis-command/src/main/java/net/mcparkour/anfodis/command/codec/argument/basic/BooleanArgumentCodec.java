@@ -31,7 +31,7 @@ public class BooleanArgumentCodec implements ArgumentCodec<Boolean> {
 
     @Override
     @Nullable
-    public Boolean parse(String stringValue) {
+    public Boolean parse(final String stringValue) {
         return Boolean.parseBoolean(stringValue);
     }
 }

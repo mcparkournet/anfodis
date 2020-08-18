@@ -32,7 +32,7 @@ public class IntegerArgumentCodec implements ArgumentCodec<Integer> {
 
     @Override
     @Nullable
-    public Integer parse(String stringValue) {
+    public Integer parse(final String stringValue) {
         return NumericParser.parseInteger(stringValue);
     }
 }

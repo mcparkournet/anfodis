@@ -30,7 +30,7 @@ public class PaperChannelListenerProperties {
 
     private Set<String> channels;
 
-    public PaperChannelListenerProperties(PaperChannelListenerPropertiesData data) {
+    public PaperChannelListenerProperties(final PaperChannelListenerPropertiesData data) {
         String[] channels = data.getChannels();
         this.channels = channels == null ? Set.of() : Set.of(channels);
     }

@@ -34,13 +34,13 @@ public class CompletionArgument extends Argument {
     @Nullable
     private String codecKey;
 
-    public CompletionArgument(CompletionArgumentData argumentData) {
+    public CompletionArgument(final CompletionArgumentData argumentData) {
         super(argumentData);
         this.codecKey = argumentData.getCompletionCodecKey();
     }
 
     @Nullable
-    public CompletionCodec getCompletionCodec(CodecRegistry<CompletionCodec> registry) {
+    public CompletionCodec getCompletionCodec(final CodecRegistry<CompletionCodec> registry) {
         if (this.codecKey == null) {
             return null;
         }
@@ -48,7 +48,7 @@ public class CompletionArgument extends Argument {
         return this.codecKey.isEmpty() ? getTypedCodec(registry, argumentClass) : getKeyedCodec(registry, this.codecKey);
     }
 
-    private CompletionCodec getTypedCodec(CodecRegistry<CompletionCodec> registry, Class<?> type) {
+    private CompletionCodec getTypedCodec(final CodecRegistry<CompletionCodec> registry, final Class<?> type) {
         CompletionCodec codec = registry.getTypedCodec(type);
         if (codec == null) {
             throw new UnknownCodecException("Cannot find completion codec for type " + type);
@@ -56,7 +56,7 @@ public class CompletionArgument extends Argument {
         return codec;
     }
 
-    private CompletionCodec getKeyedCodec(CodecRegistry<CompletionCodec> registry, String key) {
+    private CompletionCodec getKeyedCodec(final CodecRegistry<CompletionCodec> registry, final String key) {
         CompletionCodec codec = registry.getKeyedCodec(key);
         if (codec == null) {
             throw new UnknownCodecException("Cannot find completion codec for key '" + key + "'");

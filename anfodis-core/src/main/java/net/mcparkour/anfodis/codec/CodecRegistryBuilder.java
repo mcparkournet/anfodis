@@ -32,17 +32,17 @@ public class CodecRegistryBuilder<T> {
     private Map<Class<?>, T> typedCodecs = new HashMap<>(16);
     private Map<String, T> keyedCodecs = new HashMap<>(4);
 
-    public CodecRegistryBuilder<T> typed(Class<?> type, T codec) {
+    public CodecRegistryBuilder<T> typed(final Class<?> type, final T codec) {
         this.typedCodecs.put(type, codec);
         return this;
     }
 
-    public CodecRegistryBuilder<T> keyed(String key, T codec) {
+    public CodecRegistryBuilder<T> keyed(final String key, final T codec) {
         this.keyedCodecs.put(key, codec);
         return this;
     }
 
-    public CodecRegistryBuilder<T> with(CodecRegistry<T> registry) {
+    public CodecRegistryBuilder<T> with(final CodecRegistry<T> registry) {
         Map<Class<?>, T> typedCodecs = registry.getTypedCodecs();
         this.typedCodecs.putAll(typedCodecs);
         Map<String, T> keyedCodecs = registry.getKeyedCodecs();

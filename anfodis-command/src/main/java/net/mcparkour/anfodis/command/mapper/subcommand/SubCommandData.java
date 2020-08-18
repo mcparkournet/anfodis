@@ -37,7 +37,7 @@ class SubCommandData {
         return this.subCommandField;
     }
 
-    public void setSubCommandField(@Nullable Field subCommandField) {
+    public void setSubCommandField(@Nullable final Field subCommandField) {
         this.subCommandField = subCommandField;
     }
 }

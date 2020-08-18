@@ -36,7 +36,7 @@ final class CommandWrapper extends Command {
     private PaperCommandExecutor commandExecutor;
     private PaperCompletionExecutor completionExecutor;
 
-    CommandWrapper(String name, String description, String usageMessage, List<String> aliases, String permission, PaperCommandExecutor commandExecutor, PaperCompletionExecutor completionExecutor) {
+    CommandWrapper(final String name, final String description, final String usageMessage, final List<String> aliases, final String permission, final PaperCommandExecutor commandExecutor, final PaperCompletionExecutor completionExecutor) {
         super(name, description, usageMessage, aliases);
         setPermission(permission);
         this.commandExecutor = commandExecutor;
@@ -44,7 +44,7 @@ final class CommandWrapper extends Command {
     }
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+    public boolean execute(@NotNull final CommandSender sender, @NotNull final String commandLabel, @NotNull final String[] args) {
         List<String> arguments = List.of(args);
         this.commandExecutor.execute(sender, arguments);
         return true;
@@ -52,7 +52,7 @@ final class CommandWrapper extends Command {
 
     @Override
     @NotNull
-    public List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args, @Nullable Location location) {
+    public List<String> tabComplete(@NotNull final CommandSender sender, @NotNull final String alias, @NotNull final String[] args, @Nullable final Location location) {
         List<String> arguments = List.of(args);
         return this.completionExecutor.execute(sender, arguments);
     }

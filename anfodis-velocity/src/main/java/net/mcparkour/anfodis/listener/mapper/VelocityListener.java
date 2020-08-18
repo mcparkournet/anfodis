@@ -33,7 +33,7 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class VelocityListener extends Listener<VelocityContext, VelocityListenerProperties> {
 
-    public VelocityListener(Constructor<?> constructor, List<Injection> injections, Executor executor, VelocityContext context, VelocityListenerProperties properties) {
+    public VelocityListener(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final VelocityContext context, final VelocityListenerProperties properties) {
         super(constructor, injections, executor, context, properties);
     }
 }

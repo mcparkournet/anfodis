@@ -28,7 +28,7 @@ public class ChannelMessage {
 
     private byte[] bytes;
 
-    public ChannelMessage(byte[] bytes) {
+    public ChannelMessage(final byte[] bytes) {
         this.bytes = bytes;
     }
 

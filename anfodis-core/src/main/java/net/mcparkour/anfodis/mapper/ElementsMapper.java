@@ -37,29 +37,29 @@ public class ElementsMapper<E extends AnnotatedElement, T> {
     private Supplier<T> dataSupplier;
     private List<Function<T, SingleElementMapper<E>>> singleElementMappers;
 
-    public ElementsMapper(Supplier<T> dataSupplier, List<Function<T, SingleElementMapper<E>>> singleElementMappers) {
+    public ElementsMapper(final Supplier<T> dataSupplier, final List<Function<T, SingleElementMapper<E>>> singleElementMappers) {
         this.dataSupplier = dataSupplier;
         this.singleElementMappers = singleElementMappers;
     }
 
-    public Optional<T> mapFirstOptional(Iterable<E> elements) {
+    public Optional<T> mapFirstOptional(final Iterable<E> elements) {
         return Optional.of(mapFirst(elements));
     }
 
-    public Optional<T> mapFirstOptional(E[] elements) {
+    public Optional<T> mapFirstOptional(final E[] elements) {
         return Optional.of(mapFirst(elements));
     }
 
-    public T mapFirst(E[] elements) {
+    public T mapFirst(final E[] elements) {
         return mapFirst(List.of(elements));
     }
 
-    public T mapFirst(Iterable<E> elements) {
+    public T mapFirst(final Iterable<E> elements) {
         T data = this.dataSupplier.get();
-        for (E element : elements) {
-            for (Function<T, SingleElementMapper<E>> mapperDataApplier : this.singleElementMappers) {
+        for (final E element : elements) {
+            for (final Function<T, SingleElementMapper<E>> mapperDataApplier : this.singleElementMappers) {
                 SingleElementMapper<E> mapper = mapperDataApplier.apply(data);
-                for (AnnotationConsumer<? extends Annotation> annotationConsumer : mapper.getAnnotations()) {
+                for (final AnnotationConsumer<? extends Annotation> annotationConsumer : mapper.getAnnotations()) {
                     if (annotationConsumer.isAnnotationPresent(element)) {
                         annotationConsumer.accept(element);
                         mapper.accept(element);
@@ -70,19 +70,19 @@ public class ElementsMapper<E extends AnnotatedElement, T> {
         return data;
     }
 
-    public List<T> map(E[] elements) {
+    public List<T> map(final E[] elements) {
         return map(List.of(elements));
     }
 
-    public List<T> map(Iterable<E> elements) {
+    public List<T> map(final Iterable<E> elements) {
         List<T> list = new ArrayList<>(1);
-        for (E element : elements) {
+        for (final E element : elements) {
             T data = this.dataSupplier.get();
-            for (Function<T, SingleElementMapper<E>> mapperDataApplier : this.singleElementMappers) {
+            for (final Function<T, SingleElementMapper<E>> mapperDataApplier : this.singleElementMappers) {
                 SingleElementMapper<E> mapper = mapperDataApplier.apply(data);
                 List<AnnotationConsumer<? extends Annotation>> annotationConsumers = mapper.getAnnotations();
                 boolean added = false;
-                for (AnnotationConsumer<? extends Annotation> annotationConsumer : annotationConsumers) {
+                for (final AnnotationConsumer<? extends Annotation> annotationConsumer : annotationConsumers) {
                     if (annotationConsumer.isAnnotationPresent(element)) {
                         annotationConsumer.accept(element);
                         mapper.accept(element);

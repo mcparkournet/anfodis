@@ -37,14 +37,14 @@ public class FieldData {
 
     public FieldData() {}
 
-    public FieldData(Field field, String string1, @Nullable String string2) {
+    public FieldData(final Field field, final String string1, @Nullable final String string2) {
         this.field = field;
         this.string1 = string1;
         this.string2 = string2;
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (this == object) {
             return true;
         }
@@ -75,7 +75,7 @@ public class FieldData {
         return this.field;
     }
 
-    public void setField(Field field) {
+    public void setField(final Field field) {
         this.field = field;
     }
 
@@ -83,7 +83,7 @@ public class FieldData {
         return this.string1;
     }
 
-    public void setString1(String string1) {
+    public void setString1(final String string1) {
         this.string1 = string1;
     }
 
@@ -92,7 +92,7 @@ public class FieldData {
         return this.string2;
     }
 
-    public void setString2(@Nullable String string2) {
+    public void setString2(@Nullable final String string2) {
         this.string2 = string2;
     }
 }

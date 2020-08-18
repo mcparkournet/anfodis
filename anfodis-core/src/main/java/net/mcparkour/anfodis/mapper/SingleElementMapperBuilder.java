@@ -37,19 +37,19 @@ public class SingleElementMapperBuilder<E extends AnnotatedElement> {
     @Nullable
     private Consumer<E> elementConsumer;
 
-    public <A extends Annotation> SingleElementMapperBuilder<E> annotation(Class<A> annotation, Consumer<A> consumer) {
+    public <A extends Annotation> SingleElementMapperBuilder<E> annotation(final Class<A> annotation, final Consumer<A> consumer) {
         AnnotationConsumer<A> annotationConsumer = new AnnotationConsumer<>(annotation, consumer);
         this.annotations.add(annotationConsumer);
         return this;
     }
 
-    public <A extends Annotation> SingleElementMapperBuilder<E> annotation(Class<A> annotation) {
+    public <A extends Annotation> SingleElementMapperBuilder<E> annotation(final Class<A> annotation) {
         AnnotationConsumer<A> annotationConsumer = new AnnotationConsumer<>(annotation, (a) -> {});
         this.annotations.add(annotationConsumer);
         return this;
     }
 
-    public SingleElementMapperBuilder<E> elementConsumer(Consumer<E> elementConsumer) {
+    public SingleElementMapperBuilder<E> elementConsumer(final Consumer<E> elementConsumer) {
         this.elementConsumer = elementConsumer;
         return this;
     }

@@ -31,7 +31,7 @@ public class PaperCommandProperties extends CommandProperties {
 
     private Set<Class<? extends CommandSender>> senderTypes;
 
-    public PaperCommandProperties(PaperCommandPropertiesData propertiesData) {
+    public PaperCommandProperties(final PaperCommandPropertiesData propertiesData) {
         super(propertiesData);
         Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
         this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);

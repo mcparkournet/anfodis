@@ -33,28 +33,28 @@ public class TestMessageReceiver extends AbstractMessageReceiver {
 
     private TestCommandSender receiver;
 
-    public TestMessageReceiver(Translations translations, Locale language, TestCommandSender receiver) {
+    public TestMessageReceiver(final Translations translations, final Locale language, final TestCommandSender receiver) {
         super(translations, language);
         this.receiver = receiver;
     }
 
     @Override
-    public void receiveComponent(Component component) {
+    public void receiveComponent(final Component component) {
         throw new UnsupportedOperationException("Not supported");
     }
 
     @Override
-    public void receiveSerializedComponent(String serializedComponent) {
+    public void receiveSerializedComponent(final String serializedComponent) {
         throw new UnsupportedOperationException("Not supported");
     }
 
     @Override
-    public void receivePlainColorized(String message) {
+    public void receivePlainColorized(final String message) {
         receivePlain(message);
     }
 
     @Override
-    public void receivePlain(String message) {
+    public void receivePlain(final String message) {
         this.receiver.receiveMessage(message);
     }
 }

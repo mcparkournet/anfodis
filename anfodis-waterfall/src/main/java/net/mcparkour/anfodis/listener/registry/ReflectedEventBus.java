@@ -40,21 +40,21 @@ public class ReflectedEventBus {
     private Map<Class<?>, Map<Byte, Map<Object, Method[]>>> byListenerAndPriority;
     private Lock lock;
 
-    public ReflectedEventBus(EventBus eventBus) {
+    public ReflectedEventBus(final EventBus eventBus) {
         this.eventBus = eventBus;
         this.byListenerAndPriority = getFieldValue("byListenerAndPriority", eventBus);
         this.lock = getFieldValue("lock", eventBus);
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T getFieldValue(String fieldName, EventBus eventBus) {
+    private static <T> T getFieldValue(final String fieldName, final EventBus eventBus) {
         Field field = Reflections.getField(EventBus.class, fieldName);
         Object fieldValue = Reflections.getFieldValue(field, eventBus);
         Objects.requireNonNull(fieldValue, "Value of field " + fieldName + " is null");
         return (T) fieldValue;
     }
 
-    public void register(Object listener, Method listenMethod, Class<? extends Event> listenedEventType, byte priority) {
+    public void register(final Object listener, final Method listenMethod, final Class<? extends Event> listenedEventType, final byte priority) {
         this.lock.lock();
         try {
             Map<Byte, Map<Object, Method[]>> priorityListenerMap = this.byListenerAndPriority.computeIfAbsent(listenedEventType, key -> new HashMap<>(1));
@@ -67,7 +67,7 @@ public class ReflectedEventBus {
         }
     }
 
-    private void bakeHandlers(Class<? extends Event> eventType) {
+    private void bakeHandlers(final Class<? extends Event> eventType) {
         Method method = Reflections.getMethod(EventBus.class, "bakeHandlers", Class.class);
         Reflections.invokeMethod(method, this.eventBus, eventType);
     }

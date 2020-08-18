@@ -28,7 +28,7 @@ public class UnknownCodecException extends RuntimeException {
 
     private static final long serialVersionUID = -3196208203977782715L;
 
-    public UnknownCodecException(String message) {
+    public UnknownCodecException(final String message) {
         super(message);
     }
 }

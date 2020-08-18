@@ -33,11 +33,11 @@ public final class PaperResults {
         throw new UnsupportedOperationException("Cannot create an instance of this class");
     }
 
-    public static Result cancelEvent(Cancellable cancellableEvent) {
+    public static Result cancelEvent(final Cancellable cancellableEvent) {
         return () -> cancellableEvent.setCancelled(true);
     }
 
-    public static Result sendMessage(CommandSender receiver, String message) {
+    public static Result sendMessage(final CommandSender receiver, final String message) {
         return () -> receiver.sendMessage(message);
     }
 }

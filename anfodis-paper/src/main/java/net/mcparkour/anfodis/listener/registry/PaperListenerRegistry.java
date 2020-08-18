@@ -47,7 +47,7 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
     private Plugin plugin;
     private PluginManager pluginManager;
 
-    public PaperListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, Plugin plugin) {
+    public PaperListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final Plugin plugin) {
         super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);
         this.plugin = plugin;
         Server server = plugin.getServer();
@@ -55,18 +55,18 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
     }
 
     @Override
-    public void register(PaperListener root, ContextHandler<ListenerContext<? extends Event>> handler) {
+    public void register(final PaperListener root, final ContextHandler<ListenerContext<? extends Event>> handler) {
         PaperListenerProperties properties = root.getProperties();
         EventPriority priority = properties.getPriority();
         boolean ignoreCancelled = properties.isIgnoreCancelled();
         Iterable<Class<? extends Event>> eventTypes = properties.getListenedEvents();
-        for (Class<? extends Event> eventType : eventTypes) {
+        for (final Class<? extends Event> eventType : eventTypes) {
             register(root, eventType, priority, ignoreCancelled, handler);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private <E extends Event> void register(PaperListener listener, Class<? extends Event> eventType, EventPriority priority, boolean ignoreCancelled, ContextHandler<ListenerContext<? extends Event>> handler) {
+    private <E extends Event> void register(final PaperListener listener, final Class<? extends Event> eventType, final EventPriority priority, final boolean ignoreCancelled, final ContextHandler<ListenerContext<? extends Event>> handler) {
         Class<E> castedEventType = (Class<E>) eventType;
         PaperEventListener<E> eventListener = event -> {
             ListenerContext<E> context = new ListenerContext<>(event);
@@ -76,21 +76,21 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
         register(castedEventType, priority, ignoreCancelled, eventListener);
     }
 
-    public <E extends Event> void register(Class<E> eventType, PaperEventListener<E> listener) {
+    public <E extends Event> void register(final Class<E> eventType, final PaperEventListener<E> listener) {
         register(eventType, EventPriority.NORMAL, listener);
     }
 
-    public <E extends Event> void register(Class<E> eventType, EventPriority priority, PaperEventListener<E> listener) {
+    public <E extends Event> void register(final Class<E> eventType, final EventPriority priority, final PaperEventListener<E> listener) {
         register(eventType, priority, false, listener);
     }
 
-    public <E extends Event> void register(Class<E> eventType, EventPriority priority, boolean ignoreCancelled, PaperEventListener<E> listener) {
+    public <E extends Event> void register(final Class<E> eventType, final EventPriority priority, final boolean ignoreCancelled, final PaperEventListener<E> listener) {
         EventExecutor executor = createEventExecutor(eventType, listener);
         this.pluginManager.registerEvent(eventType, EMPTY_LISTENER, priority, executor, this.plugin, ignoreCancelled);
     }
 
     @SuppressWarnings("unchecked")
-    private <E extends Event> EventExecutor createEventExecutor(Class<E> eventType, PaperEventListener<E> eventListener) {
+    private <E extends Event> EventExecutor createEventExecutor(final Class<E> eventType, final PaperEventListener<E> eventListener) {
         return (listener, event) -> {
             if (eventType.isInstance(event)) {
                 E castedEvent = (E) event;

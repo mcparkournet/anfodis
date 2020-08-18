@@ -47,7 +47,7 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
     private Plugin plugin;
     private Messenger messenger;
 
-    public PaperChannelListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, Plugin plugin) {
+    public PaperChannelListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final Plugin plugin) {
         super(net.mcparkour.anfodis.channel.annotation.properties.ChannelListener.class, CHANNEL_LISTENER_MAPPER, injectionCodecRegistry);
         this.plugin = plugin;
         Server server = plugin.getServer();
@@ -55,22 +55,22 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
     }
 
     @Override
-    public void register(PaperChannelListener root) {
+    public void register(final PaperChannelListener root) {
         CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
         PaperChannelListenerHandler handler = new PaperChannelListenerHandler(root, injectionCodecRegistry);
         register(root, handler);
     }
 
     @Override
-    public void register(PaperChannelListener root, ContextHandler<ChannelListenerContext> handler) {
+    public void register(final PaperChannelListener root, final ContextHandler<ChannelListenerContext> handler) {
         PaperChannelListenerProperties properties = root.getProperties();
         Set<String> channels = properties.getChannels();
-        for (String channel : channels) {
+        for (final String channel : channels) {
             register(root, channel, handler);
         }
     }
 
-    private void register(PaperChannelListener channelListener, String channel, ContextHandler<ChannelListenerContext> handler) {
+    private void register(final PaperChannelListener channelListener, final String channel, final ContextHandler<ChannelListenerContext> handler) {
         ChannelListener listener = (source, message) -> {
             ChannelListenerContext context = new ChannelListenerContext(source, message);
             Object channelListenerInstance = channelListener.createInstance();
@@ -79,12 +79,12 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
         register(channel, listener);
     }
 
-    public void register(String channel, ChannelListener channelListener) {
+    public void register(final String channel, final ChannelListener channelListener) {
         PluginMessageListener messageListener = createPluginMessageListener(channel, channelListener);
         this.messenger.registerIncomingPluginChannel(this.plugin, channel, messageListener);
     }
 
-    private PluginMessageListener createPluginMessageListener(String channel, ChannelListener channelListener) {
+    private PluginMessageListener createPluginMessageListener(final String channel, final ChannelListener channelListener) {
         return (incomingChannel, player, message) -> {
             if (channel.equals(incomingChannel)) {
                 ChannelMessage channelMessage = new ChannelMessage(message);

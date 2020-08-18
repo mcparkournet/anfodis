@@ -47,30 +47,30 @@ public class WaterfallListenerRegistry extends AbstractListenerRegistry<Waterfal
     private Plugin plugin;
     private ReflectedPluginManager reflectedPluginManager;
 
-    public WaterfallListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, Plugin plugin) {
+    public WaterfallListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final Plugin plugin) {
         super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);
         this.plugin = plugin;
         this.reflectedPluginManager = createReflectedPluginManager(plugin);
     }
 
-    private static ReflectedPluginManager createReflectedPluginManager(Plugin plugin) {
+    private static ReflectedPluginManager createReflectedPluginManager(final Plugin plugin) {
         ProxyServer server = plugin.getProxy();
         PluginManager pluginManager = server.getPluginManager();
         return new ReflectedPluginManager(pluginManager);
     }
 
     @Override
-    public void register(WaterfallListener root, ContextHandler<ListenerContext<? extends Event>> handler) {
+    public void register(final WaterfallListener root, final ContextHandler<ListenerContext<? extends Event>> handler) {
         WaterfallListenerProperties properties = root.getProperties();
         byte priority = properties.getPriority();
         Iterable<Class<? extends Event>> eventTypes = properties.getListenedEvents();
-        for (Class<? extends Event> eventType : eventTypes) {
+        for (final Class<? extends Event> eventType : eventTypes) {
             register(root, eventType, priority, handler);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private <E extends Event> void register(WaterfallListener listener, Class<? extends Event> eventType, byte priority, ContextHandler<ListenerContext<? extends Event>> handler) {
+    private <E extends Event> void register(final WaterfallListener listener, final Class<? extends Event> eventType, final byte priority, final ContextHandler<ListenerContext<? extends Event>> handler) {
         Class<E> castedEventType = (Class<E>) eventType;
         WaterfallEventListener<E> eventListener = event -> {
             ListenerContext<E> context = new ListenerContext<>(event);
@@ -80,17 +80,17 @@ public class WaterfallListenerRegistry extends AbstractListenerRegistry<Waterfal
         register(castedEventType, priority, eventListener);
     }
 
-    public <E extends Event> void register(Class<E> eventType, WaterfallEventListener<E> listener) {
+    public <E extends Event> void register(final Class<E> eventType, final WaterfallEventListener<E> listener) {
         register(eventType, EventPriority.NORMAL, listener);
     }
 
-    public <E extends Event> void register(Class<E> eventType, byte priority, WaterfallEventListener<E> listener) {
+    public <E extends Event> void register(final Class<E> eventType, final byte priority, final WaterfallEventListener<E> listener) {
         EventExecutor<E> eventExecutor = createEventExecutor(eventType, listener);
         Method listenMethod = Reflections.getMethod(EventExecutor.class, "execute", eventType);
         this.reflectedPluginManager.registerListener(this.plugin, eventExecutor, listenMethod, eventType, priority);
     }
 
-    private <E extends Event> EventExecutor<E> createEventExecutor(Class<E> eventType, WaterfallEventListener<E> listener) {
+    private <E extends Event> EventExecutor<E> createEventExecutor(final Class<E> eventType, final WaterfallEventListener<E> listener) {
         return event -> {
             if (eventType.isInstance(event)) {
                 listener.listen(event);

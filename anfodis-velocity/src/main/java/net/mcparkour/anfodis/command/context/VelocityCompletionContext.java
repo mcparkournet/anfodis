@@ -31,7 +31,7 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class VelocityCompletionContext extends CompletionContext<CommandSource> {
 
-    public VelocityCompletionContext(CommandSender<CommandSource> sender, List<String> arguments, Permission permission) {
+    public VelocityCompletionContext(final CommandSender<CommandSource> sender, final List<String> arguments, final Permission permission) {
         super(sender, arguments, permission);
     }
 }

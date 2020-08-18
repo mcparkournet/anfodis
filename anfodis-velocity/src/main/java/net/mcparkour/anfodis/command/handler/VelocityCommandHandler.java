@@ -37,12 +37,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class VelocityCommandHandler extends CommandHandler<VelocityCommand, VelocityCommandContext, CommandSource> {
 
-    public VelocityCommandHandler(VelocityCommand command, Map<VelocityCommand, ? extends CommandContextHandler<VelocityCommandContext>> subCommandHandlers, @Nullable ContextHandler<VelocityCommandContext> executorHandler, CommandContextSupplier<VelocityCommandContext, CommandSource> contextSupplier) {
+    public VelocityCommandHandler(final VelocityCommand command, final Map<VelocityCommand, ? extends CommandContextHandler<VelocityCommandContext>> subCommandHandlers, @Nullable final ContextHandler<VelocityCommandContext> executorHandler, final CommandContextSupplier<VelocityCommandContext, CommandSource> contextSupplier) {
         super(command, subCommandHandlers, executorHandler, contextSupplier);
     }
 
     @Override
-    public void handle(VelocityCommandContext context) {
+    public void handle(final VelocityCommandContext context) {
         if (!checkSenders(context)) {
             CommandSender<CommandSource> sender = context.getSender();
             MessageReceiver receiver = sender.getReceiver();
@@ -52,7 +52,7 @@ public class VelocityCommandHandler extends CommandHandler<VelocityCommand, Velo
         super.handle(context);
     }
 
-    private boolean checkSenders(VelocityCommandContext context) {
+    private boolean checkSenders(final VelocityCommandContext context) {
         VelocityCommand command = getCommand();
         VelocityCommandProperties properties = command.getProperties();
         Set<Class<? extends CommandSource>> senders = properties.getSenderTypes();

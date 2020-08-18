@@ -32,7 +32,7 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 public class PaperChannelListenerPropertiesMapper implements Mapper<Class<?>, PaperChannelListenerProperties> {
 
     @Override
-    public PaperChannelListenerProperties map(Iterable<Class<?>> elements) {
+    public PaperChannelListenerProperties map(final Iterable<Class<?>> elements) {
         return new ElementsMapperBuilder<Class<?>, PaperChannelListenerPropertiesData>()
             .data(PaperChannelListenerPropertiesData::new)
             .singleElement(data -> new SingleElementMapperBuilder<Class<?>>()

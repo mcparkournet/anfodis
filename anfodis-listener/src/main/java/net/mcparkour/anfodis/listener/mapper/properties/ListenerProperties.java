@@ -30,7 +30,7 @@ public class ListenerProperties<E> {
 
     private Set<Class<? extends E>> listenedEvents;
 
-    public ListenerProperties(ListenerPropertiesData<E> propertiesData) {
+    public ListenerProperties(final ListenerPropertiesData<E> propertiesData) {
         Class<? extends E>[] listenedEvents = propertiesData.getListenedEvents();
         this.listenedEvents = listenedEvents == null ? Set.of() : Set.of(listenedEvents);
     }

@@ -43,7 +43,7 @@ class ContextData {
         return this.argumentsField;
     }
 
-    public void setArgumentsField(@Nullable Field argumentsField) {
+    public void setArgumentsField(@Nullable final Field argumentsField) {
         this.argumentsField = argumentsField;
     }
 
@@ -52,7 +52,7 @@ class ContextData {
         return this.requiredPermissionField;
     }
 
-    public void setRequiredPermissionField(@Nullable Field requiredPermissionField) {
+    public void setRequiredPermissionField(@Nullable final Field requiredPermissionField) {
         this.requiredPermissionField = requiredPermissionField;
     }
 
@@ -61,7 +61,7 @@ class ContextData {
         return this.senderField;
     }
 
-    public void setSenderField(@Nullable Field senderField) {
+    public void setSenderField(@Nullable final Field senderField) {
         this.senderField = senderField;
     }
 
@@ -70,7 +70,7 @@ class ContextData {
         return this.receiverField;
     }
 
-    public void setReceiverField(@Nullable Field receiverField) {
+    public void setReceiverField(@Nullable final Field receiverField) {
         this.receiverField = receiverField;
     }
 }

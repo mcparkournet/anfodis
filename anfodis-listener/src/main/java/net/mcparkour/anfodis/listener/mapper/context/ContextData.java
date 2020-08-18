@@ -37,7 +37,7 @@ class ContextData {
         return this.eventField;
     }
 
-    public void setEventField(@Nullable Field eventField) {
+    public void setEventField(@Nullable final Field eventField) {
         this.eventField = eventField;
     }
 }

@@ -35,7 +35,7 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 public class ExecutorMapper implements Mapper<Method, net.mcparkour.anfodis.mapper.executor.Executor> {
 
     @Override
-    public net.mcparkour.anfodis.mapper.executor.Executor map(Iterable<Method> elements) {
+    public net.mcparkour.anfodis.mapper.executor.Executor map(final Iterable<Method> elements) {
         return new ElementsMapperBuilder<Method, ExecutorData>()
             .data(ExecutorData::new)
             .singleElement(data -> new SingleElementMapperBuilder<Method>()

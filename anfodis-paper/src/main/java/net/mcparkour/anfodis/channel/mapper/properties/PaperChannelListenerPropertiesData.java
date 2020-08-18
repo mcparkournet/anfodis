@@ -36,7 +36,7 @@ class PaperChannelListenerPropertiesData {
         return this.channels;
     }
 
-    public void setChannels(@Nullable String[] channels) {
+    public void setChannels(@Nullable final String[] channels) {
         this.channels = channels;
     }
 }

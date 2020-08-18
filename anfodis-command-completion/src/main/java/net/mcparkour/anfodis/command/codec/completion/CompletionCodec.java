@@ -9,11 +9,11 @@ public interface CompletionCodec {
 
     List<String> getCompletions(CompletionContext<?> context);
 
-    static CompletionCodec entries(String... completions) {
+    static CompletionCodec entries(final String... completions) {
         return context -> List.of(completions);
     }
 
-    static CompletionCodec entries(Collection<String> completions) {
+    static CompletionCodec entries(final Collection<String> completions) {
         return context -> List.copyOf(completions);
     }
 }

@@ -32,7 +32,7 @@ public class LongArgumentCodec implements ArgumentCodec<Long> {
 
     @Override
     @Nullable
-    public Long parse(String stringValue) {
+    public Long parse(final String stringValue) {
         return NumericParser.parseLong(stringValue);
     }
 }

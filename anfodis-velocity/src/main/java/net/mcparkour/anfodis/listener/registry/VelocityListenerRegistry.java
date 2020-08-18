@@ -44,28 +44,28 @@ public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityL
     private EventManager eventManager;
     private Object plugin;
 
-    public VelocityListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, ProxyServer server, Object plugin) {
+    public VelocityListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final ProxyServer server, final Object plugin) {
         this(injectionCodecRegistry, server.getEventManager(), plugin);
     }
 
-    public VelocityListenerRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, EventManager eventManager, Object plugin) {
+    public VelocityListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final EventManager eventManager, final Object plugin) {
         super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);
         this.eventManager = eventManager;
         this.plugin = plugin;
     }
 
     @Override
-    public void register(VelocityListener root, ContextHandler<ListenerContext<?>> handler) {
+    public void register(final VelocityListener root, final ContextHandler<ListenerContext<?>> handler) {
         VelocityListenerProperties properties = root.getProperties();
         PostOrder priority = properties.getPriority();
         Iterable<Class<?>> eventTypes = properties.getListenedEvents();
-        for (Class<?> eventType : eventTypes) {
+        for (final Class<?> eventType : eventTypes) {
             register(root, eventType, priority, handler);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private <E> void register(VelocityListener listener, Class<?> eventType, PostOrder priority, ContextHandler<ListenerContext<?>> handler) {
+    private <E> void register(final VelocityListener listener, final Class<?> eventType, final PostOrder priority, final ContextHandler<ListenerContext<?>> handler) {
         Class<E> castedEventType = (Class<E>) eventType;
         VelocityEventListener<E> eventListener = event -> {
             ListenerContext<E> context = new ListenerContext<>(event);
@@ -75,16 +75,16 @@ public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityL
         register(castedEventType, priority, eventListener);
     }
 
-    public <E> void register(Class<E> eventType, VelocityEventListener<E> listener) {
+    public <E> void register(final Class<E> eventType, final VelocityEventListener<E> listener) {
         register(eventType, PostOrder.NORMAL, listener);
     }
 
-    public <E> void register(Class<E> eventType, PostOrder priority, VelocityEventListener<E> listener) {
+    public <E> void register(final Class<E> eventType, final PostOrder priority, final VelocityEventListener<E> listener) {
         EventHandler<E> eventHandler = createEventHandler(eventType, listener);
         this.eventManager.register(this.plugin, eventType, priority, eventHandler);
     }
 
-    private <E> EventHandler<E> createEventHandler(Class<E> eventType, VelocityEventListener<E> listener) {
+    private <E> EventHandler<E> createEventHandler(final Class<E> eventType, final VelocityEventListener<E> listener) {
         return event -> {
             if (eventType.isInstance(event)) {
                 listener.listen(event);

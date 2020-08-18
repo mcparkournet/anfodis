@@ -36,26 +36,26 @@ public class RootHandler<T extends Root, C extends RootContext> implements Conte
     private T root;
     private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 
-    public RootHandler(T root, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+    public RootHandler(final T root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
         this.root = root;
         this.injectionCodecRegistry = injectionCodecRegistry;
     }
 
     @Override
-    public void handle(C context, Object instance) {
+    public void handle(final C context, final Object instance) {
         setInjections(instance);
         execute(instance);
     }
 
-    private void setInjections(Object instance) {
-        for (Injection injection : this.root.getInjections()) {
+    private void setInjections(final Object instance) {
+        for (final Injection injection : this.root.getInjections()) {
             InjectionCodec<?> codec = injection.getCodec(this.injectionCodecRegistry);
             Object codecInjection = codec.getInjection();
             injection.setInjectionField(instance, codecInjection);
         }
     }
 
-    private void execute(Object instance) {
+    private void execute(final Object instance) {
         Executor executor = this.root.getExecutor();
         executor.invokeBefore(instance);
         Object invokeResult = executor.invokeExecutor(instance);

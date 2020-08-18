@@ -42,14 +42,14 @@ public class ListenerMapper<T extends Listener<C, P>, C extends Context, P exten
     private ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper;
     private ListenerMerger<T, C, P> listenerMerger;
 
-    public ListenerMapper(ContextMapper<C, ?> contextMapper, ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper, ListenerMerger<T, C, P> listenerMerger) {
+    public ListenerMapper(final ContextMapper<C, ?> contextMapper, final ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper, final ListenerMerger<T, C, P> listenerMerger) {
         this.contextMapper = contextMapper;
         this.propertiesMapper = propertiesMapper;
         this.listenerMerger = listenerMerger;
     }
 
     @Override
-    public T map(Class<?> annotatedClass) {
+    public T map(final Class<?> annotatedClass) {
         Field[] fields = annotatedClass.getDeclaredFields();
         Method[] methods = annotatedClass.getDeclaredMethods();
         Constructor<?> constructor = getConstructor(annotatedClass);
@@ -60,11 +60,11 @@ public class ListenerMapper<T extends Listener<C, P>, C extends Context, P exten
         return this.listenerMerger.merge(constructor, injections, executor, context, properties);
     }
 
-    private C getContext(Field[] fields) {
+    private C getContext(final Field[] fields) {
         return this.contextMapper.map(fields);
     }
 
-    private P getProperties(Class<?> listenerClass) {
+    private P getProperties(final Class<?> listenerClass) {
         return this.propertiesMapper.map(listenerClass);
     }
 }

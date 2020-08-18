@@ -38,14 +38,14 @@ public abstract class AbstractRegistry<T extends Root, C extends RootContext> im
     private RootMapper<T> mapper;
     private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 
-    public AbstractRegistry(Class<? extends Annotation> annotation, RootMapper<T> mapper, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+    public AbstractRegistry(final Class<? extends Annotation> annotation, final RootMapper<T> mapper, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
         this.annotationClass = annotation;
         this.mapper = mapper;
         this.injectionCodecRegistry = injectionCodecRegistry;
     }
 
     @Override
-    public void register(Class<?> annotatedClass) {
+    public void register(final Class<?> annotatedClass) {
         if (!annotatedClass.isAnnotationPresent(this.annotationClass)) {
             throw new IllegalArgumentException("Class " + annotatedClass.getName() + " is not annotated with " + this.annotationClass.getName() + " annotation");
         }

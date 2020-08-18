@@ -32,12 +32,12 @@ import net.mcparkour.intext.translation.Translations;
 
 public class TestMessageReceiverFactory extends AbstractMessageReceiverFactory<TestCommandSender> {
 
-    public TestMessageReceiverFactory(Translations translations, LanguageProvider<TestCommandSender> provider) {
+    public TestMessageReceiverFactory(final Translations translations, final LanguageProvider<TestCommandSender> provider) {
         super(translations, provider);
     }
 
     @Override
-    public MessageReceiver createMessageReceiver(TestCommandSender receiver, Locale language) {
+    public MessageReceiver createMessageReceiver(final TestCommandSender receiver, final Locale language) {
         Translations translations = getTranslations();
         return new TestMessageReceiver(translations, language, receiver);
     }

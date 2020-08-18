@@ -34,7 +34,7 @@ public final class Results {
         return () -> {};
     }
 
-    public static Result println(String message) {
+    public static Result println(final String message) {
         return () -> System.out.println(message);
     }
 }

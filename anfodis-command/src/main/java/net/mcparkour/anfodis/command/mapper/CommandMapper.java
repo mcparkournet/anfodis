@@ -50,7 +50,7 @@ public class CommandMapper<T extends Command<T, A, C, P>, A extends Argument, C 
     private CommandPropertiesMapper<P, ?> propertiesMapper;
     private CommandMerger<T, A, C, P> commandMerger;
 
-    public CommandMapper(ArgumentMapper<A, ?> argumentMapper, ContextMapper<C, ?> contextMapper, CommandPropertiesMapper<P, ?> propertiesMapper, CommandMerger<T, A, C, P> commandMerger) {
+    public CommandMapper(final ArgumentMapper<A, ?> argumentMapper, final ContextMapper<C, ?> contextMapper, final CommandPropertiesMapper<P, ?> propertiesMapper, final CommandMerger<T, A, C, P> commandMerger) {
         this.argumentMapper = argumentMapper;
         this.contextMapper = contextMapper;
         this.propertiesMapper = propertiesMapper;
@@ -58,7 +58,7 @@ public class CommandMapper<T extends Command<T, A, C, P>, A extends Argument, C 
     }
 
     @Override
-    public T map(Class<?> annotatedClass) {
+    public T map(final Class<?> annotatedClass) {
         Field[] fields = annotatedClass.getDeclaredFields();
         Method[] methods = annotatedClass.getDeclaredMethods();
         Constructor<?> constructor = getConstructor(annotatedClass);
@@ -71,19 +71,19 @@ public class CommandMapper<T extends Command<T, A, C, P>, A extends Argument, C 
         return this.commandMerger.merge(constructor, injections, executor, arguments, context, properties, subCommands);
     }
 
-    private List<A> getArguments(Field[] fields) {
+    private List<A> getArguments(final Field[] fields) {
         return this.argumentMapper.map(fields);
     }
 
-    private C getContext(Field[] fields) {
+    private C getContext(final Field[] fields) {
         return this.contextMapper.map(fields);
     }
 
-    private P getProperties(Class<?> commandClass) {
+    private P getProperties(final Class<?> commandClass) {
         return this.propertiesMapper.map(commandClass);
     }
 
-    private List<T> getSubCommands(Field[] fields) {
+    private List<T> getSubCommands(final Field[] fields) {
         return SUB_COMMAND_MAPPER.map(fields)
             .stream()
             .map(SubCommand::getFieldType)

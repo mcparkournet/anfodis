@@ -36,7 +36,7 @@ class ListenerPropertiesData<E> {
         return this.listenedEvents;
     }
 
-    public void setListenedEvents(@Nullable Class<? extends E>[] listenedEvents) {
+    public void setListenedEvents(@Nullable final Class<? extends E>[] listenedEvents) {
         this.listenedEvents = listenedEvents;
     }
 }

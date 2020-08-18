@@ -29,7 +29,7 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class WaterfallCommandContext extends CommandContext<net.md_5.bungee.api.CommandSender> {
 
-    public WaterfallCommandContext(CommandSender<net.md_5.bungee.api.CommandSender> sender, List<String> arguments, Permission permission) {
+    public WaterfallCommandContext(final CommandSender<net.md_5.bungee.api.CommandSender> sender, final List<String> arguments, final Permission permission) {
         super(sender, arguments, permission);
     }
 }

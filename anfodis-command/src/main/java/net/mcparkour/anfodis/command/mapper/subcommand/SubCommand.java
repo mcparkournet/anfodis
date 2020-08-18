@@ -31,7 +31,7 @@ public class SubCommand {
 
     private Field field;
 
-    public SubCommand(SubCommandData subCommandData) {
+    public SubCommand(final SubCommandData subCommandData) {
         Field field = subCommandData.getSubCommandField();
         this.field = Objects.requireNonNull(field, "Sub-command field is null");
     }

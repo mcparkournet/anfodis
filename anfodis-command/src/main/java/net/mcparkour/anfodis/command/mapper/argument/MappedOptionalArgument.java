@@ -36,11 +36,11 @@ final class MappedOptionalArgument<T> implements OptionalArgument<T> {
     private final T value;
     private final boolean present;
 
-    static <T> OptionalArgument<T> of(@Nullable T value) {
+    static <T> OptionalArgument<T> of(@Nullable final T value) {
         return new MappedOptionalArgument<>(value, true);
     }
 
-    private MappedOptionalArgument(@Nullable T value, boolean present) {
+    private MappedOptionalArgument(@Nullable final T value, final boolean present) {
         this.value = value;
         this.present = present;
     }
@@ -52,7 +52,7 @@ final class MappedOptionalArgument<T> implements OptionalArgument<T> {
 
     @Override
     @Nullable
-    public T orElse(@Nullable T other) {
+    public T orElse(@Nullable final T other) {
         return this.present ? this.value : other;
     }
 

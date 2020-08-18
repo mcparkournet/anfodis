@@ -32,7 +32,7 @@ public class ShortArgumentCodec implements ArgumentCodec<Short> {
 
     @Override
     @Nullable
-    public Short parse(String stringValue) {
+    public Short parse(final String stringValue) {
         return NumericParser.parseShort(stringValue);
     }
 }

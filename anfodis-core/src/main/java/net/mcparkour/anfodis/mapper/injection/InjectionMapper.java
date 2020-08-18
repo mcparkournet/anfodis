@@ -35,7 +35,7 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 public class InjectionMapper implements Mapper<Field, List<Injection>> {
 
     @Override
-    public List<Injection> map(Iterable<Field> elements) {
+    public List<Injection> map(final Iterable<Field> elements) {
         return new ElementsMapperBuilder<Field, InjectionData>()
             .data(InjectionData::new)
             .singleElement(data -> new SingleElementMapperBuilder<Field>()

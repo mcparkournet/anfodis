@@ -32,12 +32,12 @@ public class PaperListenerProperties extends ListenerProperties<Event> {
     private EventPriority priority;
     private boolean ignoreCancelled;
 
-    public PaperListenerProperties(PaperListenerPropertiesData propertiesData) {
+    public PaperListenerProperties(final PaperListenerPropertiesData propertiesData) {
         super(propertiesData);
         EventPriority priority = propertiesData.getPriority();
         this.priority = priority == null ? EventPriority.NORMAL : priority;
         Boolean ignoreCancelled = propertiesData.getIgnoreCancelled();
-        this.ignoreCancelled = ignoreCancelled == null ? false : ignoreCancelled;
+        this.ignoreCancelled = ignoreCancelled != null && ignoreCancelled;
     }
 
     public EventPriority getPriority() {

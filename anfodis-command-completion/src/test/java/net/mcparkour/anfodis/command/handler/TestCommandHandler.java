@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TestCommandHandler extends CommandHandler<TestCommand, TestCommandContext, TestCommandSender> {
 
-    public TestCommandHandler(TestCommand command, Map<TestCommand, ? extends CommandContextHandler<TestCommandContext>> subCommandHandlers, @Nullable ContextHandler<TestCommandContext> executorHandler, CommandContextSupplier<TestCommandContext, TestCommandSender> contextSupplier) {
+    public TestCommandHandler(final TestCommand command, final Map<TestCommand, ? extends CommandContextHandler<TestCommandContext>> subCommandHandlers, @Nullable final ContextHandler<TestCommandContext> executorHandler, final CommandContextSupplier<TestCommandContext, TestCommandSender> contextSupplier) {
         super(command, subCommandHandlers, executorHandler, contextSupplier);
     }
 }

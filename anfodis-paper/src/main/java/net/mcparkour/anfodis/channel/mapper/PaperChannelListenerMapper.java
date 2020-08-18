@@ -42,7 +42,7 @@ public class PaperChannelListenerMapper implements RootMapper<PaperChannelListen
     private static final PaperChannelListenerPropertiesMapper PROPERTIES_MAPPER = new PaperChannelListenerPropertiesMapper();
 
     @Override
-    public PaperChannelListener map(Class<?> annotatedClass) {
+    public PaperChannelListener map(final Class<?> annotatedClass) {
         Field[] fields = annotatedClass.getDeclaredFields();
         Method[] methods = annotatedClass.getDeclaredMethods();
         Constructor<?> constructor = getConstructor(annotatedClass);

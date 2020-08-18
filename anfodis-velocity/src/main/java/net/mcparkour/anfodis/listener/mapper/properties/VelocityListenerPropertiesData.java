@@ -37,7 +37,7 @@ class VelocityListenerPropertiesData extends ListenerPropertiesData<Object> {
         return this.priority;
     }
 
-    public void setPriority(@Nullable PostOrder priority) {
+    public void setPriority(@Nullable final PostOrder priority) {
         this.priority = priority;
     }
 }

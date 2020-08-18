@@ -34,7 +34,7 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 public class SubCommandMapper implements Mapper<Field, List<SubCommand>> {
 
     @Override
-    public List<SubCommand> map(Iterable<Field> elements) {
+    public List<SubCommand> map(final Iterable<Field> elements) {
         return new ElementsMapperBuilder<Field, SubCommandData>()
             .data(SubCommandData::new)
             .singleElement(data -> new SingleElementMapperBuilder<Field>()

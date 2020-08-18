@@ -36,12 +36,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperCommandContext, org.bukkit.command.CommandSender> {
 
-    public PaperCommandHandler(PaperCommand command, Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers, @Nullable ContextHandler<PaperCommandContext> executorHandler, CommandContextSupplier<PaperCommandContext, org.bukkit.command.CommandSender> contextSupplier) {
+    public PaperCommandHandler(final PaperCommand command, final Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers, @Nullable final ContextHandler<PaperCommandContext> executorHandler, final CommandContextSupplier<PaperCommandContext, org.bukkit.command.CommandSender> contextSupplier) {
         super(command, subCommandHandlers, executorHandler, contextSupplier);
     }
 
     @Override
-    public void handle(PaperCommandContext context) {
+    public void handle(final PaperCommandContext context) {
         CommandSender<org.bukkit.command.CommandSender> sender = context.getSender();
         MessageReceiver receiver = sender.getReceiver();
         if (!checkSenders(context)) {
@@ -51,7 +51,7 @@ public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperComma
         super.handle(context);
     }
 
-    private boolean checkSenders(PaperCommandContext context) {
+    private boolean checkSenders(final PaperCommandContext context) {
         PaperCommand command = getCommand();
         PaperCommandProperties properties = command.getProperties();
         Set<Class<? extends org.bukkit.command.CommandSender>> senders = properties.getSenderTypes();

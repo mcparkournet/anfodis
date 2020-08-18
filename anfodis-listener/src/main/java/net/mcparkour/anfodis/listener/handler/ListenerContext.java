@@ -30,7 +30,7 @@ public class ListenerContext<E> extends RootContext {
 
     private E event;
 
-    public ListenerContext(E event) {
+    public ListenerContext(final E event) {
         this.event = event;
     }
 

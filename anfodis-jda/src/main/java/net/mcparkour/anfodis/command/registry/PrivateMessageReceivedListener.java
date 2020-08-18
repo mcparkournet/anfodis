@@ -52,7 +52,7 @@ public class PrivateMessageReceivedListener implements EventListener {
     private CommandMap commandMap;
     private MessageReceiverFactory<ChannelSender> messageReceiverFactory;
 
-    public PrivateMessageReceivedListener(Permission basePermission, PermissionMap permissionMap, CommandMap commandMap, MessageReceiverFactory<ChannelSender> messageReceiverFactory) {
+    public PrivateMessageReceivedListener(final Permission basePermission, final PermissionMap permissionMap, final CommandMap commandMap, final MessageReceiverFactory<ChannelSender> messageReceiverFactory) {
         this.basePermission = basePermission;
         this.permissionMap = permissionMap;
         this.commandMap = commandMap;
@@ -60,14 +60,14 @@ public class PrivateMessageReceivedListener implements EventListener {
     }
 
     @Override
-    public void onEvent(@Nonnull GenericEvent event) {
+    public void onEvent(@Nonnull final GenericEvent event) {
         if (event instanceof PrivateMessageReceivedEvent) {
             PrivateMessageReceivedEvent privateMessageReceivedEvent = (PrivateMessageReceivedEvent) event;
             onPrivateMessageReceivedEvent(privateMessageReceivedEvent);
         }
     }
 
-    private void onPrivateMessageReceivedEvent(PrivateMessageReceivedEvent event) {
+    private void onPrivateMessageReceivedEvent(final PrivateMessageReceivedEvent event) {
         Message message = event.getMessage();
         String rawMessage = message.getContentRaw();
         if (rawMessage.isBlank() || rawMessage.charAt(0) != '/') {
@@ -86,7 +86,7 @@ public class PrivateMessageReceivedListener implements EventListener {
         handler.handle(context);
     }
 
-    private JDACommandContext createContext(PrivateMessageReceivedEvent event, String[] split, JDACommand command) {
+    private JDACommandContext createContext(final PrivateMessageReceivedEvent event, final String[] split, final JDACommand command) {
         User sender = event.getAuthor();
         PrivateChannel channel = event.getChannel();
         ChannelSender channelSender = new JDAChannelSender(sender, channel);

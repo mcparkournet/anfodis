@@ -34,7 +34,7 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class PaperCommand extends CompletionCommand<PaperCommand, PaperArgument, PaperContext, PaperCommandProperties> {
 
-    public PaperCommand(Constructor<?> constructor, List<Injection> injections, Executor executor, List<PaperArgument> arguments, PaperContext context, PaperCommandProperties properties, List<PaperCommand> subCommands) {
+    public PaperCommand(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final List<PaperArgument> arguments, final PaperContext context, final PaperCommandProperties properties, final List<PaperCommand> subCommands) {
         super(constructor, injections, executor, arguments, context, properties, subCommands);
     }
 }

@@ -42,7 +42,7 @@ public class Command<T extends Command<T, A, C, P>, A extends Argument, C extend
     private P properties;
     private List<T> subCommands;
 
-    public Command(Constructor<?> constructor, List<Injection> injections, Executor executor, List<A> arguments, C context, P properties, List<T> subCommands) {
+    public Command(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final List<A> arguments, final C context, final P properties, final List<T> subCommands) {
         super(constructor, injections, executor);
         this.arguments = arguments;
         this.context = context;
@@ -74,7 +74,7 @@ public class Command<T extends Command<T, A, C, P>, A extends Argument, C extend
         return description.isEmpty() ? "" : " - " + description + ".";
     }
 
-    public Permission getPermission(Permission prefix) {
+    public Permission getPermission(final Permission prefix) {
         Permission permission = this.properties.getPermission();
         return prefix.withLast(permission);
     }

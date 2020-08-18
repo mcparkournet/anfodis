@@ -47,7 +47,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
     private ContextHandler<C> executorHandler;
     private CommandContextSupplier<C, S> contextSupplier;
 
-    public CommandHandler(T command, Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable ContextHandler<C> executorHandler, CommandContextSupplier<C, S> contextSupplier) {
+    public CommandHandler(final T command, final Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable final ContextHandler<C> executorHandler, final CommandContextSupplier<C, S> contextSupplier) {
         this.command = command;
         this.subCommandHandlers = subCommandHandlers;
         this.executorHandler = executorHandler;
@@ -55,7 +55,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
     }
 
     @Override
-    public void handle(C context) {
+    public void handle(final C context) {
         CommandSender<S> sender = context.getSender();
         MessageReceiver receiver = sender.getReceiver();
         Permission permission = context.getPermission();
@@ -88,7 +88,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         subCommandHandler.handle(subCommandContext);
     }
 
-    private void execute(C context, int argumentsSize) {
+    private void execute(final C context, final int argumentsSize) {
         CommandSender<S> sender = context.getSender();
         MessageReceiver receiver = sender.getReceiver();
         Permission permission = context.getPermission();
@@ -106,13 +106,13 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         this.executorHandler.handle(context, instance);
     }
 
-    private String getUsage(Permissible permissible, Permission contextPermission) {
+    private String getUsage(final Permissible permissible, final Permission contextPermission) {
         String header = this.command.getUsageHeader();
         String subCommandsUsage = getSubCommandsUsage(permissible, contextPermission);
         return header + '\n' + subCommandsUsage;
     }
 
-    private String getSubCommandsUsage(Permissible permissible, Permission contextPermission) {
+    private String getSubCommandsUsage(final Permissible permissible, final Permission contextPermission) {
         List<T> subCommands = this.command.getSubCommands();
         return subCommands.stream()
             .filter(subCommand -> {
@@ -123,7 +123,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
             .collect(Collectors.joining("\n"));
     }
 
-    private boolean checkLength(int argumentsLength) {
+    private boolean checkLength(final int argumentsLength) {
         List<? extends Argument> commandArguments = this.command.getArguments();
         long minimumSize = commandArguments.stream()
             .filter(Argument::isNotOptional)
@@ -135,7 +135,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         return argumentsLength >= minimumSize && argumentsLength <= maximumSize;
     }
 
-    private boolean isMatching(String argument, T command) {
+    private boolean isMatching(final String argument, final T command) {
         CommandProperties properties = command.getProperties();
         String name = properties.getName();
         if (argument.equalsIgnoreCase(name)) {
@@ -146,7 +146,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         return aliases.contains(lowerCaseArgument);
     }
 
-    private C createSubCommandContext(T subCommand, C context) {
+    private C createSubCommandContext(final T subCommand, final C context) {
         CommandSender<S> sender = context.getSender();
         List<String> contextArguments = context.getArguments();
         int size = contextArguments.size();

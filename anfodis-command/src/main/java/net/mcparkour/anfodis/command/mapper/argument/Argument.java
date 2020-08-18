@@ -46,7 +46,7 @@ public class Argument {
     private String name;
     private boolean optional;
 
-    public Argument(ArgumentData argumentData) {
+    public Argument(final ArgumentData argumentData) {
         Field field = argumentData.getArgumentField();
         this.field = Objects.requireNonNull(field, "Argument field is null");
         this.argumentType = getArgumentType(field);
@@ -54,10 +54,10 @@ public class Argument {
         String name = argumentData.getName();
         this.name = Objects.requireNonNull(name, "Argument name is null").isEmpty() ? field.getName() : name;
         Boolean optional = argumentData.getOptional();
-        this.optional = optional == null ? false : optional;
+        this.optional = optional != null && optional;
     }
 
-    private static Type getArgumentType(Field field) {
+    private static Type getArgumentType(final Field field) {
         Type genericType = field.getGenericType();
         Class<?> classGenericType = Types.getRawClassType(genericType);
         if (!classGenericType.isAssignableFrom(OptionalArgument.class)) {
@@ -79,12 +79,12 @@ public class Argument {
         return builder.toString();
     }
 
-    public void setEmptyArgumentField(Object instance) {
+    public void setEmptyArgumentField(final Object instance) {
         Object value = isOptionalArgument() ? MappedOptionalArgument.EMPTY_OPTIONAL_ARGUMENT : null;
         Reflections.setFieldValue(this.field, instance, value);
     }
 
-    public void setArgumentField(Object instance, @Nullable Object argument) {
+    public void setArgumentField(final Object instance, @Nullable final Object argument) {
         Object value = isOptionalArgument() ? MappedOptionalArgument.of(argument) : argument;
         Reflections.setFieldValue(this.field, instance, value);
     }
@@ -99,23 +99,23 @@ public class Argument {
         return argumentClass.isAssignableFrom(List.class);
     }
 
-    public ArgumentCodec<?> getCodec(CodecRegistry<ArgumentCodec<?>> registry) {
+    public ArgumentCodec<?> getCodec(final CodecRegistry<ArgumentCodec<?>> registry) {
         Class<?> argumentClass = getArgumentClass();
         return getCodec(registry, argumentClass);
     }
 
-    public ArgumentCodec<?> getGenericTypeCodec(CodecRegistry<ArgumentCodec<?>> registry, int genericTypeIndex) {
+    public ArgumentCodec<?> getGenericTypeCodec(final CodecRegistry<ArgumentCodec<?>> registry, final int genericTypeIndex) {
         Type[] genericTypes = getArgumentGenericTypes();
         Type genericType = genericTypes[genericTypeIndex];
         Class<?> type = Types.getRawClassType(genericType);
         return getCodec(registry, type);
     }
 
-    private ArgumentCodec<?> getCodec(CodecRegistry<ArgumentCodec<?>> registry, Class<?> type) {
+    private ArgumentCodec<?> getCodec(final CodecRegistry<ArgumentCodec<?>> registry, final Class<?> type) {
         return this.codecKey == null || this.codecKey.isEmpty() ? getTypedCodec(registry, type) : getKeyedCodec(registry, this.codecKey);
     }
 
-    private ArgumentCodec<?> getTypedCodec(CodecRegistry<ArgumentCodec<?>> registry, Class<?> type) {
+    private ArgumentCodec<?> getTypedCodec(final CodecRegistry<ArgumentCodec<?>> registry, final Class<?> type) {
         ArgumentCodec<?> codec = registry.getTypedCodec(type);
         if (codec == null) {
             throw new UnknownCodecException("Cannot find argument codec for type " + type);
@@ -123,7 +123,7 @@ public class Argument {
         return codec;
     }
 
-    private ArgumentCodec<?> getKeyedCodec(CodecRegistry<ArgumentCodec<?>> registry, String key) {
+    private ArgumentCodec<?> getKeyedCodec(final CodecRegistry<ArgumentCodec<?>> registry, final String key) {
         ArgumentCodec<?> codec = registry.getKeyedCodec(key);
         if (codec == null) {
             throw new UnknownCodecException("Cannot find argument codec for key '" + key + "'");

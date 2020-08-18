@@ -37,7 +37,7 @@ public class Listener<C extends Context, P extends ListenerProperties<?>> extend
     private C context;
     private P properties;
 
-    public Listener(Constructor<?> constructor, List<Injection> injections, Executor executor, C context, P properties) {
+    public Listener(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final C context, final P properties) {
         super(constructor, injections, executor);
         this.context = context;
         this.properties = properties;

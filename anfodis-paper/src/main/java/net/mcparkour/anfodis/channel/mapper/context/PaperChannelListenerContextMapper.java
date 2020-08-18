@@ -34,7 +34,7 @@ import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 public class PaperChannelListenerContextMapper implements Mapper<Field, PaperChannelListenerContext> {
 
     @Override
-    public PaperChannelListenerContext map(Iterable<Field> elements) {
+    public PaperChannelListenerContext map(final Iterable<Field> elements) {
         return new ElementsMapperBuilder<Field, PaperChannelListenerContextData>()
             .data(PaperChannelListenerContextData::new)
             .singleElement(data -> new SingleElementMapperBuilder<Field>()

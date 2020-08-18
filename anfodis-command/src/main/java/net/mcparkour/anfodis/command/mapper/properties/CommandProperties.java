@@ -43,7 +43,7 @@ public class CommandProperties {
     private String aliasesTranslationId;
     private Permission permission;
 
-    public CommandProperties(CommandPropertiesData propertiesData) {
+    public CommandProperties(final CommandPropertiesData propertiesData) {
         String name = propertiesData.getName();
         this.name = Objects.requireNonNull(name, "Command name is null");
         String description = propertiesData.getDescription();

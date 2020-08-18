@@ -55,17 +55,17 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
 
     private CommandManager commandManager;
 
-    public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSource> messageReceiverFactory, Permission basePermission, ProxyServer server) {
+    public VelocityCommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final CodecRegistry<CompletionCodec> completionCodecRegistry, final MessageReceiverFactory<CommandSource> messageReceiverFactory, final Permission basePermission, final ProxyServer server) {
         this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, basePermission, server.getCommandManager());
     }
 
-    public VelocityCommandRegistry(CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, CodecRegistry<CompletionCodec> completionCodecRegistry, MessageReceiverFactory<CommandSource> messageReceiverFactory, Permission basePermission, CommandManager commandManager) {
+    public VelocityCommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final CodecRegistry<CompletionCodec> completionCodecRegistry, final MessageReceiverFactory<CommandSource> messageReceiverFactory, final Permission basePermission, final CommandManager commandManager) {
         super(COMMAND_MAPPER, VelocityCommandHandler::new, CommandExecutorHandler::new, VelocityCommandContext::new, CompletionHandler::new, VelocityCompletionContext::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, basePermission);
         this.commandManager = commandManager;
     }
 
     @Override
-    public void register(VelocityCommand command, CommandContextHandler<VelocityCommandContext> commandHandler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
+    public void register(final VelocityCommand command, final CommandContextHandler<VelocityCommandContext> commandHandler, final CompletionContextHandler<VelocityCompletionContext> completionHandler) {
         VelocityCommandProperties properties = command.getProperties();
         Set<String> names = properties.getAllNames();
         Permission basePermission = getBasePermission();
@@ -74,7 +74,7 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
         register(names, permission, commandHandler, completionHandler);
     }
 
-    private void register(Collection<String> aliases, Permission permission, CommandContextHandler<VelocityCommandContext> commandHandler, CompletionContextHandler<VelocityCompletionContext> completionHandler) {
+    private void register(final Collection<String> aliases, final Permission permission, final CommandContextHandler<VelocityCommandContext> commandHandler, final CompletionContextHandler<VelocityCompletionContext> completionHandler) {
         MessageReceiverFactory<CommandSource> messageReceiverFactory = getMessageReceiverFactory();
         VelocityCommandExecutor commandExecutor = (sender, arguments) -> {
             MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
@@ -91,12 +91,12 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
         register(aliases, commandExecutor, completionExecutor);
     }
 
-    public void register(Collection<String> aliases, VelocityCommandExecutor commandExecutor, VelocityCompletionExecutor completionExecutor) {
+    public void register(final Collection<String> aliases, final VelocityCommandExecutor commandExecutor, final VelocityCompletionExecutor completionExecutor) {
         String[] aliasesArray = aliases.toArray(String[]::new);
         register(aliasesArray, commandExecutor, completionExecutor);
     }
 
-    public void register(String[] aliases, VelocityCommandExecutor commandExecutor, VelocityCompletionExecutor completionExecutor) {
+    public void register(final String[] aliases, final VelocityCommandExecutor commandExecutor, final VelocityCompletionExecutor completionExecutor) {
         Command command = new CommandWrapper(commandExecutor, completionExecutor);
         this.commandManager.register(command, aliases);
     }
