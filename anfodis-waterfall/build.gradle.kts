@@ -10,5 +10,5 @@ repositories {
 dependencies {
     api(project(":anfodis-command-completion"))
     api(project(":anfodis-listener"))
-    compileOnly("io.github.waterfallmc:waterfall-api:1.15-SNAPSHOT")
+    compileOnly("io.github.waterfallmc:waterfall-api:1.16-R0.4-SNAPSHOT")
 }

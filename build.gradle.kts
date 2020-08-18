@@ -19,10 +19,10 @@ subprojects {
 
     dependencies {
         implementation("net.mcparkour:common-reflection:1.0.7")
-        compileOnly("org.jetbrains:annotations:19.0.0")
+        compileOnly("org.jetbrains:annotations:20.0.0")
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")
-        testCompileOnly("org.jetbrains:annotations:19.0.0")
+        testCompileOnly("org.jetbrains:annotations:20.0.0")
     }
 
     java {
