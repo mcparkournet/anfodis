@@ -29,16 +29,17 @@ import org.jetbrains.annotations.Nullable;
 
 class CompletionArgumentData extends ArgumentData {
 
-    private boolean hasCompletion;
+    @Nullable
+    private Boolean hasCompletion;
     @Nullable
     private Class<? extends CompletionCodec> completionCodecType;
 
-    public boolean hasCompletion() {
+    public @Nullable Boolean getHasCompletion() {
         return this.hasCompletion;
     }
 
-    public void enableCompletion() {
-        this.hasCompletion = true;
+    public void setHasCompletion(final @Nullable Boolean hasCompletion) {
+        this.hasCompletion = hasCompletion;
     }
 
     @Nullable

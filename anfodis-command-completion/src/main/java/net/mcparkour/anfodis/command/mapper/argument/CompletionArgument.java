@@ -37,7 +37,8 @@ public class CompletionArgument extends Argument {
 
     public CompletionArgument(final CompletionArgumentData argumentData) {
         super(argumentData);
-        this.hasCompletion = argumentData.hasCompletion();
+        Boolean hasCompletion = argumentData.getHasCompletion();
+        this.hasCompletion = hasCompletion != null && hasCompletion;
         this.codecType = argumentData.getCompletionCodecType();
     }
 

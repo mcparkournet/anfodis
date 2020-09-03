@@ -58,7 +58,7 @@ public class CompletionArgumentMapper<A extends CompletionArgument, D extends Co
     ) {
         MapperBuilderApplier<Field, D> applier = (builder, data) -> builder
             .additional(Completion.class, completion ->
-                data.enableCompletion())
+                data.setHasCompletion(true))
             .additional(CompletionCodec.class, completionCodec ->
                 data.setCompletionCodecType(completionCodec.value()));
         if (additional == null) {
