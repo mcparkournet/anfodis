@@ -29,7 +29,7 @@ import net.md_5.bungee.api.CommandSender;
 
 public class WaterfallCommandProperties extends CommandProperties {
 
-    private Set<Class<? extends CommandSender>> senderTypes;
+    private final Set<Class<? extends CommandSender>> senderTypes;
 
     public WaterfallCommandProperties(final WaterfallCommandPropertiesData propertiesData) {
         super(propertiesData);

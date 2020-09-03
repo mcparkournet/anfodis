@@ -44,8 +44,8 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
     private static final PaperListenerMapper LISTENER_MAPPER = new PaperListenerMapper();
     private static final org.bukkit.event.Listener EMPTY_LISTENER = new org.bukkit.event.Listener() {};
 
-    private Plugin plugin;
-    private PluginManager pluginManager;
+    private final Plugin plugin;
+    private final PluginManager pluginManager;
 
     public PaperListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final Plugin plugin) {
         super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);

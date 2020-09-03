@@ -37,10 +37,10 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class Command<T extends Command<T, A, C, P>, A extends Argument, C extends Context, P extends CommandProperties> extends Root {
 
-    private List<A> arguments;
-    private C context;
-    private P properties;
-    private List<T> subCommands;
+    private final List<A> arguments;
+    private final C context;
+    private final P properties;
+    private final List<T> subCommands;
 
     public Command(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final List<A> arguments, final C context, final P properties, final List<T> subCommands) {
         super(constructor, injections, executor);

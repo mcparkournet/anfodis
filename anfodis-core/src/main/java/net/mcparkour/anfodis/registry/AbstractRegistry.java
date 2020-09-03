@@ -34,9 +34,9 @@ import net.mcparkour.anfodis.mapper.RootMapper;
 
 public abstract class AbstractRegistry<T extends Root, C extends RootContext> implements Registry {
 
-    private Class<? extends Annotation> annotationClass;
-    private RootMapper<T> mapper;
-    private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
+    private final Class<? extends Annotation> annotationClass;
+    private final RootMapper<T> mapper;
+    private final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 
     public AbstractRegistry(final Class<? extends Annotation> annotation, final RootMapper<T> mapper, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
         this.annotationClass = annotation;

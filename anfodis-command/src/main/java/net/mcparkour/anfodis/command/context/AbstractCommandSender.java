@@ -28,8 +28,8 @@ import net.mcparkour.intext.message.MessageReceiver;
 
 public abstract class AbstractCommandSender<T> implements CommandSender<T> {
 
-    private T sender;
-    private MessageReceiver receiver;
+    private final T sender;
+    private final MessageReceiver receiver;
 
     public AbstractCommandSender(final T sender, final MessageReceiver receiver) {
         this.sender = sender;

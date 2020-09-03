@@ -44,8 +44,8 @@ public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelL
 
     private static final PaperChannelListenerMapper CHANNEL_LISTENER_MAPPER = new PaperChannelListenerMapper();
 
-    private Plugin plugin;
-    private Messenger messenger;
+    private final Plugin plugin;
+    private final Messenger messenger;
 
     public PaperChannelListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final Plugin plugin) {
         super(net.mcparkour.anfodis.channel.annotation.properties.ChannelListener.class, CHANNEL_LISTENER_MAPPER, injectionCodecRegistry);

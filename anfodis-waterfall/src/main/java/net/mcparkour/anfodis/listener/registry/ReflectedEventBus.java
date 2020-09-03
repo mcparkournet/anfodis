@@ -36,9 +36,9 @@ import net.md_5.bungee.event.EventBus;
 
 public class ReflectedEventBus {
 
-    private EventBus eventBus;
-    private Map<Class<?>, Map<Byte, Map<Object, Method[]>>> byListenerAndPriority;
-    private Lock lock;
+    private final EventBus eventBus;
+    private final Map<Class<?>, Map<Byte, Map<Object, Method[]>>> byListenerAndPriority;
+    private final Lock lock;
 
     public ReflectedEventBus(final EventBus eventBus) {
         this.eventBus = eventBus;

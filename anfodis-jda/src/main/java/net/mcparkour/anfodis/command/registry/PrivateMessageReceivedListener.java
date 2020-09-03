@@ -47,10 +47,10 @@ import net.mcparkour.intext.message.MessageReceiverFactory;
 
 public class PrivateMessageReceivedListener implements EventListener {
 
-    private Permission basePermission;
-    private PermissionMap permissionMap;
-    private CommandMap commandMap;
-    private MessageReceiverFactory<ChannelSender> messageReceiverFactory;
+    private final Permission basePermission;
+    private final PermissionMap permissionMap;
+    private final CommandMap commandMap;
+    private final MessageReceiverFactory<ChannelSender> messageReceiverFactory;
 
     public PrivateMessageReceivedListener(final Permission basePermission, final PermissionMap permissionMap, final CommandMap commandMap, final MessageReceiverFactory<ChannelSender> messageReceiverFactory) {
         this.basePermission = basePermission;

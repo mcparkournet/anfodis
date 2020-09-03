@@ -29,7 +29,7 @@ import java.util.Objects;
 
 public class SubCommand {
 
-    private Field field;
+    private final Field field;
 
     public SubCommand(final SubCommandData subCommandData) {
         Field field = subCommandData.getSubCommandField();

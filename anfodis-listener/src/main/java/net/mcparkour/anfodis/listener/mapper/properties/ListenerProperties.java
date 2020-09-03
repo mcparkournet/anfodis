@@ -28,7 +28,7 @@ import java.util.Set;
 
 public class ListenerProperties<E> {
 
-    private Set<Class<? extends E>> listenedEvents;
+    private final Set<Class<? extends E>> listenedEvents;
 
     public ListenerProperties(final ListenerPropertiesData<E> propertiesData) {
         Class<? extends E>[] listenedEvents = propertiesData.getListenedEvents();

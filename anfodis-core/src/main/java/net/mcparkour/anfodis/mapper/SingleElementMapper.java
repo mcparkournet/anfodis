@@ -32,10 +32,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class SingleElementMapper<E extends AnnotatedElement> {
 
-    private AnnotationConsumer<? extends Annotation> requiredAnnotation;
-    private List<AnnotationConsumer<? extends Annotation>> additionalAnnotations;
+    private final AnnotationConsumer<? extends Annotation> requiredAnnotation;
+    private final List<AnnotationConsumer<? extends Annotation>> additionalAnnotations;
     @Nullable
-    private Consumer<E> elementConsumer;
+    private final Consumer<E> elementConsumer;
 
     public static <E extends AnnotatedElement> SingleElementMapperBuilder<E> builder() {
         return new SingleElementMapperBuilder<>();

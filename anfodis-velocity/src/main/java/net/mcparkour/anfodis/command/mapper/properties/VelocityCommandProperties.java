@@ -29,7 +29,7 @@ import com.velocitypowered.api.command.CommandSource;
 
 public class VelocityCommandProperties extends CommandProperties {
 
-    private Set<Class<? extends CommandSource>> senderTypes;
+    private final Set<Class<? extends CommandSource>> senderTypes;
 
     public VelocityCommandProperties(final VelocityCommandPropertiesData propertiesData) {
         super(propertiesData);

@@ -44,8 +44,8 @@ public class WaterfallListenerRegistry extends AbstractListenerRegistry<Waterfal
 
     private static final WaterfallListenerMapper LISTENER_MAPPER = new WaterfallListenerMapper();
 
-    private Plugin plugin;
-    private ReflectedPluginManager reflectedPluginManager;
+    private final Plugin plugin;
+    private final ReflectedPluginManager reflectedPluginManager;
 
     public WaterfallListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final Plugin plugin) {
         super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);

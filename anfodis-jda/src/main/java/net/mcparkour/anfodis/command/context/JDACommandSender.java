@@ -33,7 +33,7 @@ import net.mcparkour.intext.message.MessageReceiver;
 
 public class JDACommandSender extends AbstractCommandSender<ChannelSender> {
 
-    private PermissionMap permissionMap;
+    private final PermissionMap permissionMap;
 
     public JDACommandSender(final ChannelSender sender, final MessageReceiver receiver, final PermissionMap permissionMap) {
         super(sender, receiver);

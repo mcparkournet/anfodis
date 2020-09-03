@@ -40,12 +40,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class Argument {
 
-    private Field field;
-    private Type argumentType;
+    private final Field field;
+    private final Type argumentType;
     @Nullable
-    private Class<? extends ArgumentCodec<?>> codecType;
-    private String name;
-    private boolean optional;
+    private final Class<? extends ArgumentCodec<?>> codecType;
+    private final String name;
+    private final boolean optional;
 
     public Argument(final ArgumentData argumentData) {
         Field field = argumentData.getArgumentField();

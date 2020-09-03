@@ -55,8 +55,8 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
 
     private static final PaperCommandMapper COMMAND_MAPPER = new PaperCommandMapper();
 
-    private CommandMap commandMap;
-    private String fallbackCommandPrefix;
+    private final CommandMap commandMap;
+    private final String fallbackCommandPrefix;
 
     public PaperCommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final CodecRegistry<CompletionCodec> completionCodecRegistry, final MessageReceiverFactory<CommandSender> messageReceiverFactory, final Plugin plugin) {
         this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, plugin.getServer(), plugin.getName());

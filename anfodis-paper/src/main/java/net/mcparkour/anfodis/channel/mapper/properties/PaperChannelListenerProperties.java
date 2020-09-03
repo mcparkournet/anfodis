@@ -28,7 +28,7 @@ import java.util.Set;
 
 public class PaperChannelListenerProperties {
 
-    private Set<String> channels;
+    private final Set<String> channels;
 
     public PaperChannelListenerProperties(final PaperChannelListenerPropertiesData data) {
         String[] channels = data.getChannels();

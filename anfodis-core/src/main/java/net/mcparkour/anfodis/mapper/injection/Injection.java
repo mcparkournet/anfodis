@@ -35,9 +35,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class Injection {
 
-    private Field field;
+    private final Field field;
     @Nullable
-    private Class<? extends InjectionCodec<?>> codecType;
+    private final Class<? extends InjectionCodec<?>> codecType;
 
     public Injection(final InjectionData injectionData) {
         Field field = injectionData.getInjectionField();

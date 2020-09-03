@@ -28,7 +28,7 @@ import com.velocitypowered.api.event.PostOrder;
 
 public class VelocityListenerProperties extends ListenerProperties<Object> {
 
-    private PostOrder priority;
+    private final PostOrder priority;
 
     public VelocityListenerProperties(final VelocityListenerPropertiesData propertiesData) {
         super(propertiesData);

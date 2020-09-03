@@ -28,7 +28,7 @@ import net.mcparkour.anfodis.handler.RootContext;
 
 public class ListenerContext<E> extends RootContext {
 
-    private E event;
+    private final E event;
 
     public ListenerContext(final E event) {
         this.event = event;

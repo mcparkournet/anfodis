@@ -44,12 +44,12 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S> extends AbstractRegistry<T, C> {
 
-    private CommandHandlerSupplier<T, C, S> commandHandlerSupplier;
-    private CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier;
-    private CommandContextSupplier<C, S> contextSupplier;
-    private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
-    private MessageReceiverFactory<S> messageReceiverFactory;
-    private Permission basePermission;
+    private final CommandHandlerSupplier<T, C, S> commandHandlerSupplier;
+    private final CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier;
+    private final CommandContextSupplier<C, S> contextSupplier;
+    private final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+    private final MessageReceiverFactory<S> messageReceiverFactory;
+    private final Permission basePermission;
 
     public AbstractCommandRegistry(final RootMapper<T> mapper, final CommandHandlerSupplier<T, C, S> commandHandlerSupplier, final CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier, final CommandContextSupplier<C, S> contextSupplier, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final MessageReceiverFactory<S> messageReceiverFactory, final Permission basePermission) {
         super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);

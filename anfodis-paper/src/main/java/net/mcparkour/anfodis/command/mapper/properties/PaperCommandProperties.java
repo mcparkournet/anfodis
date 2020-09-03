@@ -29,7 +29,7 @@ import org.bukkit.command.CommandSender;
 
 public class PaperCommandProperties extends CommandProperties {
 
-    private Set<Class<? extends CommandSender>> senderTypes;
+    private final Set<Class<? extends CommandSender>> senderTypes;
 
     public PaperCommandProperties(final PaperCommandPropertiesData propertiesData) {
         super(propertiesData);

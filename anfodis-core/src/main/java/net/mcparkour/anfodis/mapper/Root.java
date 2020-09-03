@@ -32,9 +32,9 @@ import net.mcparkour.common.reflection.Reflections;
 
 public class Root {
 
-    private Constructor<?> constructor;
-    private List<Injection> injections;
-    private Executor executor;
+    private final Constructor<?> constructor;
+    private final List<Injection> injections;
+    private final Executor executor;
 
     public Root(final Constructor<?> constructor, final List<Injection> injections, final Executor executor) {
         this.constructor = constructor;

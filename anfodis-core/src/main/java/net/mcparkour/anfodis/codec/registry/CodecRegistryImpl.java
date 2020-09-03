@@ -30,8 +30,8 @@ import net.mcparkour.anfodis.codec.Codec;
 
 class CodecRegistryImpl<T extends Codec> implements CodecRegistry<T> {
 
-    private Map<Class<?>, ? extends T> typedCodecs;
-    private Map<Class<? extends T>, ? extends T> selfCodecs;
+    private final Map<Class<?>, ? extends T> typedCodecs;
+    private final Map<Class<? extends T>, ? extends T> selfCodecs;
 
     CodecRegistryImpl(final Map<Class<?>, ? extends T> typedCodecs, final Map<Class<? extends T>, ? extends T> selfCodecs) {
         this.typedCodecs = typedCodecs;

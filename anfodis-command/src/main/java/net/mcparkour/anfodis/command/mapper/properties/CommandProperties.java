@@ -33,15 +33,15 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommandProperties {
 
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
     @Nullable
-    private String descriptionTranslationId;
-    private Set<String> aliases;
-    private Set<String> lowerCaseAliases;
+    private final String descriptionTranslationId;
+    private final Set<String> aliases;
+    private final Set<String> lowerCaseAliases;
     @Nullable
-    private String aliasesTranslationId;
-    private Permission permission;
+    private final String aliasesTranslationId;
+    private final Permission permission;
 
     public CommandProperties(final CommandPropertiesData propertiesData) {
         String name = propertiesData.getName();

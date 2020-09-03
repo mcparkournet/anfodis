@@ -33,7 +33,7 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class JDAPermissionMap implements PermissionMap {
 
-    private Map<Long, List<Permission>> map;
+    private final Map<Long, List<Permission>> map;
 
     public JDAPermissionMap() {
         this.map = new HashMap<>(4);

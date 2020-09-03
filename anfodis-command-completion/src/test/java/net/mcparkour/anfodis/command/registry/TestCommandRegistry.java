@@ -50,7 +50,7 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
 
     private static final TestCommandMapper COMMAND_MAPPER = new TestCommandMapper();
 
-    private Map<String, CommandWrapper> commandManager;
+    private final Map<String, CommandWrapper> commandManager;
 
     public TestCommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final CodecRegistry<CompletionCodec> completionCodecRegistry, final MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory, final Permission basePermission, final Map<String, CommandWrapper> commandManager) {
         super(COMMAND_MAPPER, TestCommandHandler::new, TestCommandExecutorHandler::new, TestCommandContext::new, CompletionHandler::new, TestCompletionContext::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, basePermission);

@@ -36,7 +36,7 @@ import net.mcparkour.anfodis.registry.AbstractRegistry;
 
 public abstract class AbstractListenerRegistry<T extends Listener<?, ?>, C extends ListenerContext<?>> extends AbstractRegistry<T, C> {
 
-    private ListenerHandlerSupplier<T, C> listenerHandlerSupplier;
+    private final ListenerHandlerSupplier<T, C> listenerHandlerSupplier;
 
     public AbstractListenerRegistry(final Class<? extends Annotation> annotation, final RootMapper<T> mapper, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
         this(annotation, mapper, ListenerHandler::new, injectionCodecRegistry);

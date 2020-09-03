@@ -33,8 +33,8 @@ import org.jetbrains.annotations.Nullable;
 
 final class CommandWrapper extends Command {
 
-    private PaperCommandExecutor commandExecutor;
-    private PaperCompletionExecutor completionExecutor;
+    private final PaperCommandExecutor commandExecutor;
+    private final PaperCompletionExecutor completionExecutor;
 
     CommandWrapper(final String name, final String description, final String usageMessage, final List<String> aliases, final String permission, final PaperCommandExecutor commandExecutor, final PaperCompletionExecutor completionExecutor) {
         super(name, description, usageMessage, aliases);

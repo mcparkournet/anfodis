@@ -34,13 +34,13 @@ import org.jetbrains.annotations.Nullable;
 public class Context {
 
     @Nullable
-    private Field argumentsField;
+    private final Field argumentsField;
     @Nullable
-    private Field requiredPermissionField;
+    private final Field requiredPermissionField;
     @Nullable
-    private Field senderField;
+    private final Field senderField;
     @Nullable
-    private Field receiverField;
+    private final Field receiverField;
 
     public Context(final ContextData contextData) {
         this.argumentsField = contextData.getArgumentsField();

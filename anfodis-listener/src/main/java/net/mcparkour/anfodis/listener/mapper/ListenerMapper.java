@@ -38,9 +38,9 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class ListenerMapper<T extends Listener<C, P>, C extends Context, P extends ListenerProperties<?>> implements RootMapper<T> {
 
-    private ContextMapper<C, ?> contextMapper;
-    private ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper;
-    private ListenerMerger<T, C, P> listenerMerger;
+    private final ContextMapper<C, ?> contextMapper;
+    private final ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper;
+    private final ListenerMerger<T, C, P> listenerMerger;
 
     public ListenerMapper(final ContextMapper<C, ?> contextMapper, final ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper, final ListenerMerger<T, C, P> listenerMerger) {
         this.contextMapper = contextMapper;

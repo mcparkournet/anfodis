@@ -33,8 +33,8 @@ import net.mcparkour.anfodis.result.Result;
 
 public class RootHandler<T extends Root, C extends RootContext> implements ContextHandler<C> {
 
-    private T root;
-    private CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
+    private final T root;
+    private final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 
     public RootHandler(final T root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
         this.root = root;

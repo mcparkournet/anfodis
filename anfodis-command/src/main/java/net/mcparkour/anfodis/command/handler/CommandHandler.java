@@ -41,11 +41,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S> implements CommandContextHandler<C> {
 
-    private T command;
-    private Map<T, ? extends CommandContextHandler<C>> subCommandHandlers;
+    private final T command;
+    private final Map<T, ? extends CommandContextHandler<C>> subCommandHandlers;
     @Nullable
-    private ContextHandler<C> executorHandler;
-    private CommandContextSupplier<C, S> contextSupplier;
+    private final ContextHandler<C> executorHandler;
+    private final CommandContextSupplier<C, S> contextSupplier;
 
     public CommandHandler(final T command, final Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable final ContextHandler<C> executorHandler, final CommandContextSupplier<C, S> contextSupplier) {
         this.command = command;

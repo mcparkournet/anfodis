@@ -31,8 +31,8 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 class CommandWrapper extends Command implements TabExecutor {
 
-    private WaterfallCommandExecutor commandExecutor;
-    private WaterfallCompletionExecutor completionExecutor;
+    private final WaterfallCommandExecutor commandExecutor;
+    private final WaterfallCompletionExecutor completionExecutor;
 
     CommandWrapper(final String name, final String permission, final String[] aliases, final WaterfallCommandExecutor commandExecutor, final WaterfallCompletionExecutor completionExecutor) {
         super(name, permission, aliases);

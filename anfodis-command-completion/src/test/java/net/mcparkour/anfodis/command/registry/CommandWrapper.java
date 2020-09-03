@@ -29,8 +29,8 @@ import net.mcparkour.anfodis.TestCommandSender;
 
 public class CommandWrapper {
 
-    private TestCommandExecutor commandExecutor;
-    private TestCompletionExecutor completionExecutor;
+    private final TestCommandExecutor commandExecutor;
+    private final TestCompletionExecutor completionExecutor;
 
     public CommandWrapper(final TestCommandExecutor commandExecutor, final TestCompletionExecutor completionExecutor) {
         this.commandExecutor = commandExecutor;

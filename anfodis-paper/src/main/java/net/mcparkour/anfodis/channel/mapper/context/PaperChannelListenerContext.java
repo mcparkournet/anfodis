@@ -33,9 +33,9 @@ import org.jetbrains.annotations.Nullable;
 public class PaperChannelListenerContext {
 
     @Nullable
-    private Field messageField;
+    private final Field messageField;
     @Nullable
-    private Field sourceField;
+    private final Field sourceField;
 
     public PaperChannelListenerContext(final PaperChannelListenerContextData data) {
         this.messageField = data.getMessageField();

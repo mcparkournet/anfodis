@@ -40,7 +40,7 @@ public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, L
 
     private static final JDAListenerMapper LISTENER_MAPPER = new JDAListenerMapper();
 
-    private JDA jda;
+    private final JDA jda;
 
     public JDAListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final JDA jda) {
         super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);

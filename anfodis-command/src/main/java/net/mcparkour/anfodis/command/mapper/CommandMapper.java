@@ -45,10 +45,10 @@ public class CommandMapper<T extends Command<T, A, C, P>, A extends Argument, C 
 
     private static final SubCommandMapper SUB_COMMAND_MAPPER = new SubCommandMapper();
 
-    private ArgumentMapper<A, ?> argumentMapper;
-    private ContextMapper<C, ?> contextMapper;
-    private CommandPropertiesMapper<P, ?> propertiesMapper;
-    private CommandMerger<T, A, C, P> commandMerger;
+    private final ArgumentMapper<A, ?> argumentMapper;
+    private final ContextMapper<C, ?> contextMapper;
+    private final CommandPropertiesMapper<P, ?> propertiesMapper;
+    private final CommandMerger<T, A, C, P> commandMerger;
 
     public CommandMapper(final ArgumentMapper<A, ?> argumentMapper, final ContextMapper<C, ?> contextMapper, final CommandPropertiesMapper<P, ?> propertiesMapper, final CommandMerger<T, A, C, P> commandMerger) {
         this.argumentMapper = argumentMapper;

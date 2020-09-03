@@ -41,8 +41,8 @@ public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityL
 
     private static final VelocityListenerMapper LISTENER_MAPPER = new VelocityListenerMapper();
 
-    private EventManager eventManager;
-    private Object plugin;
+    private final EventManager eventManager;
+    private final Object plugin;
 
     public VelocityListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final ProxyServer server, final Object plugin) {
         this(injectionCodecRegistry, server.getEventManager(), plugin);

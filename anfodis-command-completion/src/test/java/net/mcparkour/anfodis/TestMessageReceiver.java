@@ -31,7 +31,7 @@ import net.mcparkour.intext.translation.Translations;
 
 public class TestMessageReceiver extends AbstractMessageReceiver {
 
-    private TestCommandSender receiver;
+    private final TestCommandSender receiver;
 
     public TestMessageReceiver(final Translations translations, final Locale language, final TestCommandSender receiver) {
         super(translations, language);

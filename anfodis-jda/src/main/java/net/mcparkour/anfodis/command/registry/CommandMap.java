@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommandMap {
 
-    private Map<String, CommandMapEntry> commandMap;
+    private final Map<String, CommandMapEntry> commandMap;
 
     public CommandMap() {
         this.commandMap = new HashMap<>(16);

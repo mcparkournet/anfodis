@@ -43,9 +43,9 @@ public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDAC
 
     private static final JDACommandMapper COMMAND_MAPPER = new JDACommandMapper();
 
-    private JDA jda;
-    private PermissionMap permissionMap;
-    private CommandMap commandMap;
+    private final JDA jda;
+    private final PermissionMap permissionMap;
+    private final CommandMap commandMap;
 
     public JDACommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final MessageReceiverFactory<ChannelSender> messageReceiverFactory, final Permission basePermission, final JDA jda, final PermissionMap permissionMap) {
         super(COMMAND_MAPPER, CommandHandler::new, CommandExecutorHandler::new, JDACommandContext::new, injectionCodecRegistry, argumentCodecRegistry, messageReceiverFactory, basePermission);

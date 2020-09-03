@@ -33,8 +33,8 @@ import net.mcparkour.anfodis.codec.CodecProvider;
 
 class CodecRegistryBuilderImpl<T extends Codec> implements CodecRegistryBuilder<T> {
 
-    private Map<Class<?>, T> typedCodecs = new HashMap<>(0);
-    private Map<Class<? extends T>, T> selfCodecs = new HashMap<>(0);
+    private final Map<Class<?>, T> typedCodecs = new HashMap<>(0);
+    private final Map<Class<? extends T>, T> selfCodecs = new HashMap<>(0);
 
     @Override
     public CodecRegistryBuilder<T> typed(final Class<?> type, final T codec) {

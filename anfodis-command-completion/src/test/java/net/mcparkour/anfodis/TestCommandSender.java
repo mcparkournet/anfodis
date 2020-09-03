@@ -35,9 +35,9 @@ import org.jetbrains.annotations.Nullable;
 public class TestCommandSender {
 
     private Locale language;
-    private Set<String> permissions;
-    private boolean operator;
-    private Queue<String> messages;
+    private final Set<String> permissions;
+    private final boolean operator;
+    private final Queue<String> messages;
 
     public TestCommandSender() {
         this(Locale.US, Set.of(), true);

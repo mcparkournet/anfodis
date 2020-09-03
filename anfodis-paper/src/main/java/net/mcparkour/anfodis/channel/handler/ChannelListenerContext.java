@@ -30,8 +30,8 @@ import org.bukkit.entity.Player;
 
 public class ChannelListenerContext extends RootContext {
 
-    private Player source;
-    private ChannelMessage message;
+    private final Player source;
+    private final ChannelMessage message;
 
     public ChannelListenerContext(final Player source, final ChannelMessage message) {
         this.source = source;

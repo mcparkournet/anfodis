@@ -53,7 +53,7 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
 
     private static final VelocityCommandMapper COMMAND_MAPPER = new VelocityCommandMapper();
 
-    private CommandManager commandManager;
+    private final CommandManager commandManager;
 
     public VelocityCommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final CodecRegistry<CompletionCodec> completionCodecRegistry, final MessageReceiverFactory<CommandSource> messageReceiverFactory, final Permission basePermission, final ProxyServer server) {
         this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, basePermission, server.getCommandManager());

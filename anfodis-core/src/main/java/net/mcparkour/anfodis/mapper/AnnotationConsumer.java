@@ -31,9 +31,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class AnnotationConsumer<A extends Annotation> {
 
-    private Class<A> annotationClass;
+    private final Class<A> annotationClass;
     @Nullable
-    private Consumer<A> annotationConsumer;
+    private final Consumer<A> annotationConsumer;
 
     public AnnotationConsumer(final Class<A> annotationClass) {
         this(annotationClass, null);

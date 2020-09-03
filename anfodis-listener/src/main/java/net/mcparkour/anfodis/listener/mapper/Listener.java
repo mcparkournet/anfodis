@@ -34,8 +34,8 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class Listener<C extends Context, P extends ListenerProperties<?>> extends Root {
 
-    private C context;
-    private P properties;
+    private final C context;
+    private final P properties;
 
     public Listener(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final C context, final P properties) {
         super(constructor, injections, executor);

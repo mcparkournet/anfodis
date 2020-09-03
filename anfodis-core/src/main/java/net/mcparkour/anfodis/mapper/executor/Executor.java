@@ -32,11 +32,11 @@ import org.jetbrains.annotations.Nullable;
 public class Executor {
 
     @Nullable
-    private Method beforeMethod;
+    private final Method beforeMethod;
     @Nullable
-    private Method executorMethod;
+    private final Method executorMethod;
     @Nullable
-    private Method afterMethod;
+    private final Method afterMethod;
 
     public Executor(final ExecutorData executorData) {
         this.beforeMethod = executorData.getBeforeMethod();

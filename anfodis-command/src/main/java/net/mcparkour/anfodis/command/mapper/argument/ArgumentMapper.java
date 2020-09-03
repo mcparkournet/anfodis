@@ -44,8 +44,8 @@ import org.jetbrains.annotations.Nullable;
 public class ArgumentMapper<A extends net.mcparkour.anfodis.command.mapper.argument.Argument, D extends ArgumentData>
     implements Mapper<Field, List<A>> {
 
-    private Function<D, A> argumentSupplier;
-    private ElementsMapper<Field, D> mapper;
+    private final Function<D, A> argumentSupplier;
+    private final ElementsMapper<Field, D> mapper;
 
     public ArgumentMapper(
         final Function<D, A> argumentSupplier,

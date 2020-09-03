@@ -41,10 +41,10 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<S>, S> implements CompletionContextHandler<C> {
 
-    private T command;
-    private CodecRegistry<CompletionCodec> completionCodecRegistry;
-    private Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap;
-    private CommandContextSupplier<? extends C, S> contextSupplier;
+    private final T command;
+    private final CodecRegistry<CompletionCodec> completionCodecRegistry;
+    private final Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap;
+    private final CommandContextSupplier<? extends C, S> contextSupplier;
 
     public CompletionHandler(final T command, final CodecRegistry<CompletionCodec> completionCodecRegistry, final Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap, final CommandContextSupplier<? extends C, S> contextSupplier) {
         this.command = command;

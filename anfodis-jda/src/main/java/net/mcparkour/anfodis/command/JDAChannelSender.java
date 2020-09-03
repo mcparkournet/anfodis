@@ -29,8 +29,8 @@ import net.dv8tion.jda.api.entities.User;
 
 public class JDAChannelSender implements ChannelSender {
 
-    private User user;
-    private PrivateChannel channel;
+    private final User user;
+    private final PrivateChannel channel;
 
     public JDAChannelSender(final User user, final PrivateChannel channel) {
         this.user = user;

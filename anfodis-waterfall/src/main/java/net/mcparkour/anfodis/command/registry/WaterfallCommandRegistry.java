@@ -53,8 +53,8 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
 
     private static final WaterfallCommandMapper COMMAND_MAPPER = new WaterfallCommandMapper();
 
-    private PluginManager pluginManager;
-    private Plugin plugin;
+    private final PluginManager pluginManager;
+    private final Plugin plugin;
 
     public WaterfallCommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final CodecRegistry<CompletionCodec> completionCodecRegistry, final MessageReceiverFactory<CommandSender> messageReceiverFactory, final Plugin plugin) {
         this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, plugin.getProxy(), plugin);

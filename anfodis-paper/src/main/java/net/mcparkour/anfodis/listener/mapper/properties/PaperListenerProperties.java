@@ -29,8 +29,8 @@ import org.bukkit.event.EventPriority;
 
 public class PaperListenerProperties extends ListenerProperties<Event> {
 
-    private EventPriority priority;
-    private boolean ignoreCancelled;
+    private final EventPriority priority;
+    private final boolean ignoreCancelled;
 
     public PaperListenerProperties(final PaperListenerPropertiesData propertiesData) {
         super(propertiesData);

@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.channel;
 
 public class ChannelMessage {
 
-    private byte[] bytes;
+    private final byte[] bytes;
 
     public ChannelMessage(final byte[] bytes) {
         this.bytes = bytes;

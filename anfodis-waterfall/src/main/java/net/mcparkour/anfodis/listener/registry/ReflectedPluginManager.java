@@ -37,8 +37,8 @@ import net.md_5.bungee.event.EventBus;
 
 public class ReflectedPluginManager {
 
-    private ReflectedEventBus eventBus;
-    private Multimap<Plugin, Listener> listenersByPlugin;
+    private final ReflectedEventBus eventBus;
+    private final Multimap<Plugin, Listener> listenersByPlugin;
 
     public ReflectedPluginManager(final PluginManager pluginManager) {
         EventBus eventBus = getFieldValue("eventBus", pluginManager);

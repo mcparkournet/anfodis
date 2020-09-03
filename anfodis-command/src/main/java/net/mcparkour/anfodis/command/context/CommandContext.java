@@ -30,9 +30,9 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class CommandContext<T> extends RootContext {
 
-    private CommandSender<T> sender;
-    private List<String> arguments;
-    private Permission permission;
+    private final CommandSender<T> sender;
+    private final List<String> arguments;
+    private final Permission permission;
 
     public CommandContext(final CommandSender<T> sender, final List<String> arguments, final Permission permission) {
         this.sender = sender;
