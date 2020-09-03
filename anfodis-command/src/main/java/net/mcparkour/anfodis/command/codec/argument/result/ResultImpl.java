@@ -22,15 +22,46 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.codec.injection;
+package net.mcparkour.anfodis.command.codec.argument.result;
 
-import net.mcparkour.anfodis.codec.Codec;
+import java.util.Optional;
+import org.jetbrains.annotations.Nullable;
 
-public interface InjectionCodec<T> extends Codec {
+class ResultImpl<T> implements Result<T> {
 
-    T getInjection();
+    private final OkResult<T> okResult;
+    private final ErrorResult errorResult;
 
-    static <T> InjectionCodec<T> reference(final T injection) {
-        return () -> injection;
+    ResultImpl(final OkResult<T> okResult) {
+        this(okResult, null);
+    }
+
+    ResultImpl(final ErrorResult errorResult) {
+        this(null, errorResult);
+    }
+
+    private ResultImpl(final @Nullable OkResult<T> okResult, final @Nullable ErrorResult errorResult) {
+        this.okResult = okResult;
+        this.errorResult = errorResult;
+    }
+
+    @Override
+    public boolean isOk() {
+        return this.okResult != null;
+    }
+
+    @Override
+    public boolean isError() {
+        return this.errorResult != null;
+    }
+
+    @Override
+    public Optional<OkResult<T>> getOkResult() {
+        return Optional.ofNullable(this.okResult);
+    }
+
+    @Override
+    public Optional<ErrorResult> getErrorResult() {
+        return Optional.ofNullable(this.errorResult);
     }
 }

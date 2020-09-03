@@ -25,12 +25,15 @@
 package net.mcparkour.anfodis.command.handler;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.codec.argument.result.ErrorResult;
+import net.mcparkour.anfodis.command.codec.argument.result.OkResult;
+import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.mapper.Command;
@@ -41,9 +44,10 @@ import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> extends RootHandler<T, C> {
+public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>>
+    extends RootHandler<T, C> {
 
-    private CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
+    private final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
 
     public CommandExecutorHandler(final T root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
         super(root, injectionCodecRegistry);
@@ -52,9 +56,13 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
 
     @Override
     public void handle(final C context, final Object instance) {
-        setArguments(context, instance);
-        setContext(context, instance);
-        super.handle(context, instance);
+        try {
+            setArguments(context, instance);
+            setContext(context, instance);
+            super.handle(context, instance);
+        } catch (final ArgumentException exception) {
+            exception.runResult();
+        }
     }
 
     private void setArguments(final C context, final Object commandInstance) {
@@ -68,29 +76,45 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
             if (index >= argumentsSize) {
                 commandArgument.setEmptyArgumentField(commandInstance);
             } else {
-                Object argumentValue = getArgumentValue(arguments, commandArgument, index);
+                Object argumentValue = getArgumentValue(arguments, commandArgument, index, context);
                 commandArgument.setArgumentField(commandInstance, argumentValue);
             }
         }
     }
 
     @Nullable
-    private Object getArgumentValue(final List<String> arguments, final Argument commandArgument, final int index) {
+    private Object getArgumentValue(final List<String> arguments, final Argument commandArgument, final int index, final C context) {
         if (commandArgument.isList()) {
-            return getListArgumentValue(arguments, commandArgument, index);
+            return getListArgumentValue(arguments, commandArgument, index, context);
         }
         String argument = arguments.get(index);
         ArgumentCodec<?> codec = commandArgument.getCodec(this.argumentCodecRegistry);
-        return codec.parse(argument);
+        Result<?> result = codec.parse(context, argument);
+        return getResult(result);
     }
 
-    private List<?> getListArgumentValue(final List<String> arguments, final Argument commandArgument, final int startIndex) {
+    private List<?> getListArgumentValue(final List<String> arguments, final Argument commandArgument, final int startIndex, final C context) {
         int size = arguments.size();
         ArgumentCodec<?> codec = commandArgument.getGenericTypeCodec(this.argumentCodecRegistry, 0);
         return IntStream.range(startIndex, size)
             .mapToObj(arguments::get)
-            .map(codec::parse)
+            .map(argument -> codec.parse(context, argument))
+            .map(this::getResult)
             .collect(Collectors.toList());
+    }
+
+    private <S> @Nullable S getResult(final Result<S> result) {
+        Optional<ErrorResult> optionalErrorResult = result.getErrorResult();
+        if (optionalErrorResult.isPresent()) {
+            ErrorResult errorResult = optionalErrorResult.get();
+            throw new ArgumentException(errorResult);
+        }
+        Optional<OkResult<S>> optionalOkResult = result.getOkResult();
+        if (optionalOkResult.isEmpty()) {
+            throw new RuntimeException("Result does not have OkResult");
+        }
+        OkResult<S> okResult = optionalOkResult.get();
+        return okResult.getResult();
     }
 
     private void setContext(final C context, final Object commandInstance) {

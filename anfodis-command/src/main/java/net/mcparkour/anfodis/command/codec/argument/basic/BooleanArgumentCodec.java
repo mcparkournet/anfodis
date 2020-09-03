@@ -25,13 +25,14 @@
 package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import org.jetbrains.annotations.Nullable;
+import net.mcparkour.anfodis.command.codec.argument.result.Result;
+import net.mcparkour.anfodis.command.context.CommandContext;
 
 public class BooleanArgumentCodec implements ArgumentCodec<Boolean> {
 
     @Override
-    @Nullable
-    public Boolean parse(final String stringValue) {
-        return Boolean.parseBoolean(stringValue);
+    public Result<Boolean> parse(final CommandContext<?> context, final String argument) {
+        boolean result = Boolean.parseBoolean(argument);
+        return Result.ok(result);
     }
 }

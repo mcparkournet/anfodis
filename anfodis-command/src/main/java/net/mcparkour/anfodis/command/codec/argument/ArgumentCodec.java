@@ -25,15 +25,14 @@
 package net.mcparkour.anfodis.command.codec.argument;
 
 import net.mcparkour.anfodis.codec.Codec;
-import org.jetbrains.annotations.Nullable;
+import net.mcparkour.anfodis.command.codec.argument.result.Result;
+import net.mcparkour.anfodis.command.context.CommandContext;
 
-@FunctionalInterface
 public interface ArgumentCodec<T> extends Codec {
 
-    @Nullable
-    T parse(String stringValue);
+    Result<T> parse(CommandContext<?> context, String argument);
 
     static ArgumentCodec<String> identity() {
-        return stringValue -> stringValue;
+        return (context, argument) -> Result.ok(argument);
     }
 }

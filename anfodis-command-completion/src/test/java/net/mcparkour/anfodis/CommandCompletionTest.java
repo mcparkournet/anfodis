@@ -32,6 +32,7 @@ import java.util.Set;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.registry.CommandWrapper;
 import net.mcparkour.anfodis.command.registry.TestCommandRegistry;
@@ -70,9 +71,9 @@ public class CommandCompletionTest {
             .build();
         CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = CodecRegistry.<ArgumentCodec<?>>builder()
             .typed(String.class, ArgumentCodec.identity())
-            .typed(Locale.class, Locale::forLanguageTag)
+            .typed(Locale.class, (context, argument) -> Result.ok(Locale.forLanguageTag(argument)))
             .self(ArgArgumentCodec.class, new ArgArgumentCodec())
-            .self(NullArgumentCodec.class, stringValue -> null)
+            .self(NullArgumentCodec.class, (context, argument) -> Result.ok(null))
             .build();
         CodecRegistry<CompletionCodec> completionCodecRegistry = CodecRegistry.<CompletionCodec>builder()
             .typed(Locale.class, CompletionCodec.entries("en-US", "pl-PL"))

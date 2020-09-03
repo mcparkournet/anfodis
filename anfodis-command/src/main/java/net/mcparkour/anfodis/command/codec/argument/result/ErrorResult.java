@@ -22,15 +22,17 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.codec.injection;
+package net.mcparkour.anfodis.command.codec.argument.result;
 
-import net.mcparkour.anfodis.codec.Codec;
+public interface ErrorResult {
 
-public interface InjectionCodec<T> extends Codec {
-
-    T getInjection();
-
-    static <T> InjectionCodec<T> reference(final T injection) {
-        return () -> injection;
+    static ErrorResult empty() {
+        return new ErrorResultImpl();
     }
+
+    static ErrorResult of(final Runnable action) {
+        return new ErrorResultImpl(action);
+    }
+
+    void runAction();
 }

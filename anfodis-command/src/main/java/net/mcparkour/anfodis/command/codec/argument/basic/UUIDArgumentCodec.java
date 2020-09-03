@@ -26,21 +26,23 @@ package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import java.util.UUID;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.codec.argument.result.Result;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.common.text.UUIDConverter;
-import org.jetbrains.annotations.Nullable;
 
 public class UUIDArgumentCodec implements ArgumentCodec<UUID> {
 
     @Override
-    @Nullable
-    public UUID parse(final String stringValue) {
-        if (UUIDConverter.isDashed(stringValue)) {
-            return UUID.fromString(stringValue);
+    public Result<UUID> parse(final CommandContext<?> context, final String argument) {
+        if (UUIDConverter.isDashed(argument)) {
+            UUID uuid = UUID.fromString(argument);
+            return Result.ok(uuid);
         }
-        if (UUIDConverter.isPlain(stringValue)) {
-            String dashed = UUIDConverter.toDashed(stringValue);
-            return UUID.fromString(dashed);
+        if (UUIDConverter.isPlain(argument)) {
+            String dashed = UUIDConverter.toDashed(argument);
+            UUID uuid = UUID.fromString(dashed);
+            return Result.ok(uuid);
         }
-        return null;
+        return Result.error();
     }
 }

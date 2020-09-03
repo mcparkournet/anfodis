@@ -25,14 +25,18 @@
 package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.codec.argument.result.Result;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.common.text.NumericParser;
-import org.jetbrains.annotations.Nullable;
 
 public class ByteArgumentCodec implements ArgumentCodec<Byte> {
 
     @Override
-    @Nullable
-    public Byte parse(final String stringValue) {
-        return NumericParser.parseByte(stringValue);
+    public Result<Byte> parse(final CommandContext<?> context, final String argument) {
+        Byte result = NumericParser.parseByte(argument);
+        if (result == null) {
+            return Result.error();
+        }
+        return Result.ok(result);
     }
 }

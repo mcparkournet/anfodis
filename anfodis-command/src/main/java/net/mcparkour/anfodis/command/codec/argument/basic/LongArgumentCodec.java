@@ -25,14 +25,18 @@
 package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.codec.argument.result.Result;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.common.text.NumericParser;
-import org.jetbrains.annotations.Nullable;
 
 public class LongArgumentCodec implements ArgumentCodec<Long> {
 
     @Override
-    @Nullable
-    public Long parse(final String stringValue) {
-        return NumericParser.parseLong(stringValue);
+    public Result<Long> parse(final CommandContext<?> context, final String argument) {
+        Long result = NumericParser.parseLong(argument);
+        if (result == null) {
+            return Result.error();
+        }
+        return Result.ok(result);
     }
 }

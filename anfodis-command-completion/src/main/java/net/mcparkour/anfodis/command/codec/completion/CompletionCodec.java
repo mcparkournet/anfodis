@@ -5,7 +5,6 @@ import java.util.List;
 import net.mcparkour.anfodis.codec.Codec;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 
-@FunctionalInterface
 public interface CompletionCodec extends Codec {
 
     List<String> getCompletions(CompletionContext<?> context);

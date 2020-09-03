@@ -25,13 +25,13 @@
 package net.mcparkour.anfodis;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import org.jetbrains.annotations.Nullable;
+import net.mcparkour.anfodis.command.codec.argument.result.Result;
+import net.mcparkour.anfodis.command.context.CommandContext;
 
 public class ArgArgumentCodec implements ArgumentCodec<String> {
 
-    @Nullable
     @Override
-    public String parse(final String stringValue) {
-        return stringValue.strip();
+    public Result<String> parse(final CommandContext<?> context, final String argument) {
+        return Result.ok(argument.strip());
     }
 }

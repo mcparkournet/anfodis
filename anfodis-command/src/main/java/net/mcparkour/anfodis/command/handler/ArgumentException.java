@@ -22,15 +22,21 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.codec.injection;
+package net.mcparkour.anfodis.command.handler;
 
-import net.mcparkour.anfodis.codec.Codec;
+import net.mcparkour.anfodis.command.codec.argument.result.ErrorResult;
 
-public interface InjectionCodec<T> extends Codec {
+public class ArgumentException extends RuntimeException {
 
-    T getInjection();
+    private static final long serialVersionUID = 3154223656733261923L;
 
-    static <T> InjectionCodec<T> reference(final T injection) {
-        return () -> injection;
+    private final ErrorResult result;
+
+    public ArgumentException(final ErrorResult result) {
+        this.result = result;
+    }
+
+    public void runResult() {
+        this.result.runAction();
     }
 }

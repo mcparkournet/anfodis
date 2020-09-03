@@ -44,8 +44,8 @@ import org.jetbrains.annotations.Nullable;
 public class CommandPropertiesMapper<P extends CommandProperties, D extends CommandPropertiesData>
     implements Mapper<Class<?>, P> {
 
-    private Function<D, P> propertiesSupplier;
-    private ElementsMapper<Class<?>, D> mapper;
+    private final Function<D, P> propertiesSupplier;
+    private final ElementsMapper<Class<?>, D> mapper;
 
     public CommandPropertiesMapper(
         final Function<D, P> propertiesSupplier,

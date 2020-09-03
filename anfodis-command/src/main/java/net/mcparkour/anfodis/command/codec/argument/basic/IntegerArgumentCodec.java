@@ -25,14 +25,18 @@
 package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.codec.argument.result.Result;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.common.text.NumericParser;
-import org.jetbrains.annotations.Nullable;
 
 public class IntegerArgumentCodec implements ArgumentCodec<Integer> {
 
     @Override
-    @Nullable
-    public Integer parse(final String stringValue) {
-        return NumericParser.parseInteger(stringValue);
+    public Result<Integer> parse(final CommandContext<?> context, final String argument) {
+        Integer result = NumericParser.parseInteger(argument);
+        if (result == null) {
+            return Result.error();
+        }
+        return Result.ok(result);
     }
 }

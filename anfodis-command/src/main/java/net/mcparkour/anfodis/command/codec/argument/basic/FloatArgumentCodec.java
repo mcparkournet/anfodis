@@ -25,14 +25,19 @@
 package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.codec.argument.result.OkResult;
+import net.mcparkour.anfodis.command.codec.argument.result.Result;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.common.text.NumericParser;
-import org.jetbrains.annotations.Nullable;
 
 public class FloatArgumentCodec implements ArgumentCodec<Float> {
 
     @Override
-    @Nullable
-    public Float parse(final String stringValue) {
-        return NumericParser.parseFloat(stringValue);
+    public Result<Float> parse(final CommandContext<?> context, final String argument) {
+        Float result = NumericParser.parseFloat(argument);
+        if (result == null) {
+            return Result.error();
+        }
+        return Result.ok(result);
     }
 }
