@@ -24,6 +24,7 @@
 
 package net.mcparkour.anfodis;
 
+import net.mcparkour.anfodis.CommandCompletionTest.NullArgumentCodec;
 import net.mcparkour.anfodis.annotation.executor.Executor;
 import net.mcparkour.anfodis.command.OptionalArgument;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
@@ -40,7 +41,7 @@ public class TestOptionalArgumentCommand {
     private MessageReceiver receiver;
 
     @Argument
-    @ArgumentCodec("null")
+    @ArgumentCodec(NullArgumentCodec.class)
     private String arg1;
     @Argument
     private OptionalArgument<String> arg2;

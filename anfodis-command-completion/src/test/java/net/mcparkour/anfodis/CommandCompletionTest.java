@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.CodecRegistryBuilder;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
@@ -53,6 +52,8 @@ public class CommandCompletionTest {
     private Map<String, CommandWrapper> commandManager;
     private Registry commandRegistry;
 
+    public interface NullArgumentCodec extends ArgumentCodec<String> {}
+
     @BeforeEach
     public void setUp() {
         Map<Locale, TranslatedText> fooTexts = Map.of(Locale.US, new TranslatedText(Locale.US, "foo"), POLISH, new TranslatedText(POLISH, "foo"));
@@ -61,18 +62,21 @@ public class CommandCompletionTest {
         Translations translations = new Translations(Locale.US, translationMap);
         TestMessageReceiverFactory receiverFactory = new TestMessageReceiverFactory(translations, TestCommandSender::getLanguage);
         this.commandManager = new HashMap<>(1);
-        CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = new CodecRegistryBuilder<InjectionCodec<?>>()
+        CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = CodecRegistry.<InjectionCodec<?>>builder()
             .typed(MessageReceiverFactory.class, InjectionCodec.reference(receiverFactory))
+            .typed(String.class, InjectionCodec.reference("testString"))
+            .self(TestInjectionCodec1.class, new TestInjectionCodec1())
+            .self(TestInjectionCodec2.class, new TestInjectionCodec2())
             .build();
-        CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = new CodecRegistryBuilder<ArgumentCodec<?>>()
+        CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = CodecRegistry.<ArgumentCodec<?>>builder()
             .typed(String.class, ArgumentCodec.identity())
             .typed(Locale.class, Locale::forLanguageTag)
-            .keyed("arg", String::strip)
-            .keyed("null", stringValue -> null)
+            .self(ArgArgumentCodec.class, new ArgArgumentCodec())
+            .self(NullArgumentCodec.class, stringValue -> null)
             .build();
-        CodecRegistry<CompletionCodec> completionCodecRegistry = new CodecRegistryBuilder<CompletionCodec>()
+        CodecRegistry<CompletionCodec> completionCodecRegistry = CodecRegistry.<CompletionCodec>builder()
             .typed(Locale.class, CompletionCodec.entries("en-US", "pl-PL"))
-            .keyed("args", CompletionCodec.entries("1", "2", "3"))
+            .self(ArgsCompletionCodec.class, new ArgsCompletionCodec())
             .build();
         this.commandRegistry = new TestCommandRegistry(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, receiverFactory, Permission.of("test"), this.commandManager);
     }
@@ -205,5 +209,16 @@ public class CommandCompletionTest {
         Assertions.assertIterableEquals(List.of(), complete2);
         List<String> complete3 = test.complete(sender, new String[] {"bar", "", ""});
         Assertions.assertIterableEquals(List.of("1", "2", "3"), complete3);
+    }
+
+    @Test
+    public void testInjectionCodecs() {
+        this.commandRegistry.register(TestInjectionCodecCommand.class);
+        CommandWrapper inject = this.commandManager.get("inject");
+        TestCommandSender sender = new TestCommandSender();
+        inject.execute(sender, new String[] {});
+        Assertions.assertEquals("testString", sender.getLastMessage());
+        Assertions.assertNull(sender.getLastMessage());
+        Assertions.assertEquals("test2", sender.getLastMessage());
     }
 }

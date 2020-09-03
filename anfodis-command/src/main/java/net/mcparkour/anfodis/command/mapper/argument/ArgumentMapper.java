@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command.mapper.argument;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -33,42 +34,40 @@ import java.util.stream.Collectors;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
 import net.mcparkour.anfodis.command.annotation.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.annotation.argument.Optional;
+import net.mcparkour.anfodis.mapper.ElementsMapper;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
+import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class ArgumentMapper<A extends net.mcparkour.anfodis.command.mapper.argument.Argument, D extends ArgumentData> implements Mapper<Field, List<A>> {
 
     private Function<D, A> argumentSupplier;
     private Supplier<D> argumentDataSupplier;
-    private BiConsumer<D, SingleElementMapperBuilder<Field>> additional;
+    private MapperBuilderApplier<Field, D> additional;
 
     public ArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier) {
-        this(argumentSupplier, argumentDataSupplier, (data, builder) -> {});
+        this(argumentSupplier, argumentDataSupplier, (builder, data) -> {});
     }
 
-    public ArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier, final BiConsumer<D, SingleElementMapperBuilder<Field>> additional) {
+    public ArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier, final MapperBuilderApplier<Field, D> additional) {
         this.argumentSupplier = argumentSupplier;
         this.argumentDataSupplier = argumentDataSupplier;
         this.additional = additional;
     }
 
     @Override
-    public List<A> map(final Iterable<Field> elements) {
-        return new ElementsMapperBuilder<Field, D>()
+    public List<A> map(final Collection<Field> elements) {
+        ElementsMapper<Field, D> mapper = new ElementsMapperBuilder<Field, D>()
             .data(this.argumentDataSupplier)
-            .singleElement(data -> {
-                SingleElementMapperBuilder<Field> builder = new SingleElementMapperBuilder<Field>()
-                    .annotation(Argument.class, argument -> data.setName(argument.value()))
-                    .annotation(ArgumentCodec.class, argumentCodec -> data.setArgumentCodecKey(argumentCodec.value()))
-                    .annotation(Optional.class, optional -> data.setOptional(true))
-                    .elementConsumer(data::setArgumentField);
-                this.additional.accept(data, builder);
-                return builder.build();
-            })
-            .build()
-            .map(elements)
-            .stream()
+            .element((builder, data) -> builder
+                    .required(Argument.class, argument -> data.setName(argument.value()))
+                    .additional(ArgumentCodec.class, argumentCodec -> data.setArgumentCodecType(argumentCodec.value()))
+                    .additional(Optional.class, optional -> data.setOptional(true))
+                    .elementConsumer(data::setArgumentField),
+                this.additional)
+            .build();
+        return mapper.mapToMultiple(elements)
             .map(this.argumentSupplier)
             .collect(Collectors.toUnmodifiableList());
     }

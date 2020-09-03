@@ -22,37 +22,43 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.codec;
+package net.mcparkour.anfodis;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.mcparkour.anfodis.annotation.Inject;
+import net.mcparkour.anfodis.annotation.InjectionCodec;
+import net.mcparkour.anfodis.annotation.executor.After;
+import net.mcparkour.anfodis.annotation.executor.Before;
+import net.mcparkour.anfodis.annotation.executor.Executor;
+import net.mcparkour.anfodis.command.annotation.context.Receiver;
+import net.mcparkour.anfodis.command.annotation.properties.Command;
+import net.mcparkour.intext.message.MessageReceiver;
 
-public class CodecRegistryBuilder<T> {
+@Command("inject")
+public class TestInjectionCodecCommand {
 
-    private Map<Class<?>, T> typedCodecs = new HashMap<>(16);
-    private Map<String, T> keyedCodecs = new HashMap<>(4);
+    @Inject
+    private String test;
+    @InjectionCodec(TestInjectionCodec1.class)
+    private String test1;
+    @Inject
+    @InjectionCodec(TestInjectionCodec2.class)
+    private String test2;
 
-    public CodecRegistryBuilder<T> typed(final Class<?> type, final T codec) {
-        this.typedCodecs.put(type, codec);
-        return this;
+    @Receiver
+    private MessageReceiver receiver;
+
+    @Before
+    public void before() {
+        this.receiver.receivePlain(this.test);
     }
 
-    public CodecRegistryBuilder<T> keyed(final String key, final T codec) {
-        this.keyedCodecs.put(key, codec);
-        return this;
+    @Executor
+    public void execute() {
+        this.receiver.receivePlain(this.test1);
     }
 
-    public CodecRegistryBuilder<T> with(final CodecRegistry<T> registry) {
-        Map<Class<?>, T> typedCodecs = registry.getTypedCodecs();
-        this.typedCodecs.putAll(typedCodecs);
-        Map<String, T> keyedCodecs = registry.getKeyedCodecs();
-        this.keyedCodecs.putAll(keyedCodecs);
-        return this;
-    }
-
-    public CodecRegistry<T> build() {
-        Map<Class<?>, T> typedCodecsCopy = Map.copyOf(this.typedCodecs);
-        Map<String, T> keyedCodecsCopy = Map.copyOf(this.keyedCodecs);
-        return new CodecRegistry<>(typedCodecsCopy, keyedCodecsCopy);
+    @After
+    public void after() {
+        this.receiver.receivePlain(this.test2);
     }
 }

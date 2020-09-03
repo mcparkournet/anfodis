@@ -28,17 +28,17 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ElementsMapperBuilder<E extends AnnotatedElement, T> {
 
     private Supplier<T> dataSupplier;
-    private List<Function<T, SingleElementMapper<E>>> singleElementMappers = new ArrayList<>();
+    private List<MapperBuilderApplier<E, T>> mapperBuilderAppliers;
 
-    public ElementsMapperBuilder<E, T> data(final T data) {
-        this.dataSupplier = () -> data;
-        return this;
+    public ElementsMapperBuilder() {
+        this.mapperBuilderAppliers = new ArrayList<>(0);
     }
 
     public ElementsMapperBuilder<E, T> data(final Supplier<T> dataSupplier) {
@@ -46,13 +46,17 @@ public class ElementsMapperBuilder<E extends AnnotatedElement, T> {
         return this;
     }
 
-    public ElementsMapperBuilder<E, T> singleElement(final Function<T, SingleElementMapper<E>> elementMapper) {
-        this.singleElementMappers.add(elementMapper);
+    public ElementsMapperBuilder<E, T> element(final MapperBuilderApplier<E, T> applier, final MapperBuilderApplier<E, T> additional) {
+        return element(applier.andThen(additional));
+    }
+
+    public ElementsMapperBuilder<E, T> element(final MapperBuilderApplier<E, T> applier) {
+        this.mapperBuilderAppliers.add(applier);
         return this;
     }
 
     public ElementsMapper<E, T> build() {
         Objects.requireNonNull(this.dataSupplier);
-        return new ElementsMapper<>(this.dataSupplier, this.singleElementMappers);
+        return new ElementsMapper<>(this.dataSupplier, this.mapperBuilderAppliers);
     }
 }

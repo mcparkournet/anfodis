@@ -24,7 +24,7 @@
 
 package net.mcparkour.anfodis.handler;
 
-import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.mapper.Root;
 import net.mcparkour.anfodis.mapper.executor.Executor;

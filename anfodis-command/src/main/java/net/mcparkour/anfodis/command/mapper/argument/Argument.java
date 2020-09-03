@@ -29,7 +29,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
-import net.mcparkour.anfodis.codec.CodecRegistry;
+import java.util.Optional;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.UnknownCodecException;
 import net.mcparkour.anfodis.command.OptionalArgument;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
@@ -42,7 +43,7 @@ public class Argument {
     private Field field;
     private Type argumentType;
     @Nullable
-    private String codecKey;
+    private Class<? extends ArgumentCodec<?>> codecType;
     private String name;
     private boolean optional;
 
@@ -50,7 +51,7 @@ public class Argument {
         Field field = argumentData.getArgumentField();
         this.field = Objects.requireNonNull(field, "Argument field is null");
         this.argumentType = getArgumentType(field);
-        this.codecKey = argumentData.getArgumentCodecKey();
+        this.codecType = argumentData.getArgumentCodecType();
         String name = argumentData.getName();
         this.name = Objects.requireNonNull(name, "Argument name is null").isEmpty() ? field.getName() : name;
         Boolean optional = argumentData.getOptional();
@@ -112,23 +113,25 @@ public class Argument {
     }
 
     private ArgumentCodec<?> getCodec(final CodecRegistry<ArgumentCodec<?>> registry, final Class<?> type) {
-        return this.codecKey == null || this.codecKey.isEmpty() ? getTypedCodec(registry, type) : getKeyedCodec(registry, this.codecKey);
+        return this.codecType == null ?
+            getTypedCodec(registry, type) :
+            getSelfCodec(registry, this.codecType);
     }
 
     private ArgumentCodec<?> getTypedCodec(final CodecRegistry<ArgumentCodec<?>> registry, final Class<?> type) {
-        ArgumentCodec<?> codec = registry.getTypedCodec(type);
-        if (codec == null) {
+        Optional<ArgumentCodec<?>> optionalCodec = registry.getTypedCodec(type);
+        if (optionalCodec.isEmpty()) {
             throw new UnknownCodecException("Cannot find argument codec for type " + type);
         }
-        return codec;
+        return optionalCodec.get();
     }
 
-    private ArgumentCodec<?> getKeyedCodec(final CodecRegistry<ArgumentCodec<?>> registry, final String key) {
-        ArgumentCodec<?> codec = registry.getKeyedCodec(key);
-        if (codec == null) {
+    private ArgumentCodec<?> getSelfCodec(final CodecRegistry<ArgumentCodec<?>> registry, final Class<? extends ArgumentCodec<?>> key) {
+        Optional<ArgumentCodec<?>> optionalCodec = registry.getSelfCodec(key);
+        if (optionalCodec.isEmpty()) {
             throw new UnknownCodecException("Cannot find argument codec for key '" + key + "'");
         }
-        return codec;
+        return optionalCodec.get();
     }
 
     private Type[] getArgumentGenericTypes() {

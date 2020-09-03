@@ -25,11 +25,13 @@
 package net.mcparkour.anfodis.listener.mapper.properties;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
+import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class ListenerPropertiesMapper<P extends ListenerProperties<E>, D extends ListenerPropertiesData<E>, E, A extends Annotation> implements Mapper<Class<?>, P> {
@@ -38,13 +40,13 @@ public class ListenerPropertiesMapper<P extends ListenerProperties<E>, D extends
     private Function<A, Class<? extends E>[]> listenedEventsExtractor;
     private Function<D, P> propertiesSupplier;
     private Supplier<D> propertiesDataSupplier;
-    private BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional;
+    private MapperBuilderApplier<Class<?>, D> additional;
 
     public ListenerPropertiesMapper(final Class<A> listenerAnnotationType, final Function<A, Class<? extends E>[]> listenedEventsExtractor, final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier) {
         this(listenerAnnotationType, listenedEventsExtractor, propertiesSupplier, propertiesDataSupplier, (data, builder) -> {});
     }
 
-    public ListenerPropertiesMapper(final Class<A> listenerAnnotationType, final Function<A, Class<? extends E>[]> listenedEventsExtractor, final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier, final BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional) {
+    public ListenerPropertiesMapper(final Class<A> listenerAnnotationType, final Function<A, Class<? extends E>[]> listenedEventsExtractor, final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier, final MapperBuilderApplier<Class<?>, D> additional) {
         this.listenerAnnotationType = listenerAnnotationType;
         this.listenedEventsExtractor = listenedEventsExtractor;
         this.propertiesSupplier = propertiesSupplier;
@@ -53,21 +55,17 @@ public class ListenerPropertiesMapper<P extends ListenerProperties<E>, D extends
     }
 
     @Override
-    public P map(final Iterable<Class<?>> elements) {
-        return new ElementsMapperBuilder<Class<?>, D>()
+    public P map(final Collection<Class<?>> elements) {
+        D propertiesData = new ElementsMapperBuilder<Class<?>, D>()
             .data(this.propertiesDataSupplier)
-            .singleElement(data -> {
-                SingleElementMapperBuilder<Class<?>> builder = new SingleElementMapperBuilder<Class<?>>()
-                    .annotation(this.listenerAnnotationType, listener -> {
+            .element((builder, data) -> builder
+                    .required(this.listenerAnnotationType, listener -> {
                         Class<? extends E>[] events = this.listenedEventsExtractor.apply(listener);
                         data.setListenedEvents(events);
-                    });
-                this.additional.accept(data, builder);
-                return builder.build();
-            })
+                    }),
+                this.additional)
             .build()
-            .mapFirstOptional(elements)
-            .map(this.propertiesSupplier)
-            .orElseThrow();
+            .mapToSingle(elements);
+        return this.propertiesSupplier.apply(propertiesData);
     }
 }

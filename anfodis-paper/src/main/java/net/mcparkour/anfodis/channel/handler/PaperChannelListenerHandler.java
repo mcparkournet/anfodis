@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.channel.handler;
 import net.mcparkour.anfodis.channel.ChannelMessage;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListener;
 import net.mcparkour.anfodis.channel.mapper.context.PaperChannelListenerContext;
-import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.RootHandler;
 import org.bukkit.entity.Player;

@@ -33,28 +33,51 @@ import org.jetbrains.annotations.Nullable;
 
 public class SingleElementMapperBuilder<E extends AnnotatedElement> {
 
-    private List<AnnotationConsumer<? extends Annotation>> annotations = new ArrayList<>();
+    private AnnotationConsumer<? extends Annotation> requiredAnnotation;
+    private List<AnnotationConsumer<? extends Annotation>> additionalAnnotations = new ArrayList<>();
     @Nullable
     private Consumer<E> elementConsumer;
 
-    public <A extends Annotation> SingleElementMapperBuilder<E> annotation(final Class<A> annotation, final Consumer<A> consumer) {
-        AnnotationConsumer<A> annotationConsumer = new AnnotationConsumer<>(annotation, consumer);
-        this.annotations.add(annotationConsumer);
+    public <A extends Annotation> SingleElementMapperBuilder<E> required(final Class<A> annotation, final Consumer<A> consumer) {
+        if (this.requiredAnnotation != null) {
+            throw new RuntimeException("Required annotation is already specified");
+        }
+        this.requiredAnnotation = new AnnotationConsumer<>(annotation, consumer);
         return this;
     }
 
-    public <A extends Annotation> SingleElementMapperBuilder<E> annotation(final Class<A> annotation) {
-        AnnotationConsumer<A> annotationConsumer = new AnnotationConsumer<>(annotation, (a) -> {});
-        this.annotations.add(annotationConsumer);
+    public <A extends Annotation> SingleElementMapperBuilder<E> required(final Class<A> annotation) {
+        if (this.requiredAnnotation != null) {
+            throw new RuntimeException("Required annotation is already specified");
+        }
+        this.requiredAnnotation = new AnnotationConsumer<>(annotation, a -> {});
+        return this;
+    }
+
+    public <A extends Annotation> SingleElementMapperBuilder<E> additional(final Class<A> annotation, final Consumer<A> consumer) {
+        AnnotationConsumer<A> annotationConsumer = new AnnotationConsumer<>(annotation, consumer);
+        this.additionalAnnotations.add(annotationConsumer);
+        return this;
+    }
+
+    public <A extends Annotation> SingleElementMapperBuilder<E> additional(final Class<A> annotation) {
+        AnnotationConsumer<A> annotationConsumer = new AnnotationConsumer<>(annotation, a -> {});
+        this.additionalAnnotations.add(annotationConsumer);
         return this;
     }
 
     public SingleElementMapperBuilder<E> elementConsumer(final Consumer<E> elementConsumer) {
+        if (this.elementConsumer != null) {
+            throw new RuntimeException("Element consumer is already specified");
+        }
         this.elementConsumer = elementConsumer;
         return this;
     }
 
     public SingleElementMapper<E> build() {
-        return new SingleElementMapper<>(this.annotations, this.elementConsumer);
+        if (this.requiredAnnotation == null) {
+            throw new RuntimeException("Missing required annotation");
+        }
+        return new SingleElementMapper<>(this.requiredAnnotation, this.additionalAnnotations, this.elementConsumer);
     }
 }

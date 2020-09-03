@@ -24,76 +24,71 @@
 
 package net.mcparkour.anfodis.mapper;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class ElementsMapper<E extends AnnotatedElement, T> {
 
     private Supplier<T> dataSupplier;
-    private List<Function<T, SingleElementMapper<E>>> singleElementMappers;
+    private List<MapperBuilderApplier<E, T>> mapperBuilderAppliers;
 
-    public ElementsMapper(final Supplier<T> dataSupplier, final List<Function<T, SingleElementMapper<E>>> singleElementMappers) {
+    public ElementsMapper(final Supplier<T> dataSupplier, final List<MapperBuilderApplier<E, T>> mapperBuilderAppliers) {
         this.dataSupplier = dataSupplier;
-        this.singleElementMappers = singleElementMappers;
+        this.mapperBuilderAppliers = mapperBuilderAppliers;
     }
 
-    public Optional<T> mapFirstOptional(final Iterable<E> elements) {
-        return Optional.of(mapFirst(elements));
+    public T mapToSingle(final E[] elements) {
+        List<E> elementsList = List.of(elements);
+        return mapToSingle(elementsList);
     }
 
-    public Optional<T> mapFirstOptional(final E[] elements) {
-        return Optional.of(mapFirst(elements));
-    }
-
-    public T mapFirst(final E[] elements) {
-        return mapFirst(List.of(elements));
-    }
-
-    public T mapFirst(final Iterable<E> elements) {
+    public T mapToSingle(final Collection<E> elements) {
         T data = this.dataSupplier.get();
         for (final E element : elements) {
-            for (final Function<T, SingleElementMapper<E>> mapperDataApplier : this.singleElementMappers) {
-                SingleElementMapper<E> mapper = mapperDataApplier.apply(data);
-                for (final AnnotationConsumer<? extends Annotation> annotationConsumer : mapper.getAnnotations()) {
-                    if (annotationConsumer.isAnnotationPresent(element)) {
-                        annotationConsumer.accept(element);
-                        mapper.accept(element);
-                    }
-                }
-            }
+            map(element, data);
         }
         return data;
     }
 
-    public List<T> map(final E[] elements) {
-        return map(List.of(elements));
+    public Stream<T> mapToMultiple(final E[] elements) {
+        List<E> elementsList = List.of(elements);
+        return mapToMultiple(elementsList);
     }
 
-    public List<T> map(final Iterable<E> elements) {
-        List<T> list = new ArrayList<>(1);
-        for (final E element : elements) {
-            T data = this.dataSupplier.get();
-            for (final Function<T, SingleElementMapper<E>> mapperDataApplier : this.singleElementMappers) {
-                SingleElementMapper<E> mapper = mapperDataApplier.apply(data);
-                List<AnnotationConsumer<? extends Annotation>> annotationConsumers = mapper.getAnnotations();
-                boolean added = false;
-                for (final AnnotationConsumer<? extends Annotation> annotationConsumer : annotationConsumers) {
-                    if (annotationConsumer.isAnnotationPresent(element)) {
-                        annotationConsumer.accept(element);
-                        mapper.accept(element);
-                        if (!added) {
-                            list.add(data);
-                            added = true;
-                        }
-                    }
+    public Stream<T> mapToMultiple(final Collection<E> elements) {
+        return elements.stream()
+            .map(element -> {
+                T data = this.dataSupplier.get();
+                return map(element, data);
+            })
+            .filter(Optional::isPresent)
+            .map(Optional::get);
+    }
+
+    private Optional<T> map(final E element, final T data) {
+        for (final var mapperDataApplier : this.mapperBuilderAppliers) {
+            SingleElementMapper<E> mapper = createMapper(data, mapperDataApplier);
+            var requiredAnnotation = mapper.getRequiredAnnotation();
+            if (requiredAnnotation.isAnnotationPresent(element)) {
+                requiredAnnotation.accept(element);
+                mapper.acceptElement(element);
+                for (final var additionalAnnotation : mapper.getAdditionalAnnotations()) {
+                    additionalAnnotation.accept(element);
                 }
+                return Optional.of(data);
             }
         }
-        return list;
+        return Optional.empty();
+    }
+
+    private SingleElementMapper<E> createMapper(final T data, final MapperBuilderApplier<E, T> mapperBuilderApplier) {
+        SingleElementMapperBuilder<E> builder = new SingleElementMapperBuilder<>();
+        mapperBuilderApplier.apply(builder, data);
+        return builder.build();
     }
 }

@@ -25,7 +25,7 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.Map;
-import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.handler.CommandContextSupplier;
 import net.mcparkour.anfodis.command.handler.CompletionContext;

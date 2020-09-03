@@ -34,7 +34,8 @@ import java.lang.annotation.Target;
 public @interface ArgumentCodec {
 
     /**
-     * @return codec key
+     * @return which implementation of the {@link net.mcparkour.anfodis.command.codec.argument.ArgumentCodec}
+     * use to encode this field
      */
-    String value();
+    Class<? extends net.mcparkour.anfodis.command.codec.argument.ArgumentCodec<?>> value();
 }

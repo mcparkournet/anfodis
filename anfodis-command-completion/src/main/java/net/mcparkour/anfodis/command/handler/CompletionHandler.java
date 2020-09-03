@@ -27,9 +27,10 @@ package net.mcparkour.anfodis.command.handler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.Permissible;
@@ -43,9 +44,9 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
     private T command;
     private CodecRegistry<CompletionCodec> completionCodecRegistry;
     private Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap;
-    private CommandContextSupplier<C, S> contextSupplier;
+    private CommandContextSupplier<? extends C, S> contextSupplier;
 
-    public CompletionHandler(final T command, final CodecRegistry<CompletionCodec> completionCodecRegistry, final Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap, final CommandContextSupplier<C, S> contextSupplier) {
+    public CompletionHandler(final T command, final CodecRegistry<CompletionCodec> completionCodecRegistry, final Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap, final CommandContextSupplier<? extends C, S> contextSupplier) {
         this.command = command;
         this.completionCodecRegistry = completionCodecRegistry;
         this.subCommandHandlerMap = subCommandHandlerMap;
@@ -151,10 +152,11 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
             return List.of();
         }
         CompletionArgument commandArgument = commandArguments.get(argumentsCount - 1);
-        CompletionCodec codec = commandArgument.getCompletionCodec(this.completionCodecRegistry);
-        if (codec == null) {
+        Optional<CompletionCodec> optionalCodec = commandArgument.getCompletionCodec(this.completionCodecRegistry);
+        if (optionalCodec.isEmpty()) {
             return List.of();
         }
+        CompletionCodec codec = optionalCodec.get();
         List<String> completions = codec.getCompletions(context);
         String argument = arguments.get(argumentsCount - 1);
         return completions.stream()

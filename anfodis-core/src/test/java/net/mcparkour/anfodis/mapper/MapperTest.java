@@ -27,7 +27,9 @@ package net.mcparkour.anfodis.mapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.stream.Collectors;
 import net.mcparkour.anfodis.annotation.Inject;
+import net.mcparkour.anfodis.annotation.InjectionCodec;
 import net.mcparkour.anfodis.annotation.executor.After;
 import net.mcparkour.anfodis.annotation.executor.Before;
 import net.mcparkour.anfodis.annotation.executor.Executor;
@@ -41,14 +43,15 @@ public class MapperTest {
         Field[] fields = TestClass.class.getDeclaredFields();
         List<FieldData> list = new ElementsMapperBuilder<Field, FieldData>()
             .data(FieldData::new)
-            .singleElement(fieldData -> new SingleElementMapperBuilder<Field>()
-                .annotation(Inject.class, inject -> fieldData.setString1(inject.value()))
-                .annotation(TestAnnotation.class, testAnnotation -> fieldData.setString2(testAnnotation.value()))
-                .elementConsumer(fieldData::setField)
-                .build())
+            .element((builder, fieldData) -> builder
+                .required(Inject.class)
+                .additional(InjectionCodec.class, inject -> fieldData.setString1(inject.value().getSimpleName()))
+                .additional(TestAnnotation.class, testAnnotation -> fieldData.setString2(testAnnotation.value()))
+                .elementConsumer(fieldData::setField))
             .build()
-            .map(fields);
-        Assertions.assertEquals(List.of(new FieldData(TestClass.class.getDeclaredField("string1"), "foo1", "bar1"), new FieldData(TestClass.class.getDeclaredField("string2"), "foo2", null)), list);
+            .mapToMultiple(fields)
+            .collect(Collectors.toUnmodifiableList());
+        Assertions.assertEquals(List.of(new FieldData(TestClass.class.getDeclaredField("string1"), "InjectionCodecFoo1", "bar1"), new FieldData(TestClass.class.getDeclaredField("string2"), "InjectionCodecFoo2", null)), list);
     }
 
     @Test
@@ -56,20 +59,17 @@ public class MapperTest {
         Method[] methods = TestClass.class.getDeclaredMethods();
         MethodData data = new ElementsMapperBuilder<Method, MethodData>()
             .data(MethodData::new)
-            .singleElement(methodData -> new SingleElementMapperBuilder<Method>()
-                .annotation(Before.class)
-                .elementConsumer(methodData::setBeforeMethod)
-                .build())
-            .singleElement(methodData -> new SingleElementMapperBuilder<Method>()
-                .annotation(Executor.class)
-                .elementConsumer(methodData::setExecutorMethod)
-                .build())
-            .singleElement(methodData -> new SingleElementMapperBuilder<Method>()
-                .annotation(After.class)
-                .elementConsumer(methodData::setAfterMethod)
-                .build())
+            .element((builder, methodData) -> builder
+                .required(Before.class)
+                .elementConsumer(methodData::setBeforeMethod))
+            .element((builder, methodData) -> builder
+                .required(Executor.class)
+                .elementConsumer(methodData::setExecutorMethod))
+            .element((builder, methodData) -> builder
+                .required(After.class)
+                .elementConsumer(methodData::setAfterMethod))
             .build()
-            .mapFirst(methods);
+            .mapToSingle(methods);
         Assertions.assertEquals(new MethodData(TestClass.class.getDeclaredMethod("before"), TestClass.class.getDeclaredMethod("executor"), TestClass.class.getDeclaredMethod("after")), data);
     }
 
@@ -77,13 +77,13 @@ public class MapperTest {
     public void testMapClass() {
         List<ClassData> list = new ElementsMapperBuilder<Class<?>, ClassData>()
             .data(ClassData::new)
-            .singleElement(classData -> new SingleElementMapperBuilder<Class<?>>()
-                .annotation(TestClassAnnotation.class)
-                .annotation(TestClassAnnotationTwo.class, testClassAnnotationTwo -> classData.setSecond(testClassAnnotationTwo.value()))
-                .annotation(TestClassAnnotationThree.class, testClassAnnotationThree -> classData.setThird(testClassAnnotationThree.value()))
-                .build())
+            .element((builder, classData) -> builder
+                .required(TestClassAnnotation.class)
+                .additional(TestClassAnnotationTwo.class, testClassAnnotationTwo -> classData.setSecond(testClassAnnotationTwo.value()))
+                .additional(TestClassAnnotationThree.class, testClassAnnotationThree -> classData.setThird(testClassAnnotationThree.value())))
             .build()
-            .map(new Class[] {TestClass.class});
+            .mapToMultiple(new Class[] {TestClass.class})
+            .collect(Collectors.toUnmodifiableList());
         Assertions.assertEquals(List.of(new ClassData(null, "foobar", null)), list);
     }
 }

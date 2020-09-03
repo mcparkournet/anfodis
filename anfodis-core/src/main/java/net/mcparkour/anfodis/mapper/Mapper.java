@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.mapper;
 
 import java.lang.reflect.AnnotatedElement;
+import java.util.Collection;
 import java.util.List;
 
 public interface Mapper<E extends AnnotatedElement, T> {
@@ -39,5 +40,5 @@ public interface Mapper<E extends AnnotatedElement, T> {
         return map(list);
     }
 
-    T map(Iterable<E> elements);
+    T map(Collection<E> elements);
 }

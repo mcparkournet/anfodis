@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.mapper;
 
 import net.mcparkour.anfodis.annotation.Inject;
+import net.mcparkour.anfodis.annotation.InjectionCodec;
 import net.mcparkour.anfodis.annotation.executor.After;
 import net.mcparkour.anfodis.annotation.executor.Before;
 import net.mcparkour.anfodis.annotation.executor.Executor;
@@ -33,11 +34,16 @@ import net.mcparkour.anfodis.annotation.executor.Executor;
 @TestClassAnnotationTwo("foobar")
 public class TestClass {
 
-    @Inject("foo1")
+    @TestAnnotation("a")
+    private String a;
+
+    @Inject
+    @InjectionCodec(InjectionCodecFoo1.class)
     @TestAnnotation("bar1")
     private String string1;
 
-    @Inject("foo2")
+    @Inject
+    @InjectionCodec(InjectionCodecFoo2.class)
     private String string2;
 
     @Before

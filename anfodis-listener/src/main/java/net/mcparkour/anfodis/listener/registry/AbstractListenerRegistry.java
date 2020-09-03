@@ -25,7 +25,7 @@
 package net.mcparkour.anfodis.listener.registry;
 
 import java.lang.annotation.Annotation;
-import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.listener.handler.ListenerContext;

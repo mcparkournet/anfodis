@@ -25,12 +25,13 @@
 package net.mcparkour.anfodis.listener.mapper.context;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.mcparkour.anfodis.listener.annotation.Event;
+import net.mcparkour.anfodis.mapper.ElementsMapper;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
-import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class ContextMapper<C extends Context, D extends ContextData> implements Mapper<Field, C> {
 
@@ -43,16 +44,14 @@ public class ContextMapper<C extends Context, D extends ContextData> implements 
     }
 
     @Override
-    public C map(final Iterable<Field> elements) {
-        return new ElementsMapperBuilder<Field, D>()
+    public C map(final Collection<Field> elements) {
+        ElementsMapper<Field, D> mapper = new ElementsMapperBuilder<Field, D>()
             .data(this.contextDataSupplier)
-            .singleElement(data -> new SingleElementMapperBuilder<Field>()
-                .annotation(Event.class)
-                .elementConsumer(data::setEventField)
-                .build())
-            .build()
-            .mapFirstOptional(elements)
-            .map(this.contextSupplier)
-            .orElseThrow();
+            .element((builder, data) -> builder
+                .required(Event.class)
+                .elementConsumer(data::setEventField))
+            .build();
+        D contextData = mapper.mapToSingle(elements);
+        return this.contextSupplier.apply(contextData);
     }
 }

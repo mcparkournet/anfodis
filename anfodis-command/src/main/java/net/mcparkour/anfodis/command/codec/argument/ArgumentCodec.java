@@ -24,10 +24,11 @@
 
 package net.mcparkour.anfodis.command.codec.argument;
 
+import net.mcparkour.anfodis.codec.Codec;
 import org.jetbrains.annotations.Nullable;
 
 @FunctionalInterface
-public interface ArgumentCodec<T> {
+public interface ArgumentCodec<T> extends Codec {
 
     @Nullable
     T parse(String stringValue);

@@ -25,25 +25,24 @@
 package net.mcparkour.anfodis.command.mapper.subcommand;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.mcparkour.anfodis.mapper.ElementsMapper;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
-import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class SubCommandMapper implements Mapper<Field, List<SubCommand>> {
 
     @Override
-    public List<SubCommand> map(final Iterable<Field> elements) {
-        return new ElementsMapperBuilder<Field, SubCommandData>()
+    public List<SubCommand> map(final Collection<Field> elements) {
+        ElementsMapper<Field, SubCommandData> mapper = new ElementsMapperBuilder<Field, SubCommandData>()
             .data(SubCommandData::new)
-            .singleElement(data -> new SingleElementMapperBuilder<Field>()
-                .annotation(net.mcparkour.anfodis.command.annotation.SubCommand.class)
-                .elementConsumer(data::setSubCommandField)
-                .build())
-            .build()
-            .map(elements)
-            .stream()
+            .element((builder, data) -> builder
+                .required(net.mcparkour.anfodis.command.annotation.SubCommand.class)
+                .elementConsumer(data::setSubCommandField))
+            .build();
+        return mapper.mapToMultiple(elements)
             .map(SubCommand::new)
             .collect(Collectors.toUnmodifiableList());
     }

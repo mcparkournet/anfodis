@@ -22,36 +22,14 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.codec;
+package net.mcparkour.anfodis;
 
-import java.util.Map;
-import org.jetbrains.annotations.Nullable;
+import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 
-public class CodecRegistry<T> {
+public class TestInjectionCodec1 implements InjectionCodec<String> {
 
-    private Map<Class<?>, T> typedCodecs;
-    private Map<String, T> keyedCodecs;
-
-    public CodecRegistry(final Map<Class<?>, T> typedCodecs, final Map<String, T> keyedCodecs) {
-        this.typedCodecs = typedCodecs;
-        this.keyedCodecs = keyedCodecs;
-    }
-
-    @Nullable
-    public T getTypedCodec(final Class<?> type) {
-        return this.typedCodecs.get(type);
-    }
-
-    @Nullable
-    public T getKeyedCodec(final String key) {
-        return this.keyedCodecs.get(key);
-    }
-
-    Map<Class<?>, T> getTypedCodecs() {
-        return Map.copyOf(this.typedCodecs);
-    }
-
-    Map<String, T> getKeyedCodecs() {
-        return Map.copyOf(this.keyedCodecs);
+    @Override
+    public String getInjection() {
+        return "test1";
     }
 }

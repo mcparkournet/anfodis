@@ -24,6 +24,7 @@
 
 package net.mcparkour.anfodis.command.mapper.properties;
 
+import java.util.Collection;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -33,44 +34,42 @@ import net.mcparkour.anfodis.command.annotation.properties.Command;
 import net.mcparkour.anfodis.command.annotation.properties.Description;
 import net.mcparkour.anfodis.command.annotation.properties.DescriptionTranslation;
 import net.mcparkour.anfodis.command.annotation.properties.Permission;
+import net.mcparkour.anfodis.mapper.ElementsMapper;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
+import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class CommandPropertiesMapper<P extends CommandProperties, D extends CommandPropertiesData> implements Mapper<Class<?>, P> {
 
     private Function<D, P> propertiesSupplier;
     private Supplier<D> propertiesDataSupplier;
-    private BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional;
+    private MapperBuilderApplier<Class<?>, D> additional;
 
     public CommandPropertiesMapper(final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier) {
-        this(propertiesSupplier, propertiesDataSupplier, (data, builder) -> {});
+        this(propertiesSupplier, propertiesDataSupplier, (builder, data) -> {});
     }
 
-    public CommandPropertiesMapper(final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier, final BiConsumer<D, SingleElementMapperBuilder<Class<?>>> additional) {
+    public CommandPropertiesMapper(final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier, final MapperBuilderApplier<Class<?>, D> additional) {
         this.propertiesSupplier = propertiesSupplier;
         this.propertiesDataSupplier = propertiesDataSupplier;
         this.additional = additional;
     }
 
     @Override
-    public P map(final Iterable<Class<?>> elements) {
-        return new ElementsMapperBuilder<Class<?>, D>()
+    public P map(final Collection<Class<?>> elements) {
+        ElementsMapper<Class<?>, D> mapper = new ElementsMapperBuilder<Class<?>, D>()
             .data(this.propertiesDataSupplier)
-            .singleElement(data -> {
-                SingleElementMapperBuilder<Class<?>> builder = new SingleElementMapperBuilder<Class<?>>()
-                    .annotation(Command.class, command -> data.setName(command.value()))
-                    .annotation(Description.class, description -> data.setDescription(description.value()))
-                    .annotation(DescriptionTranslation.class, descriptionTranslation -> data.setDescriptionTranslationId(descriptionTranslation.value()))
-                    .annotation(Aliases.class, aliases -> data.setAliases(aliases.value()))
-                    .annotation(AliasesTranslation.class, aliasesTranslation -> data.setAliasesTranslationId(aliasesTranslation.value()))
-                    .annotation(Permission.class, permission -> data.setPermission(permission.value()));
-                this.additional.accept(data, builder);
-                return builder.build();
-            })
-            .build()
-            .mapFirstOptional(elements)
-            .map(this.propertiesSupplier)
-            .orElseThrow();
+            .element((builder, data) -> builder
+                    .required(Command.class, command -> data.setName(command.value()))
+                    .additional(Description.class, description -> data.setDescription(description.value()))
+                    .additional(DescriptionTranslation.class, descriptionTranslation -> data.setDescriptionTranslationId(descriptionTranslation.value()))
+                    .additional(Aliases.class, aliases -> data.setAliases(aliases.value()))
+                    .additional(AliasesTranslation.class, aliasesTranslation -> data.setAliasesTranslationId(aliasesTranslation.value()))
+                    .additional(Permission.class, permission -> data.setPermission(permission.value())),
+                this.additional)
+            .build();
+        D propertiesData = mapper.mapToSingle(elements);
+        return this.propertiesSupplier.apply(propertiesData);
     }
 }

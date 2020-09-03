@@ -31,7 +31,7 @@ import net.mcparkour.anfodis.channel.handler.PaperChannelListenerHandler;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListener;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListenerMapper;
 import net.mcparkour.anfodis.channel.mapper.properties.PaperChannelListenerProperties;
-import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.registry.AbstractRegistry;

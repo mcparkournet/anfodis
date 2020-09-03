@@ -25,7 +25,7 @@
 package net.mcparkour.anfodis.command.registry;
 
 import net.dv8tion.jda.api.JDA;
-import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.ChannelSender;
 import net.mcparkour.anfodis.command.PermissionMap;

@@ -24,38 +24,11 @@
 
 package net.mcparkour.anfodis.command.codec.argument;
 
-import java.util.UUID;
-import net.mcparkour.anfodis.codec.CodecRegistry;
-import net.mcparkour.anfodis.codec.CodecRegistryBuilder;
-import net.mcparkour.anfodis.command.codec.argument.basic.BooleanArgumentCodec;
-import net.mcparkour.anfodis.command.codec.argument.basic.ByteArgumentCodec;
-import net.mcparkour.anfodis.command.codec.argument.basic.DoubleArgumentCodec;
-import net.mcparkour.anfodis.command.codec.argument.basic.FloatArgumentCodec;
-import net.mcparkour.anfodis.command.codec.argument.basic.IntegerArgumentCodec;
-import net.mcparkour.anfodis.command.codec.argument.basic.LongArgumentCodec;
-import net.mcparkour.anfodis.command.codec.argument.basic.ShortArgumentCodec;
-import net.mcparkour.anfodis.command.codec.argument.basic.UUIDArgumentCodec;
+import net.mcparkour.anfodis.codec.CodecProvider;
 
 public final class ArgumentCodecs {
 
-    public static final CodecRegistry<ArgumentCodec<?>> BASIC_ARGUMENT_CODEC_REGISTRY = new CodecRegistryBuilder<ArgumentCodec<?>>()
-        .typed(String.class, ArgumentCodec.identity())
-        .typed(boolean.class, new BooleanArgumentCodec())
-        .typed(Boolean.class, new BooleanArgumentCodec())
-        .typed(byte.class, new ByteArgumentCodec())
-        .typed(Byte.class, new ByteArgumentCodec())
-        .typed(short.class, new ShortArgumentCodec())
-        .typed(Short.class, new ShortArgumentCodec())
-        .typed(int.class, new IntegerArgumentCodec())
-        .typed(Integer.class, new IntegerArgumentCodec())
-        .typed(long.class, new LongArgumentCodec())
-        .typed(Long.class, new LongArgumentCodec())
-        .typed(float.class, new FloatArgumentCodec())
-        .typed(Float.class, new FloatArgumentCodec())
-        .typed(double.class, new DoubleArgumentCodec())
-        .typed(Double.class, new DoubleArgumentCodec())
-        .typed(UUID.class, new UUIDArgumentCodec())
-        .build();
+    public static final CodecProvider<ArgumentCodec<?>> BASIC_ARGUMENT_CODECS_PROVIDER = new BasicArgumentCodecsProvider();
 
     private ArgumentCodecs() {
         throw new UnsupportedOperationException("Cannot create an instance of this class");

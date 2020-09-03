@@ -29,8 +29,7 @@ import net.mcparkour.anfodis.command.annotation.properties.Senders;
 public class PaperCommandPropertiesMapper extends CommandPropertiesMapper<PaperCommandProperties, PaperCommandPropertiesData> {
 
     public PaperCommandPropertiesMapper() {
-        super(PaperCommandProperties::new, PaperCommandPropertiesData::new, (data, builder) -> {
-            builder.annotation(Senders.class, senders -> data.setSenderTypes(senders.value()));
-        });
+        super(PaperCommandProperties::new, PaperCommandPropertiesData::new, (builder, data) -> builder
+            .additional(Senders.class, senders -> data.setSenderTypes(senders.value())));
     }
 }

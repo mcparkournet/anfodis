@@ -25,29 +25,26 @@
 package net.mcparkour.anfodis.channel.mapper.context;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import net.mcparkour.anfodis.channel.annotation.context.Message;
 import net.mcparkour.anfodis.channel.annotation.context.Source;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
-import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class PaperChannelListenerContextMapper implements Mapper<Field, PaperChannelListenerContext> {
 
     @Override
-    public PaperChannelListenerContext map(final Iterable<Field> elements) {
-        return new ElementsMapperBuilder<Field, PaperChannelListenerContextData>()
+    public PaperChannelListenerContext map(final Collection<Field> elements) {
+        var mapper = new ElementsMapperBuilder<Field, PaperChannelListenerContextData>()
             .data(PaperChannelListenerContextData::new)
-            .singleElement(data -> new SingleElementMapperBuilder<Field>()
-                .annotation(Message.class)
-                .elementConsumer(data::setMessageField)
-                .build())
-            .singleElement(data -> new SingleElementMapperBuilder<Field>()
-                .annotation(Source.class)
-                .elementConsumer(data::setSourceField)
-                .build())
-            .build()
-            .mapFirstOptional(elements)
-            .map(PaperChannelListenerContext::new)
-            .orElseThrow();
+            .element((builder, data) -> builder
+                .required(Message.class)
+                .elementConsumer(data::setMessageField))
+            .element((builder, data) -> builder
+                .required(Source.class)
+                .elementConsumer(data::setSourceField))
+            .build();
+        PaperChannelListenerContextData contextData = mapper.mapToSingle(elements);
+        return new PaperChannelListenerContext(contextData);
     }
 }

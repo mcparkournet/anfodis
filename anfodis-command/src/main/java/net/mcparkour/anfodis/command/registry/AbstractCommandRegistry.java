@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.mcparkour.anfodis.codec.CodecRegistry;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.CommandContext;

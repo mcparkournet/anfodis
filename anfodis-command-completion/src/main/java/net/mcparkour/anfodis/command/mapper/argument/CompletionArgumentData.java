@@ -24,19 +24,29 @@
 
 package net.mcparkour.anfodis.command.mapper.argument;
 
+import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import org.jetbrains.annotations.Nullable;
 
 class CompletionArgumentData extends ArgumentData {
 
+    private boolean hasCompletion;
     @Nullable
-    private String completionCodecKey;
+    private Class<? extends CompletionCodec> completionCodecType;
 
-    @Nullable
-    public String getCompletionCodecKey() {
-        return this.completionCodecKey;
+    public boolean hasCompletion() {
+        return this.hasCompletion;
     }
 
-    public void setCompletionCodecKey(@Nullable final String completionCodecKey) {
-        this.completionCodecKey = completionCodecKey;
+    public void enableCompletion() {
+        this.hasCompletion = true;
+    }
+
+    @Nullable
+    public Class<? extends CompletionCodec> getCompletionCodecType() {
+        return this.completionCodecType;
+    }
+
+    public void setCompletionCodecType(@Nullable final Class<? extends CompletionCodec> completionCodecType) {
+        this.completionCodecType = completionCodecType;
     }
 }

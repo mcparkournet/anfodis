@@ -25,26 +25,27 @@
 package net.mcparkour.anfodis.mapper.injection;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.annotation.Inject;
+import net.mcparkour.anfodis.annotation.InjectionCodec;
+import net.mcparkour.anfodis.mapper.ElementsMapper;
 import net.mcparkour.anfodis.mapper.Mapper;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
-import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class InjectionMapper implements Mapper<Field, List<Injection>> {
 
     @Override
-    public List<Injection> map(final Iterable<Field> elements) {
-        return new ElementsMapperBuilder<Field, InjectionData>()
+    public List<Injection> map(final Collection<Field> elements) {
+        ElementsMapper<Field, InjectionData> mapper = new ElementsMapperBuilder<Field, InjectionData>()
             .data(InjectionData::new)
-            .singleElement(data -> new SingleElementMapperBuilder<Field>()
-                .annotation(Inject.class, inject -> data.setCodecKey(inject.value()))
-                .elementConsumer(data::setInjectionField)
-                .build())
-            .build()
-            .map(elements)
-            .stream()
+            .element((builder, data) -> builder
+                .required(Inject.class)
+                .additional(InjectionCodec.class, injectionCodec -> data.setCodecType(injectionCodec.value()))
+                .elementConsumer(data::setInjectionField))
+            .build();
+        return mapper.mapToMultiple(elements)
             .map(Injection::new)
             .collect(Collectors.toUnmodifiableList());
     }

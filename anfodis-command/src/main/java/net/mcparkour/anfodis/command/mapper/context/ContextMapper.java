@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command.mapper.context;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -32,9 +33,9 @@ import net.mcparkour.anfodis.command.annotation.context.Arguments;
 import net.mcparkour.anfodis.command.annotation.context.Receiver;
 import net.mcparkour.anfodis.command.annotation.context.RequiredPermission;
 import net.mcparkour.anfodis.command.annotation.context.Sender;
+import net.mcparkour.anfodis.mapper.ElementsMapper;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
-import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class ContextMapper<C extends Context, D extends ContextData> implements Mapper<Field, C> {
 
@@ -53,29 +54,24 @@ public class ContextMapper<C extends Context, D extends ContextData> implements 
     }
 
     @Override
-    public C map(final Iterable<Field> elements) {
-        ElementsMapperBuilder<Field, D> builder = new ElementsMapperBuilder<Field, D>()
+    public C map(final Collection<Field> elements) {
+        ElementsMapperBuilder<Field, D> mapperBuilder = new ElementsMapperBuilder<Field, D>()
             .data(this.contextDataSupplier)
-            .singleElement(data -> new SingleElementMapperBuilder<Field>()
-                .annotation(Arguments.class)
-                .elementConsumer(data::setArgumentsField)
-                .build())
-            .singleElement(data -> new SingleElementMapperBuilder<Field>()
-                .annotation(RequiredPermission.class)
-                .elementConsumer(data::setRequiredPermissionField)
-                .build())
-            .singleElement(data -> new SingleElementMapperBuilder<Field>()
-                .annotation(Sender.class)
-                .elementConsumer(data::setSenderField)
-                .build())
-            .singleElement(data -> new SingleElementMapperBuilder<Field>()
-                .annotation(Receiver.class)
-                .elementConsumer(data::setReceiverField)
-                .build());
-        this.additional.accept(builder);
-        return builder.build()
-            .mapFirstOptional(elements)
-            .map(this.contextSupplier)
-            .orElseThrow();
+            .element((builder, data) -> builder
+                .required(Arguments.class)
+                .elementConsumer(data::setArgumentsField))
+            .element((builder, data) -> builder
+                .required(RequiredPermission.class)
+                .elementConsumer(data::setRequiredPermissionField))
+            .element((builder, data) -> builder
+                .required(Sender.class)
+                .elementConsumer(data::setSenderField))
+            .element((builder, data) -> builder
+                .required(Receiver.class)
+                .elementConsumer(data::setReceiverField));
+        this.additional.accept(mapperBuilder);
+        ElementsMapper<Field, D> mapper = mapperBuilder.build();
+        D contextData = mapper.mapToSingle(elements);
+        return this.contextSupplier.apply(contextData);
     }
 }

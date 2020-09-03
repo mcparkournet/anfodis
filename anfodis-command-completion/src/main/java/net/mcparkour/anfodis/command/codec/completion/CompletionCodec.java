@@ -2,10 +2,11 @@ package net.mcparkour.anfodis.command.codec.completion;
 
 import java.util.Collection;
 import java.util.List;
+import net.mcparkour.anfodis.codec.Codec;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 
 @FunctionalInterface
-public interface CompletionCodec {
+public interface CompletionCodec extends Codec {
 
     List<String> getCompletions(CompletionContext<?> context);
 

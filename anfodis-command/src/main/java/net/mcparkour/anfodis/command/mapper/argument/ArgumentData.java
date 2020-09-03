@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command.mapper.argument;
 
 import java.lang.reflect.Field;
+import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import org.jetbrains.annotations.Nullable;
 
 class ArgumentData {
@@ -32,7 +33,7 @@ class ArgumentData {
     @Nullable
     private Field argumentField;
     @Nullable
-    private String argumentCodecKey;
+    private Class<? extends ArgumentCodec<?>> argumentCodecType;
     @Nullable
     private String name;
     @Nullable
@@ -56,13 +57,12 @@ class ArgumentData {
         this.name = name;
     }
 
-    @Nullable
-    public String getArgumentCodecKey() {
-        return this.argumentCodecKey;
+    public @Nullable Class<? extends ArgumentCodec<?>> getArgumentCodecType() {
+        return this.argumentCodecType;
     }
 
-    public void setArgumentCodecKey(@Nullable final String argumentCodecKey) {
-        this.argumentCodecKey = argumentCodecKey;
+    public void setArgumentCodecType(final @Nullable Class<? extends ArgumentCodec<?>> argumentCodecType) {
+        this.argumentCodecType = argumentCodecType;
     }
 
     @Nullable

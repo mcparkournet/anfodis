@@ -30,8 +30,7 @@ import net.mcparkour.anfodis.listener.annotation.properties.Priority;
 public class VelocityListenerPropertiesMapper extends ListenerPropertiesMapper<VelocityListenerProperties, VelocityListenerPropertiesData, Object, Listener> {
 
     public VelocityListenerPropertiesMapper() {
-        super(Listener.class, Listener::value, VelocityListenerProperties::new, VelocityListenerPropertiesData::new, (data, builder) -> {
-            builder.annotation(Priority.class, priority -> data.setPriority(priority.value()));
-        });
+        super(Listener.class, Listener::value, VelocityListenerProperties::new, VelocityListenerPropertiesData::new, (builder, data) -> builder
+            .additional(Priority.class, priority -> data.setPriority(priority.value())));
     }
 }

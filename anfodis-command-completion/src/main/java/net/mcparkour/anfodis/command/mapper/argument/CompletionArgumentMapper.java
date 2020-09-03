@@ -29,17 +29,20 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.mcparkour.anfodis.command.annotation.argument.Completion;
+import net.mcparkour.anfodis.command.annotation.argument.CompletionCodec;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class CompletionArgumentMapper<A extends CompletionArgument, D extends CompletionArgumentData> extends ArgumentMapper<A, D> {
 
     public CompletionArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier) {
-        this(argumentSupplier, argumentDataSupplier, (data, builder) -> {});
+        this(argumentSupplier, argumentDataSupplier, (builder, data) -> {});
     }
 
     public CompletionArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier, final BiConsumer<D, SingleElementMapperBuilder<Field>> additional) {
-        super(argumentSupplier, argumentDataSupplier, (data, builder) -> {
-            builder.annotation(Completion.class, completion -> data.setCompletionCodecKey(completion.value()));
+        super(argumentSupplier, argumentDataSupplier, (builder, data) -> {
+            builder
+                .additional(Completion.class, completion -> data.enableCompletion())
+                .additional(CompletionCodec.class, completionCodec -> data.setCompletionCodecType(completionCodec.value()));
             additional.accept(data, builder);
         });
     }

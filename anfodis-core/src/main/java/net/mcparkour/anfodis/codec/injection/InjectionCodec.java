@@ -24,8 +24,10 @@
 
 package net.mcparkour.anfodis.codec.injection;
 
+import net.mcparkour.anfodis.codec.Codec;
+
 @FunctionalInterface
-public interface InjectionCodec<T> {
+public interface InjectionCodec<T> extends Codec {
 
     T getInjection();
 

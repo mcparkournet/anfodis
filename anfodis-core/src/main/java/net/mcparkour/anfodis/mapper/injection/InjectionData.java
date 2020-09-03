@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.mapper.injection;
 
 import java.lang.reflect.Field;
+import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import org.jetbrains.annotations.Nullable;
 
 class InjectionData {
@@ -32,7 +33,7 @@ class InjectionData {
     @Nullable
     private Field injectionField;
     @Nullable
-    private String codecKey;
+    private Class<? extends InjectionCodec<?>> codecType;
 
     @Nullable
     public Field getInjectionField() {
@@ -44,11 +45,11 @@ class InjectionData {
     }
 
     @Nullable
-    public String getCodecKey() {
-        return this.codecKey;
+    public Class<? extends InjectionCodec<?>> getCodecType() {
+        return this.codecType;
     }
 
-    public void setCodecKey(@Nullable final String codecKey) {
-        this.codecKey = codecKey;
+    public void setCodecType(@Nullable final Class<? extends InjectionCodec<?>> codecType) {
+        this.codecType = codecType;
     }
 }

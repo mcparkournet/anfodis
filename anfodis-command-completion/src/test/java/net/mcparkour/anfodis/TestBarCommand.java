@@ -29,6 +29,7 @@ import net.mcparkour.anfodis.annotation.executor.Executor;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
 import net.mcparkour.anfodis.command.annotation.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.annotation.argument.Completion;
+import net.mcparkour.anfodis.command.annotation.argument.CompletionCodec;
 import net.mcparkour.anfodis.command.annotation.context.Receiver;
 import net.mcparkour.anfodis.command.annotation.properties.Command;
 import net.mcparkour.anfodis.command.annotation.properties.Description;
@@ -44,10 +45,11 @@ public class TestBarCommand {
     private MessageReceiver receiver;
 
     @Argument
-    @ArgumentCodec("arg")
+    @ArgumentCodec(ArgArgumentCodec.class)
     private String arg;
     @Argument
-    @Completion("args")
+    @Completion
+    @CompletionCodec(ArgsCompletionCodec.class)
     private List<String> args;
 
     @Executor

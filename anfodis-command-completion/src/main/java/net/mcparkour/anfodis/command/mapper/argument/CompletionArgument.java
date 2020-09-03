@@ -24,43 +24,47 @@
 
 package net.mcparkour.anfodis.command.mapper.argument;
 
-import net.mcparkour.anfodis.codec.CodecRegistry;
+import java.util.Optional;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.UnknownCodecException;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import org.jetbrains.annotations.Nullable;
 
 public class CompletionArgument extends Argument {
 
-    @Nullable
-    private String codecKey;
+    private final boolean hasCompletion;
+    private final @Nullable Class<? extends CompletionCodec> codecType;
 
     public CompletionArgument(final CompletionArgumentData argumentData) {
         super(argumentData);
-        this.codecKey = argumentData.getCompletionCodecKey();
+        this.hasCompletion = argumentData.hasCompletion();
+        this.codecType = argumentData.getCompletionCodecType();
     }
 
-    @Nullable
-    public CompletionCodec getCompletionCodec(final CodecRegistry<CompletionCodec> registry) {
-        if (this.codecKey == null) {
-            return null;
+    public Optional<CompletionCodec> getCompletionCodec(final CodecRegistry<CompletionCodec> registry) {
+        if (!this.hasCompletion) {
+            return Optional.empty();
         }
         Class<?> argumentClass = getArgumentClass();
-        return this.codecKey.isEmpty() ? getTypedCodec(registry, argumentClass) : getKeyedCodec(registry, this.codecKey);
+        CompletionCodec codec = this.codecType == null ?
+            getTypedCodec(registry, argumentClass) :
+            getSelfCodec(registry, this.codecType);
+        return Optional.of(codec);
     }
 
     private CompletionCodec getTypedCodec(final CodecRegistry<CompletionCodec> registry, final Class<?> type) {
-        CompletionCodec codec = registry.getTypedCodec(type);
-        if (codec == null) {
+        Optional<CompletionCodec> optionalCodec = registry.getTypedCodec(type);
+        if (optionalCodec.isEmpty()) {
             throw new UnknownCodecException("Cannot find completion codec for type " + type);
         }
-        return codec;
+        return optionalCodec.get();
     }
 
-    private CompletionCodec getKeyedCodec(final CodecRegistry<CompletionCodec> registry, final String key) {
-        CompletionCodec codec = registry.getKeyedCodec(key);
-        if (codec == null) {
-            throw new UnknownCodecException("Cannot find completion codec for key '" + key + "'");
+    private CompletionCodec getSelfCodec(final CodecRegistry<CompletionCodec> registry, final Class<? extends CompletionCodec> type) {
+        Optional<CompletionCodec> optionalCodec = registry.getSelfCodec(type);
+        if (optionalCodec.isEmpty()) {
+            throw new UnknownCodecException("Cannot find completion codec for key '" + type + "'");
         }
-        return codec;
+        return optionalCodec.get();
     }
 }

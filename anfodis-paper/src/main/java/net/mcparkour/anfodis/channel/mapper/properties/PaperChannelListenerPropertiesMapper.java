@@ -24,23 +24,21 @@
 
 package net.mcparkour.anfodis.channel.mapper.properties;
 
+import java.util.Collection;
 import net.mcparkour.anfodis.channel.annotation.properties.ChannelListener;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
-import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
 
 public class PaperChannelListenerPropertiesMapper implements Mapper<Class<?>, PaperChannelListenerProperties> {
 
     @Override
-    public PaperChannelListenerProperties map(final Iterable<Class<?>> elements) {
-        return new ElementsMapperBuilder<Class<?>, PaperChannelListenerPropertiesData>()
+    public PaperChannelListenerProperties map(final Collection<Class<?>> elements) {
+        var mapper = new ElementsMapperBuilder<Class<?>, PaperChannelListenerPropertiesData>()
             .data(PaperChannelListenerPropertiesData::new)
-            .singleElement(data -> new SingleElementMapperBuilder<Class<?>>()
-                .annotation(ChannelListener.class, channelListener -> data.setChannels(channelListener.value()))
-                .build())
-            .build()
-            .mapFirstOptional(elements)
-            .map(PaperChannelListenerProperties::new)
-            .orElseThrow();
+            .element((builder, data) -> builder
+                .required(ChannelListener.class, channelListener -> data.setChannels(channelListener.value())))
+            .build();
+        PaperChannelListenerPropertiesData propertiesData = mapper.mapToSingle(elements);
+        return new PaperChannelListenerProperties(propertiesData);
     }
 }
