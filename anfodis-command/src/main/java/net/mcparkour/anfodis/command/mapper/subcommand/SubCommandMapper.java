@@ -34,15 +34,16 @@ import net.mcparkour.anfodis.mapper.Mapper;
 
 public class SubCommandMapper implements Mapper<Field, List<SubCommand>> {
 
+    private static final ElementsMapper<Field, SubCommandData> MAPPER = new ElementsMapperBuilder<Field, SubCommandData>()
+        .data(SubCommandData::new)
+        .element((builder, data) -> builder
+            .required(net.mcparkour.anfodis.command.annotation.SubCommand.class)
+            .elementConsumer(data::setSubCommandField))
+        .build();
+
     @Override
     public List<SubCommand> map(final Collection<Field> elements) {
-        ElementsMapper<Field, SubCommandData> mapper = new ElementsMapperBuilder<Field, SubCommandData>()
-            .data(SubCommandData::new)
-            .element((builder, data) -> builder
-                .required(net.mcparkour.anfodis.command.annotation.SubCommand.class)
-                .elementConsumer(data::setSubCommandField))
-            .build();
-        return mapper.mapToMultiple(elements)
+        return MAPPER.mapToMultiple(elements)
             .map(SubCommand::new)
             .collect(Collectors.toUnmodifiableList());
     }

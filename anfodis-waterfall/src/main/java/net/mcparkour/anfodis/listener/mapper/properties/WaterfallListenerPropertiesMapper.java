@@ -26,12 +26,18 @@ package net.mcparkour.anfodis.listener.mapper.properties;
 
 import net.mcparkour.anfodis.listener.annotation.properties.Listener;
 import net.mcparkour.anfodis.listener.annotation.properties.Priority;
+import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 import net.md_5.bungee.api.plugin.Event;
 
-public class WaterfallListenerPropertiesMapper extends ListenerPropertiesMapper<WaterfallListenerProperties, WaterfallListenerPropertiesData, Event, Listener> {
+public class WaterfallListenerPropertiesMapper
+    extends ListenerPropertiesMapper<WaterfallListenerProperties, WaterfallListenerPropertiesData, Event, Listener> {
+
+    private static final MapperBuilderApplier<Class<?>, WaterfallListenerPropertiesData> APPLIER =
+        (builder, data) -> builder
+            .additional(Priority.class, priority ->
+                data.setPriority(priority.value()));
 
     public WaterfallListenerPropertiesMapper() {
-        super(Listener.class, Listener::value, WaterfallListenerProperties::new, WaterfallListenerPropertiesData::new, (builder, data) -> builder
-            .additional(Priority.class, priority -> data.setPriority(priority.value())));
+        super(Listener.class, Listener::value, WaterfallListenerProperties::new, WaterfallListenerPropertiesData::new, APPLIER);
     }
 }

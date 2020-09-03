@@ -28,14 +28,14 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import net.mcparkour.anfodis.channel.annotation.context.Message;
 import net.mcparkour.anfodis.channel.annotation.context.Source;
+import net.mcparkour.anfodis.mapper.ElementsMapper;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
 
 public class PaperChannelListenerContextMapper implements Mapper<Field, PaperChannelListenerContext> {
 
-    @Override
-    public PaperChannelListenerContext map(final Collection<Field> elements) {
-        var mapper = new ElementsMapperBuilder<Field, PaperChannelListenerContextData>()
+    private static final ElementsMapper<Field, PaperChannelListenerContextData> MAPPER =
+        new ElementsMapperBuilder<Field, PaperChannelListenerContextData>()
             .data(PaperChannelListenerContextData::new)
             .element((builder, data) -> builder
                 .required(Message.class)
@@ -44,7 +44,10 @@ public class PaperChannelListenerContextMapper implements Mapper<Field, PaperCha
                 .required(Source.class)
                 .elementConsumer(data::setSourceField))
             .build();
-        PaperChannelListenerContextData contextData = mapper.mapToSingle(elements);
+
+    @Override
+    public PaperChannelListenerContext map(final Collection<Field> elements) {
+        PaperChannelListenerContextData contextData = MAPPER.mapToSingle(elements);
         return new PaperChannelListenerContext(contextData);
     }
 }

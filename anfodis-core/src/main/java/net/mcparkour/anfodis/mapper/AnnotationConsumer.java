@@ -27,22 +27,32 @@ package net.mcparkour.anfodis.mapper;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.function.Consumer;
+import org.jetbrains.annotations.Nullable;
 
 public class AnnotationConsumer<A extends Annotation> {
 
     private Class<A> annotationClass;
+    @Nullable
     private Consumer<A> annotationConsumer;
 
-    public AnnotationConsumer(final Class<A> annotationClass, final Consumer<A> annotationConsumer) {
+    public AnnotationConsumer(final Class<A> annotationClass) {
+        this(annotationClass, null);
+    }
+
+    public AnnotationConsumer(final Class<A> annotationClass, final @Nullable Consumer<A> annotationConsumer) {
         this.annotationClass = annotationClass;
         this.annotationConsumer = annotationConsumer;
     }
 
     public void accept(final AnnotatedElement member) {
-        A annotation = member.getAnnotation(this.annotationClass);
-        if (annotation != null) {
-            this.annotationConsumer.accept(annotation);
+        if (this.annotationConsumer == null) {
+            return;
         }
+        A annotation = member.getAnnotation(this.annotationClass);
+        if (annotation == null) {
+            return;
+        }
+        this.annotationConsumer.accept(annotation);
     }
 
     public boolean isAnnotationPresent(final AnnotatedElement member) {

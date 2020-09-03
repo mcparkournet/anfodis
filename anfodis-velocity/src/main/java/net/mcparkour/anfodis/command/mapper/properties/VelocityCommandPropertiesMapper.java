@@ -25,11 +25,17 @@
 package net.mcparkour.anfodis.command.mapper.properties;
 
 import net.mcparkour.anfodis.command.annotation.properties.Senders;
+import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 
-public class VelocityCommandPropertiesMapper extends CommandPropertiesMapper<VelocityCommandProperties, VelocityCommandPropertiesData> {
+public class VelocityCommandPropertiesMapper
+    extends CommandPropertiesMapper<VelocityCommandProperties, VelocityCommandPropertiesData> {
+
+    private static final MapperBuilderApplier<Class<?>, VelocityCommandPropertiesData> APPLIER =
+        (builder, data) -> builder
+            .additional(Senders.class, senders ->
+                data.setSenderTypes(senders.value()));
 
     public VelocityCommandPropertiesMapper() {
-        super(VelocityCommandProperties::new, VelocityCommandPropertiesData::new, (builder, data) -> builder
-            .additional(Senders.class, senders -> data.setSenderTypes(senders.value())));
+        super(VelocityCommandProperties::new, VelocityCommandPropertiesData::new, APPLIER);
     }
 }

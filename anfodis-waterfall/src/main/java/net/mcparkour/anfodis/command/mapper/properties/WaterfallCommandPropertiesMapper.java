@@ -25,11 +25,16 @@
 package net.mcparkour.anfodis.command.mapper.properties;
 
 import net.mcparkour.anfodis.command.annotation.properties.Senders;
+import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 
 public class WaterfallCommandPropertiesMapper extends CommandPropertiesMapper<WaterfallCommandProperties, WaterfallCommandPropertiesData> {
 
+    private static final MapperBuilderApplier<Class<?>, WaterfallCommandPropertiesData> APPLIER =
+        (builder, data) -> builder
+            .additional(Senders.class, senders ->
+                data.setSenderTypes(senders.value()));
+
     public WaterfallCommandPropertiesMapper() {
-        super(WaterfallCommandProperties::new, WaterfallCommandPropertiesData::new, (builder, data) -> builder
-            .additional(Senders.class, senders -> data.setSenderTypes(senders.value())));
+        super(WaterfallCommandProperties::new, WaterfallCommandPropertiesData::new, APPLIER);
     }
 }

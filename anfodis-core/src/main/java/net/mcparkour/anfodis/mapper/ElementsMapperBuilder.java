@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 public class ElementsMapperBuilder<E extends AnnotatedElement, T> {
 
     private Supplier<T> dataSupplier;
-    private List<MapperBuilderApplier<E, T>> mapperBuilderAppliers;
+    private final List<MapperBuilderApplier<E, T>> mapperBuilderAppliers;
 
     public ElementsMapperBuilder() {
         this.mapperBuilderAppliers = new ArrayList<>(0);
@@ -44,10 +44,6 @@ public class ElementsMapperBuilder<E extends AnnotatedElement, T> {
     public ElementsMapperBuilder<E, T> data(final Supplier<T> dataSupplier) {
         this.dataSupplier = dataSupplier;
         return this;
-    }
-
-    public ElementsMapperBuilder<E, T> element(final MapperBuilderApplier<E, T> applier, final MapperBuilderApplier<E, T> additional) {
-        return element(applier.andThen(additional));
     }
 
     public ElementsMapperBuilder<E, T> element(final MapperBuilderApplier<E, T> applier) {

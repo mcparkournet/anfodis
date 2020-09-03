@@ -34,21 +34,22 @@ import net.mcparkour.anfodis.mapper.Mapper;
 
 public class ExecutorMapper implements Mapper<Method, Executor> {
 
+    private static final ElementsMapper<Method, ExecutorData> MAPPER = new ElementsMapperBuilder<Method, ExecutorData>()
+        .data(ExecutorData::new)
+        .element((builder, data) -> builder
+            .required(Before.class)
+            .elementConsumer(data::setBeforeMethod))
+        .element((builder, data) -> builder
+            .required(net.mcparkour.anfodis.annotation.executor.Executor.class)
+            .elementConsumer(data::setExecutorMethod))
+        .element((builder, data) -> builder
+            .required(After.class)
+            .elementConsumer(data::setAfterMethod))
+        .build();
+
     @Override
     public Executor map(final Collection<Method> elements) {
-        ElementsMapper<Method, ExecutorData> mapper = new ElementsMapperBuilder<Method, ExecutorData>()
-            .data(ExecutorData::new)
-            .element((builder, data) -> builder
-                .required(Before.class)
-                .elementConsumer(data::setBeforeMethod))
-            .element((builder, data) -> builder
-                .required(net.mcparkour.anfodis.annotation.executor.Executor.class)
-                .elementConsumer(data::setExecutorMethod))
-            .element((builder, data) -> builder
-                .required(After.class)
-                .elementConsumer(data::setAfterMethod))
-            .build();
-        ExecutorData executorData = mapper.mapToSingle(elements);
+        ExecutorData executorData = MAPPER.mapToSingle(elements);
         return new Executor(executorData);
     }
 }

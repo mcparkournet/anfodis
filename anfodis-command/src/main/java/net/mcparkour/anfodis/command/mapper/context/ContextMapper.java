@@ -36,27 +36,32 @@ import net.mcparkour.anfodis.command.annotation.context.Sender;
 import net.mcparkour.anfodis.mapper.ElementsMapper;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
+import org.jetbrains.annotations.Nullable;
 
 public class ContextMapper<C extends Context, D extends ContextData> implements Mapper<Field, C> {
 
-    private Function<D, C> contextSupplier;
-    private Supplier<D> contextDataSupplier;
-    private Consumer<ElementsMapperBuilder<Field, D>> additional;
+    private final Function<D, C> contextSupplier;
+    private final ElementsMapper<Field, D> mapper;
 
     public ContextMapper(final Function<D, C> contextSupplier, final Supplier<D> contextDataSupplier) {
-        this(contextSupplier, contextDataSupplier, builder -> {});
+        this(contextSupplier, contextDataSupplier, null);
     }
 
-    public ContextMapper(final Function<D, C> contextSupplier, final Supplier<D> contextDataSupplier, final Consumer<ElementsMapperBuilder<Field, D>> additional) {
+    public ContextMapper(
+        final Function<D, C> contextSupplier,
+        final Supplier<D> contextDataSupplier,
+        final @Nullable Consumer<ElementsMapperBuilder<Field, D>> additional
+    ) {
         this.contextSupplier = contextSupplier;
-        this.contextDataSupplier = contextDataSupplier;
-        this.additional = additional;
+        this.mapper = createMapper(contextDataSupplier, additional);
     }
 
-    @Override
-    public C map(final Collection<Field> elements) {
+    private static <D extends ContextData> ElementsMapper<Field, D> createMapper(
+        final Supplier<D> contextDataSupplier,
+        final @Nullable Consumer<ElementsMapperBuilder<Field, D>> additional
+    ) {
         ElementsMapperBuilder<Field, D> mapperBuilder = new ElementsMapperBuilder<Field, D>()
-            .data(this.contextDataSupplier)
+            .data(contextDataSupplier)
             .element((builder, data) -> builder
                 .required(Arguments.class)
                 .elementConsumer(data::setArgumentsField))
@@ -69,9 +74,15 @@ public class ContextMapper<C extends Context, D extends ContextData> implements 
             .element((builder, data) -> builder
                 .required(Receiver.class)
                 .elementConsumer(data::setReceiverField));
-        this.additional.accept(mapperBuilder);
-        ElementsMapper<Field, D> mapper = mapperBuilder.build();
-        D contextData = mapper.mapToSingle(elements);
+        if (additional != null) {
+            additional.accept(mapperBuilder);
+        }
+        return mapperBuilder.build();
+    }
+
+    @Override
+    public C map(final Collection<Field> elements) {
+        D contextData = this.mapper.mapToSingle(elements);
         return this.contextSupplier.apply(contextData);
     }
 }

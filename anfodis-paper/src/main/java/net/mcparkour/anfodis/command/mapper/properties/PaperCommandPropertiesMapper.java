@@ -25,11 +25,17 @@
 package net.mcparkour.anfodis.command.mapper.properties;
 
 import net.mcparkour.anfodis.command.annotation.properties.Senders;
+import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 
-public class PaperCommandPropertiesMapper extends CommandPropertiesMapper<PaperCommandProperties, PaperCommandPropertiesData> {
+public class PaperCommandPropertiesMapper
+    extends CommandPropertiesMapper<PaperCommandProperties, PaperCommandPropertiesData> {
+
+    private static final MapperBuilderApplier<Class<?>, PaperCommandPropertiesData> APPLIER =
+        (builder, data) -> builder
+            .additional(Senders.class, senders ->
+                data.setSenderTypes(senders.value()));
 
     public PaperCommandPropertiesMapper() {
-        super(PaperCommandProperties::new, PaperCommandPropertiesData::new, (builder, data) -> builder
-            .additional(Senders.class, senders -> data.setSenderTypes(senders.value())));
+        super(PaperCommandProperties::new, PaperCommandPropertiesData::new, APPLIER);
     }
 }

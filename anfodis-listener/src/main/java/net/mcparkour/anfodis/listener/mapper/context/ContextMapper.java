@@ -35,23 +35,26 @@ import net.mcparkour.anfodis.mapper.Mapper;
 
 public class ContextMapper<C extends Context, D extends ContextData> implements Mapper<Field, C> {
 
-    private Function<D, C> contextSupplier;
-    private Supplier<D> contextDataSupplier;
+    private final Function<D, C> contextSupplier;
+    private final ElementsMapper<Field, D> mapper;
 
     public ContextMapper(final Function<D, C> contextSupplier, final Supplier<D> contextDataSupplier) {
         this.contextSupplier = contextSupplier;
-        this.contextDataSupplier = contextDataSupplier;
+        this.mapper = createMapper(contextDataSupplier);
     }
 
-    @Override
-    public C map(final Collection<Field> elements) {
-        ElementsMapper<Field, D> mapper = new ElementsMapperBuilder<Field, D>()
-            .data(this.contextDataSupplier)
+    private static <D extends ContextData> ElementsMapper<Field, D> createMapper(final Supplier<D> contextDataSupplier) {
+        return new ElementsMapperBuilder<Field, D>()
+            .data(contextDataSupplier)
             .element((builder, data) -> builder
                 .required(Event.class)
                 .elementConsumer(data::setEventField))
             .build();
-        D contextData = mapper.mapToSingle(elements);
+    }
+
+    @Override
+    public C map(final Collection<Field> elements) {
+        D contextData = this.mapper.mapToSingle(elements);
         return this.contextSupplier.apply(contextData);
     }
 }

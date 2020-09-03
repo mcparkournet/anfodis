@@ -30,20 +30,40 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.mcparkour.anfodis.command.annotation.argument.Completion;
 import net.mcparkour.anfodis.command.annotation.argument.CompletionCodec;
+import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class CompletionArgumentMapper<A extends CompletionArgument, D extends CompletionArgumentData> extends ArgumentMapper<A, D> {
+public class CompletionArgumentMapper<A extends CompletionArgument, D extends CompletionArgumentData>
+    extends ArgumentMapper<A, D> {
 
-    public CompletionArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier) {
-        this(argumentSupplier, argumentDataSupplier, (builder, data) -> {});
+    public CompletionArgumentMapper(
+        final Function<D, A> argumentSupplier,
+        final Supplier<D> argumentDataSupplier
+    ) {
+        this(argumentSupplier, argumentDataSupplier, null);
     }
 
-    public CompletionArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier, final BiConsumer<D, SingleElementMapperBuilder<Field>> additional) {
-        super(argumentSupplier, argumentDataSupplier, (builder, data) -> {
-            builder
-                .additional(Completion.class, completion -> data.enableCompletion())
-                .additional(CompletionCodec.class, completionCodec -> data.setCompletionCodecType(completionCodec.value()));
-            additional.accept(data, builder);
-        });
+    public CompletionArgumentMapper(
+        final Function<D, A> argumentSupplier,
+        final Supplier<D> argumentDataSupplier,
+        @Nullable final MapperBuilderApplier<Field, D> additional
+    ) {
+        super(argumentSupplier, argumentDataSupplier, createApplier(additional));
+    }
+
+    private static <D extends CompletionArgumentData> MapperBuilderApplier<Field, D> createApplier(
+        final @Nullable MapperBuilderApplier<Field, D> additional
+    ) {
+        MapperBuilderApplier<Field, D> applier = (builder, data) -> builder
+            .additional(Completion.class, completion ->
+                data.enableCompletion())
+            .additional(CompletionCodec.class, completionCodec ->
+                data.setCompletionCodecType(completionCodec.value()));
+        if (additional == null) {
+            return applier;
+        }
+        return applier.andThen(additional);
     }
 }

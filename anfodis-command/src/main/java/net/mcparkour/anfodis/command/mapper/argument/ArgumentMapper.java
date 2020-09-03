@@ -39,35 +39,54 @@ import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
 import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
+import org.jetbrains.annotations.Nullable;
 
-public class ArgumentMapper<A extends net.mcparkour.anfodis.command.mapper.argument.Argument, D extends ArgumentData> implements Mapper<Field, List<A>> {
+public class ArgumentMapper<A extends net.mcparkour.anfodis.command.mapper.argument.Argument, D extends ArgumentData>
+    implements Mapper<Field, List<A>> {
 
     private Function<D, A> argumentSupplier;
-    private Supplier<D> argumentDataSupplier;
-    private MapperBuilderApplier<Field, D> additional;
+    private ElementsMapper<Field, D> mapper;
 
-    public ArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier) {
-        this(argumentSupplier, argumentDataSupplier, (builder, data) -> {});
+    public ArgumentMapper(
+        final Function<D, A> argumentSupplier,
+        final Supplier<D> argumentDataSupplier
+    ) {
+        this(argumentSupplier, argumentDataSupplier, null);
     }
 
-    public ArgumentMapper(final Function<D, A> argumentSupplier, final Supplier<D> argumentDataSupplier, final MapperBuilderApplier<Field, D> additional) {
+    public ArgumentMapper(
+        final Function<D, A> argumentSupplier,
+        final Supplier<D> argumentDataSupplier,
+        final @Nullable MapperBuilderApplier<Field, D> additional
+    ) {
         this.argumentSupplier = argumentSupplier;
-        this.argumentDataSupplier = argumentDataSupplier;
-        this.additional = additional;
+        this.mapper = createMapper(argumentDataSupplier, additional);
+    }
+
+    private static <D extends ArgumentData> ElementsMapper<Field, D> createMapper(
+        final Supplier<D> argumentDataSupplier,
+        final @Nullable MapperBuilderApplier<Field, D> additional
+    ) {
+        MapperBuilderApplier<Field, D> applier = (builder, data) -> builder
+            .required(Argument.class, argument ->
+                data.setName(argument.value()))
+            .additional(ArgumentCodec.class, argumentCodec ->
+                data.setArgumentCodecType(argumentCodec.value()))
+            .additional(Optional.class, optional ->
+                data.setOptional(true))
+            .elementConsumer(data::setArgumentField);
+        if (additional != null) {
+            applier = applier.andThen(additional);
+        }
+        return new ElementsMapperBuilder<Field, D>()
+            .data(argumentDataSupplier)
+            .element(applier)
+            .build();
     }
 
     @Override
     public List<A> map(final Collection<Field> elements) {
-        ElementsMapper<Field, D> mapper = new ElementsMapperBuilder<Field, D>()
-            .data(this.argumentDataSupplier)
-            .element((builder, data) -> builder
-                    .required(Argument.class, argument -> data.setName(argument.value()))
-                    .additional(ArgumentCodec.class, argumentCodec -> data.setArgumentCodecType(argumentCodec.value()))
-                    .additional(Optional.class, optional -> data.setOptional(true))
-                    .elementConsumer(data::setArgumentField),
-                this.additional)
-            .build();
-        return mapper.mapToMultiple(elements)
+        return this.mapper.mapToMultiple(elements)
             .map(this.argumentSupplier)
             .collect(Collectors.toUnmodifiableList());
     }

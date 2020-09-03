@@ -27,13 +27,20 @@ package net.mcparkour.anfodis.listener.mapper.properties;
 import net.mcparkour.anfodis.listener.annotation.properties.IgnoreCancelled;
 import net.mcparkour.anfodis.listener.annotation.properties.Listener;
 import net.mcparkour.anfodis.listener.annotation.properties.Priority;
+import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 import org.bukkit.event.Event;
 
-public class PaperListenerPropertiesMapper extends ListenerPropertiesMapper<PaperListenerProperties, PaperListenerPropertiesData, Event, Listener> {
+public class PaperListenerPropertiesMapper
+    extends ListenerPropertiesMapper<PaperListenerProperties, PaperListenerPropertiesData, Event, Listener> {
+
+    private static final MapperBuilderApplier<Class<?>, PaperListenerPropertiesData> APPLIER =
+        (builder, data) -> builder
+            .additional(IgnoreCancelled.class, ignoreCancelled ->
+                data.setIgnoreCancelled(true))
+            .additional(Priority.class, priority ->
+                data.setPriority(priority.value()));
 
     public PaperListenerPropertiesMapper() {
-        super(Listener.class, Listener::value, PaperListenerProperties::new, PaperListenerPropertiesData::new, (builder, data) -> builder
-            .additional(IgnoreCancelled.class, ignoreCancelled -> data.setIgnoreCancelled(true))
-            .additional(Priority.class, priority -> data.setPriority(priority.value())));
+        super(Listener.class, Listener::value, PaperListenerProperties::new, PaperListenerPropertiesData::new, APPLIER);
     }
 }

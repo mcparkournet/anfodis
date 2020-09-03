@@ -39,37 +39,59 @@ import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
 import net.mcparkour.anfodis.mapper.MapperBuilderApplier;
 import net.mcparkour.anfodis.mapper.SingleElementMapperBuilder;
+import org.jetbrains.annotations.Nullable;
 
-public class CommandPropertiesMapper<P extends CommandProperties, D extends CommandPropertiesData> implements Mapper<Class<?>, P> {
+public class CommandPropertiesMapper<P extends CommandProperties, D extends CommandPropertiesData>
+    implements Mapper<Class<?>, P> {
 
     private Function<D, P> propertiesSupplier;
-    private Supplier<D> propertiesDataSupplier;
-    private MapperBuilderApplier<Class<?>, D> additional;
+    private ElementsMapper<Class<?>, D> mapper;
 
-    public CommandPropertiesMapper(final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier) {
-        this(propertiesSupplier, propertiesDataSupplier, (builder, data) -> {});
+    public CommandPropertiesMapper(
+        final Function<D, P> propertiesSupplier,
+        final Supplier<D> propertiesDataSupplier
+    ) {
+        this(propertiesSupplier, propertiesDataSupplier, null);
     }
 
-    public CommandPropertiesMapper(final Function<D, P> propertiesSupplier, final Supplier<D> propertiesDataSupplier, final MapperBuilderApplier<Class<?>, D> additional) {
+    public CommandPropertiesMapper(
+        final Function<D, P> propertiesSupplier,
+        final Supplier<D> propertiesDataSupplier,
+        final @Nullable MapperBuilderApplier<Class<?>, D> additional
+    ) {
         this.propertiesSupplier = propertiesSupplier;
-        this.propertiesDataSupplier = propertiesDataSupplier;
-        this.additional = additional;
+        this.mapper = createMapper(propertiesDataSupplier, additional);
+    }
+
+    private static <D extends CommandPropertiesData> ElementsMapper<Class<?>, D> createMapper(
+        final Supplier<D> propertiesDataSupplier,
+        final @Nullable MapperBuilderApplier<Class<?>, D> additional
+    ) {
+        MapperBuilderApplier<Class<?>, D> applier = (builder, data) -> builder
+            .required(Command.class, command ->
+                data.setName(command.value()))
+            .additional(Description.class, description ->
+                data.setDescription(description.value()))
+            .additional(DescriptionTranslation.class, translation ->
+                data.setDescriptionTranslationId(translation.value()))
+            .additional(Aliases.class, aliases ->
+                data.setAliases(aliases.value()))
+            .additional(AliasesTranslation.class, translation ->
+                data.setAliasesTranslationId(translation.value()))
+            .additional(Permission.class, permission ->
+                data.setPermission(permission.value()));
+        if (additional != null) {
+            applier = applier.andThen(additional);
+        }
+        return new ElementsMapperBuilder<Class<?>, D>()
+            .data(propertiesDataSupplier)
+            .element(applier)
+            .build();
     }
 
     @Override
     public P map(final Collection<Class<?>> elements) {
-        ElementsMapper<Class<?>, D> mapper = new ElementsMapperBuilder<Class<?>, D>()
-            .data(this.propertiesDataSupplier)
-            .element((builder, data) -> builder
-                    .required(Command.class, command -> data.setName(command.value()))
-                    .additional(Description.class, description -> data.setDescription(description.value()))
-                    .additional(DescriptionTranslation.class, descriptionTranslation -> data.setDescriptionTranslationId(descriptionTranslation.value()))
-                    .additional(Aliases.class, aliases -> data.setAliases(aliases.value()))
-                    .additional(AliasesTranslation.class, aliasesTranslation -> data.setAliasesTranslationId(aliasesTranslation.value()))
-                    .additional(Permission.class, permission -> data.setPermission(permission.value())),
-                this.additional)
-            .build();
-        D propertiesData = mapper.mapToSingle(elements);
+        D propertiesData = this.mapper.mapToSingle(elements);
         return this.propertiesSupplier.apply(propertiesData);
     }
 }

@@ -34,8 +34,8 @@ import java.util.stream.Stream;
 
 public class ElementsMapper<E extends AnnotatedElement, T> {
 
-    private Supplier<T> dataSupplier;
-    private List<MapperBuilderApplier<E, T>> mapperBuilderAppliers;
+    private final Supplier<T> dataSupplier;
+    private final List<MapperBuilderApplier<E, T>> mapperBuilderAppliers;
 
     public ElementsMapper(final Supplier<T> dataSupplier, final List<MapperBuilderApplier<E, T>> mapperBuilderAppliers) {
         this.dataSupplier = dataSupplier;
