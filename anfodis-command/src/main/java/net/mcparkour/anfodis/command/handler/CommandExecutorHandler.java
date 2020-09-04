@@ -30,19 +30,17 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
-import net.mcparkour.anfodis.command.VariadicArgument;
+import net.mcparkour.anfodis.command.argument.ArgumentContext;
+import net.mcparkour.anfodis.command.argument.VariadicArgument;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.argument.result.ErrorResult;
 import net.mcparkour.anfodis.command.codec.argument.result.OkResult;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.lexer.Token;
-import net.mcparkour.anfodis.command.lexer.TokenType;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
-import net.mcparkour.anfodis.command.mapper.argument.MappedVariadicArgument;
 import net.mcparkour.anfodis.command.mapper.context.Context;
 import net.mcparkour.anfodis.handler.RootHandler;
 import net.mcparkour.craftmon.permission.Permission;
@@ -108,7 +106,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
             .map(argumentValue -> codec.parse(context, argumentContext, argumentValue))
             .map(this::getResult)
             .collect(Collectors.toUnmodifiableList());
-        return new MappedVariadicArgument<>(argumentsList);
+        return VariadicArgument.of(argumentsList);
     }
 
     private <S> S getResult(final Result<S> result) {

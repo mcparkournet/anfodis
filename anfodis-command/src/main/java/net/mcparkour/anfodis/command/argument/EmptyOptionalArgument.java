@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.argument;
+package net.mcparkour.anfodis.command.argument;
 
 import java.util.NoSuchElementException;
-import net.mcparkour.anfodis.command.OptionalArgument;
 
 class EmptyOptionalArgument<T> implements OptionalArgument<T> {
-
-    static final OptionalArgument<?> EMPTY_OPTIONAL_ARGUMENT = new EmptyOptionalArgument<>();
 
     @Override
     public boolean isPresent() {

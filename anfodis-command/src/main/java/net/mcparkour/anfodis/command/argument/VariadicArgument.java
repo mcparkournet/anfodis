@@ -22,15 +22,30 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command;
+package net.mcparkour.anfodis.command.argument;
 
-public interface OptionalArgument<T> {
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
-    boolean isPresent();
+public interface VariadicArgument<T> extends Iterable<T> {
+
+    @SafeVarargs
+    static <T> VariadicArgument<T> of(final T... arguments) {
+        return of(List.of(arguments));
+    }
+
+    static <T> VariadicArgument<T> of(final List<T> arguments) {
+        return new VariadicArgumentImpl<>(arguments);
+    }
 
     boolean isEmpty();
 
-    T orElse(T other);
+    int getSize();
 
-    T get();
+    Optional<T> get(int index);
+
+    Stream<T> stream();
+
+    List<T> toList();
 }

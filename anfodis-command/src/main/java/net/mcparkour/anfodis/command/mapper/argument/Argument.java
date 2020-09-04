@@ -29,12 +29,12 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
-import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.UnknownCodecException;
-import net.mcparkour.anfodis.command.OptionalArgument;
-import net.mcparkour.anfodis.command.VariadicArgument;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
+import net.mcparkour.anfodis.command.argument.ArgumentContext;
+import net.mcparkour.anfodis.command.argument.OptionalArgument;
+import net.mcparkour.anfodis.command.argument.VariadicArgument;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
 import org.jetbrains.annotations.Nullable;
@@ -43,8 +43,7 @@ public class Argument {
 
     private final Field field;
     private final Type argumentType;
-    @Nullable
-    private final Class<? extends ArgumentCodec<?>> codecType;
+    private final @Nullable Class<? extends ArgumentCodec<?>> codecType;
     private final ArgumentContext context;
 
     public Argument(final ArgumentData argumentData) {
@@ -53,7 +52,9 @@ public class Argument {
         this.argumentType = getArgumentType(field);
         this.codecType = argumentData.getArgumentCodecType();
         String name = argumentData.getName();
-        name = Objects.requireNonNull(name, "Argument name is null").isEmpty() ? field.getName() : name;
+        name = Objects.requireNonNull(name, "Argument name is null").isEmpty() ?
+            field.getName() :
+            name;
         Boolean optional = argumentData.getOptional();
         optional = optional != null && optional;
         Boolean variadic = argumentData.getVariadic();
@@ -85,12 +86,12 @@ public class Argument {
     }
 
     public void setEmptyArgumentField(final Object instance) {
-        Object value = isOptionalArgument() ? EmptyOptionalArgument.EMPTY_OPTIONAL_ARGUMENT : null;
+        Object value = isOptionalArgument() ? OptionalArgument.empty() : null;
         Reflections.setFieldValue(this.field, instance, value);
     }
 
     public void setArgumentField(final Object instance, final Object argument) {
-        Object value = isOptionalArgument() ? new PresentOptionalArgument<>(argument) : argument;
+        Object value = isOptionalArgument() ? OptionalArgument.of(argument) : argument;
         Reflections.setFieldValue(this.field, instance, value);
     }
 

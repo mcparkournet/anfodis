@@ -25,7 +25,7 @@
 package net.mcparkour.anfodis;
 
 import java.util.List;
-import net.mcparkour.anfodis.command.ArgumentContext;
+import net.mcparkour.anfodis.command.argument.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 

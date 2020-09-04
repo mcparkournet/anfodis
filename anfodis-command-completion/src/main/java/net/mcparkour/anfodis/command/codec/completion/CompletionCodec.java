@@ -3,7 +3,7 @@ package net.mcparkour.anfodis.command.codec.completion;
 import java.util.Collection;
 import java.util.List;
 import net.mcparkour.anfodis.codec.Codec;
-import net.mcparkour.anfodis.command.ArgumentContext;
+import net.mcparkour.anfodis.command.argument.ArgumentContext;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 
 public interface CompletionCodec extends Codec {

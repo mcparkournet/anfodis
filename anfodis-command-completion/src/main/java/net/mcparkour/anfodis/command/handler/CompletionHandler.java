@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
-import net.mcparkour.anfodis.command.ArgumentContext;
+import net.mcparkour.anfodis.command.argument.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.Permissible;

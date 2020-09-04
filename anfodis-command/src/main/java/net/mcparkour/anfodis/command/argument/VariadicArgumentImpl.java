@@ -22,31 +22,53 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command;
+package net.mcparkour.anfodis.command.argument;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-import net.mcparkour.anfodis.command.mapper.argument.MappedVariadicArgument;
+import net.mcparkour.anfodis.command.argument.VariadicArgument;
 
-public interface VariadicArgument<T> extends Iterable<T> {
+class VariadicArgumentImpl<T> implements VariadicArgument<T> {
 
-    @SafeVarargs
-    static <T> VariadicArgument<T> of(final T... arguments) {
-        return of(List.of(arguments));
+    private final List<T> arguments;
+
+    VariadicArgumentImpl(final List<T> arguments) {
+        this.arguments = arguments;
     }
 
-    static <T> VariadicArgument<T> of(final List<T> arguments) {
-        return new MappedVariadicArgument<>(arguments);
+    @Override
+    public boolean isEmpty() {
+        return this.arguments.isEmpty();
     }
 
-    boolean isEmpty();
+    @Override
+    public int getSize() {
+        return this.arguments.size();
+    }
 
-    int getSize();
+    @Override
+    public Optional<T> get(final int index) {
+        if (index < 0 || index >= getSize()) {
+            return Optional.empty();
+        }
+        T argument = this.arguments.get(index);
+        return Optional.of(argument);
+    }
 
-    Optional<T> get(int index);
+    @Override
+    public Stream<T> stream() {
+        return this.arguments.stream();
+    }
 
-    Stream<T> stream();
+    @Override
+    public List<T> toList() {
+        return List.copyOf(this.arguments);
+    }
 
-    List<T> toList();
+    @Override
+    public Iterator<T> iterator() {
+        return this.arguments.iterator();
+    }
 }

@@ -22,29 +22,23 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command;
+package net.mcparkour.anfodis.command.argument;
 
-public class ArgumentContext {
+public interface OptionalArgument<T> {
 
-    private final String name;
-    private final boolean optional;
-    private final boolean variadic;
-
-    public ArgumentContext(final String name, final boolean optional, final boolean variadic) {
-        this.name = name;
-        this.optional = optional;
-        this.variadic = variadic;
+    static <T> OptionalArgument<T> empty() {
+        return new EmptyOptionalArgument<>();
     }
 
-    public String getName() {
-        return this.name;
+    static <T> OptionalArgument<T> of(final T present) {
+        return new PresentOptionalArgument<>(present);
     }
 
-    public boolean isOptional() {
-        return this.optional;
-    }
+    boolean isPresent();
 
-    public boolean isVariadic() {
-        return this.variadic;
-    }
+    boolean isEmpty();
+
+    T orElse(T other);
+
+    T get();
 }

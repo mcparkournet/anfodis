@@ -25,7 +25,7 @@
 package net.mcparkour.anfodis;
 
 import net.mcparkour.anfodis.annotation.executor.Executor;
-import net.mcparkour.anfodis.command.VariadicArgument;
+import net.mcparkour.anfodis.command.argument.VariadicArgument;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
 import net.mcparkour.anfodis.command.annotation.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.annotation.argument.Completion;

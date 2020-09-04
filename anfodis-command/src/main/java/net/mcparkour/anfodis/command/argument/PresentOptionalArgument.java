@@ -22,53 +22,33 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.argument;
+package net.mcparkour.anfodis.command.argument;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-import net.mcparkour.anfodis.command.VariadicArgument;
+class PresentOptionalArgument<T> implements OptionalArgument<T> {
 
-public class MappedVariadicArgument<T> implements VariadicArgument<T> {
+    private final T value;
 
-    private final List<T> arguments;
+    PresentOptionalArgument(final T value) {
+        this.value = value;
+    }
 
-    public MappedVariadicArgument(final List<T> arguments) {
-        this.arguments = arguments;
+    @Override
+    public boolean isPresent() {
+        return true;
     }
 
     @Override
     public boolean isEmpty() {
-        return this.arguments.isEmpty();
+        return false;
     }
 
     @Override
-    public int getSize() {
-        return this.arguments.size();
+    public T orElse(final T other) {
+        return this.value;
     }
 
     @Override
-    public Optional<T> get(final int index) {
-        if (index < 0 || index >= getSize()) {
-            return Optional.empty();
-        }
-        T argument = this.arguments.get(index);
-        return Optional.of(argument);
-    }
-
-    @Override
-    public Stream<T> stream() {
-        return this.arguments.stream();
-    }
-
-    @Override
-    public List<T> toList() {
-        return List.copyOf(this.arguments);
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        return this.arguments.iterator();
+    public T get() {
+        return this.value;
     }
 }

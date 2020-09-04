@@ -25,7 +25,7 @@
 package net.mcparkour.anfodis;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.ArgumentContext;
+import net.mcparkour.anfodis.command.argument.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 

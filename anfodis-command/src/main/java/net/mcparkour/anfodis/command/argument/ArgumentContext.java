@@ -22,35 +22,29 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.argument;
+package net.mcparkour.anfodis.command.argument;
 
-import net.mcparkour.anfodis.command.OptionalArgument;
+public class ArgumentContext {
 
-class PresentOptionalArgument<T> implements OptionalArgument<T> {
+    private final String name;
+    private final boolean optional;
+    private final boolean variadic;
 
-    private final T value;
-
-    PresentOptionalArgument(final T value) {
-        this.value = value;
+    public ArgumentContext(final String name, final boolean optional, final boolean variadic) {
+        this.name = name;
+        this.optional = optional;
+        this.variadic = variadic;
     }
 
-    @Override
-    public boolean isPresent() {
-        return true;
+    public String getName() {
+        return this.name;
     }
 
-    @Override
-    public boolean isEmpty() {
-        return false;
+    public boolean isOptional() {
+        return this.optional;
     }
 
-    @Override
-    public T orElse(final T other) {
-        return this.value;
-    }
-
-    @Override
-    public T get() {
-        return this.value;
+    public boolean isVariadic() {
+        return this.variadic;
     }
 }
