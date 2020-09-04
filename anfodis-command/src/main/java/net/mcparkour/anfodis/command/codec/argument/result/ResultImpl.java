@@ -29,8 +29,8 @@ import org.jetbrains.annotations.Nullable;
 
 class ResultImpl<T> implements Result<T> {
 
-    private final OkResult<T> okResult;
-    private final ErrorResult errorResult;
+    private final @Nullable OkResult<T> okResult;
+    private final @Nullable ErrorResult errorResult;
 
     ResultImpl(final OkResult<T> okResult) {
         this(okResult, null);

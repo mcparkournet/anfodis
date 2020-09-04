@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface Result<T> {
 
-    static <T> Result<T> ok(final @Nullable T result) {
+    static <T> Result<T> ok(final T result) {
         OkResult<T> okResult = OkResult.of(result);
         return of(okResult);
     }

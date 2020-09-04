@@ -30,17 +30,13 @@ import org.jetbrains.annotations.Nullable;
 
 class ArgumentData {
 
-    @Nullable
-    private Field argumentField;
-    @Nullable
-    private Class<? extends ArgumentCodec<?>> argumentCodecType;
-    @Nullable
-    private String name;
-    @Nullable
-    private Boolean optional;
+    private @Nullable Field argumentField;
+    private @Nullable Class<? extends ArgumentCodec<?>> argumentCodecType;
+    private @Nullable String name;
+    private @Nullable Boolean optional;
+    private @Nullable Boolean variadic;
 
-    @Nullable
-    public Field getArgumentField() {
+    public @Nullable Field getArgumentField() {
         return this.argumentField;
     }
 
@@ -48,8 +44,7 @@ class ArgumentData {
         this.argumentField = argumentField;
     }
 
-    @Nullable
-    public String getName() {
+    public @Nullable String getName() {
         return this.name;
     }
 
@@ -65,12 +60,19 @@ class ArgumentData {
         this.argumentCodecType = argumentCodecType;
     }
 
-    @Nullable
-    public Boolean getOptional() {
+    public @Nullable Boolean getOptional() {
         return this.optional;
     }
 
-    public void setOptional(@Nullable final Boolean optional) {
+    public void setOptional(final @Nullable Boolean optional) {
         this.optional = optional;
+    }
+
+    public @Nullable Boolean getVariadic() {
+        return this.variadic;
+    }
+
+    public void setVariadic(final @Nullable Boolean variadic) {
+        this.variadic = variadic;
     }
 }

@@ -27,13 +27,14 @@ package net.mcparkour.anfodis.command.mapper.argument;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.UnknownCodecException;
 import net.mcparkour.anfodis.command.OptionalArgument;
+import net.mcparkour.anfodis.command.VariadicArgument;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
 import org.jetbrains.annotations.Nullable;
@@ -44,8 +45,7 @@ public class Argument {
     private final Type argumentType;
     @Nullable
     private final Class<? extends ArgumentCodec<?>> codecType;
-    private final String name;
-    private final boolean optional;
+    private final ArgumentContext context;
 
     public Argument(final ArgumentData argumentData) {
         Field field = argumentData.getArgumentField();
@@ -53,9 +53,12 @@ public class Argument {
         this.argumentType = getArgumentType(field);
         this.codecType = argumentData.getArgumentCodecType();
         String name = argumentData.getName();
-        this.name = Objects.requireNonNull(name, "Argument name is null").isEmpty() ? field.getName() : name;
+        name = Objects.requireNonNull(name, "Argument name is null").isEmpty() ? field.getName() : name;
         Boolean optional = argumentData.getOptional();
-        this.optional = optional != null && optional;
+        optional = optional != null && optional;
+        Boolean variadic = argumentData.getVariadic();
+        variadic = variadic != null && variadic;
+        this.context = new ArgumentContext(name, optional, variadic);
     }
 
     private static Type getArgumentType(final Field field) {
@@ -71,22 +74,23 @@ public class Argument {
 
     public String getUsage() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.optional ? '[' : '<');
-        builder.append(this.name);
-        if (isList()) {
+        boolean optional = this.context.isOptional();
+        builder.append(optional ? '[' : '<');
+        builder.append(this.context.getName());
+        if (this.context.isVariadic()) {
             builder.append("...");
         }
-        builder.append(this.optional ? ']' : '>');
+        builder.append(optional ? ']' : '>');
         return builder.toString();
     }
 
     public void setEmptyArgumentField(final Object instance) {
-        Object value = isOptionalArgument() ? MappedOptionalArgument.EMPTY_OPTIONAL_ARGUMENT : null;
+        Object value = isOptionalArgument() ? EmptyOptionalArgument.EMPTY_OPTIONAL_ARGUMENT : null;
         Reflections.setFieldValue(this.field, instance, value);
     }
 
-    public void setArgumentField(final Object instance, @Nullable final Object argument) {
-        Object value = isOptionalArgument() ? MappedOptionalArgument.of(argument) : argument;
+    public void setArgumentField(final Object instance, final Object argument) {
+        Object value = isOptionalArgument() ? new PresentOptionalArgument<>(argument) : argument;
         Reflections.setFieldValue(this.field, instance, value);
     }
 
@@ -95,9 +99,9 @@ public class Argument {
         return fieldType.isAssignableFrom(OptionalArgument.class);
     }
 
-    public boolean isList() {
+    public boolean isVariadicArgument() {
         Class<?> argumentClass = getArgumentClass();
-        return argumentClass.isAssignableFrom(List.class);
+        return argumentClass.isAssignableFrom(VariadicArgument.class);
     }
 
     public ArgumentCodec<?> getCodec(final CodecRegistry<ArgumentCodec<?>> registry) {
@@ -143,15 +147,11 @@ public class Argument {
         return Types.getRawClassType(this.argumentType);
     }
 
-    public String getName() {
-        return this.name;
-    }
-
     public boolean isNotOptional() {
-        return !this.optional;
+        return !this.context.isOptional();
     }
 
-    public boolean isOptional() {
-        return this.optional;
+    public ArgumentContext getContext() {
+        return this.context;
     }
 }

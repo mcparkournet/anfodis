@@ -25,7 +25,7 @@
 package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.codec.argument.result.OkResult;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.common.text.NumericParser;
@@ -33,8 +33,8 @@ import net.mcparkour.common.text.NumericParser;
 public class FloatArgumentCodec implements ArgumentCodec<Float> {
 
     @Override
-    public Result<Float> parse(final CommandContext<?> context, final String argument) {
-        Float result = NumericParser.parseFloat(argument);
+    public Result<Float> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
+        Float result = NumericParser.parseFloat(argumentValue);
         if (result == null) {
             return Result.error();
         }

@@ -22,22 +22,32 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.codec.argument.basic;
+package net.mcparkour.anfodis.command.mapper.argument;
 
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.ArgumentContext;
-import net.mcparkour.anfodis.command.codec.argument.result.Result;
-import net.mcparkour.anfodis.command.context.CommandContext;
-import net.mcparkour.common.text.NumericParser;
+import java.util.NoSuchElementException;
+import net.mcparkour.anfodis.command.OptionalArgument;
 
-public class DoubleArgumentCodec implements ArgumentCodec<Double> {
+class EmptyOptionalArgument<T> implements OptionalArgument<T> {
+
+    static final OptionalArgument<?> EMPTY_OPTIONAL_ARGUMENT = new EmptyOptionalArgument<>();
 
     @Override
-    public Result<Double> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
-        Double result = NumericParser.parseDouble(argumentValue);
-        if (result == null) {
-            return Result.error();
-        }
-        return Result.ok(result);
+    public boolean isPresent() {
+        return false;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
+
+    @Override
+    public T orElse(final T other) {
+        return other;
+    }
+
+    @Override
+    public T get() {
+        throw new NoSuchElementException("Argument value is not present");
     }
 }

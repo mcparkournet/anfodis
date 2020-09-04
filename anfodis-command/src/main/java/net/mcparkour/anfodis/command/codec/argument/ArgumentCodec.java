@@ -25,14 +25,15 @@
 package net.mcparkour.anfodis.command.codec.argument;
 
 import net.mcparkour.anfodis.codec.Codec;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 
 public interface ArgumentCodec<T> extends Codec {
 
-    Result<T> parse(CommandContext<?> context, String argument);
+    Result<T> parse(CommandContext<?> commandContext, ArgumentContext argumentContext, String argumentValue);
 
     static ArgumentCodec<String> identity() {
-        return (context, argument) -> Result.ok(argument);
+        return (commandContext, argumentContext, argumentValue) -> Result.ok(argumentValue);
     }
 }

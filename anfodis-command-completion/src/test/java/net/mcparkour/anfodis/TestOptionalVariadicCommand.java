@@ -24,40 +24,40 @@
 
 package net.mcparkour.anfodis;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import net.mcparkour.anfodis.annotation.executor.Executor;
+import net.mcparkour.anfodis.command.OptionalArgument;
 import net.mcparkour.anfodis.command.VariadicArgument;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
-import net.mcparkour.anfodis.command.annotation.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.annotation.argument.Completion;
 import net.mcparkour.anfodis.command.annotation.argument.CompletionCodec;
+import net.mcparkour.anfodis.command.annotation.argument.Optional;
 import net.mcparkour.anfodis.command.annotation.argument.Variadic;
 import net.mcparkour.anfodis.command.annotation.context.Receiver;
 import net.mcparkour.anfodis.command.annotation.properties.Command;
-import net.mcparkour.anfodis.command.annotation.properties.Description;
-import net.mcparkour.anfodis.command.annotation.properties.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 
-@Command("bar")
-@Description("bar")
-@Permission
-public class TestBarCommand {
+@Command("optionalVariadic")
+public class TestOptionalVariadicCommand {
 
     @Receiver
     private MessageReceiver receiver;
 
     @Argument
-    @ArgumentCodec(ArgArgumentCodec.class)
-    private String arg;
-
-    @Argument
+    @Optional
     @Variadic
     @Completion
     @CompletionCodec(ArgsCompletionCodec.class)
-    private VariadicArgument<String> args;
+    private OptionalArgument<VariadicArgument<Integer>> args;
 
     @Executor
     public void execute() {
-        this.receiver.receivePlain(this.arg);
-        this.receiver.receivePlain(this.args);
+        this.receiver.receivePlain(String.valueOf(this.args.isPresent()));
+        List<String> list = this.args.orElse(VariadicArgument.of())
+            .stream()
+            .map(Object::toString)
+            .collect(Collectors.toUnmodifiableList());
+        this.receiver.receivePlain(list);
     }
 }

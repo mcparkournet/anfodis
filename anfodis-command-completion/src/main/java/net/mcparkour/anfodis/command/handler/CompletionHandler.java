@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.Permissible;
@@ -158,7 +159,8 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
             return List.of();
         }
         CompletionCodec codec = optionalCodec.get();
-        List<String> completions = codec.getCompletions(context);
+        ArgumentContext argumentContext = commandArgument.getContext();
+        List<String> completions = codec.getCompletions(context, argumentContext);
         String argument = arguments.get(argumentsCount - 1);
         return completions.stream()
             .filter(completion -> completion.startsWith(argument))

@@ -24,18 +24,16 @@
 
 package net.mcparkour.anfodis.command.codec.argument.result;
 
-import org.jetbrains.annotations.Nullable;
-
 class OkResultImpl<T> implements OkResult<T> {
 
-    private final @Nullable T result;
+    private final T result;
 
-    OkResultImpl(final @Nullable T result) {
+    OkResultImpl(final T result) {
         this.result = result;
     }
 
     @Override
-    public @Nullable T getResult() {
+    public T getResult() {
         return this.result;
     }
 }

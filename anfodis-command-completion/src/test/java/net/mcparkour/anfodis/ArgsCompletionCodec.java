@@ -25,15 +25,14 @@
 package net.mcparkour.anfodis;
 
 import java.util.List;
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
-import org.jetbrains.annotations.Nullable;
 
 public class ArgsCompletionCodec implements CompletionCodec {
 
     @Override
-    public List<String> getCompletions(final CompletionContext<?> context) {
+    public List<String> getCompletions(final CompletionContext<?> completionContext, final ArgumentContext argumentContext) {
         return List.of("1", "2", "3");
     }
 }

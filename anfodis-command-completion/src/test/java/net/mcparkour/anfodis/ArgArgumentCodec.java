@@ -25,13 +25,14 @@
 package net.mcparkour.anfodis;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 
 public class ArgArgumentCodec implements ArgumentCodec<String> {
 
     @Override
-    public Result<String> parse(final CommandContext<?> context, final String argument) {
-        return Result.ok(argument.strip());
+    public Result<String> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
+        return Result.ok(argumentValue.strip());
     }
 }

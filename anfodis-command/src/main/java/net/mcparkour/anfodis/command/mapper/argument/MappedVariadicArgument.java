@@ -22,22 +22,53 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.codec.argument.basic;
+package net.mcparkour.anfodis.command.mapper.argument;
 
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.ArgumentContext;
-import net.mcparkour.anfodis.command.codec.argument.result.Result;
-import net.mcparkour.anfodis.command.context.CommandContext;
-import net.mcparkour.common.text.NumericParser;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+import net.mcparkour.anfodis.command.VariadicArgument;
 
-public class DoubleArgumentCodec implements ArgumentCodec<Double> {
+public class MappedVariadicArgument<T> implements VariadicArgument<T> {
+
+    private final List<T> arguments;
+
+    public MappedVariadicArgument(final List<T> arguments) {
+        this.arguments = arguments;
+    }
 
     @Override
-    public Result<Double> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
-        Double result = NumericParser.parseDouble(argumentValue);
-        if (result == null) {
-            return Result.error();
+    public boolean isEmpty() {
+        return this.arguments.isEmpty();
+    }
+
+    @Override
+    public int getSize() {
+        return this.arguments.size();
+    }
+
+    @Override
+    public Optional<T> get(final int index) {
+        if (index < 0 || index >= getSize()) {
+            return Optional.empty();
         }
-        return Result.ok(result);
+        T argument = this.arguments.get(index);
+        return Optional.of(argument);
+    }
+
+    @Override
+    public Stream<T> stream() {
+        return this.arguments.stream();
+    }
+
+    @Override
+    public List<T> toList() {
+        return List.copyOf(this.arguments);
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return this.arguments.iterator();
     }
 }

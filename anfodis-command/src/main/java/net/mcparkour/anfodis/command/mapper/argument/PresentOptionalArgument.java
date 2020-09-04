@@ -22,22 +22,35 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.codec.argument.basic;
+package net.mcparkour.anfodis.command.mapper.argument;
 
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.ArgumentContext;
-import net.mcparkour.anfodis.command.codec.argument.result.Result;
-import net.mcparkour.anfodis.command.context.CommandContext;
-import net.mcparkour.common.text.NumericParser;
+import net.mcparkour.anfodis.command.OptionalArgument;
 
-public class DoubleArgumentCodec implements ArgumentCodec<Double> {
+class PresentOptionalArgument<T> implements OptionalArgument<T> {
+
+    private final T value;
+
+    PresentOptionalArgument(final T value) {
+        this.value = value;
+    }
 
     @Override
-    public Result<Double> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
-        Double result = NumericParser.parseDouble(argumentValue);
-        if (result == null) {
-            return Result.error();
-        }
-        return Result.ok(result);
+    public boolean isPresent() {
+        return true;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public T orElse(final T other) {
+        return this.value;
+    }
+
+    @Override
+    public T get() {
+        return this.value;
     }
 }

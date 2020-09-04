@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.common.text.NumericParser;
@@ -32,8 +33,8 @@ import net.mcparkour.common.text.NumericParser;
 public class IntegerArgumentCodec implements ArgumentCodec<Integer> {
 
     @Override
-    public Result<Integer> parse(final CommandContext<?> context, final String argument) {
-        Integer result = NumericParser.parseInteger(argument);
+    public Result<Integer> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
+        Integer result = NumericParser.parseInteger(argumentValue);
         if (result == null) {
             return Result.error();
         }

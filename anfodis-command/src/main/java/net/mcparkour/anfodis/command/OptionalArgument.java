@@ -24,13 +24,13 @@
 
 package net.mcparkour.anfodis.command;
 
-import org.jetbrains.annotations.Nullable;
-
 public interface OptionalArgument<T> {
 
     boolean isPresent();
 
-    @Nullable T orElse(@Nullable T other);
+    boolean isEmpty();
 
-    @Nullable T get();
+    T orElse(T other);
+
+    T get();
 }

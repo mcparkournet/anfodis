@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
 import net.mcparkour.anfodis.command.annotation.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.annotation.argument.Optional;
+import net.mcparkour.anfodis.command.annotation.argument.Variadic;
 import net.mcparkour.anfodis.mapper.ElementsMapper;
 import net.mcparkour.anfodis.mapper.ElementsMapperBuilder;
 import net.mcparkour.anfodis.mapper.Mapper;
@@ -74,6 +75,8 @@ public class ArgumentMapper<A extends net.mcparkour.anfodis.command.mapper.argum
                 data.setArgumentCodecType(argumentCodec.value()))
             .additional(Optional.class, optional ->
                 data.setOptional(true))
+            .additional(Variadic.class, variadic ->
+                data.setVariadic(true))
             .elementConsumer(data::setArgumentField);
         if (additional != null) {
             applier = applier.andThen(additional);

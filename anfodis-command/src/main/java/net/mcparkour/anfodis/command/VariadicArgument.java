@@ -22,46 +22,31 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.mapper.argument;
+package net.mcparkour.anfodis.command;
 
-import java.util.NoSuchElementException;
-import net.mcparkour.anfodis.command.OptionalArgument;
-import org.jetbrains.annotations.Nullable;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+import net.mcparkour.anfodis.command.mapper.argument.MappedVariadicArgument;
 
-final class MappedOptionalArgument<T> implements OptionalArgument<T> {
+public interface VariadicArgument<T> extends Iterable<T> {
 
-    static final OptionalArgument<?> EMPTY_OPTIONAL_ARGUMENT = new MappedOptionalArgument<>(null, false);
-
-    @Nullable
-    private final T value;
-    private final boolean present;
-
-    static <T> OptionalArgument<T> of(@Nullable final T value) {
-        return new MappedOptionalArgument<>(value, true);
+    @SafeVarargs
+    static <T> VariadicArgument<T> of(final T... arguments) {
+        return of(List.of(arguments));
     }
 
-    private MappedOptionalArgument(@Nullable final T value, final boolean present) {
-        this.value = value;
-        this.present = present;
+    static <T> VariadicArgument<T> of(final List<T> arguments) {
+        return new MappedVariadicArgument<>(arguments);
     }
 
-    @Override
-    public boolean isPresent() {
-        return this.present;
-    }
+    boolean isEmpty();
 
-    @Override
-    @Nullable
-    public T orElse(@Nullable final T other) {
-        return this.present ? this.value : other;
-    }
+    int getSize();
 
-    @Override
-    @Nullable
-    public T get() {
-        if (!this.present) {
-            throw new NoSuchElementException("Argument value is not present");
-        }
-        return this.value;
-    }
+    Optional<T> get(int index);
+
+    Stream<T> stream();
+
+    List<T> toList();
 }

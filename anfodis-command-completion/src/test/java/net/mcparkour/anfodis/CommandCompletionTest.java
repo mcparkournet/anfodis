@@ -71,9 +71,10 @@ public class CommandCompletionTest {
             .build();
         CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = CodecRegistry.<ArgumentCodec<?>>builder()
             .typed(String.class, ArgumentCodec.identity())
-            .typed(Locale.class, (context, argument) -> Result.ok(Locale.forLanguageTag(argument)))
+            .typed(Integer.class, (commandContext, argumentContext, argumentValue) -> Result.ok(Integer.parseInt(argumentValue)))
+            .typed(Locale.class, (commandContext, argumentContext, argumentValue) -> Result.ok(Locale.forLanguageTag(argumentValue)))
             .self(ArgArgumentCodec.class, new ArgArgumentCodec())
-            .self(NullArgumentCodec.class, (context, argument) -> Result.ok(null))
+            .self(NullArgumentCodec.class, (commandContext, argumentContext, argumentValue) -> Result.ok("null"))
             .build();
         CodecRegistry<CompletionCodec> completionCodecRegistry = CodecRegistry.<CompletionCodec>builder()
             .typed(Locale.class, CompletionCodec.entries("en-US", "pl-PL"))
@@ -138,7 +139,7 @@ public class CommandCompletionTest {
         CommandWrapper command = this.commandManager.get("optional");
         TestCommandSender sender = new TestCommandSender();
         command.execute(sender, new String[] {"test", "test2"});
-        Assertions.assertNull(sender.getLastMessage());
+        Assertions.assertEquals("null", sender.getLastMessage());
         Assertions.assertEquals("true", sender.getLastMessage());
         Assertions.assertEquals("test2", sender.getLastMessage());
         Assertions.assertEquals("false", sender.getLastMessage());
@@ -221,5 +222,21 @@ public class CommandCompletionTest {
         Assertions.assertEquals("testString", sender.getLastMessage());
         Assertions.assertNull(sender.getLastMessage());
         Assertions.assertEquals("test2", sender.getLastMessage());
+    }
+
+    @Test
+    public void testOptionalVariadicCommand() {
+        this.commandRegistry.register(TestOptionalVariadicCommand.class);
+        CommandWrapper command = this.commandManager.get("optionalVariadic");
+        TestCommandSender sender = new TestCommandSender();
+        command.execute(sender, new String[] {});
+        Assertions.assertEquals("false", sender.getLastMessage());
+        Assertions.assertNull(sender.getLastMessage());
+        command.execute(sender, new String[] {"1", "2", "3"});
+        Assertions.assertEquals("true", sender.getLastMessage());
+        Assertions.assertEquals("1", sender.getLastMessage());
+        Assertions.assertEquals("2", sender.getLastMessage());
+        Assertions.assertEquals("3", sender.getLastMessage());
+        Assertions.assertNull(sender.getLastMessage());
     }
 }

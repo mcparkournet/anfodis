@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.common.text.NumericParser;
@@ -32,8 +33,8 @@ import net.mcparkour.common.text.NumericParser;
 public class ShortArgumentCodec implements ArgumentCodec<Short> {
 
     @Override
-    public Result<Short> parse(final CommandContext<?> context, final String argument) {
-        Short result = NumericParser.parseShort(argument);
+    public Result<Short> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
+        Short result = NumericParser.parseShort(argumentValue);
         if (result == null) {
             return Result.error();
         }

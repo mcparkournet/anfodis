@@ -28,9 +28,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
+import net.mcparkour.anfodis.command.VariadicArgument;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.argument.result.ErrorResult;
 import net.mcparkour.anfodis.command.codec.argument.result.OkResult;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
@@ -38,11 +40,11 @@ import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
+import net.mcparkour.anfodis.command.mapper.argument.MappedVariadicArgument;
 import net.mcparkour.anfodis.command.mapper.context.Context;
 import net.mcparkour.anfodis.handler.RootHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
-import org.jetbrains.annotations.Nullable;
 
 public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>>
     extends RootHandler<T, C> {
@@ -82,28 +84,30 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
         }
     }
 
-    @Nullable
     private Object getArgumentValue(final List<String> arguments, final Argument commandArgument, final int index, final C context) {
-        if (commandArgument.isList()) {
-            return getListArgumentValue(arguments, commandArgument, index, context);
+        if (commandArgument.isVariadicArgument()) {
+            return getVariadicArgumentValue(arguments, commandArgument, index, context);
         }
-        String argument = arguments.get(index);
+        ArgumentContext argumentContext = commandArgument.getContext();
+        String argumentValue = arguments.get(index);
         ArgumentCodec<?> codec = commandArgument.getCodec(this.argumentCodecRegistry);
-        Result<?> result = codec.parse(context, argument);
+        Result<?> result = codec.parse(context, argumentContext, argumentValue);
         return getResult(result);
     }
 
-    private List<?> getListArgumentValue(final List<String> arguments, final Argument commandArgument, final int startIndex, final C context) {
+    private VariadicArgument<?> getVariadicArgumentValue(final List<String> arguments, final Argument commandArgument, final int startIndex, final C context) {
         int size = arguments.size();
         ArgumentCodec<?> codec = commandArgument.getGenericTypeCodec(this.argumentCodecRegistry, 0);
-        return IntStream.range(startIndex, size)
+        ArgumentContext argumentContext = commandArgument.getContext();
+        List<?> argumentsList = IntStream.range(startIndex, size)
             .mapToObj(arguments::get)
-            .map(argument -> codec.parse(context, argument))
+            .map(argumentValue -> codec.parse(context, argumentContext, argumentValue))
             .map(this::getResult)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
+        return new MappedVariadicArgument<>(argumentsList);
     }
 
-    private <S> @Nullable S getResult(final Result<S> result) {
+    private <S> S getResult(final Result<S> result) {
         Optional<ErrorResult> optionalErrorResult = result.getErrorResult();
         if (optionalErrorResult.isPresent()) {
             ErrorResult errorResult = optionalErrorResult.get();

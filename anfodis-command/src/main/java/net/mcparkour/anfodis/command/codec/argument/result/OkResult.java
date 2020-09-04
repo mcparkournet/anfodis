@@ -24,13 +24,11 @@
 
 package net.mcparkour.anfodis.command.codec.argument.result;
 
-import org.jetbrains.annotations.Nullable;
-
 public interface OkResult<T> {
 
-    static <T> OkResult<T> of(final @Nullable T result) {
+    static <T> OkResult<T> of(final T result) {
         return new OkResultImpl<>(result);
     }
 
-    @Nullable T getResult();
+    T getResult();
 }

@@ -25,14 +25,15 @@
 package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 
 public class BooleanArgumentCodec implements ArgumentCodec<Boolean> {
 
     @Override
-    public Result<Boolean> parse(final CommandContext<?> context, final String argument) {
-        boolean result = Boolean.parseBoolean(argument);
+    public Result<Boolean> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
+        boolean result = Boolean.parseBoolean(argumentValue);
         return Result.ok(result);
     }
 }

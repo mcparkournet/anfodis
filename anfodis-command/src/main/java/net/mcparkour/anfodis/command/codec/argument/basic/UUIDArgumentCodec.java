@@ -26,6 +26,7 @@ package net.mcparkour.anfodis.command.codec.argument.basic;
 
 import java.util.UUID;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.common.text.UUIDConverter;
@@ -33,13 +34,13 @@ import net.mcparkour.common.text.UUIDConverter;
 public class UUIDArgumentCodec implements ArgumentCodec<UUID> {
 
     @Override
-    public Result<UUID> parse(final CommandContext<?> context, final String argument) {
-        if (UUIDConverter.isDashed(argument)) {
-            UUID uuid = UUID.fromString(argument);
+    public Result<UUID> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
+        if (UUIDConverter.isDashed(argumentValue)) {
+            UUID uuid = UUID.fromString(argumentValue);
             return Result.ok(uuid);
         }
-        if (UUIDConverter.isPlain(argument)) {
-            String dashed = UUIDConverter.toDashed(argument);
+        if (UUIDConverter.isPlain(argumentValue)) {
+            String dashed = UUIDConverter.toDashed(argumentValue);
             UUID uuid = UUID.fromString(dashed);
             return Result.ok(uuid);
         }

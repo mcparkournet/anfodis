@@ -22,22 +22,13 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.codec.argument.basic;
+package net.mcparkour.anfodis.command.annotation.argument;
 
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.ArgumentContext;
-import net.mcparkour.anfodis.command.codec.argument.result.Result;
-import net.mcparkour.anfodis.command.context.CommandContext;
-import net.mcparkour.common.text.NumericParser;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class DoubleArgumentCodec implements ArgumentCodec<Double> {
-
-    @Override
-    public Result<Double> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
-        Double result = NumericParser.parseDouble(argumentValue);
-        if (result == null) {
-            return Result.error();
-        }
-        return Result.ok(result);
-    }
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Variadic {}

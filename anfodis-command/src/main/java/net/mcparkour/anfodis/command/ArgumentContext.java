@@ -22,22 +22,29 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.codec.argument.basic;
+package net.mcparkour.anfodis.command;
 
-import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
-import net.mcparkour.anfodis.command.ArgumentContext;
-import net.mcparkour.anfodis.command.codec.argument.result.Result;
-import net.mcparkour.anfodis.command.context.CommandContext;
-import net.mcparkour.common.text.NumericParser;
+public class ArgumentContext {
 
-public class DoubleArgumentCodec implements ArgumentCodec<Double> {
+    private final String name;
+    private final boolean optional;
+    private final boolean variadic;
 
-    @Override
-    public Result<Double> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
-        Double result = NumericParser.parseDouble(argumentValue);
-        if (result == null) {
-            return Result.error();
-        }
-        return Result.ok(result);
+    public ArgumentContext(final String name, final boolean optional, final boolean variadic) {
+        this.name = name;
+        this.optional = optional;
+        this.variadic = variadic;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public boolean isOptional() {
+        return this.optional;
+    }
+
+    public boolean isVariadic() {
+        return this.variadic;
     }
 }

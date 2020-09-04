@@ -43,8 +43,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 
     private final T command;
     private final Map<T, ? extends CommandContextHandler<C>> subCommandHandlers;
-    @Nullable
-    private final ContextHandler<C> executorHandler;
+    private final @Nullable ContextHandler<C> executorHandler;
     private final CommandContextSupplier<C, S> contextSupplier;
 
     public CommandHandler(final T command, final Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable final ContextHandler<C> executorHandler, final CommandContextSupplier<C, S> contextSupplier) {
@@ -128,7 +127,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         long minimumSize = commandArguments.stream()
             .filter(Argument::isNotOptional)
             .count();
-        if (commandArguments.stream().anyMatch(Argument::isList)) {
+        if (commandArguments.stream().anyMatch(Argument::isVariadicArgument)) {
             return argumentsLength >= minimumSize;
         }
         int maximumSize = commandArguments.size();
