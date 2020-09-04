@@ -31,16 +31,24 @@ public interface Result<T> {
 
     static <T> Result<T> ok(final @Nullable T result) {
         OkResult<T> okResult = OkResult.of(result);
-        return new ResultImpl<>(okResult);
+        return of(okResult);
     }
 
     static <T> Result<T> error() {
         ErrorResult errorResult = ErrorResult.empty();
-        return new ResultImpl<>(errorResult);
+        return of(errorResult);
     }
 
     static <T> Result<T> error(final Runnable action) {
         ErrorResult errorResult = ErrorResult.of(action);
+        return of(errorResult);
+    }
+
+    static <T> Result<T> of(final OkResult<T> okResult) {
+        return new ResultImpl<>(okResult);
+    }
+
+    static <T> Result<T> of(final ErrorResult errorResult) {
         return new ResultImpl<>(errorResult);
     }
 
