@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.JDA;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.ChannelSender;
+import net.mcparkour.anfodis.command.JDAMessenger;
 import net.mcparkour.anfodis.command.PermissionMap;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.JDACommandContext;
@@ -39,7 +40,8 @@ import net.mcparkour.anfodis.command.mapper.JDACommandMapper;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
-public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDACommandContext, ChannelSender> {
+public class JDACommandRegistry
+    extends AbstractCommandRegistry<JDACommand, JDACommandContext, ChannelSender, JDAMessenger> {
 
     private static final JDACommandMapper COMMAND_MAPPER = new JDACommandMapper();
 
@@ -51,6 +53,7 @@ public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDAC
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final MessageReceiverFactory<ChannelSender> messageReceiverFactory,
+        final JDAMessenger messenger,
         final Permission basePermission,
         final JDA jda,
         final PermissionMap permissionMap
@@ -63,6 +66,7 @@ public class JDACommandRegistry extends AbstractCommandRegistry<JDACommand, JDAC
             injectionCodecRegistry,
             argumentCodecRegistry,
             messageReceiverFactory,
+            messenger,
             basePermission
         );
         this.jda = jda;

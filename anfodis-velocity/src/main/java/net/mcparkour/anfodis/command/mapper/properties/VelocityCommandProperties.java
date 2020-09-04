@@ -26,6 +26,7 @@ package net.mcparkour.anfodis.command.mapper.properties;
 
 import java.util.Set;
 import com.velocitypowered.api.command.CommandSource;
+import net.mcparkour.anfodis.command.context.CommandSender;
 
 public class VelocityCommandProperties extends CommandProperties {
 
@@ -34,7 +35,19 @@ public class VelocityCommandProperties extends CommandProperties {
     public VelocityCommandProperties(final VelocityCommandPropertiesData propertiesData) {
         super(propertiesData);
         Class<? extends CommandSource>[] senderTypes = propertiesData.getSenderTypes();
-        this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
+        this.senderTypes = senderTypes == null ?
+            Set.of() :
+            Set.of(senderTypes);
+    }
+
+    public boolean isValidSender(final CommandSender<CommandSource> commandSender) {
+        if (this.senderTypes.isEmpty()) {
+            return true;
+        }
+        CommandSource source = commandSender.getSender();
+        Class<?> bukkitSenderClass = source.getClass();
+        return this.senderTypes.stream()
+            .anyMatch(sender -> sender.isAssignableFrom(bukkitSenderClass));
     }
 
     public Set<Class<? extends CommandSource>> getSenderTypes() {

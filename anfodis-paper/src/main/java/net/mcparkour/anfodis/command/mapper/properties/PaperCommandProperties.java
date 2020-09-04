@@ -25,19 +25,31 @@
 package net.mcparkour.anfodis.command.mapper.properties;
 
 import java.util.Set;
-import org.bukkit.command.CommandSender;
+import net.mcparkour.anfodis.command.context.CommandSender;
 
 public class PaperCommandProperties extends CommandProperties {
 
-    private final Set<Class<? extends CommandSender>> senderTypes;
+    private final Set<Class<? extends org.bukkit.command.CommandSender>> senderTypes;
 
     public PaperCommandProperties(final PaperCommandPropertiesData propertiesData) {
         super(propertiesData);
-        Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
-        this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
+        Class<? extends org.bukkit.command.CommandSender>[] senderTypes = propertiesData.getSenderTypes();
+        this.senderTypes = senderTypes == null ?
+            Set.of() :
+            Set.of(senderTypes);
     }
 
-    public Set<Class<? extends CommandSender>> getSenderTypes() {
+    public boolean isValidSender(final CommandSender<org.bukkit.command.CommandSender> commandSender) {
+        if (this.senderTypes.isEmpty()) {
+            return true;
+        }
+        org.bukkit.command.CommandSender bukkitSender = commandSender.getSender();
+        Class<?> bukkitSenderClass = bukkitSender.getClass();
+        return this.senderTypes.stream()
+            .anyMatch(sender -> sender.isAssignableFrom(bukkitSenderClass));
+    }
+
+    public Set<Class<? extends org.bukkit.command.CommandSender>> getSenderTypes() {
         return this.senderTypes;
     }
 }

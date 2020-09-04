@@ -22,26 +22,25 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command;
 
-import java.util.Map;
-import net.mcparkour.anfodis.TestCommandSender;
-import net.mcparkour.anfodis.command.Messenger;
-import net.mcparkour.anfodis.command.TestMessenger;
-import net.mcparkour.anfodis.command.context.TestCommandContext;
-import net.mcparkour.anfodis.command.mapper.TestCommand;
-import net.mcparkour.anfodis.handler.ContextHandler;
-import org.jetbrains.annotations.Nullable;
+import java.util.Set;
+import java.util.stream.Collectors;
+import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.mapper.PaperCommand;
+import net.mcparkour.intext.message.MessageReceiver;
 
-public class TestCommandHandler extends CommandHandler<TestCommand, TestCommandContext, TestCommandSender, TestMessenger> {
+public interface PaperMessenger extends Messenger<PaperCommand, org.bukkit.command.CommandSender> {
 
-    public TestCommandHandler(
-        final TestCommand command,
-        final Map<TestCommand, ? extends CommandContextHandler<TestCommandContext>> subCommandHandlers,
-        @Nullable final ContextHandler<TestCommandContext> executorHandler,
-        final CommandContextSupplier<TestCommandContext, TestCommandSender> contextSupplier,
-        final TestMessenger messenger
+    default void sendInvalidSenderMessage(
+        final CommandSender<org.bukkit.command.CommandSender> sender,
+        final Set<Class<? extends org.bukkit.command.CommandSender>> validSenders
     ) {
-        super(command, subCommandHandlers, executorHandler, contextSupplier, messenger);
+        MessageReceiver receiver = sender.getReceiver();
+        String senderType = sender.getClass().getSimpleName();
+        String validSendersString = validSenders.stream()
+            .map(Class::getSimpleName)
+            .collect(Collectors.joining(", "));
+        receiver.receivePlain("You are not a valid sender: " + senderType + ", required: " + validSendersString);
     }
 }

@@ -26,6 +26,7 @@ package net.mcparkour.anfodis.command.handler;
 
 import java.util.Map;
 import java.util.Set;
+import net.mcparkour.anfodis.command.WaterfallMessenger;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
@@ -34,18 +35,28 @@ import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
-public class WaterfallCommandHandler extends CommandHandler<WaterfallCommand, WaterfallCommandContext, net.md_5.bungee.api.CommandSender> {
+public class WaterfallCommandHandler
+    extends CommandHandler<WaterfallCommand, WaterfallCommandContext, net.md_5.bungee.api.CommandSender, WaterfallMessenger> {
 
-    public WaterfallCommandHandler(final WaterfallCommand command, final Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers, @Nullable final ContextHandler<WaterfallCommandContext> executorHandler, final CommandContextSupplier<WaterfallCommandContext, net.md_5.bungee.api.CommandSender> contextSupplier) {
-        super(command, subCommandHandlers, executorHandler, contextSupplier);
+    public WaterfallCommandHandler(
+        final WaterfallCommand command,
+        final Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers,
+        @Nullable final ContextHandler<WaterfallCommandContext> executorHandler,
+        final CommandContextSupplier<WaterfallCommandContext, net.md_5.bungee.api.CommandSender> contextSupplier,
+        final WaterfallMessenger messenger
+    ) {
+        super(command, subCommandHandlers, executorHandler, contextSupplier, messenger);
     }
 
     @Override
     public void handle(final WaterfallCommandContext context) {
-        if (!checkSenders(context)) {
-            CommandSender<net.md_5.bungee.api.CommandSender> sender = context.getSender();
-            MessageReceiver receiver = sender.getReceiver();
-            receiver.receivePlain("You are not a valid sender.");
+        WaterfallCommand command = getCommand();
+        WaterfallCommandProperties properties = command.getProperties();
+        CommandSender<net.md_5.bungee.api.CommandSender> sender = context.getSender();
+        if (!properties.isValidSender(sender)) {
+            WaterfallMessenger messenger = getMessenger();
+            var senderTypes = properties.getSenderTypes();
+            messenger.sendInvalidSenderMessage(sender, senderTypes);
             return;
         }
         super.handle(context);

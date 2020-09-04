@@ -22,26 +22,8 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command;
 
-import java.util.Map;
-import net.mcparkour.anfodis.TestCommandSender;
-import net.mcparkour.anfodis.command.Messenger;
-import net.mcparkour.anfodis.command.TestMessenger;
-import net.mcparkour.anfodis.command.context.TestCommandContext;
-import net.mcparkour.anfodis.command.mapper.TestCommand;
-import net.mcparkour.anfodis.handler.ContextHandler;
-import org.jetbrains.annotations.Nullable;
+import net.mcparkour.anfodis.command.mapper.JDACommand;
 
-public class TestCommandHandler extends CommandHandler<TestCommand, TestCommandContext, TestCommandSender, TestMessenger> {
-
-    public TestCommandHandler(
-        final TestCommand command,
-        final Map<TestCommand, ? extends CommandContextHandler<TestCommandContext>> subCommandHandlers,
-        @Nullable final ContextHandler<TestCommandContext> executorHandler,
-        final CommandContextSupplier<TestCommandContext, TestCommandSender> contextSupplier,
-        final TestMessenger messenger
-    ) {
-        super(command, subCommandHandlers, executorHandler, contextSupplier, messenger);
-    }
-}
+public interface JDAMessenger extends Messenger<JDACommand, ChannelSender> {}

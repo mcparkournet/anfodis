@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Set;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.command.WaterfallMessenger;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
@@ -51,7 +52,8 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
-public class WaterfallCommandRegistry extends AbstractCompletionRegistry<WaterfallCommand, WaterfallCommandContext, WaterfallCompletionContext, CommandSender> {
+public class WaterfallCommandRegistry
+    extends AbstractCompletionRegistry<WaterfallCommand, WaterfallCommandContext, WaterfallCompletionContext, CommandSender, WaterfallMessenger> {
 
     private static final WaterfallCommandMapper COMMAND_MAPPER = new WaterfallCommandMapper();
 
@@ -64,6 +66,7 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
+        final WaterfallMessenger messenger,
         final Plugin plugin
     ) {
         this(
@@ -71,6 +74,7 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
+            messenger,
             plugin.getProxy(),
             plugin
         );
@@ -81,6 +85,7 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
+        final WaterfallMessenger messenger,
         final ProxyServer server,
         final Plugin plugin
     ) {
@@ -89,6 +94,7 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
+            messenger,
             Permission.of(plugin.getDescription().getName().toLowerCase()),
             server.getPluginManager(),
             plugin,
@@ -101,6 +107,7 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
+        final WaterfallMessenger messenger,
         final Permission basePermission,
         final PluginManager pluginManager,
         final Plugin plugin,
@@ -117,6 +124,7 @@ public class WaterfallCommandRegistry extends AbstractCompletionRegistry<Waterfa
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
+            messenger,
             basePermission
         );
         this.pluginManager = pluginManager;

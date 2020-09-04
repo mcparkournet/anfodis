@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.command.PaperMessenger;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.PaperCommandContext;
@@ -53,7 +54,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
 public class PaperCommandRegistry
-    extends AbstractCompletionRegistry<PaperCommand, PaperCommandContext, PaperCompletionContext, CommandSender> {
+    extends AbstractCompletionRegistry<PaperCommand, PaperCommandContext, PaperCompletionContext, CommandSender, PaperMessenger> {
 
     private static final PaperCommandMapper COMMAND_MAPPER = new PaperCommandMapper();
 
@@ -66,6 +67,7 @@ public class PaperCommandRegistry
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
+        final PaperMessenger messenger,
         final Plugin plugin
     ) {
         this(
@@ -73,6 +75,7 @@ public class PaperCommandRegistry
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
+            messenger,
             plugin,
             plugin.getName()
         );
@@ -83,6 +86,7 @@ public class PaperCommandRegistry
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
+        final PaperMessenger messenger,
         final Plugin plugin,
         final String commandPrefix
     ) {
@@ -91,6 +95,7 @@ public class PaperCommandRegistry
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
+            messenger,
             Permission.of(commandPrefix.toLowerCase()),
             plugin.getServer().getCommandMap(),
             new PaperAsyncScheduler(plugin),
@@ -103,6 +108,7 @@ public class PaperCommandRegistry
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
+        final PaperMessenger messenger,
         final Permission basePermission,
         final CommandMap commandMap,
         final Scheduler asyncScheduler,
@@ -119,6 +125,7 @@ public class PaperCommandRegistry
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
+            messenger,
             basePermission
         );
         this.commandMap = commandMap;

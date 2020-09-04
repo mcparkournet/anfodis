@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.mcparkour.anfodis.command.Messenger;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.Permissible;
@@ -40,27 +41,34 @@ import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S> implements CommandContextHandler<C> {
+public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S, M extends Messenger<T, S>> implements CommandContextHandler<C> {
 
     private final T command;
     private final Map<T, ? extends CommandContextHandler<C>> subCommandHandlers;
     private final @Nullable ContextHandler<C> executorHandler;
     private final CommandContextSupplier<C, S> contextSupplier;
+    private final M messenger;
 
-    public CommandHandler(final T command, final Map<T, ? extends CommandContextHandler<C>> subCommandHandlers, @Nullable final ContextHandler<C> executorHandler, final CommandContextSupplier<C, S> contextSupplier) {
+    public CommandHandler(
+        final T command,
+        final Map<T, ? extends CommandContextHandler<C>> subCommandHandlers,
+        @Nullable final ContextHandler<C> executorHandler,
+        final CommandContextSupplier<C, S> contextSupplier,
+        final M messenger
+    ) {
         this.command = command;
         this.subCommandHandlers = subCommandHandlers;
         this.executorHandler = executorHandler;
         this.contextSupplier = contextSupplier;
+        this.messenger = messenger;
     }
 
     @Override
     public void handle(final C context) {
         CommandSender<S> sender = context.getSender();
-        MessageReceiver receiver = sender.getReceiver();
         Permission permission = context.getPermission();
         if (!sender.hasPermission(permission)) {
-            receiver.receivePlain("You do not have permission.");
+            this.messenger.sendNoPermissionMessage(sender, permission);
             return;
         }
         List<Token> arguments = context.getArguments();
@@ -91,37 +99,17 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 
     private void execute(final C context, final int argumentsSize) {
         CommandSender<S> sender = context.getSender();
-        MessageReceiver receiver = sender.getReceiver();
         Permission permission = context.getPermission();
         if (this.executorHandler == null) {
-            String usage = getUsage(sender, permission);
-            receiver.receivePlain(usage);
+            this.messenger.sendSubCommandsUsageMessage(sender, permission, this.command);
             return;
         }
         if (!checkLength(argumentsSize)) {
-            String usage = this.command.getUsage();
-            receiver.receivePlain(usage);
+            this.messenger.sendCommandUsageMessage(sender, this.command);
             return;
         }
         Object instance = this.command.createInstance();
         this.executorHandler.handle(context, instance);
-    }
-
-    private String getUsage(final Permissible permissible, final Permission contextPermission) {
-        String header = this.command.getUsageHeader();
-        String subCommandsUsage = getSubCommandsUsage(permissible, contextPermission);
-        return header + '\n' + subCommandsUsage;
-    }
-
-    private String getSubCommandsUsage(final Permissible permissible, final Permission contextPermission) {
-        List<T> subCommands = this.command.getSubCommands();
-        return subCommands.stream()
-            .filter(subCommand -> {
-                Permission permission = subCommand.getPermission(contextPermission);
-                return permissible.hasPermission(permission);
-            })
-            .map(T::getUsage)
-            .collect(Collectors.joining("\n"));
     }
 
     private boolean checkLength(final int argumentsLength) {
@@ -158,7 +146,11 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         return this.contextSupplier.supply(sender, arguments, permission, asynchronous);
     }
 
-    protected T getCommand() {
+    public T getCommand() {
         return this.command;
+    }
+
+    public M getMessenger() {
+        return this.messenger;
     }
 }

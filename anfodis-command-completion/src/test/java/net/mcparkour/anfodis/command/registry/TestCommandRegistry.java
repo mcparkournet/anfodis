@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.command.TestMessenger;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.TestCommandContext;
@@ -46,7 +47,7 @@ import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
-public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand, TestCommandContext, TestCompletionContext, net.mcparkour.anfodis.TestCommandSender> {
+public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand, TestCommandContext, TestCompletionContext, net.mcparkour.anfodis.TestCommandSender, TestMessenger> {
 
     private static final TestCommandMapper COMMAND_MAPPER = new TestCommandMapper();
 
@@ -57,6 +58,7 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory,
+        final TestMessenger messenger,
         final Permission basePermission,
         final Map<String, CommandWrapper> commandManager
     ) {
@@ -71,6 +73,7 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
+            messenger,
             basePermission
         );
         this.commandManager = commandManager;

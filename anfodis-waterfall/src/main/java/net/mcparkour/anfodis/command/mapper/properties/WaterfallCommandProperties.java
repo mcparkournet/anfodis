@@ -25,19 +25,31 @@
 package net.mcparkour.anfodis.command.mapper.properties;
 
 import java.util.Set;
-import net.md_5.bungee.api.CommandSender;
+import net.mcparkour.anfodis.command.context.CommandSender;
 
 public class WaterfallCommandProperties extends CommandProperties {
 
-    private final Set<Class<? extends CommandSender>> senderTypes;
+    private final Set<Class<? extends net.md_5.bungee.api.CommandSender>> senderTypes;
 
     public WaterfallCommandProperties(final WaterfallCommandPropertiesData propertiesData) {
         super(propertiesData);
-        Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
-        this.senderTypes = senderTypes == null ? Set.of() : Set.of(senderTypes);
+        Class<? extends net.md_5.bungee.api.CommandSender>[] senderTypes = propertiesData.getSenderTypes();
+        this.senderTypes = senderTypes == null ?
+            Set.of() :
+            Set.of(senderTypes);
     }
 
-    public Set<Class<? extends CommandSender>> getSenderTypes() {
+    public boolean isValidSender(final CommandSender<net.md_5.bungee.api.CommandSender> commandSender) {
+        if (this.senderTypes.isEmpty()) {
+            return true;
+        }
+        net.md_5.bungee.api.CommandSender waterfallSender = commandSender.getSender();
+        Class<?> bukkitSenderClass = waterfallSender.getClass();
+        return this.senderTypes.stream()
+            .anyMatch(sender -> sender.isAssignableFrom(bukkitSenderClass));
+    }
+
+    public Set<Class<? extends net.md_5.bungee.api.CommandSender>> getSenderTypes() {
         return this.senderTypes;
     }
 }

@@ -26,41 +26,38 @@ package net.mcparkour.anfodis.command.handler;
 
 import java.util.Map;
 import java.util.Set;
+import net.mcparkour.anfodis.command.PaperMessenger;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.PaperCommandContext;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
-public class PaperCommandHandler extends CommandHandler<PaperCommand, PaperCommandContext, org.bukkit.command.CommandSender> {
+public class PaperCommandHandler
+    extends CommandHandler<PaperCommand, PaperCommandContext, org.bukkit.command.CommandSender, PaperMessenger> {
 
-    public PaperCommandHandler(final PaperCommand command, final Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers, @Nullable final ContextHandler<PaperCommandContext> executorHandler, final CommandContextSupplier<PaperCommandContext, org.bukkit.command.CommandSender> contextSupplier) {
-        super(command, subCommandHandlers, executorHandler, contextSupplier);
+    public PaperCommandHandler(
+        final PaperCommand command,
+        final Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers,
+        @Nullable final ContextHandler<PaperCommandContext> executorHandler,
+        final CommandContextSupplier<PaperCommandContext, org.bukkit.command.CommandSender> contextSupplier,
+        final PaperMessenger messenger
+    ) {
+        super(command, subCommandHandlers, executorHandler, contextSupplier, messenger);
     }
 
     @Override
     public void handle(final PaperCommandContext context) {
+        PaperCommand command = getCommand();
+        PaperCommandProperties properties = command.getProperties();
         CommandSender<org.bukkit.command.CommandSender> sender = context.getSender();
-        MessageReceiver receiver = sender.getReceiver();
-        if (!checkSenders(context)) {
-            receiver.receivePlain("You are not a valid sender.");
+        if (!properties.isValidSender(sender)) {
+            PaperMessenger messenger = getMessenger();
+            var validSenders = properties.getSenderTypes();
+            messenger.sendInvalidSenderMessage(sender, validSenders);
             return;
         }
         super.handle(context);
-    }
-
-    private boolean checkSenders(final PaperCommandContext context) {
-        PaperCommand command = getCommand();
-        PaperCommandProperties properties = command.getProperties();
-        Set<Class<? extends org.bukkit.command.CommandSender>> senders = properties.getSenderTypes();
-        if (senders.isEmpty()) {
-            return true;
-        }
-        CommandSender<org.bukkit.command.CommandSender> commandSender = context.getSender();
-        org.bukkit.command.CommandSender bukkitSender = commandSender.getSender();
-        Class<?> bukkitSenderClass = bukkitSender.getClass();
-        return senders.stream().anyMatch(sender -> sender.isAssignableFrom(bukkitSenderClass));
     }
 }

@@ -32,6 +32,7 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.command.VelocityMessenger;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.VelocityCommandContext;
@@ -51,7 +52,8 @@ import net.mcparkour.craftmon.scheduler.VelocityScheduler;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
-public class VelocityCommandRegistry extends AbstractCompletionRegistry<VelocityCommand, VelocityCommandContext, VelocityCompletionContext, CommandSource> {
+public class VelocityCommandRegistry
+    extends AbstractCompletionRegistry<VelocityCommand, VelocityCommandContext, VelocityCompletionContext, CommandSource, VelocityMessenger> {
 
     private static final VelocityCommandMapper COMMAND_MAPPER = new VelocityCommandMapper();
 
@@ -63,6 +65,7 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSource> messageReceiverFactory,
+        final VelocityMessenger messenger,
         final Permission basePermission,
         final ProxyServer server,
         final Object plugin
@@ -72,6 +75,7 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
+            messenger,
             basePermission,
             server.getCommandManager(),
             new VelocityScheduler(server, plugin)
@@ -83,6 +87,7 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSource> messageReceiverFactory,
+        final VelocityMessenger messenger,
         final Permission basePermission,
         final CommandManager commandManager,
         final Scheduler asyncScheduler
@@ -98,6 +103,7 @@ public class VelocityCommandRegistry extends AbstractCompletionRegistry<Velocity
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
+            messenger,
             basePermission
         );
         this.commandManager = commandManager;

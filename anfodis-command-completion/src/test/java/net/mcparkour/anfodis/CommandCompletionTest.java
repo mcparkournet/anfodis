@@ -31,9 +31,11 @@ import java.util.Map;
 import java.util.Set;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.command.TestMessenger;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
+import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.registry.CommandWrapper;
 import net.mcparkour.anfodis.command.registry.TestCommandRegistry;
 import net.mcparkour.anfodis.registry.Registry;
@@ -62,6 +64,7 @@ public class CommandCompletionTest {
         Map<String, Translation> translationMap = Map.of("foo", new Translation("foo", fooTexts), "bar", new Translation("bar", barTexts));
         Translations translations = new Translations(Locale.US, translationMap);
         TestMessageReceiverFactory receiverFactory = new TestMessageReceiverFactory(translations, TestCommandSender::getLanguage);
+        TestMessenger messenger = new TestMessenger() {};
         this.commandManager = new HashMap<>(1);
         CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = CodecRegistry.<InjectionCodec<?>>builder()
             .typed(MessageReceiverFactory.class, InjectionCodec.reference(receiverFactory))
@@ -80,7 +83,7 @@ public class CommandCompletionTest {
             .typed(Locale.class, CompletionCodec.entries("en-US", "pl-PL"))
             .self(ArgsCompletionCodec.class, new ArgsCompletionCodec())
             .build();
-        this.commandRegistry = new TestCommandRegistry(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, receiverFactory, Permission.of("test"), this.commandManager);
+        this.commandRegistry = new TestCommandRegistry(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, receiverFactory, messenger, Permission.of("test"), this.commandManager);
     }
 
     @Test
@@ -178,11 +181,11 @@ public class CommandCompletionTest {
         CommandWrapper test = this.commandManager.get("test");
         TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test.bar"), false);
         test.execute(sender, null);
-        Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
+        Assertions.assertEquals("You do not have permission: test.test", sender.getLastMessage());
         List<String> complete1 = test.complete(sender, "");
         Assertions.assertIterableEquals(List.of(), complete1);
         test.execute(sender, "bar");
-        Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
+        Assertions.assertEquals("You do not have permission: test.test", sender.getLastMessage());
         List<String> complete2 = test.complete(sender, "bar '' ");
         Assertions.assertIterableEquals(List.of(), complete2);
     }
@@ -195,7 +198,7 @@ public class CommandCompletionTest {
         test.execute(sender, null);
         Assertions.assertEquals("test - test.\nbar <arg> <args...> - bar.", sender.getLastMessage());
         test.execute(sender, "foo pl");
-        Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
+        Assertions.assertEquals("You do not have permission: test.test.fooo", sender.getLastMessage());
         test.execute(sender, "bar");
         Assertions.assertEquals("bar <arg> <args...> - bar.", sender.getLastMessage());
     }
