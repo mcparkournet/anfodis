@@ -25,13 +25,14 @@
 package net.mcparkour.anfodis.command.context;
 
 import java.util.List;
+import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.craftmon.permission.Permission;
 
 public class WaterfallCommandContext extends CommandContext<net.md_5.bungee.api.CommandSender> {
 
     public WaterfallCommandContext(
         final CommandSender<net.md_5.bungee.api.CommandSender> sender,
-        final List<String> arguments,
+        final List<Token> arguments,
         final Permission permission,
         final boolean asynchronous
     ) {

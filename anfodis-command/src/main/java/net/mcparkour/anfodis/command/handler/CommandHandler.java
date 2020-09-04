@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.Permissible;
+import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
@@ -62,13 +63,14 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
             receiver.receivePlain("You do not have permission.");
             return;
         }
-        List<String> arguments = context.getArguments();
+        List<Token> arguments = context.getArguments();
         int argumentsLength = arguments.size();
         if (arguments.isEmpty()) {
             execute(context, argumentsLength);
             return;
         }
-        String firstArgument = arguments.get(0);
+        Token firstToken = arguments.get(0);
+        String firstArgument = firstToken.getString();
         List<T> subCommands = this.command.getSubCommands();
         T subCommand = subCommands.stream()
             .filter(element -> isMatching(firstArgument, element))
@@ -147,9 +149,9 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
 
     private C createSubCommandContext(final T subCommand, final C context) {
         CommandSender<S> sender = context.getSender();
-        List<String> contextArguments = context.getArguments();
+        List<Token> contextArguments = context.getArguments();
         int size = contextArguments.size();
-        List<String> arguments = contextArguments.subList(1, size);
+        List<Token> arguments = contextArguments.subList(1, size);
         Permission contextPermission = context.getPermission();
         Permission permission = subCommand.getPermission(contextPermission);
         boolean asynchronous = context.isAsynchronous();

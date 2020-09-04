@@ -27,9 +27,10 @@ package net.mcparkour.anfodis.command.handler;
 import java.util.List;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.craftmon.permission.Permission;
 
 public interface CommandContextSupplier<C extends CommandContext<S>, S> {
 
-    C supply(CommandSender<S> sender, List<String> arguments, Permission permission, boolean asynchronous);
+    C supply(CommandSender<S> sender, List<Token> arguments, Permission permission, boolean asynchronous);
 }

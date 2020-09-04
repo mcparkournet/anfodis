@@ -26,11 +26,17 @@ package net.mcparkour.anfodis.command.context;
 
 import java.util.List;
 import net.mcparkour.anfodis.TestCommandSender;
+import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.craftmon.permission.Permission;
 
 public class TestCommandContext extends CommandContext<TestCommandSender> {
 
-    public TestCommandContext(final CommandSender<TestCommandSender> sender, final List<String> arguments, final Permission permission, final boolean asynchronous) {
+    public TestCommandContext(
+        final CommandSender<TestCommandSender> sender,
+        final List<Token> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
         super(sender, arguments, permission, asynchronous);
     }
 }

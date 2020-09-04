@@ -90,7 +90,14 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
         register(names, permission, false, commandHandler, completionHandler);
     }
 
-    private void register(final Collection<String> aliases, final Permission permission, final boolean asynchronous, final CommandContextHandler<TestCommandContext> commandHandler, final CompletionContextHandler<TestCompletionContext> completionHandler) {
+    @SuppressWarnings("SameParameterValue")
+    private void register(
+        final Collection<String> aliases,
+        final Permission permission,
+        final boolean asynchronous,
+        final CommandContextHandler<TestCommandContext> commandHandler,
+        final CompletionContextHandler<TestCompletionContext> completionHandler
+    ) {
         MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory = getMessageReceiverFactory();
         TestCommandExecutor commandExecutor = (sender, arguments) -> {
             MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);

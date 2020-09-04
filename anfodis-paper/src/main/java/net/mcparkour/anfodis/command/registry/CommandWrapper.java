@@ -25,6 +25,8 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.List;
+import net.mcparkour.anfodis.command.lexer.Lexer;
+import net.mcparkour.anfodis.command.lexer.Token;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -32,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class CommandWrapper extends Command {
+
+    private static final Lexer LEXER = new Lexer();
 
     private final PaperCommandExecutor commandExecutor;
     private final PaperCompletionExecutor completionExecutor;
@@ -45,7 +49,7 @@ final class CommandWrapper extends Command {
 
     @Override
     public boolean execute(@NotNull final CommandSender sender, @NotNull final String commandLabel, @NotNull final String[] args) {
-        List<String> arguments = List.of(args);
+        List<Token> arguments = LEXER.tokenizeArray(args);
         this.commandExecutor.execute(sender, arguments);
         return true;
     }
@@ -53,7 +57,7 @@ final class CommandWrapper extends Command {
     @Override
     @NotNull
     public List<String> tabComplete(@NotNull final CommandSender sender, @NotNull final String alias, @NotNull final String[] args, @Nullable final Location location) {
-        List<String> arguments = List.of(args);
+        List<Token> arguments = LEXER.tokenizeArray(args);
         return this.completionExecutor.execute(sender, arguments);
     }
 }

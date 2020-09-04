@@ -88,8 +88,8 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestFooCommand.class);
         CommandWrapper fooCommand = this.commandManager.get("fooo");
         TestCommandSender sender = new TestCommandSender();
-        fooCommand.execute(sender, new String[] {"pl-PL"});
-        List<String> completions = fooCommand.complete(sender, new String[] {""});
+        fooCommand.execute(sender, "pl-PL");
+        List<String> completions = fooCommand.complete(sender, "");
         Assertions.assertEquals("pl-PL", sender.getLastMessage());
         Assertions.assertIterableEquals(List.of("en-US", "pl-PL"), completions);
     }
@@ -99,8 +99,8 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestBarCommand.class);
         CommandWrapper fooCommand = this.commandManager.get("bar");
         TestCommandSender sender = new TestCommandSender();
-        fooCommand.execute(sender, new String[] {"  te st  ", "1", "2"});
-        List<String> completions = fooCommand.complete(sender, new String[] {"  te st  ", ""});
+        fooCommand.execute(sender, "\"  te st  \" 1 2");
+        List<String> completions = fooCommand.complete(sender, "\"  te st  \" ");
         Assertions.assertEquals("te st", sender.getLastMessage());
         Assertions.assertEquals("1", sender.getLastMessage());
         Assertions.assertEquals("2", sender.getLastMessage());
@@ -112,12 +112,12 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestCommand.class);
         CommandWrapper test = this.commandManager.get("test");
         TestCommandSender sender = new TestCommandSender();
-        test.execute(sender, new String[] {"foo", "pl-PL"});
-        List<String> fooSuggestions = test.complete(sender, new String[] {"foo", ""});
+        test.execute(sender, "foo pl-PL");
+        List<String> fooSuggestions = test.complete(sender, "foo ");
         Assertions.assertEquals("pl-PL", sender.getLastMessage());
         Assertions.assertEquals(List.of("en-US", "pl-PL"), fooSuggestions);
-        test.execute(sender, new String[] {"bar", "  te st  ", "1", "2"});
-        List<String> barSuggestions = test.complete(sender, new String[] {"bar", "  te st  ", ""});
+        test.execute(sender, "bar '  te st  ' 1 2");
+        List<String> barSuggestions = test.complete(sender, "bar '  te st  ' ");
         Assertions.assertEquals("te st", sender.getLastMessage());
         Assertions.assertEquals("1", sender.getLastMessage());
         Assertions.assertEquals("2", sender.getLastMessage());
@@ -129,7 +129,7 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestCommand.class);
         CommandWrapper test = this.commandManager.get("test");
         TestCommandSender sender = new TestCommandSender();
-        List<String> completions = test.complete(sender, new String[] {""});
+        List<String> completions = test.complete(sender, "");
         Assertions.assertIterableEquals(List.of("foo", "fooo", "bar"), completions);
     }
 
@@ -138,7 +138,7 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestOptionalArgumentCommand.class);
         CommandWrapper command = this.commandManager.get("optional");
         TestCommandSender sender = new TestCommandSender();
-        command.execute(sender, new String[] {"test", "test2"});
+        command.execute(sender, "test test2");
         Assertions.assertEquals("null", sender.getLastMessage());
         Assertions.assertEquals("true", sender.getLastMessage());
         Assertions.assertEquals("test2", sender.getLastMessage());
@@ -151,11 +151,11 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestCommand.class);
         CommandWrapper test = this.commandManager.get("test");
         TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.fooo", "test.test.bar"), false);
-        test.execute(sender, new String[] {});
+        test.execute(sender, null);
         Assertions.assertEquals("test - test.\nfoo [language] - foo.\nbar <arg> <args...> - bar.", sender.getLastMessage());
-        test.execute(sender, new String[] {"foo", "pl"});
+        test.execute(sender, "foo pl");
         Assertions.assertEquals("pl", sender.getLastMessage());
-        test.execute(sender, new String[] {"bar"});
+        test.execute(sender, "bar");
         Assertions.assertEquals("bar <arg> <args...> - bar.", sender.getLastMessage());
     }
 
@@ -164,11 +164,11 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestCommand.class);
         CommandWrapper test = this.commandManager.get("test");
         TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.fooo", "test.test.bar"), false);
-        List<String> complete1 = test.complete(sender, new String[] {""});
+        List<String> complete1 = test.complete(sender, "");
         Assertions.assertIterableEquals(List.of("foo", "fooo", "bar"), complete1);
-        List<String> complete2 = test.complete(sender, new String[] {"foo", ""});
+        List<String> complete2 = test.complete(sender, "foo ");
         Assertions.assertIterableEquals(List.of("en-US", "pl-PL"), complete2);
-        List<String> complete3 = test.complete(sender, new String[] {"bar", "", ""});
+        List<String> complete3 = test.complete(sender, "bar '' ");
         Assertions.assertIterableEquals(List.of("1", "2", "3"), complete3);
     }
 
@@ -177,13 +177,13 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestCommand.class);
         CommandWrapper test = this.commandManager.get("test");
         TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test.bar"), false);
-        test.execute(sender, new String[] {});
+        test.execute(sender, null);
         Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
-        List<String> complete1 = test.complete(sender, new String[] {""});
+        List<String> complete1 = test.complete(sender, "");
         Assertions.assertIterableEquals(List.of(), complete1);
-        test.execute(sender, new String[] {"bar"});
+        test.execute(sender, "bar");
         Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
-        List<String> complete2 = test.complete(sender, new String[] {"bar", "", ""});
+        List<String> complete2 = test.complete(sender, "bar '' ");
         Assertions.assertIterableEquals(List.of(), complete2);
     }
 
@@ -192,11 +192,11 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestCommand.class);
         CommandWrapper test = this.commandManager.get("test");
         TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.bar"), false);
-        test.execute(sender, new String[] {});
+        test.execute(sender, null);
         Assertions.assertEquals("test - test.\nbar <arg> <args...> - bar.", sender.getLastMessage());
-        test.execute(sender, new String[] {"foo", "pl"});
+        test.execute(sender, "foo pl");
         Assertions.assertEquals("You do not have permission.", sender.getLastMessage());
-        test.execute(sender, new String[] {"bar"});
+        test.execute(sender, "bar");
         Assertions.assertEquals("bar <arg> <args...> - bar.", sender.getLastMessage());
     }
 
@@ -205,11 +205,11 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestCommand.class);
         CommandWrapper test = this.commandManager.get("test");
         TestCommandSender sender = new TestCommandSender(Locale.US, Set.of("test.test", "test.test.bar"), false);
-        List<String> complete1 = test.complete(sender, new String[] {""});
+        List<String> complete1 = test.complete(sender, "");
         Assertions.assertIterableEquals(List.of("bar"), complete1);
-        List<String> complete2 = test.complete(sender, new String[] {"foo", ""});
+        List<String> complete2 = test.complete(sender, "foo ");
         Assertions.assertIterableEquals(List.of(), complete2);
-        List<String> complete3 = test.complete(sender, new String[] {"bar", "", ""});
+        List<String> complete3 = test.complete(sender, "bar '' ");
         Assertions.assertIterableEquals(List.of("1", "2", "3"), complete3);
     }
 
@@ -218,7 +218,7 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestInjectionCodecCommand.class);
         CommandWrapper inject = this.commandManager.get("inject");
         TestCommandSender sender = new TestCommandSender();
-        inject.execute(sender, new String[] {});
+        inject.execute(sender, null);
         Assertions.assertEquals("testString", sender.getLastMessage());
         Assertions.assertNull(sender.getLastMessage());
         Assertions.assertEquals("test2", sender.getLastMessage());
@@ -229,14 +229,31 @@ public class CommandCompletionTest {
         this.commandRegistry.register(TestOptionalVariadicCommand.class);
         CommandWrapper command = this.commandManager.get("optionalVariadic");
         TestCommandSender sender = new TestCommandSender();
-        command.execute(sender, new String[] {});
+        command.execute(sender, null);
         Assertions.assertEquals("false", sender.getLastMessage());
         Assertions.assertNull(sender.getLastMessage());
-        command.execute(sender, new String[] {"1", "2", "3"});
+        command.execute(sender, "1 2 3");
         Assertions.assertEquals("true", sender.getLastMessage());
         Assertions.assertEquals("1", sender.getLastMessage());
         Assertions.assertEquals("2", sender.getLastMessage());
         Assertions.assertEquals("3", sender.getLastMessage());
+        Assertions.assertNull(sender.getLastMessage());
+    }
+
+    @Test
+    public void testStringQuotedCommand() {
+        this.commandRegistry.register(TestStringQuotedCommand.class);
+        CommandWrapper command = this.commandManager.get("quote");
+        TestCommandSender sender = new TestCommandSender();
+        command.execute(sender, "foo bar foobar");
+        Assertions.assertEquals("foo", sender.getLastMessage());
+        Assertions.assertEquals("bar", sender.getLastMessage());
+        Assertions.assertEquals("foobar", sender.getLastMessage());
+        Assertions.assertNull(sender.getLastMessage());
+        command.execute(sender, "foo \"bar foo foobar\" foobar");
+        Assertions.assertEquals("foo", sender.getLastMessage());
+        Assertions.assertEquals("bar foo foobar", sender.getLastMessage());
+        Assertions.assertEquals("foobar", sender.getLastMessage());
         Assertions.assertNull(sender.getLastMessage());
     }
 }

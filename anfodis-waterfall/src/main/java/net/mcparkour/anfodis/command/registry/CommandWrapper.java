@@ -25,11 +25,15 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.List;
+import net.mcparkour.anfodis.command.lexer.Lexer;
+import net.mcparkour.anfodis.command.lexer.Token;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
 class CommandWrapper extends Command implements TabExecutor {
+
+    private static final Lexer LEXER = new Lexer();
 
     private final WaterfallCommandExecutor commandExecutor;
     private final WaterfallCompletionExecutor completionExecutor;
@@ -42,13 +46,13 @@ class CommandWrapper extends Command implements TabExecutor {
 
     @Override
     public void execute(final CommandSender sender, final String[] args) {
-        List<String> arguments = List.of(args);
+        List<Token> arguments = LEXER.tokenizeArray(args);
         this.commandExecutor.execute(sender, arguments);
     }
 
     @Override
     public Iterable<String> onTabComplete(final CommandSender sender, final String[] args) {
-        List<String> arguments = List.of(args);
+        List<Token> arguments = LEXER.tokenizeArray(args);
         return this.completionExecutor.execute(sender, arguments);
     }
 }

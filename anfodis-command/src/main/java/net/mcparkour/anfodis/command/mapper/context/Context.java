@@ -26,6 +26,7 @@ package net.mcparkour.anfodis.command.mapper.context;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
@@ -33,14 +34,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class Context {
 
-    @Nullable
-    private final Field argumentsField;
-    @Nullable
-    private final Field requiredPermissionField;
-    @Nullable
-    private final Field senderField;
-    @Nullable
-    private final Field receiverField;
+    private final @Nullable Field argumentsField;
+    private final @Nullable Field requiredPermissionField;
+    private final @Nullable Field senderField;
+    private final @Nullable Field receiverField;
 
     public Context(final ContextData contextData) {
         this.argumentsField = contextData.getArgumentsField();
@@ -49,7 +46,7 @@ public class Context {
         this.receiverField = contextData.getReceiverField();
     }
 
-    public void setArgumentsField(final Object instance, final List<String> arguments) {
+    public void setArgumentsField(final Object instance, final List<Token> arguments) {
         if (this.argumentsField == null) {
             return;
         }

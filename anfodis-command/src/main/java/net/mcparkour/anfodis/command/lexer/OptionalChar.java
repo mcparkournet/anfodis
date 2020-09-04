@@ -22,21 +22,42 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.context;
+package net.mcparkour.anfodis.command.lexer;
 
-import java.util.List;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.lexer.Token;
-import net.mcparkour.craftmon.permission.Permission;
+import java.util.NoSuchElementException;
 
-public class WaterfallCompletionContext extends CompletionContext<net.md_5.bungee.api.CommandSender> {
+final class OptionalChar {
 
-    public WaterfallCompletionContext(
-        final CommandSender<net.md_5.bungee.api.CommandSender> sender,
-        final List<Token> arguments,
-        final Permission permission,
-        final boolean asynchronous
-    ) {
-        super(sender, arguments, permission, asynchronous);
+    private static final OptionalChar EMPTY = new OptionalChar('\0', false);
+
+    private final char value;
+    private final boolean present;
+
+    public static OptionalChar of(final char character) {
+        return new OptionalChar(character, true);
+    }
+
+    public static OptionalChar empty() {
+        return EMPTY;
+    }
+
+    private OptionalChar(final char value, final boolean present) {
+        this.value = value;
+        this.present = present;
+    }
+
+    public boolean isPresent() {
+        return this.present;
+    }
+
+    public boolean isEmpty() {
+        return !this.present;
+    }
+
+    public char get() {
+        if (!this.present) {
+            throw new NoSuchElementException("Char value is not present");
+        }
+        return this.value;
     }
 }

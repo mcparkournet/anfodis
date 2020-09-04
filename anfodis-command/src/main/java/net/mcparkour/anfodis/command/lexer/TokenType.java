@@ -22,21 +22,9 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.context;
+package net.mcparkour.anfodis.command.lexer;
 
-import java.util.List;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.lexer.Token;
-import net.mcparkour.craftmon.permission.Permission;
+public enum TokenType {
 
-public class WaterfallCompletionContext extends CompletionContext<net.md_5.bungee.api.CommandSender> {
-
-    public WaterfallCompletionContext(
-        final CommandSender<net.md_5.bungee.api.CommandSender> sender,
-        final List<Token> arguments,
-        final Permission permission,
-        final boolean asynchronous
-    ) {
-        super(sender, arguments, permission, asynchronous);
-    }
+    STRING
 }

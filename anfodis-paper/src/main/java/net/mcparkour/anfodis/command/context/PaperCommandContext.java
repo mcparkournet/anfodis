@@ -25,13 +25,14 @@
 package net.mcparkour.anfodis.command.context;
 
 import java.util.List;
+import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.craftmon.permission.Permission;
 
 public class PaperCommandContext extends CommandContext<org.bukkit.command.CommandSender> {
 
     public PaperCommandContext(
         final CommandSender<org.bukkit.command.CommandSender> sender,
-        final List<String> arguments,
+        final List<Token> arguments,
         final Permission permission,
         final boolean asynchronous
     ) {

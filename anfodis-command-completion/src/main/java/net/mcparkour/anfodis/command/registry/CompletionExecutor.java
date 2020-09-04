@@ -25,9 +25,10 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.List;
+import net.mcparkour.anfodis.command.lexer.Token;
 
 @FunctionalInterface
 public interface CompletionExecutor<S> {
 
-    List<String> execute(S sender, List<String> arguments);
+    List<String> execute(S sender, List<Token> arguments);
 }

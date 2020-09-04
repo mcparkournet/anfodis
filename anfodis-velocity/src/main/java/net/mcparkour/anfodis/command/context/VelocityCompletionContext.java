@@ -27,13 +27,14 @@ package net.mcparkour.anfodis.command.context;
 import java.util.List;
 import com.velocitypowered.api.command.CommandSource;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
+import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.craftmon.permission.Permission;
 
 public class VelocityCompletionContext extends CompletionContext<CommandSource> {
 
     public VelocityCompletionContext(
         final CommandSender<CommandSource> sender,
-        final List<String> arguments,
+        final List<Token> arguments,
         final Permission permission,
         final boolean asynchronous
     ) {

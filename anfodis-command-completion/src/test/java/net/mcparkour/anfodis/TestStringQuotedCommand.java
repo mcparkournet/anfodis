@@ -22,21 +22,33 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.context;
+package net.mcparkour.anfodis;
 
-import java.util.List;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.lexer.Token;
-import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.anfodis.annotation.executor.Executor;
+import net.mcparkour.anfodis.command.annotation.argument.Argument;
+import net.mcparkour.anfodis.command.annotation.context.Receiver;
+import net.mcparkour.anfodis.command.annotation.properties.Command;
+import net.mcparkour.intext.message.MessageReceiver;
 
-public class WaterfallCompletionContext extends CompletionContext<net.md_5.bungee.api.CommandSender> {
+@Command("quote")
+public class TestStringQuotedCommand {
 
-    public WaterfallCompletionContext(
-        final CommandSender<net.md_5.bungee.api.CommandSender> sender,
-        final List<Token> arguments,
-        final Permission permission,
-        final boolean asynchronous
-    ) {
-        super(sender, arguments, permission, asynchronous);
+    @Receiver
+    private MessageReceiver receiver;
+
+    @Argument
+    private String first;
+
+    @Argument
+    private String second;
+
+    @Argument
+    private String third;
+
+    @Executor
+    public void execute() {
+        this.receiver.receivePlain(this.first);
+        this.receiver.receivePlain(this.second);
+        this.receiver.receivePlain(this.third);
     }
 }

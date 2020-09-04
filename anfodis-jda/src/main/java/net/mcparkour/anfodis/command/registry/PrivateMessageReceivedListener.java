@@ -24,7 +24,6 @@
 
 package net.mcparkour.anfodis.command.registry;
 
-import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import net.dv8tion.jda.api.entities.Message;
@@ -39,6 +38,8 @@ import net.mcparkour.anfodis.command.PermissionMap;
 import net.mcparkour.anfodis.command.context.JDACommandContext;
 import net.mcparkour.anfodis.command.context.JDACommandSender;
 import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.lexer.Lexer;
+import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
@@ -46,6 +47,8 @@ import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
 public class PrivateMessageReceivedListener implements EventListener {
+
+    private static final Lexer LEXER = new Lexer();
 
     private final Permission basePermission;
     private final PermissionMap permissionMap;
@@ -70,30 +73,31 @@ public class PrivateMessageReceivedListener implements EventListener {
     private void onPrivateMessageReceivedEvent(final PrivateMessageReceivedEvent event) {
         Message message = event.getMessage();
         String rawMessage = message.getContentRaw();
-        if (rawMessage.isBlank() || rawMessage.charAt(0) != '/') {
+        if (rawMessage.isEmpty() || rawMessage.charAt(0) != '/') {
             return;
         }
-        String[] split = rawMessage.split(" ");
-        String name = split[0];
+        List<Token> tokens = LEXER.tokenize(rawMessage);
+        Token nameToken = tokens.get(0);
+        String name = nameToken.getString();
         String nameWithoutSlash = name.substring(1);
         CommandMapEntry entry = this.commandMap.getCommand(nameWithoutSlash);
         if (entry == null) {
             return;
         }
         CommandContextHandler<JDACommandContext> handler = entry.getHandler();
+        int size = tokens.size();
+        List<Token> arguments = tokens.subList(1, size);
         JDACommand command = entry.getCommand();
-        JDACommandContext context = createContext(event, split, command);
+        JDACommandContext context = createContext(event, arguments, command);
         handler.handle(context);
     }
 
-    private JDACommandContext createContext(final PrivateMessageReceivedEvent event, final String[] split, final JDACommand command) {
+    private JDACommandContext createContext(final PrivateMessageReceivedEvent event, final List<Token> arguments, final JDACommand command) {
         User sender = event.getAuthor();
         PrivateChannel channel = event.getChannel();
         ChannelSender channelSender = new JDAChannelSender(sender, channel);
         MessageReceiver receiver = this.messageReceiverFactory.createMessageReceiver(channelSender);
         JDACommandSender commandSender = new JDACommandSender(channelSender, receiver, this.permissionMap);
-        String[] argumentsArray = Arrays.copyOfRange(split, 1, split.length);
-        List<String> arguments = List.of(argumentsArray);
         JDACommandProperties properties = command.getProperties();
         Permission commandPermission = properties.getPermission();
         Permission permission = commandPermission.withFirst(this.basePermission);

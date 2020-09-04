@@ -22,21 +22,32 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.context;
+package net.mcparkour.anfodis.command.lexer;
 
-import java.util.List;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.lexer.Token;
-import net.mcparkour.craftmon.permission.Permission;
+public class CharacterIterator {
 
-public class WaterfallCompletionContext extends CompletionContext<net.md_5.bungee.api.CommandSender> {
+    private final String string;
+    private int currentIndex;
 
-    public WaterfallCompletionContext(
-        final CommandSender<net.md_5.bungee.api.CommandSender> sender,
-        final List<Token> arguments,
-        final Permission permission,
-        final boolean asynchronous
-    ) {
-        super(sender, arguments, permission, asynchronous);
+    public CharacterIterator(final String string) {
+        this.string = string;
+        this.currentIndex = 0;
+    }
+
+    public void next() {
+        this.currentIndex++;
+    }
+
+    public void previous() {
+        this.currentIndex--;
+    }
+
+    public OptionalChar current() {
+        int length = this.string.length();
+        if (this.currentIndex < 0 || this.currentIndex >= length) {
+            return OptionalChar.empty();
+        }
+        char current = this.string.charAt(this.currentIndex);
+        return OptionalChar.of(current);
     }
 }

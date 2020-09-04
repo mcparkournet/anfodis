@@ -38,6 +38,8 @@ import net.mcparkour.anfodis.command.codec.argument.result.OkResult;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.lexer.TokenType;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.argument.MappedVariadicArgument;
@@ -71,7 +73,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
         T command = getRoot();
         List<? extends Argument> commandArguments = command.getArguments();
         int commandArgumentsSize = commandArguments.size();
-        List<String> arguments = context.getArguments();
+        List<Token> arguments = context.getArguments();
         int argumentsSize = arguments.size();
         for (int index = 0; index < commandArgumentsSize; index++) {
             Argument commandArgument = commandArguments.get(index);
@@ -84,23 +86,25 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
         }
     }
 
-    private Object getArgumentValue(final List<String> arguments, final Argument commandArgument, final int index, final C context) {
+    private Object getArgumentValue(final List<Token> arguments, final Argument commandArgument, final int index, final C context) {
         if (commandArgument.isVariadicArgument()) {
             return getVariadicArgumentValue(arguments, commandArgument, index, context);
         }
         ArgumentContext argumentContext = commandArgument.getContext();
-        String argumentValue = arguments.get(index);
+        Token token = arguments.get(index);
+        String argumentValue = token.getString();
         ArgumentCodec<?> codec = commandArgument.getCodec(this.argumentCodecRegistry);
         Result<?> result = codec.parse(context, argumentContext, argumentValue);
         return getResult(result);
     }
 
-    private VariadicArgument<?> getVariadicArgumentValue(final List<String> arguments, final Argument commandArgument, final int startIndex, final C context) {
+    private VariadicArgument<?> getVariadicArgumentValue(final List<Token> arguments, final Argument commandArgument, final int startIndex, final C context) {
         int size = arguments.size();
         ArgumentCodec<?> codec = commandArgument.getGenericTypeCodec(this.argumentCodecRegistry, 0);
         ArgumentContext argumentContext = commandArgument.getContext();
         List<?> argumentsList = IntStream.range(startIndex, size)
             .mapToObj(arguments::get)
+            .map(Token::getString)
             .map(argumentValue -> codec.parse(context, argumentContext, argumentValue))
             .map(this::getResult)
             .collect(Collectors.toUnmodifiableList());
@@ -124,7 +128,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
     private void setContext(final C context, final Object commandInstance) {
         T command = getRoot();
         Context commandContext = command.getContext();
-        List<String> arguments = context.getArguments();
+        List<Token> arguments = context.getArguments();
         commandContext.setArgumentsField(commandInstance, arguments);
         Permission permission = context.getPermission();
         commandContext.setRequiredPermissionField(commandInstance, permission);

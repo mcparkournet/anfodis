@@ -27,9 +27,13 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.List;
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
+import net.mcparkour.anfodis.command.lexer.Lexer;
+import net.mcparkour.anfodis.command.lexer.Token;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 class CommandWrapper implements Command {
+
+    private static final Lexer LEXER = new Lexer();
 
     private final VelocityCommandExecutor commandExecutor;
     private final VelocityCompletionExecutor completionExecutor;
@@ -41,13 +45,13 @@ class CommandWrapper implements Command {
 
     @Override
     public void execute(final CommandSource source, @NonNull final String[] args) {
-        List<String> arguments = List.of(args);
+        List<Token> arguments = LEXER.tokenizeArray(args);
         this.commandExecutor.execute(source, arguments);
     }
 
     @Override
     public List<String> suggest(final CommandSource source, @NonNull final String[] currentArgs) {
-        List<String> arguments = List.of(currentArgs);
+        List<Token> arguments = LEXER.tokenizeArray(currentArgs);
         return this.completionExecutor.execute(source, arguments);
     }
 

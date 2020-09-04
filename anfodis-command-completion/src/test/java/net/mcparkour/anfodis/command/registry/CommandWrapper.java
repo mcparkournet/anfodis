@@ -26,8 +26,13 @@ package net.mcparkour.anfodis.command.registry;
 
 import java.util.List;
 import net.mcparkour.anfodis.TestCommandSender;
+import net.mcparkour.anfodis.command.lexer.Lexer;
+import net.mcparkour.anfodis.command.lexer.Token;
+import org.jetbrains.annotations.Nullable;
 
 public class CommandWrapper {
+
+    private static final Lexer LEXER = new Lexer();
 
     private final TestCommandExecutor commandExecutor;
     private final TestCompletionExecutor completionExecutor;
@@ -37,13 +42,13 @@ public class CommandWrapper {
         this.completionExecutor = completionExecutor;
     }
 
-    public void execute(final TestCommandSender sender, final String[] args) {
-        List<String> arguments = List.of(args);
+    public void execute(final TestCommandSender sender, final @Nullable String args) {
+        List<Token> arguments = LEXER.tokenize(args);
         this.commandExecutor.execute(sender, arguments);
     }
 
-    public List<String> complete(final TestCommandSender sender, final String[] args) {
-        List<String> arguments = List.of(args);
+    public List<String> complete(final TestCommandSender sender, final @Nullable String args) {
+        List<Token> arguments = LEXER.tokenize(args);
         return this.completionExecutor.execute(sender, arguments);
     }
 }
