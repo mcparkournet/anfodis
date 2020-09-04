@@ -52,8 +52,27 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
 
     private final Map<String, CommandWrapper> commandManager;
 
-    public TestCommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final CodecRegistry<CompletionCodec> completionCodecRegistry, final MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory, final Permission basePermission, final Map<String, CommandWrapper> commandManager) {
-        super(COMMAND_MAPPER, TestCommandHandler::new, TestCommandExecutorHandler::new, TestCommandContext::new, CompletionHandler::new, TestCompletionContext::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, basePermission);
+    public TestCommandRegistry(
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
+        final CodecRegistry<CompletionCodec> completionCodecRegistry,
+        final MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory,
+        final Permission basePermission,
+        final Map<String, CommandWrapper> commandManager
+    ) {
+        super(
+            COMMAND_MAPPER,
+            TestCommandHandler::new,
+            TestCommandExecutorHandler::new,
+            TestCommandContext::new,
+            CompletionHandler::new,
+            TestCompletionContext::new,
+            injectionCodecRegistry,
+            argumentCodecRegistry,
+            completionCodecRegistry,
+            messageReceiverFactory,
+            basePermission
+        );
         this.commandManager = commandManager;
     }
 
@@ -64,21 +83,25 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
         Permission basePermission = getBasePermission();
         Permission commandPermission = properties.getPermission();
         Permission permission = commandPermission.withFirst(basePermission);
-        register(names, permission, commandHandler, completionHandler);
+        boolean asynchronous = properties.isAsynchronous();
+        if (asynchronous) {
+            throw new RuntimeException("Asynchronous command execution is not supported");
+        }
+        register(names, permission, false, commandHandler, completionHandler);
     }
 
-    private void register(final Collection<String> aliases, final Permission permission, final CommandContextHandler<TestCommandContext> commandHandler, final CompletionContextHandler<TestCompletionContext> completionHandler) {
+    private void register(final Collection<String> aliases, final Permission permission, final boolean asynchronous, final CommandContextHandler<TestCommandContext> commandHandler, final CompletionContextHandler<TestCompletionContext> completionHandler) {
         MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory = getMessageReceiverFactory();
         TestCommandExecutor commandExecutor = (sender, arguments) -> {
             MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
             TestCommandSender testCommandSender = new TestCommandSender(sender, receiver);
-            TestCommandContext context = new TestCommandContext(testCommandSender, arguments, permission);
+            TestCommandContext context = new TestCommandContext(testCommandSender, arguments, permission, asynchronous);
             commandHandler.handle(context);
         };
         TestCompletionExecutor completionExecutor = (sender, arguments) -> {
             MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
             TestCommandSender testCommandSender = new TestCommandSender(sender, receiver);
-            TestCompletionContext context = new TestCompletionContext(testCommandSender, arguments, permission);
+            TestCompletionContext context = new TestCompletionContext(testCommandSender, arguments, permission, asynchronous);
             return completionHandler.handle(context);
         };
         register(aliases, commandExecutor, completionExecutor);

@@ -42,6 +42,7 @@ public class CommandProperties {
     @Nullable
     private final String aliasesTranslationId;
     private final Permission permission;
+    private final boolean asynchronous;
 
     public CommandProperties(final CommandPropertiesData propertiesData) {
         String name = propertiesData.getName();
@@ -57,6 +58,8 @@ public class CommandProperties {
         this.aliasesTranslationId = propertiesData.getAliasesTranslationId();
         String permissionName = propertiesData.getPermission();
         this.permission = permissionName == null ? Permission.empty() : Permission.of(permissionName.isEmpty() ? this.name : permissionName);
+        Boolean asynchronous = propertiesData.getAsynchronous();
+        this.asynchronous = asynchronous != null && asynchronous;
     }
 
     public Permission getPermission() {
@@ -98,5 +101,9 @@ public class CommandProperties {
     @Nullable
     public String getAliasesTranslationId() {
         return this.aliasesTranslationId;
+    }
+
+    public boolean isAsynchronous() {
+        return this.asynchronous;
     }
 }

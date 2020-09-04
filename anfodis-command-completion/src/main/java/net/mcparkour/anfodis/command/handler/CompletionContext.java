@@ -31,7 +31,12 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class CompletionContext<T> extends CommandContext<T> {
 
-    public CompletionContext(final CommandSender<T> sender, final List<String> arguments, final Permission permission) {
-        super(sender, arguments, permission);
+    public CompletionContext(
+        final CommandSender<T> sender,
+        final List<String> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
+        super(sender, arguments, permission, asynchronous);
     }
 }

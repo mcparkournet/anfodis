@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.mcparkour.anfodis.command.annotation.properties.Aliases;
 import net.mcparkour.anfodis.command.annotation.properties.AliasesTranslation;
+import net.mcparkour.anfodis.command.annotation.properties.Asynchronous;
 import net.mcparkour.anfodis.command.annotation.properties.Command;
 import net.mcparkour.anfodis.command.annotation.properties.Description;
 import net.mcparkour.anfodis.command.annotation.properties.DescriptionTranslation;
@@ -79,7 +80,9 @@ public class CommandPropertiesMapper<P extends CommandProperties, D extends Comm
             .additional(AliasesTranslation.class, translation ->
                 data.setAliasesTranslationId(translation.value()))
             .additional(Permission.class, permission ->
-                data.setPermission(permission.value()));
+                data.setPermission(permission.value()))
+            .additional(Asynchronous.class, asynchronous ->
+                data.setAsynchronous(true));
         if (additional != null) {
             applier = applier.andThen(additional);
         }

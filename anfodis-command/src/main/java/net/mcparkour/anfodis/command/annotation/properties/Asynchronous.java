@@ -22,20 +22,16 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.context;
+package net.mcparkour.anfodis.command.annotation.properties;
 
-import java.util.List;
-import com.velocitypowered.api.command.CommandSource;
-import net.mcparkour.craftmon.permission.Permission;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class VelocityCommandContext extends CommandContext<CommandSource> {
-
-    public VelocityCommandContext(
-        final CommandSender<CommandSource> sender,
-        final List<String> arguments,
-        final Permission permission,
-        final boolean asynchronous
-    ) {
-        super(sender, arguments, permission, asynchronous);
-    }
-}
+/**
+ * Executes the annotated command asynchronous if possible
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Asynchronous {}

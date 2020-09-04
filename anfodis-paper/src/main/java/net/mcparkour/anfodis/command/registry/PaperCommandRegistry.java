@@ -43,37 +43,95 @@ import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.PaperCommandMapper;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.craftmon.scheduler.PaperAsyncScheduler;
+import net.mcparkour.craftmon.scheduler.Scheduler;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
-public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperCommand, PaperCommandContext, PaperCompletionContext, CommandSender> {
+public class PaperCommandRegistry
+    extends AbstractCompletionRegistry<PaperCommand, PaperCommandContext, PaperCompletionContext, CommandSender> {
 
     private static final PaperCommandMapper COMMAND_MAPPER = new PaperCommandMapper();
 
     private final CommandMap commandMap;
+    private final Scheduler asyncScheduler;
     private final String fallbackCommandPrefix;
 
-    public PaperCommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final CodecRegistry<CompletionCodec> completionCodecRegistry, final MessageReceiverFactory<CommandSender> messageReceiverFactory, final Plugin plugin) {
-        this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, plugin.getServer(), plugin.getName());
+    public PaperCommandRegistry(
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
+        final CodecRegistry<CompletionCodec> completionCodecRegistry,
+        final MessageReceiverFactory<CommandSender> messageReceiverFactory,
+        final Plugin plugin
+    ) {
+        this(
+            injectionCodecRegistry,
+            argumentCodecRegistry,
+            completionCodecRegistry,
+            messageReceiverFactory,
+            plugin,
+            plugin.getName()
+        );
     }
 
-    public PaperCommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final CodecRegistry<CompletionCodec> completionCodecRegistry, final MessageReceiverFactory<CommandSender> messageReceiverFactory, final Server server, final String pluginName) {
-        this(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, Permission.of(pluginName.toLowerCase()), server.getCommandMap(), pluginName.toLowerCase());
+    public PaperCommandRegistry(
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
+        final CodecRegistry<CompletionCodec> completionCodecRegistry,
+        final MessageReceiverFactory<CommandSender> messageReceiverFactory,
+        final Plugin plugin,
+        final String commandPrefix
+    ) {
+        this(
+            injectionCodecRegistry,
+            argumentCodecRegistry,
+            completionCodecRegistry,
+            messageReceiverFactory,
+            Permission.of(commandPrefix.toLowerCase()),
+            plugin.getServer().getCommandMap(),
+            new PaperAsyncScheduler(plugin),
+            commandPrefix.toLowerCase()
+        );
     }
 
-    public PaperCommandRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry, final CodecRegistry<CompletionCodec> completionCodecRegistry, final MessageReceiverFactory<CommandSender> messageReceiverFactory, final Permission basePermission, final CommandMap commandMap, final String fallbackCommandPrefix) {
-        super(COMMAND_MAPPER, PaperCommandHandler::new, CommandExecutorHandler::new, PaperCommandContext::new, CompletionHandler::new, PaperCompletionContext::new, injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, messageReceiverFactory, basePermission);
+    public PaperCommandRegistry(
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
+        final CodecRegistry<CompletionCodec> completionCodecRegistry,
+        final MessageReceiverFactory<CommandSender> messageReceiverFactory,
+        final Permission basePermission,
+        final CommandMap commandMap,
+        final Scheduler asyncScheduler,
+        final String fallbackCommandPrefix
+    ) {
+        super(
+            COMMAND_MAPPER,
+            PaperCommandHandler::new,
+            CommandExecutorHandler::new,
+            PaperCommandContext::new,
+            CompletionHandler::new,
+            PaperCompletionContext::new,
+            injectionCodecRegistry,
+            argumentCodecRegistry,
+            completionCodecRegistry,
+            messageReceiverFactory,
+            basePermission
+        );
         this.commandMap = commandMap;
+        this.asyncScheduler = asyncScheduler;
         this.fallbackCommandPrefix = fallbackCommandPrefix;
     }
 
     @Override
-    public void register(final PaperCommand command, final CommandContextHandler<PaperCommandContext> commandHandler, final CompletionContextHandler<PaperCompletionContext> completionHandler) {
+    public void register(
+        final PaperCommand command,
+        final CommandContextHandler<PaperCommandContext> commandHandler,
+        final CompletionContextHandler<PaperCompletionContext> completionHandler
+    ) {
         PaperCommandProperties properties = command.getProperties();
         String name = properties.getName();
         String description = properties.getDescription();
@@ -82,31 +140,56 @@ public class PaperCommandRegistry extends AbstractCompletionRegistry<PaperComman
         Permission basePermission = getBasePermission();
         Permission commandPermission = properties.getPermission();
         Permission permission = commandPermission.withFirst(basePermission);
-        register(name, description, usage, aliases, permission, commandHandler, completionHandler);
+        boolean asynchronous = properties.isAsynchronous();
+        register(name, description, usage, aliases, permission, asynchronous, commandHandler, completionHandler);
     }
 
-    private void register(final String name, final String description, final String usage, final Collection<String> aliases, final Permission permission, final CommandContextHandler<PaperCommandContext> commandHandler, final CompletionContextHandler<PaperCompletionContext> completionHandler) {
+    private void register(
+        final String name,
+        final String description,
+        final String usage,
+        final Collection<String> aliases,
+        final Permission permission,
+        final boolean asynchronous,
+        final CommandContextHandler<PaperCommandContext> commandHandler,
+        final CompletionContextHandler<PaperCompletionContext> completionHandler
+    ) {
         MessageReceiverFactory<CommandSender> receiverFactory = getMessageReceiverFactory();
         PaperCommandExecutor commandExecutor = (sender, arguments) -> {
             MessageReceiver receiver = receiverFactory.createMessageReceiver(sender);
             PaperCommandSender paperSender = new PaperCommandSender(sender, receiver);
-            PaperCommandContext context = new PaperCommandContext(paperSender, arguments, permission);
-            commandHandler.handle(context);
+            PaperCommandContext context = new PaperCommandContext(paperSender, arguments, permission, asynchronous);
+            commandHandler.handleAsync(context, this.asyncScheduler);
         };
         PaperCompletionExecutor completionExecutor = (sender, arguments) -> {
             MessageReceiver receiver = receiverFactory.createMessageReceiver(sender);
             PaperCommandSender paperSender = new PaperCommandSender(sender, receiver);
-            PaperCompletionContext context = new PaperCompletionContext(paperSender, arguments, permission);
+            PaperCompletionContext context = new PaperCompletionContext(paperSender, arguments, permission, asynchronous);
             return completionHandler.handle(context);
         };
         register(name, description, usage, aliases, permission, commandExecutor, completionExecutor);
     }
 
-    public void register(final String name, final String description, final String usage, final Collection<String> aliases, final PaperCommandExecutor commandExecutor, final PaperCompletionExecutor completionExecutor) {
+    public void register(
+        final String name,
+        final String description,
+        final String usage,
+        final Collection<String> aliases,
+        final PaperCommandExecutor commandExecutor,
+        final PaperCompletionExecutor completionExecutor
+    ) {
         register(name, description, usage, aliases, Permission.empty(), commandExecutor, completionExecutor);
     }
 
-    public void register(final String name, final String description, final String usage, final Collection<String> aliases, final Permission permission, final PaperCommandExecutor commandExecutor, final PaperCompletionExecutor completionExecutor) {
+    public void register(
+        final String name,
+        final String description,
+        final String usage,
+        final Collection<String> aliases,
+        final Permission permission,
+        final PaperCommandExecutor commandExecutor,
+        final PaperCompletionExecutor completionExecutor
+    ) {
         List<String> aliasesList = List.copyOf(aliases);
         String permissionName = permission.getName();
         Command command = new CommandWrapper(name, description, usage, aliasesList, permissionName, commandExecutor, completionExecutor);

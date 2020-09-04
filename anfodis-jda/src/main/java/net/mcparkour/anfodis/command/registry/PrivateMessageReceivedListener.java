@@ -97,6 +97,7 @@ public class PrivateMessageReceivedListener implements EventListener {
         JDACommandProperties properties = command.getProperties();
         Permission commandPermission = properties.getPermission();
         Permission permission = commandPermission.withFirst(this.basePermission);
-        return new JDACommandContext(commandSender, arguments, permission);
+        boolean asynchronous = properties.isAsynchronous();
+        return new JDACommandContext(commandSender, arguments, permission, asynchronous);
     }
 }

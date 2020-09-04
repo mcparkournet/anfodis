@@ -30,7 +30,7 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class TestCommandContext extends CommandContext<TestCommandSender> {
 
-    public TestCommandContext(final CommandSender<TestCommandSender> sender, final List<String> arguments, final Permission permission) {
-        super(sender, arguments, permission);
+    public TestCommandContext(final CommandSender<TestCommandSender> sender, final List<String> arguments, final Permission permission, final boolean asynchronous) {
+        super(sender, arguments, permission, asynchronous);
     }
 }

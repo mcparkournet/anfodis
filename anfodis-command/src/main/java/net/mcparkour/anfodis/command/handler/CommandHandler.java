@@ -153,7 +153,8 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         List<String> arguments = contextArguments.subList(1, size);
         Permission contextPermission = context.getPermission();
         Permission permission = subCommand.getPermission(contextPermission);
-        return this.contextSupplier.supply(sender, arguments, permission);
+        boolean asynchronous = context.isAsynchronous();
+        return this.contextSupplier.supply(sender, arguments, permission, asynchronous);
     }
 
     protected T getCommand() {

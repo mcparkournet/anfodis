@@ -44,6 +44,9 @@ public class CommandMap {
     public void register(final JDACommand command, final CommandContextHandler<JDACommandContext> handler) {
         CommandMapEntry entry = new CommandMapEntry(command, handler);
         JDACommandProperties properties = command.getProperties();
+        if (properties.isAsynchronous()) {
+            throw new RuntimeException("JDA commands cannot be declared as asynchronous");
+        }
         Set<String> names = properties.getAllNames();
         for (final String name : names) {
             this.commandMap.put(name, entry);

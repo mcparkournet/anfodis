@@ -31,5 +31,5 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public interface CommandContextSupplier<C extends CommandContext<S>, S> {
 
-    C supply(CommandSender<S> sender, List<String> arguments, Permission permission);
+    C supply(CommandSender<S> sender, List<String> arguments, Permission permission, boolean asynchronous);
 }

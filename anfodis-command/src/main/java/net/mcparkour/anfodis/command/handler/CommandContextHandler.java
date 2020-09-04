@@ -25,9 +25,18 @@
 package net.mcparkour.anfodis.command.handler;
 
 import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.craftmon.scheduler.Scheduler;
 
 @FunctionalInterface
 public interface CommandContextHandler<C extends CommandContext<?>> {
+
+    default void handleAsync(final C context, final Scheduler asyncScheduler) {
+        if (context.isAsynchronous()) {
+            asyncScheduler.run(() -> handle(context));
+        } else {
+            handle(context);
+        }
+    }
 
     void handle(C context);
 }

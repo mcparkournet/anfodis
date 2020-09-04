@@ -86,7 +86,8 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
         int size = subCommandArguments.size();
         List<String> arguments = subCommandArguments.subList(1, size);
         Permission permission = createSubCommandPermission(context, subCommand);
-        return this.contextSupplier.supply(sender, arguments, permission);
+        boolean asynchronous = context.isAsynchronous();
+        return this.contextSupplier.supply(sender, arguments, permission, asynchronous);
     }
 
     private Permission createSubCommandPermission(final C context, final T subCommand) {

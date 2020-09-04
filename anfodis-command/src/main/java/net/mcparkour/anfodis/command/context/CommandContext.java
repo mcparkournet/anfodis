@@ -33,11 +33,18 @@ public class CommandContext<T> extends RootContext {
     private final CommandSender<T> sender;
     private final List<String> arguments;
     private final Permission permission;
+    private final boolean asynchronous;
 
-    public CommandContext(final CommandSender<T> sender, final List<String> arguments, final Permission permission) {
+    public CommandContext(
+        final CommandSender<T> sender,
+        final List<String> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
         this.sender = sender;
         this.arguments = arguments;
         this.permission = permission;
+        this.asynchronous = asynchronous;
     }
 
     public CommandSender<T> getSender() {
@@ -50,5 +57,9 @@ public class CommandContext<T> extends RootContext {
 
     public Permission getPermission() {
         return this.permission;
+    }
+
+    public boolean isAsynchronous() {
+        return this.asynchronous;
     }
 }

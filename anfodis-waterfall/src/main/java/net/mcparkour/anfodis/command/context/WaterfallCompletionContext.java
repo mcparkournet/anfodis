@@ -30,7 +30,12 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class WaterfallCompletionContext extends CompletionContext<net.md_5.bungee.api.CommandSender> {
 
-    public WaterfallCompletionContext(final CommandSender<net.md_5.bungee.api.CommandSender> sender, final List<String> arguments, final Permission permission) {
-        super(sender, arguments, permission);
+    public WaterfallCompletionContext(
+        final CommandSender<net.md_5.bungee.api.CommandSender> sender,
+        final List<String> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
+        super(sender, arguments, permission, asynchronous);
     }
 }

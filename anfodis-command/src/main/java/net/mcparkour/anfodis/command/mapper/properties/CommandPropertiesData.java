@@ -40,6 +40,8 @@ class CommandPropertiesData {
     private String aliasesTranslationId;
     @Nullable
     private String permission;
+    @Nullable
+    private Boolean asynchronous;
 
     @Nullable
     public String getName() {
@@ -93,5 +95,13 @@ class CommandPropertiesData {
 
     public void setPermission(@Nullable final String permission) {
         this.permission = permission;
+    }
+
+    public @Nullable Boolean getAsynchronous() {
+        return this.asynchronous;
+    }
+
+    public void setAsynchronous(final @Nullable Boolean asynchronous) {
+        this.asynchronous = asynchronous;
     }
 }

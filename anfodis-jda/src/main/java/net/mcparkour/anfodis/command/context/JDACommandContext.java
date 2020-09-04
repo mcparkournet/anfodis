@@ -30,7 +30,12 @@ import net.mcparkour.craftmon.permission.Permission;
 
 public class JDACommandContext extends CommandContext<ChannelSender> {
 
-    public JDACommandContext(final CommandSender<ChannelSender> sender, final List<String> arguments, final Permission permission) {
-        super(sender, arguments, permission);
+    public JDACommandContext(
+        final CommandSender<ChannelSender> sender,
+        final List<String> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
+        super(sender, arguments, permission, asynchronous);
     }
 }
