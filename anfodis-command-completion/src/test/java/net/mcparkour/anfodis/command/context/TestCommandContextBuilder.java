@@ -30,7 +30,7 @@ import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.TestCommand;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class TestCommandContextBuilder extends CommandContextBuilder<TestCommandContext, TestCommand, TestCommandSender> {
+public class TestCommandContextBuilder extends CommandContextBuilder<TestCommand, TestCommandContext, TestCommandSender> {
 
     public TestCommandContextBuilder(
         final Sender<TestCommandSender> sender,

@@ -28,22 +28,22 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
-import net.mcparkour.anfodis.listener.mapper.context.Context;
-import net.mcparkour.anfodis.listener.mapper.context.ContextMapper;
+import net.mcparkour.anfodis.listener.handler.ListenerContext;
 import net.mcparkour.anfodis.listener.mapper.properties.ListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.ListenerPropertiesMapper;
+import net.mcparkour.anfodis.mapper.AbstractRootMapper;
 import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public class ListenerMapper<T extends Listener<C, P>, C extends Context, P extends ListenerProperties<?>> implements RootMapper<T> {
+public class ListenerMapper<T extends Listener<P, C, E>, P extends ListenerProperties<E>, C extends ListenerContext<E>, E>
+    extends AbstractRootMapper<T, C> {
 
-    private final ContextMapper<C, ?> contextMapper;
     private final ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper;
-    private final ListenerMerger<T, C, P> listenerMerger;
+    private final ListenerMerger<T, P, C, E> listenerMerger;
 
-    public ListenerMapper(final ContextMapper<C, ?> contextMapper, final ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper, final ListenerMerger<T, C, P> listenerMerger) {
-        this.contextMapper = contextMapper;
+    public ListenerMapper(final ListenerPropertiesMapper<P, ?, ?, ?> propertiesMapper, final ListenerMerger<T, P, C, E> listenerMerger) {
         this.propertiesMapper = propertiesMapper;
         this.listenerMerger = listenerMerger;
     }
@@ -53,15 +53,11 @@ public class ListenerMapper<T extends Listener<C, P>, C extends Context, P exten
         Field[] fields = annotatedClass.getDeclaredFields();
         Method[] methods = annotatedClass.getDeclaredMethods();
         Constructor<?> constructor = getConstructor(annotatedClass);
-        C context = getContext(fields);
         P properties = getProperties(annotatedClass);
         List<Injection> injections = getInjections(fields);
+        List<Transform<C>> transforms = getTransforms(fields);
         Executor executor = getExecutor(methods);
-        return this.listenerMerger.merge(constructor, injections, executor, context, properties);
-    }
-
-    private C getContext(final Field[] fields) {
-        return this.contextMapper.map(fields);
+        return this.listenerMerger.merge(constructor, injections, transforms, executor, properties);
     }
 
     private P getProperties(final Class<?> listenerClass) {

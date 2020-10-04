@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.listener.registry;
 
 import java.lang.annotation.Annotation;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.ContextHandler;
@@ -34,32 +35,35 @@ import net.mcparkour.anfodis.listener.mapper.Listener;
 import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.anfodis.registry.AbstractRegistry;
 
-public abstract class AbstractListenerRegistry<T extends Listener<?, ?>, C extends ListenerContext<?>> extends AbstractRegistry<T, C> {
+public abstract class AbstractListenerRegistry<T extends Listener<?, C, E>, C extends ListenerContext<E>, E> extends AbstractRegistry<T, C> {
 
-    private final ListenerHandlerSupplier<T, C> listenerHandlerSupplier;
+    private final ListenerHandlerCreator<T, C, E> listenerHandlerCreator;
 
     public AbstractListenerRegistry(
         final Class<? extends Annotation> annotation,
-        final RootMapper<T> mapper,
-        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry
+        final RootMapper<T, C> mapper,
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<C, ?>> transformCodecRegistry
     ) {
-        this(annotation, mapper, ListenerHandler::new, injectionCodecRegistry);
+        this(annotation, mapper, ListenerHandler::new, injectionCodecRegistry, transformCodecRegistry);
     }
 
     public AbstractListenerRegistry(
         final Class<? extends Annotation> annotation,
-        final RootMapper<T> mapper,
-        final ListenerHandlerSupplier<T, C> listenerHandlerSupplier,
-        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry
+        final RootMapper<T, C> mapper,
+        final ListenerHandlerCreator<T, C, E> listenerHandlerCreator,
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<C, ?>> transformCodecRegistry
     ) {
-        super(annotation, mapper, injectionCodecRegistry);
-        this.listenerHandlerSupplier = listenerHandlerSupplier;
+        super(annotation, mapper, injectionCodecRegistry, transformCodecRegistry);
+        this.listenerHandlerCreator = listenerHandlerCreator;
     }
 
     @Override
     public void register(final T root) {
         CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-        ContextHandler<C> handler = this.listenerHandlerSupplier.supply(root, injectionCodecRegistry);
+        CodecRegistry<TransformCodec<C, ?>> transformCodecRegistry = getTransformCodecRegistry();
+        ContextHandler<C> handler = this.listenerHandlerCreator.create(root, injectionCodecRegistry, transformCodecRegistry);
         register(root, handler);
     }
 }

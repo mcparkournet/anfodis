@@ -34,7 +34,7 @@ import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class CommandContextBuilder<C extends CommandContext<T, S>, T extends Command<T, ?, ?, ?>, S> {
+public class CommandContextBuilder<T extends Command<T, ?, ?, ?, S>, C extends CommandContext<T, S>, S> {
 
     private final Sender<S> sender;
     private final Deque<Token> arguments;

@@ -25,15 +25,15 @@
 package net.mcparkour.anfodis;
 
 import net.mcparkour.anfodis.annotation.executor.Executor;
+import net.mcparkour.anfodis.annotation.transform.Transform;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
-import net.mcparkour.anfodis.command.annotation.context.Receiver;
 import net.mcparkour.anfodis.command.annotation.properties.Command;
 import net.mcparkour.intext.message.MessageReceiver;
 
 @Command("quote")
 public class TestStringQuotedCommand {
 
-    @Receiver
+    @Transform
     private MessageReceiver receiver;
 
     @Argument

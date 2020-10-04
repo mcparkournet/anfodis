@@ -30,7 +30,8 @@ import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.VelocityCommand;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class VelocityCommandContextBuilder extends CommandContextBuilder<VelocityCommandContext, VelocityCommand, CommandSource> {
+public class VelocityCommandContextBuilder
+    extends CommandContextBuilder<VelocityCommand, VelocityCommandContext, CommandSource> {
 
     public VelocityCommandContextBuilder(
         final Sender<CommandSource> sender,

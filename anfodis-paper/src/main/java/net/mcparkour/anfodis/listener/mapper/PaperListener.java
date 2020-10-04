@@ -26,14 +26,22 @@ package net.mcparkour.anfodis.listener.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
-import net.mcparkour.anfodis.listener.mapper.context.PaperContext;
+import net.mcparkour.anfodis.listener.context.PaperListenerContext;
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
+import org.bukkit.event.Event;
 
-public class PaperListener extends Listener<PaperContext, PaperListenerProperties> {
+public class PaperListener extends Listener<PaperListenerProperties, PaperListenerContext, Event> {
 
-    public PaperListener(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final PaperContext context, final PaperListenerProperties properties) {
-        super(constructor, injections, executor, context, properties);
+    public PaperListener(
+        final Constructor<?> constructor,
+        final List<Injection> injections,
+        final List<Transform<PaperListenerContext>> transforms,
+        final Executor executor,
+        final PaperListenerProperties properties
+    ) {
+        super(constructor, injections, transforms, executor, properties);
     }
 }

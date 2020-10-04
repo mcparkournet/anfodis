@@ -31,6 +31,7 @@ import net.mcparkour.anfodis.channel.handler.PaperChannelListenerHandler;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListener;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListenerMapper;
 import net.mcparkour.anfodis.channel.mapper.properties.PaperChannelListenerProperties;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.ContextHandler;
@@ -48,8 +49,17 @@ public class PaperChannelListenerRegistry
     private final Plugin plugin;
     private final Messenger messenger;
 
-    public PaperChannelListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final Plugin plugin) {
-        super(net.mcparkour.anfodis.channel.annotation.properties.ChannelListener.class, CHANNEL_LISTENER_MAPPER, injectionCodecRegistry);
+    public PaperChannelListenerRegistry(
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<ChannelListenerContext, ?>> transformCodecRegistry,
+        final Plugin plugin
+    ) {
+        super(
+            net.mcparkour.anfodis.channel.annotation.properties.ChannelListener.class,
+            CHANNEL_LISTENER_MAPPER,
+            injectionCodecRegistry,
+            transformCodecRegistry
+        );
         this.plugin = plugin;
         Server server = plugin.getServer();
         this.messenger = server.getMessenger();
@@ -58,7 +68,8 @@ public class PaperChannelListenerRegistry
     @Override
     public void register(final PaperChannelListener root) {
         CodecRegistry<InjectionCodec<?>> injectionCodecRegistry = getInjectionCodecRegistry();
-        PaperChannelListenerHandler handler = new PaperChannelListenerHandler(root, injectionCodecRegistry);
+        CodecRegistry<TransformCodec<ChannelListenerContext, ?>> transformCodecRegistry = getTransformCodecRegistry();
+        PaperChannelListenerHandler handler = new PaperChannelListenerHandler(root, injectionCodecRegistry, transformCodecRegistry);
         register(root, handler);
     }
 

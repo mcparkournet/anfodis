@@ -27,6 +27,7 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.Messenger;
@@ -44,7 +45,7 @@ import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
-public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, ?, ?, ?>, C1 extends CommandContext<T, S>, B1 extends CommandContextBuilder<C1, T, S>, C2 extends CompletionContext<T, S>, B2 extends CompletionContextBuilder<C2, T, S>, S, M extends Messenger<T, S>>
+public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, ?, ?, C1, S>, C1 extends CommandContext<T, S>, B1 extends CommandContextBuilder<T, C1, S>, C2 extends CompletionContext<T, S>, B2 extends CompletionContextBuilder<T, C2, S>, S, M extends Messenger<T, S>>
     extends AbstractCommandRegistry<T, C1, B1, S, M> {
 
     private final CompletionHandlerCreator<T, C2, B2, S> completionHandlerCreator;
@@ -52,13 +53,14 @@ public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, 
     private final CodecRegistry<CompletionCodec> completionCodecRegistry;
 
     public AbstractCompletionRegistry(
-        final RootMapper<T> mapper,
+        final RootMapper<T, C1> mapper,
         final CommandHandlerCreator<T, C1, B1, S, M> commandHandlerCreator,
-        final CommandExecutorHandlerSupplier<T, C1> commandExecutorHandlerSupplier,
+        final CommandExecutorHandlerCreator<T, C1, S> commandExecutorHandlerCreator,
         final CommandContextCreator<T, C1, S> commandContextCreator,
         final CompletionHandlerCreator<T, C2, B2, S> completionHandlerCreator,
         final CommandContextCreator<T, C2, S> completionContextCreator,
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<C1, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<S> messageReceiverFactory,
@@ -68,9 +70,10 @@ public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, 
         super(
             mapper,
             commandHandlerCreator,
-            commandExecutorHandlerSupplier,
+            commandExecutorHandlerCreator,
             commandContextCreator,
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             messageReceiverFactory,
             messenger,

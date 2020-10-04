@@ -27,6 +27,7 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.TestMessenger;
@@ -58,6 +59,7 @@ public class TestCommandRegistry
 
     public TestCommandRegistry(
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<TestCommandContext, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory,
@@ -73,6 +75,7 @@ public class TestCommandRegistry
             CompletionHandler::new,
             TestCompletionContext::new,
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,

@@ -26,15 +26,25 @@ package net.mcparkour.anfodis.command.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import net.mcparkour.anfodis.command.context.PaperCommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.PaperArgument;
-import net.mcparkour.anfodis.command.mapper.context.PaperContext;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
+import org.bukkit.command.CommandSender;
 
-public class PaperCommand extends CompletionCommand<PaperCommand, PaperArgument, PaperContext, PaperCommandProperties> {
+public class PaperCommand extends CompletionCommand<PaperCommand, PaperArgument, PaperCommandProperties, PaperCommandContext, CommandSender> {
 
-    public PaperCommand(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final List<PaperArgument> arguments, final PaperContext context, final PaperCommandProperties properties, final List<PaperCommand> subCommands) {
-        super(constructor, injections, executor, arguments, context, properties, subCommands);
+    public PaperCommand(
+        final Constructor<?> constructor,
+        final List<Injection> injections,
+        final List<Transform<PaperCommandContext>> transforms,
+        final Executor executor,
+        final List<PaperArgument> arguments,
+        final PaperCommandProperties properties,
+        final List<PaperCommand> subCommands
+    ) {
+        super(constructor, injections, transforms, executor, arguments, properties, subCommands);
     }
 }

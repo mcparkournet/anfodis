@@ -27,25 +27,32 @@ package net.mcparkour.anfodis.command.mapper;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
-import net.mcparkour.anfodis.command.mapper.context.Context;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.mapper.Root;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
-import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public class Command<T extends Command<T, A, C, P>, A extends Argument, C extends Context, P extends CommandProperties> extends Root {
+public class Command<T extends Command<T, A, P, C, S>, A extends Argument, P extends CommandProperties, C extends CommandContext<T, S>, S>
+    extends Root<C> {
 
     private final List<A> arguments;
-    private final C context;
     private final P properties;
     private final List<T> subCommands;
 
-    public Command(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final List<A> arguments, final C context, final P properties, final List<T> subCommands) {
-        super(constructor, injections, executor);
+    public Command(
+        final Constructor<?> constructor,
+        final List<Injection> injections,
+        final List<Transform<C>> transforms,
+        final Executor executor,
+        final List<A> arguments,
+        final P properties,
+        final List<T> subCommands
+    ) {
+        super(constructor, injections, transforms, executor);
         this.arguments = arguments;
-        this.context = context;
         this.properties = properties;
         this.subCommands = subCommands;
     }
@@ -76,10 +83,6 @@ public class Command<T extends Command<T, A, C, P>, A extends Argument, C extend
 
     public List<A> getArguments() {
         return this.arguments;
-    }
-
-    public C getContext() {
-        return this.context;
     }
 
     public P getProperties() {

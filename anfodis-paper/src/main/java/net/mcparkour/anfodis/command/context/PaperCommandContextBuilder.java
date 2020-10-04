@@ -30,7 +30,7 @@ import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.craftmon.permission.Permission;
 import org.bukkit.command.CommandSender;
 
-public class PaperCommandContextBuilder extends CommandContextBuilder<PaperCommandContext, PaperCommand, CommandSender> {
+public class PaperCommandContextBuilder extends CommandContextBuilder<PaperCommand, PaperCommandContext, CommandSender> {
 
     public PaperCommandContextBuilder(
         final Sender<CommandSender> sender,

@@ -30,6 +30,7 @@ import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.ProxyServer;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.command.VelocityMessenger;
@@ -64,6 +65,7 @@ public class VelocityCommandRegistry
 
     public VelocityCommandRegistry(
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<VelocityCommandContext, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSource> messageReceiverFactory,
@@ -74,6 +76,7 @@ public class VelocityCommandRegistry
     ) {
         this(
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
@@ -86,6 +89,7 @@ public class VelocityCommandRegistry
 
     public VelocityCommandRegistry(
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<VelocityCommandContext, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSource> messageReceiverFactory,
@@ -102,6 +106,7 @@ public class VelocityCommandRegistry
             CompletionHandler::new,
             VelocityCompletionContext::new,
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,

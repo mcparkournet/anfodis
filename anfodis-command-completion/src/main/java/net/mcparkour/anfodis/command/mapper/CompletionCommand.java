@@ -26,15 +26,26 @@ package net.mcparkour.anfodis.command.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.mapper.argument.CompletionArgument;
-import net.mcparkour.anfodis.command.mapper.context.Context;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public class CompletionCommand<T extends CompletionCommand<T, A, C, P>, A extends CompletionArgument, C extends Context, P extends CommandProperties> extends Command<T, A, C, P> {
+public class CompletionCommand<T extends CompletionCommand<T, A, P, C, S>, A extends CompletionArgument, P extends CommandProperties, C extends CommandContext<T, S>, S>
+    extends Command<T, A, P, C, S> {
 
-    public CompletionCommand(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final List<A> arguments, final C context, final P properties, final List<T> subCommands) {
-        super(constructor, injections, executor, arguments, context, properties, subCommands);
+    public CompletionCommand(
+        final Constructor<?> constructor,
+        final List<Injection> injections,
+        final List<Transform<C>> transforms,
+        final Executor executor,
+        final List<A> arguments,
+        final P properties,
+        final List<T> subCommands
+    ) {
+        super(constructor, injections, transforms, executor, arguments, properties, subCommands);
     }
 }

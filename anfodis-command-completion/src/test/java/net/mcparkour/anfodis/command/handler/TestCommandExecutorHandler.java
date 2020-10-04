@@ -24,15 +24,17 @@
 
 package net.mcparkour.anfodis.command.handler;
 
+import net.mcparkour.anfodis.TestCommandSender;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.TestCommandContext;
 import net.mcparkour.anfodis.command.mapper.TestCommand;
 
-public class TestCommandExecutorHandler extends CommandExecutorHandler<TestCommand, TestCommandContext> {
+public class TestCommandExecutorHandler extends CommandExecutorHandler<TestCommand, TestCommandContext, TestCommandSender> {
 
-    public TestCommandExecutorHandler(final TestCommand root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
-        super(root, injectionCodecRegistry, argumentCodecRegistry);
+    public TestCommandExecutorHandler(final TestCommand root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<TransformCodec<TestCommandContext, ?>> transformCodecRegistry, final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry) {
+        super(root, injectionCodecRegistry, transformCodecRegistry, argumentCodecRegistry);
     }
 }

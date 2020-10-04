@@ -27,21 +27,21 @@ package net.mcparkour.anfodis;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.annotation.executor.Executor;
-import net.mcparkour.anfodis.command.argument.OptionalArgument;
-import net.mcparkour.anfodis.command.argument.VariadicArgument;
+import net.mcparkour.anfodis.annotation.transform.Transform;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
 import net.mcparkour.anfodis.command.annotation.argument.Completion;
 import net.mcparkour.anfodis.command.annotation.argument.CompletionCodec;
 import net.mcparkour.anfodis.command.annotation.argument.Optional;
 import net.mcparkour.anfodis.command.annotation.argument.Variadic;
-import net.mcparkour.anfodis.command.annotation.context.Receiver;
 import net.mcparkour.anfodis.command.annotation.properties.Command;
+import net.mcparkour.anfodis.command.argument.OptionalArgument;
+import net.mcparkour.anfodis.command.argument.VariadicArgument;
 import net.mcparkour.intext.message.MessageReceiver;
 
 @Command("optionalVariadic")
 public class TestOptionalVariadicCommand {
 
-    @Receiver
+    @Transform
     private MessageReceiver receiver;
 
     @Argument

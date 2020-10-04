@@ -26,13 +26,22 @@ package net.mcparkour.anfodis.command.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
-import net.mcparkour.anfodis.command.mapper.context.Context;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public interface CommandMerger<T extends Command<T, A, C, P>, A extends Argument, C extends Context, P extends CommandProperties> {
+public interface CommandMerger<T extends Command<T, A, P, C, S>, A extends Argument, P extends CommandProperties, C extends CommandContext<T, S>, S> {
 
-    T merge(Constructor<?> constructor, List<Injection> injections, Executor executor, List<A> arguments, C context, P properties, List<T> subCommands);
+    T merge(
+        Constructor<?> constructor,
+        List<Injection> injections,
+        List<Transform<C>> transforms,
+        Executor executor,
+        List<A> arguments,
+        P properties,
+        List<T> subCommands
+    );
 }

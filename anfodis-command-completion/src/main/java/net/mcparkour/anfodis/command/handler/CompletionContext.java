@@ -32,7 +32,7 @@ import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class CompletionContext<T extends Command<T, ?, ?, ?>, S> extends CommandContext<T, S> {
+public class CompletionContext<T extends Command<T, ?, ?, ?, S>, S> extends CommandContext<T, S> {
 
     public CompletionContext(
         final Sender<S> sender,

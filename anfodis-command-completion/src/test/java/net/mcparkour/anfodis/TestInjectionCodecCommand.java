@@ -24,12 +24,12 @@
 
 package net.mcparkour.anfodis;
 
-import net.mcparkour.anfodis.annotation.Inject;
-import net.mcparkour.anfodis.annotation.InjectionCodec;
 import net.mcparkour.anfodis.annotation.executor.After;
 import net.mcparkour.anfodis.annotation.executor.Before;
 import net.mcparkour.anfodis.annotation.executor.Executor;
-import net.mcparkour.anfodis.command.annotation.context.Receiver;
+import net.mcparkour.anfodis.annotation.injection.Inject;
+import net.mcparkour.anfodis.annotation.injection.InjectionCodec;
+import net.mcparkour.anfodis.annotation.transform.Transform;
 import net.mcparkour.anfodis.command.annotation.properties.Command;
 import net.mcparkour.intext.message.MessageReceiver;
 
@@ -44,7 +44,7 @@ public class TestInjectionCodecCommand {
     @InjectionCodec(TestInjectionCodec2.class)
     private String test2;
 
-    @Receiver
+    @Transform
     private MessageReceiver receiver;
 
     @Before

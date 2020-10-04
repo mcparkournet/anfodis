@@ -26,18 +26,15 @@ package net.mcparkour.anfodis;
 
 import java.util.List;
 import java.util.Locale;
-import net.mcparkour.anfodis.annotation.Inject;
-import net.mcparkour.anfodis.annotation.InjectionCodec;
 import net.mcparkour.anfodis.annotation.executor.After;
 import net.mcparkour.anfodis.annotation.executor.Before;
 import net.mcparkour.anfodis.annotation.executor.Executor;
+import net.mcparkour.anfodis.annotation.injection.Inject;
+import net.mcparkour.anfodis.annotation.transform.Transform;
+import net.mcparkour.anfodis.annotation.transform.TransformCodec;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
 import net.mcparkour.anfodis.command.annotation.argument.Completion;
 import net.mcparkour.anfodis.command.annotation.argument.Optional;
-import net.mcparkour.anfodis.command.annotation.context.Arguments;
-import net.mcparkour.anfodis.command.annotation.context.Receiver;
-import net.mcparkour.anfodis.command.annotation.context.RequiredPermission;
-import net.mcparkour.anfodis.command.annotation.context.Sender;
 import net.mcparkour.anfodis.command.annotation.properties.Aliases;
 import net.mcparkour.anfodis.command.annotation.properties.Command;
 import net.mcparkour.anfodis.command.annotation.properties.Description;
@@ -54,13 +51,12 @@ public class TestFooCommand {
     @Inject
     private MessageReceiverFactory<TestCommandSender> messageReceiverFactory;
 
-    @Arguments
+    @Transform
+    @TransformCodec(ArgumentsTransformCodec.class)
     private List<String> arguments;
-    @RequiredPermission
-    private net.mcparkour.craftmon.permission.Permission permission;
-    @Sender
+    @Transform
     private TestCommandSender sender;
-    @Receiver
+    @Transform
     private MessageReceiver receiver;
 
     @Argument("language")

@@ -30,7 +30,7 @@ import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.craftmon.permission.Permission;
 import net.md_5.bungee.api.CommandSender;
 
-public class WaterfallCommandContextBuilder extends CommandContextBuilder<WaterfallCommandContext, WaterfallCommand, CommandSender> {
+public class WaterfallCommandContextBuilder extends CommandContextBuilder<WaterfallCommand, WaterfallCommandContext, CommandSender> {
 
     public WaterfallCommandContextBuilder(
         final Sender<CommandSender> sender,

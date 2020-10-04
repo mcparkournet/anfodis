@@ -24,8 +24,8 @@
 
 package net.mcparkour.anfodis.mapper;
 
-import net.mcparkour.anfodis.annotation.Inject;
-import net.mcparkour.anfodis.annotation.InjectionCodec;
+import net.mcparkour.anfodis.annotation.injection.Inject;
+import net.mcparkour.anfodis.annotation.injection.InjectionCodec;
 import net.mcparkour.anfodis.annotation.executor.After;
 import net.mcparkour.anfodis.annotation.executor.Before;
 import net.mcparkour.anfodis.annotation.executor.Executor;

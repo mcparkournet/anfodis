@@ -31,7 +31,7 @@ import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.craftmon.permission.Permission;
 import net.md_5.bungee.api.CommandSender;
 
-public class WaterfallCompletionContextBuilder extends CompletionContextBuilder<WaterfallCompletionContext, WaterfallCommand, CommandSender> {
+public class WaterfallCompletionContextBuilder extends CompletionContextBuilder<WaterfallCommand, WaterfallCompletionContext, CommandSender> {
 
     public WaterfallCompletionContextBuilder(
         final Sender<CommandSender> sender,

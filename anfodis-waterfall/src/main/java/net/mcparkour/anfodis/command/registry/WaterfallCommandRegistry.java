@@ -26,6 +26,7 @@ package net.mcparkour.anfodis.command.registry;
 
 import java.util.Collection;
 import java.util.Set;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.WaterfallMessenger;
@@ -65,6 +66,7 @@ public class WaterfallCommandRegistry
 
     public WaterfallCommandRegistry(
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<WaterfallCommandContext, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
@@ -73,6 +75,7 @@ public class WaterfallCommandRegistry
     ) {
         this(
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
@@ -84,6 +87,7 @@ public class WaterfallCommandRegistry
 
     public WaterfallCommandRegistry(
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<WaterfallCommandContext, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
@@ -93,6 +97,7 @@ public class WaterfallCommandRegistry
     ) {
         this(
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
@@ -106,6 +111,7 @@ public class WaterfallCommandRegistry
 
     public WaterfallCommandRegistry(
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<WaterfallCommandContext, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
@@ -123,6 +129,7 @@ public class WaterfallCommandRegistry
             CompletionHandler::new,
             WaterfallCompletionContext::new,
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,

@@ -43,7 +43,7 @@ import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
-public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<T, S>, B extends CompletionContextBuilder<C, T, S>, S>
+public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?, S>, C extends CompletionContext<T, S>, B extends CompletionContextBuilder<T, C, S>, S>
     implements CompletionContextBuilderHandler<B, C> {
 
     private final T command;

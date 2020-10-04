@@ -24,17 +24,16 @@
 
 package net.mcparkour.anfodis.listener.mapper;
 
-import net.mcparkour.anfodis.listener.mapper.context.VelocityContext;
-import net.mcparkour.anfodis.listener.mapper.context.VelocityContextMapper;
+import net.mcparkour.anfodis.listener.context.VelocityListenerContext;
 import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerPropertiesMapper;
 
-public class VelocityListenerMapper extends ListenerMapper<VelocityListener, VelocityContext, VelocityListenerProperties> {
+public class VelocityListenerMapper
+    extends ListenerMapper<VelocityListener, VelocityListenerProperties, VelocityListenerContext, Object> {
 
-    private static final VelocityContextMapper CONTEXT_MAPPER = new VelocityContextMapper();
     private static final VelocityListenerPropertiesMapper PROPERTIES_MAPPER = new VelocityListenerPropertiesMapper();
 
     public VelocityListenerMapper() {
-        super(CONTEXT_MAPPER, PROPERTIES_MAPPER, VelocityListener::new);
+        super(PROPERTIES_MAPPER, VelocityListener::new);
     }
 }

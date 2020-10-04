@@ -24,28 +24,19 @@
 
 package net.mcparkour.anfodis.listener.handler;
 
-import net.mcparkour.anfodis.codec.registry.CodecRegistry;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.handler.RootHandler;
 import net.mcparkour.anfodis.listener.mapper.Listener;
-import net.mcparkour.anfodis.listener.mapper.context.Context;
 
-public class ListenerHandler<T extends Listener<?, ?>, C extends ListenerContext<? extends E>, E> extends RootHandler<T, C> {
+public class ListenerHandler<T extends Listener<?, C, E>, C extends ListenerContext<E>, E> extends RootHandler<T, C> {
 
-    public ListenerHandler(final T root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-        super(root, injectionCodecRegistry);
-    }
-
-    @Override
-    public void handle(final C context, final Object instance) {
-        setContext(context, instance);
-        super.handle(context, instance);
-    }
-
-    private void setContext(final C context, final Object listenerInstance) {
-        Listener<?, ?> listener = getRoot();
-        Context listenerContext = listener.getContext();
-        E event = context.getEvent();
-        listenerContext.setEventField(listenerInstance, event);
+    public ListenerHandler(
+        final T root,
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<C, ?>> transformCodecRegistry
+    ) {
+        super(root, injectionCodecRegistry, transformCodecRegistry);
     }
 }

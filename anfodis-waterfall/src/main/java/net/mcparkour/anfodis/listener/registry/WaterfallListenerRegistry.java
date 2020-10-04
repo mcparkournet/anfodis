@@ -25,10 +25,12 @@
 package net.mcparkour.anfodis.listener.registry;
 
 import java.lang.reflect.Method;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.listener.annotation.properties.Listener;
+import net.mcparkour.anfodis.listener.context.WaterfallListenerContext;
 import net.mcparkour.anfodis.listener.handler.ListenerContext;
 import net.mcparkour.anfodis.listener.mapper.WaterfallListener;
 import net.mcparkour.anfodis.listener.mapper.WaterfallListenerMapper;
@@ -40,15 +42,15 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.event.EventPriority;
 
-public class WaterfallListenerRegistry extends AbstractListenerRegistry<WaterfallListener, ListenerContext<? extends Event>> {
+public class WaterfallListenerRegistry extends AbstractListenerRegistry<WaterfallListener, WaterfallListenerContext, Event> {
 
     private static final WaterfallListenerMapper LISTENER_MAPPER = new WaterfallListenerMapper();
 
     private final Plugin plugin;
     private final ReflectedPluginManager reflectedPluginManager;
 
-    public WaterfallListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final Plugin plugin) {
-        super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);
+    public WaterfallListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<TransformCodec<WaterfallListenerContext, ?>> transformCodecRegistry, final Plugin plugin) {
+        super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry, transformCodecRegistry);
         this.plugin = plugin;
         this.reflectedPluginManager = createReflectedPluginManager(plugin);
     }
@@ -60,7 +62,7 @@ public class WaterfallListenerRegistry extends AbstractListenerRegistry<Waterfal
     }
 
     @Override
-    public void register(final WaterfallListener root, final ContextHandler<ListenerContext<? extends Event>> handler) {
+    public void register(final WaterfallListener root, final ContextHandler<WaterfallListenerContext> handler) {
         WaterfallListenerProperties properties = root.getProperties();
         byte priority = properties.getPriority();
         Iterable<Class<? extends Event>> eventTypes = properties.getListenedEvents();
@@ -70,10 +72,10 @@ public class WaterfallListenerRegistry extends AbstractListenerRegistry<Waterfal
     }
 
     @SuppressWarnings("unchecked")
-    private <E extends Event> void register(final WaterfallListener listener, final Class<? extends Event> eventType, final byte priority, final ContextHandler<ListenerContext<? extends Event>> handler) {
+    private <E extends Event> void register(final WaterfallListener listener, final Class<? extends Event> eventType, final byte priority, final ContextHandler<WaterfallListenerContext> handler) {
         Class<E> castedEventType = (Class<E>) eventType;
         WaterfallEventListener<E> eventListener = event -> {
-            ListenerContext<E> context = new ListenerContext<>(event);
+            WaterfallListenerContext context = new WaterfallListenerContext(event);
             Object listenerInstance = listener.createInstance();
             handler.handle(context, listenerInstance);
         };

@@ -28,17 +28,17 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
-import net.mcparkour.anfodis.channel.mapper.context.PaperChannelListenerContext;
-import net.mcparkour.anfodis.channel.mapper.context.PaperChannelListenerContextMapper;
+import net.mcparkour.anfodis.channel.handler.ChannelListenerContext;
 import net.mcparkour.anfodis.channel.mapper.properties.PaperChannelListenerProperties;
 import net.mcparkour.anfodis.channel.mapper.properties.PaperChannelListenerPropertiesMapper;
-import net.mcparkour.anfodis.mapper.RootMapper;
+import net.mcparkour.anfodis.mapper.AbstractRootMapper;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public class PaperChannelListenerMapper implements RootMapper<PaperChannelListener> {
+public class PaperChannelListenerMapper
+    extends AbstractRootMapper<PaperChannelListener, ChannelListenerContext> {
 
-    private static final PaperChannelListenerContextMapper CONTEXT_MAPPER = new PaperChannelListenerContextMapper();
     private static final PaperChannelListenerPropertiesMapper PROPERTIES_MAPPER = new PaperChannelListenerPropertiesMapper();
 
     @Override
@@ -47,9 +47,9 @@ public class PaperChannelListenerMapper implements RootMapper<PaperChannelListen
         Method[] methods = annotatedClass.getDeclaredMethods();
         Constructor<?> constructor = getConstructor(annotatedClass);
         List<Injection> injections = getInjections(fields);
+        List<Transform<ChannelListenerContext>> transforms = getTransforms(fields);
         Executor executor = getExecutor(methods);
-        PaperChannelListenerContext context = CONTEXT_MAPPER.map(fields);
         PaperChannelListenerProperties properties = PROPERTIES_MAPPER.map(annotatedClass);
-        return new PaperChannelListener(constructor, injections, executor, context, properties);
+        return new PaperChannelListener(constructor, injections, transforms, executor, properties);
     }
 }

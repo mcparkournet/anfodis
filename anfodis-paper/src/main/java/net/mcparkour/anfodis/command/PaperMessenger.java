@@ -31,11 +31,11 @@ import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.intext.message.MessageReceiver;
 import org.bukkit.command.CommandSender;
 
-public interface PaperMessenger extends Messenger<PaperCommand, org.bukkit.command.CommandSender> {
+public interface PaperMessenger extends Messenger<PaperCommand, CommandSender> {
 
     default void sendInvalidSenderMessage(
         final Sender<CommandSender> sender,
-        final Set<Class<? extends org.bukkit.command.CommandSender>> validSenders
+        final Set<Class<? extends CommandSender>> validSenders
     ) {
         MessageReceiver receiver = sender.getReceiver();
         String senderType = sender.getClass().getSimpleName();

@@ -31,7 +31,7 @@ import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.craftmon.permission.Permission;
 import org.bukkit.command.CommandSender;
 
-public class PaperCompletionContextBuilder extends CompletionContextBuilder<PaperCompletionContext, PaperCommand, CommandSender> {
+public class PaperCompletionContextBuilder extends CompletionContextBuilder<PaperCommand, PaperCompletionContext, CommandSender> {
 
     public PaperCompletionContextBuilder(
         final Sender<CommandSender> sender,

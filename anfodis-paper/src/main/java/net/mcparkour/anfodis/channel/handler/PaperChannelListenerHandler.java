@@ -24,32 +24,19 @@
 
 package net.mcparkour.anfodis.channel.handler;
 
-import net.mcparkour.anfodis.channel.ChannelMessage;
 import net.mcparkour.anfodis.channel.mapper.PaperChannelListener;
-import net.mcparkour.anfodis.channel.mapper.context.PaperChannelListenerContext;
-import net.mcparkour.anfodis.codec.registry.CodecRegistry;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
+import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.handler.RootHandler;
-import org.bukkit.entity.Player;
 
 public class PaperChannelListenerHandler extends RootHandler<PaperChannelListener, ChannelListenerContext> {
 
-    public PaperChannelListenerHandler(final PaperChannelListener root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
-        super(root, injectionCodecRegistry);
-    }
-
-    @Override
-    public void handle(final ChannelListenerContext context, final Object instance) {
-        setContext(context, instance);
-        super.handle(context, instance);
-    }
-
-    private void setContext(final ChannelListenerContext context, final Object channelListenerInstance) {
-        PaperChannelListener channelListener = getRoot();
-        PaperChannelListenerContext channelListenerContext = channelListener.getContext();
-        ChannelMessage message = context.getMessage();
-        channelListenerContext.setMessageField(channelListenerInstance, message);
-        Player source = context.getSource();
-        channelListenerContext.setSourceField(channelListenerInstance, source);
+    public PaperChannelListenerHandler(
+        final PaperChannelListener root,
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<ChannelListenerContext, ?>> transformCodecRegistry
+    ) {
+        super(root, injectionCodecRegistry, transformCodecRegistry);
     }
 }

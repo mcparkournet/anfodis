@@ -26,15 +26,26 @@ package net.mcparkour.anfodis.command.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import net.mcparkour.anfodis.TestCommandSender;
+import net.mcparkour.anfodis.command.context.TestCommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.TestArgument;
-import net.mcparkour.anfodis.command.mapper.context.TestContext;
 import net.mcparkour.anfodis.command.mapper.properties.TestCommandProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public class TestCommand extends CompletionCommand<TestCommand, TestArgument, TestContext, TestCommandProperties> {
+public class TestCommand
+    extends CompletionCommand<TestCommand, TestArgument, TestCommandProperties, TestCommandContext, TestCommandSender> {
 
-    public TestCommand(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final List<TestArgument> arguments, final TestContext context, final TestCommandProperties properties, final List<TestCommand> subCommands) {
-        super(constructor, injections, executor, arguments, context, properties, subCommands);
+    public TestCommand(
+        final Constructor<?> constructor,
+        final List<Injection> injections,
+        final List<Transform<TestCommandContext>> transforms,
+        final Executor executor,
+        final List<TestArgument> arguments,
+        final TestCommandProperties properties,
+        final List<TestCommand> subCommands
+    ) {
+        super(constructor, injections, transforms, executor, arguments, properties, subCommands);
     }
 }

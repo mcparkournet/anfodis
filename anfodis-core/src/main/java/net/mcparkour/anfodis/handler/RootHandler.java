@@ -24,26 +24,35 @@
 
 package net.mcparkour.anfodis.handler;
 
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.mapper.Root;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 import net.mcparkour.anfodis.result.Result;
 
-public class RootHandler<T extends Root, C extends RootContext> implements ContextHandler<C> {
+public class RootHandler<T extends Root<C>, C extends RootContext> implements ContextHandler<C> {
 
     private final T root;
     private final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
+    private final CodecRegistry<TransformCodec<C, ?>> transformCodecRegistry;
 
-    public RootHandler(final T root, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+    public RootHandler(
+        final T root,
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<C, ?>> transformCodecRegistry
+    ) {
         this.root = root;
         this.injectionCodecRegistry = injectionCodecRegistry;
+        this.transformCodecRegistry = transformCodecRegistry;
     }
 
     @Override
     public void handle(final C context, final Object instance) {
         setInjections(instance);
+        setTransforms(context, instance);
         execute(instance);
     }
 
@@ -52,6 +61,14 @@ public class RootHandler<T extends Root, C extends RootContext> implements Conte
             InjectionCodec<?> codec = injection.getCodec(this.injectionCodecRegistry);
             Object codecInjection = codec.getInjection();
             injection.setInjectionField(instance, codecInjection);
+        }
+    }
+
+    private void setTransforms(final C context, final Object instance) {
+        for (final Transform<C> transform : this.root.getTransforms()) {
+            TransformCodec<C, ?> codec = transform.getCodec(this.transformCodecRegistry);
+            Object transformed = codec.transform(context);
+            transform.setTransformField(instance, transformed);
         }
     }
 

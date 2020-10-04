@@ -26,19 +26,28 @@ package net.mcparkour.anfodis.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import net.mcparkour.anfodis.handler.RootContext;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
 import net.mcparkour.common.reflection.Reflections;
 
-public class Root {
+public class Root<C extends RootContext> {
 
     private final Constructor<?> constructor;
     private final List<Injection> injections;
+    private final List<Transform<C>> transforms;
     private final Executor executor;
 
-    public Root(final Constructor<?> constructor, final List<Injection> injections, final Executor executor) {
+    public Root(
+        final Constructor<?> constructor,
+        final List<Injection> injections,
+        final List<Transform<C>> transforms,
+        final Executor executor
+    ) {
         this.constructor = constructor;
         this.injections = injections;
+        this.transforms = transforms;
         this.executor = executor;
     }
 
@@ -48,6 +57,10 @@ public class Root {
 
     public List<Injection> getInjections() {
         return this.injections;
+    }
+
+    public List<Transform<C>> getTransforms() {
+        return this.transforms;
     }
 
     public Executor getExecutor() {

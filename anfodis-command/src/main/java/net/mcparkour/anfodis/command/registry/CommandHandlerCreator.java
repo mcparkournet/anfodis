@@ -34,7 +34,7 @@ import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import org.jetbrains.annotations.Nullable;
 
-public interface CommandHandlerCreator<T extends Command<T, ?, ?, ?>, C extends CommandContext<T, S>, B extends CommandContextBuilder<C, T, S>, S, M extends Messenger<T, S>> {
+public interface CommandHandlerCreator<T extends Command<T, ?, ?, ?, S>, C extends CommandContext<T, S>, B extends CommandContextBuilder<T, C, S>, S, M extends Messenger<T, S>> {
 
     CommandContextBuilderHandler<B, C> create(
         T command,

@@ -26,23 +26,25 @@ package net.mcparkour.anfodis.command.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import net.mcparkour.anfodis.command.ChannelSender;
+import net.mcparkour.anfodis.command.context.JDACommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.JDAArgument;
-import net.mcparkour.anfodis.command.mapper.context.JDAContext;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public class JDACommand extends Command<JDACommand, JDAArgument, JDAContext, JDACommandProperties> {
+public class JDACommand extends Command<JDACommand, JDAArgument, JDACommandProperties, JDACommandContext, ChannelSender> {
 
     public JDACommand(
         final Constructor<?> constructor,
         final List<Injection> injections,
+        final List<Transform<JDACommandContext>> transforms,
         final Executor executor,
         final List<JDAArgument> arguments,
-        final JDAContext context,
         final JDACommandProperties properties,
         final List<JDACommand> subCommands
     ) {
-        super(constructor, injections, executor, arguments, context, properties, subCommands);
+        super(constructor, injections, transforms, executor, arguments, properties, subCommands);
     }
 }

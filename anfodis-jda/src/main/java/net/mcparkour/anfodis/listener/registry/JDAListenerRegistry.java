@@ -27,28 +27,35 @@ package net.mcparkour.anfodis.listener.registry;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.listener.annotation.properties.Listener;
+import net.mcparkour.anfodis.listener.context.JDAListenerContext;
 import net.mcparkour.anfodis.listener.handler.ListenerContext;
 import net.mcparkour.anfodis.listener.mapper.JDAListener;
 import net.mcparkour.anfodis.listener.mapper.JDAListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerProperties;
 
-public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, ListenerContext<? extends GenericEvent>> {
+public class JDAListenerRegistry
+    extends AbstractListenerRegistry<JDAListener, JDAListenerContext, GenericEvent> {
 
     private static final JDAListenerMapper LISTENER_MAPPER = new JDAListenerMapper();
 
     private final JDA jda;
 
-    public JDAListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final JDA jda) {
-        super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);
+    public JDAListenerRegistry(
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<JDAListenerContext, ?>> transformCodecRegistry,
+        final JDA jda
+    ) {
+        super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry, transformCodecRegistry);
         this.jda = jda;
     }
 
     @Override
-    public void register(final JDAListener root, final ContextHandler<ListenerContext<? extends GenericEvent>> handler) {
+    public void register(final JDAListener root, final ContextHandler<JDAListenerContext> handler) {
         JDAListenerProperties properties = root.getProperties();
         Iterable<Class<? extends GenericEvent>> eventTypes = properties.getListenedEvents();
         for (final Class<? extends GenericEvent> eventType : eventTypes) {
@@ -57,10 +64,10 @@ public class JDAListenerRegistry extends AbstractListenerRegistry<JDAListener, L
     }
 
     @SuppressWarnings("unchecked")
-    private <E extends GenericEvent> void register(final JDAListener listener, final Class<? extends GenericEvent> eventType, final ContextHandler<ListenerContext<? extends GenericEvent>> handler) {
+    private <E extends GenericEvent> void register(final JDAListener listener, final Class<? extends GenericEvent> eventType, final ContextHandler<JDAListenerContext> handler) {
         Class<E> castedEventType = (Class<E>) eventType;
         JDAEventListener<E> eventListener = event -> {
-            ListenerContext<E> context = new ListenerContext<>(event);
+            JDAListenerContext context = new JDAListenerContext(event);
             Object listenerInstance = listener.createInstance();
             handler.handle(context, listenerInstance);
         };
