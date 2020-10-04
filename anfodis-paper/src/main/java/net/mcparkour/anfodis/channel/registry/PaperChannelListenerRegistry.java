@@ -40,7 +40,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
-public class PaperChannelListenerRegistry extends AbstractRegistry<PaperChannelListener, ChannelListenerContext> {
+public class PaperChannelListenerRegistry
+    extends AbstractRegistry<PaperChannelListener, ChannelListenerContext> {
 
     private static final PaperChannelListenerMapper CHANNEL_LISTENER_MAPPER = new PaperChannelListenerMapper();
 

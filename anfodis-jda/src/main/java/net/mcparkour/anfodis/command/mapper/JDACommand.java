@@ -34,7 +34,15 @@ import net.mcparkour.anfodis.mapper.injection.Injection;
 
 public class JDACommand extends Command<JDACommand, JDAArgument, JDAContext, JDACommandProperties> {
 
-    public JDACommand(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final List<JDAArgument> arguments, final JDAContext context, final JDACommandProperties properties, final List<JDACommand> subCommands) {
+    public JDACommand(
+        final Constructor<?> constructor,
+        final List<Injection> injections,
+        final Executor executor,
+        final List<JDAArgument> arguments,
+        final JDAContext context,
+        final JDACommandProperties properties,
+        final List<JDACommand> subCommands
+    ) {
         super(constructor, injections, executor, arguments, context, properties, subCommands);
     }
 }

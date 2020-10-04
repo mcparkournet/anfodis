@@ -37,7 +37,13 @@ public class PaperChannelListener extends Root {
     private final PaperChannelListenerContext context;
     private final PaperChannelListenerProperties properties;
 
-    public PaperChannelListener(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final PaperChannelListenerContext context, final PaperChannelListenerProperties properties) {
+    public PaperChannelListener(
+        final Constructor<?> constructor,
+        final List<Injection> injections,
+        final Executor executor,
+        final PaperChannelListenerContext context,
+        final PaperChannelListenerProperties properties
+    ) {
         super(constructor, injections, executor);
         this.context = context;
         this.properties = properties;

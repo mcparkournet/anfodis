@@ -38,11 +38,20 @@ public abstract class AbstractListenerRegistry<T extends Listener<?, ?>, C exten
 
     private final ListenerHandlerSupplier<T, C> listenerHandlerSupplier;
 
-    public AbstractListenerRegistry(final Class<? extends Annotation> annotation, final RootMapper<T> mapper, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+    public AbstractListenerRegistry(
+        final Class<? extends Annotation> annotation,
+        final RootMapper<T> mapper,
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry
+    ) {
         this(annotation, mapper, ListenerHandler::new, injectionCodecRegistry);
     }
 
-    public AbstractListenerRegistry(final Class<? extends Annotation> annotation, final RootMapper<T> mapper, final ListenerHandlerSupplier<T, C> listenerHandlerSupplier, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+    public AbstractListenerRegistry(
+        final Class<? extends Annotation> annotation,
+        final RootMapper<T> mapper,
+        final ListenerHandlerSupplier<T, C> listenerHandlerSupplier,
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry
+    ) {
         super(annotation, mapper, injectionCodecRegistry);
         this.listenerHandlerSupplier = listenerHandlerSupplier;
     }
