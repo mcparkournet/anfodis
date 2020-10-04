@@ -32,7 +32,7 @@ import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.craftmon.permission.Permission;
 
-public interface CommandContextCreator<T extends Command<T, ?, ?, ?>, C extends CommandContext<T, S>, S> {
+public interface CommandContextCreator<T extends Command<T, ?, ?, ?, S>, C extends CommandContext<T, S>, S> {
 
     C create(
         Sender<S> sender,

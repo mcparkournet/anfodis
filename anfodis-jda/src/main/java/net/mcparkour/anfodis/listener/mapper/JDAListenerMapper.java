@@ -24,17 +24,16 @@
 
 package net.mcparkour.anfodis.listener.mapper;
 
-import net.mcparkour.anfodis.listener.mapper.context.JDAContext;
-import net.mcparkour.anfodis.listener.mapper.context.JDAContextMapper;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.mcparkour.anfodis.listener.context.JDAListenerContext;
 import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.JDAListenerPropertiesMapper;
 
-public class JDAListenerMapper extends ListenerMapper<JDAListener, JDAContext, JDAListenerProperties> {
+public class JDAListenerMapper extends ListenerMapper<JDAListener, JDAListenerProperties, JDAListenerContext, GenericEvent> {
 
-    private static final JDAContextMapper CONTEXT_MAPPER = new JDAContextMapper();
     private static final JDAListenerPropertiesMapper PROPERTIES_MAPPER = new JDAListenerPropertiesMapper();
 
     public JDAListenerMapper() {
-        super(CONTEXT_MAPPER, PROPERTIES_MAPPER, JDAListener::new);
+        super(PROPERTIES_MAPPER, JDAListener::new);
     }
 }

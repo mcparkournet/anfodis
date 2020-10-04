@@ -24,10 +24,12 @@
 
 package net.mcparkour.anfodis.listener.registry;
 
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.listener.annotation.properties.Listener;
+import net.mcparkour.anfodis.listener.context.PaperListenerContext;
 import net.mcparkour.anfodis.listener.handler.ListenerContext;
 import net.mcparkour.anfodis.listener.mapper.PaperListener;
 import net.mcparkour.anfodis.listener.mapper.PaperListenerMapper;
@@ -39,7 +41,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListener, ListenerContext<? extends Event>> {
+public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListener, PaperListenerContext, Event> {
 
     private static final PaperListenerMapper LISTENER_MAPPER = new PaperListenerMapper();
     private static final org.bukkit.event.Listener EMPTY_LISTENER = new org.bukkit.event.Listener() {};
@@ -47,15 +49,15 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
     private final Plugin plugin;
     private final PluginManager pluginManager;
 
-    public PaperListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final Plugin plugin) {
-        super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);
+    public PaperListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final CodecRegistry<TransformCodec<PaperListenerContext, ?>> transformCodecRegistry, final Plugin plugin) {
+        super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry, transformCodecRegistry);
         this.plugin = plugin;
         Server server = plugin.getServer();
         this.pluginManager = server.getPluginManager();
     }
 
     @Override
-    public void register(final PaperListener root, final ContextHandler<ListenerContext<? extends Event>> handler) {
+    public void register(final PaperListener root, final ContextHandler<PaperListenerContext> handler) {
         PaperListenerProperties properties = root.getProperties();
         EventPriority priority = properties.getPriority();
         boolean ignoreCancelled = properties.isIgnoreCancelled();
@@ -66,10 +68,10 @@ public class PaperListenerRegistry extends AbstractListenerRegistry<PaperListene
     }
 
     @SuppressWarnings("unchecked")
-    private <E extends Event> void register(final PaperListener listener, final Class<? extends Event> eventType, final EventPriority priority, final boolean ignoreCancelled, final ContextHandler<ListenerContext<? extends Event>> handler) {
+    private <E extends Event> void register(final PaperListener listener, final Class<? extends Event> eventType, final EventPriority priority, final boolean ignoreCancelled, final ContextHandler<PaperListenerContext> handler) {
         Class<E> castedEventType = (Class<E>) eventType;
         PaperEventListener<E> eventListener = event -> {
-            ListenerContext<E> context = new ListenerContext<>(event);
+            PaperListenerContext context = new PaperListenerContext(event);
             Object listenerInstance = listener.createInstance();
             handler.handle(context, listenerInstance);
         };

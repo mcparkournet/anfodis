@@ -24,17 +24,17 @@
 
 package net.mcparkour.anfodis.listener.mapper;
 
-import net.mcparkour.anfodis.listener.mapper.context.PaperContext;
-import net.mcparkour.anfodis.listener.mapper.context.PaperContextMapper;
+import net.mcparkour.anfodis.listener.context.PaperListenerContext;
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.PaperListenerPropertiesMapper;
+import org.bukkit.event.Event;
 
-public class PaperListenerMapper extends ListenerMapper<PaperListener, PaperContext, PaperListenerProperties> {
+public class PaperListenerMapper
+    extends ListenerMapper<PaperListener, PaperListenerProperties, PaperListenerContext, Event> {
 
-    private static final PaperContextMapper CONTEXT_MAPPER = new PaperContextMapper();
     private static final PaperListenerPropertiesMapper PROPERTIES_MAPPER = new PaperListenerPropertiesMapper();
 
     public PaperListenerMapper() {
-        super(CONTEXT_MAPPER, PROPERTIES_MAPPER, PaperListener::new);
+        super(PROPERTIES_MAPPER, PaperListener::new);
     }
 }

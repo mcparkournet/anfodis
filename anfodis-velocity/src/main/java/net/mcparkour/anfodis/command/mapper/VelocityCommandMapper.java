@@ -24,20 +24,20 @@
 
 package net.mcparkour.anfodis.command.mapper;
 
+import com.velocitypowered.api.command.CommandSource;
+import net.mcparkour.anfodis.command.context.VelocityCommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.VelocityArgument;
 import net.mcparkour.anfodis.command.mapper.argument.VelocityArgumentMapper;
-import net.mcparkour.anfodis.command.mapper.context.VelocityContext;
-import net.mcparkour.anfodis.command.mapper.context.VelocityContextMapper;
 import net.mcparkour.anfodis.command.mapper.properties.VelocityCommandProperties;
 import net.mcparkour.anfodis.command.mapper.properties.VelocityCommandPropertiesMapper;
 
-public class VelocityCommandMapper extends CommandMapper<VelocityCommand, VelocityArgument, VelocityContext, VelocityCommandProperties> {
+public class VelocityCommandMapper
+    extends CommandMapper<VelocityCommand, VelocityArgument, VelocityCommandProperties, VelocityCommandContext, CommandSource> {
 
     private static final VelocityArgumentMapper ARGUMENT_MAPPER = new VelocityArgumentMapper();
-    private static final VelocityContextMapper CONTEXT_MAPPER = new VelocityContextMapper();
     private static final VelocityCommandPropertiesMapper PROPERTIES_MAPPER = new VelocityCommandPropertiesMapper();
 
     public VelocityCommandMapper() {
-        super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, VelocityCommand::new);
+        super(ARGUMENT_MAPPER, PROPERTIES_MAPPER, VelocityCommand::new);
     }
 }

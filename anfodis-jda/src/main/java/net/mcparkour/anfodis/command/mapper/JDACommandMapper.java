@@ -24,20 +24,20 @@
 
 package net.mcparkour.anfodis.command.mapper;
 
+import net.mcparkour.anfodis.command.ChannelSender;
+import net.mcparkour.anfodis.command.context.JDACommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.JDAArgument;
 import net.mcparkour.anfodis.command.mapper.argument.JDAArgumentMapper;
-import net.mcparkour.anfodis.command.mapper.context.JDAContext;
-import net.mcparkour.anfodis.command.mapper.context.JDAContextMapper;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandProperties;
 import net.mcparkour.anfodis.command.mapper.properties.JDACommandPropertiesMapper;
 
-public class JDACommandMapper extends CommandMapper<JDACommand, JDAArgument, JDAContext, JDACommandProperties> {
+public class JDACommandMapper
+    extends CommandMapper<JDACommand, JDAArgument, JDACommandProperties, JDACommandContext, ChannelSender> {
 
     private static final JDAArgumentMapper ARGUMENT_MAPPER = new JDAArgumentMapper();
-    private static final JDAContextMapper CONTEXT_MAPPER = new JDAContextMapper();
     private static final JDACommandPropertiesMapper PROPERTIES_MAPPER = new JDACommandPropertiesMapper();
 
     public JDACommandMapper() {
-        super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, JDACommand::new);
+        super(ARGUMENT_MAPPER, PROPERTIES_MAPPER, JDACommand::new);
     }
 }

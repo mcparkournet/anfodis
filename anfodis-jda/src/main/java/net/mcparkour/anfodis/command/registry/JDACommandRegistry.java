@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command.registry;
 
 import net.dv8tion.jda.api.JDA;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.ChannelSender;
@@ -52,6 +53,7 @@ public class JDACommandRegistry
 
     public JDACommandRegistry(
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<JDACommandContext, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final MessageReceiverFactory<ChannelSender> messageReceiverFactory,
         final JDAMessenger messenger,
@@ -65,6 +67,7 @@ public class JDACommandRegistry
             CommandExecutorHandler::new,
             JDACommandContext::new,
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             messageReceiverFactory,
             messenger,

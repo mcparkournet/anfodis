@@ -24,32 +24,9 @@
 
 package net.mcparkour.anfodis.mapper;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.List;
-import net.mcparkour.anfodis.mapper.executor.Executor;
-import net.mcparkour.anfodis.mapper.executor.ExecutorMapper;
-import net.mcparkour.anfodis.mapper.injection.Injection;
-import net.mcparkour.anfodis.mapper.injection.InjectionMapper;
-import net.mcparkour.common.reflection.Reflections;
+import net.mcparkour.anfodis.handler.RootContext;
 
-public interface RootMapper<T extends Root> {
-
-    InjectionMapper INJECTION_MAPPER = new InjectionMapper();
-    ExecutorMapper EXECUTOR_MAPPER = new ExecutorMapper();
+public interface RootMapper<T extends Root<C>, C extends RootContext> {
 
     T map(Class<?> annotatedClass);
-
-    default Constructor<?> getConstructor(final Class<?> type) {
-        return Reflections.getSerializationConstructor(type);
-    }
-
-    default List<Injection> getInjections(final Field[] fields) {
-        return INJECTION_MAPPER.map(fields);
-    }
-
-    default Executor getExecutor(final Method[] methods) {
-        return EXECUTOR_MAPPER.map(methods);
-    }
 }

@@ -25,12 +25,13 @@
 package net.mcparkour.anfodis;
 
 import net.mcparkour.anfodis.annotation.executor.Executor;
+import net.mcparkour.anfodis.annotation.transform.Transform;
+import net.mcparkour.anfodis.annotation.transform.TransformCodec;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
 import net.mcparkour.anfodis.command.annotation.argument.ArgumentPermission;
 import net.mcparkour.anfodis.command.annotation.argument.Completion;
 import net.mcparkour.anfodis.command.annotation.argument.CompletionCodec;
 import net.mcparkour.anfodis.command.annotation.argument.Optional;
-import net.mcparkour.anfodis.command.annotation.context.Receiver;
 import net.mcparkour.anfodis.command.annotation.properties.Command;
 import net.mcparkour.anfodis.command.annotation.properties.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
@@ -39,7 +40,8 @@ import net.mcparkour.intext.message.MessageReceiver;
 @Permission
 public class TestArgumentPermissionCommand {
 
-    @Receiver
+    @Transform
+    @TransformCodec(ReceiverTransformCodec.class)
     private MessageReceiver receiver;
 
     @Argument

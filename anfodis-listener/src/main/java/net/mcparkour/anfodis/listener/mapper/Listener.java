@@ -26,31 +26,26 @@ package net.mcparkour.anfodis.listener.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
-import net.mcparkour.anfodis.listener.mapper.context.Context;
+import net.mcparkour.anfodis.listener.handler.ListenerContext;
 import net.mcparkour.anfodis.listener.mapper.properties.ListenerProperties;
 import net.mcparkour.anfodis.mapper.Root;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public class Listener<C extends Context, P extends ListenerProperties<?>> extends Root {
+public class Listener<P extends ListenerProperties<E>, C extends ListenerContext<? extends E>, E> extends Root<C> {
 
-    private final C context;
     private final P properties;
 
     public Listener(
         final Constructor<?> constructor,
         final List<Injection> injections,
+        final List<Transform<C>> transforms,
         final Executor executor,
-        final C context,
         final P properties
     ) {
-        super(constructor, injections, executor);
-        this.context = context;
+        super(constructor, injections, transforms, executor);
         this.properties = properties;
-    }
-
-    public C getContext() {
-        return this.context;
     }
 
     public P getProperties() {

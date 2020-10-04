@@ -29,7 +29,7 @@ import net.mcparkour.anfodis.command.context.CommandContextBuilder;
 import net.mcparkour.craftmon.scheduler.Scheduler;
 
 @FunctionalInterface
-public interface CommandContextBuilderHandler<B extends CommandContextBuilder<C, ?, ?>, C extends CommandContext<?, ?>> {
+public interface CommandContextBuilderHandler<B extends CommandContextBuilder<?, C, ?>, C extends CommandContext<?, ?>> {
 
     void handle(B contextBuilder);
 }

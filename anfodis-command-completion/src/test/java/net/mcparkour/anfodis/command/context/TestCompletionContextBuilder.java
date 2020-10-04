@@ -31,7 +31,7 @@ import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.TestCommand;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class TestCompletionContextBuilder extends CompletionContextBuilder<TestCompletionContext, TestCommand, TestCommandSender> {
+public class TestCompletionContextBuilder extends CompletionContextBuilder<TestCommand, TestCompletionContext, TestCommandSender> {
 
     public TestCompletionContextBuilder(
         final Sender<TestCommandSender> sender,

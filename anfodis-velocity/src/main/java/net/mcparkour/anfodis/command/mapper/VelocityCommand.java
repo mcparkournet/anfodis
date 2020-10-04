@@ -26,15 +26,26 @@ package net.mcparkour.anfodis.command.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import com.velocitypowered.api.command.CommandSource;
+import net.mcparkour.anfodis.command.context.VelocityCommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.VelocityArgument;
-import net.mcparkour.anfodis.command.mapper.context.VelocityContext;
 import net.mcparkour.anfodis.command.mapper.properties.VelocityCommandProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public class VelocityCommand extends CompletionCommand<VelocityCommand, VelocityArgument, VelocityContext, VelocityCommandProperties> {
+public class VelocityCommand
+    extends CompletionCommand<VelocityCommand, VelocityArgument, VelocityCommandProperties, VelocityCommandContext, CommandSource> {
 
-    public VelocityCommand(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final List<VelocityArgument> arguments, final VelocityContext context, final VelocityCommandProperties properties, final List<VelocityCommand> subCommands) {
-        super(constructor, injections, executor, arguments, context, properties, subCommands);
+    public VelocityCommand(
+        final Constructor<?> constructor,
+        final List<Injection> injections,
+        final List<Transform<VelocityCommandContext>> transforms,
+        final Executor executor,
+        final List<VelocityArgument> arguments,
+        final VelocityCommandProperties properties,
+        final List<VelocityCommand> subCommands
+    ) {
+        super(constructor, injections, transforms, executor, arguments, properties, subCommands);
     }
 }

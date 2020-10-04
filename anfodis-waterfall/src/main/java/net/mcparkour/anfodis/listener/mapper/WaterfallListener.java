@@ -26,14 +26,22 @@ package net.mcparkour.anfodis.listener.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
-import net.mcparkour.anfodis.listener.mapper.context.WaterfallContext;
+import net.mcparkour.anfodis.listener.context.WaterfallListenerContext;
 import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerProperties;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
+import net.md_5.bungee.api.plugin.Event;
 
-public class WaterfallListener extends Listener<WaterfallContext, WaterfallListenerProperties> {
+public class WaterfallListener extends Listener<WaterfallListenerProperties, WaterfallListenerContext, Event> {
 
-    public WaterfallListener(final Constructor<?> constructor, final List<Injection> injections, final Executor executor, final WaterfallContext context, final WaterfallListenerProperties properties) {
-        super(constructor, injections, executor, context, properties);
+    public WaterfallListener(
+        final Constructor<?> constructor,
+        final List<Injection> injections,
+        final List<Transform<WaterfallListenerContext>> transforms,
+        final Executor executor,
+        final WaterfallListenerProperties properties
+    ) {
+        super(constructor, injections, transforms, executor, properties);
     }
 }

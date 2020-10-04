@@ -27,7 +27,7 @@ package net.mcparkour.anfodis.command.handler;
 import java.util.List;
 
 @FunctionalInterface
-public interface CompletionContextBuilderHandler<B extends CompletionContextBuilder<C, ?, ?>, C extends CompletionContext<?, ?>> {
+public interface CompletionContextBuilderHandler<B extends CompletionContextBuilder<?, C, ?>, C extends CompletionContext<?, ?>> {
 
     List<String> handle(B contextBuilder);
 }

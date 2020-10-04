@@ -30,7 +30,7 @@ import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class JDACommandContextBuilder extends CommandContextBuilder<JDACommandContext, JDACommand, ChannelSender> {
+public class JDACommandContextBuilder extends CommandContextBuilder<JDACommand, JDACommandContext, ChannelSender> {
 
     public JDACommandContextBuilder(
         final Sender<ChannelSender> sender,

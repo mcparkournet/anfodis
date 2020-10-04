@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.registry;
 
 import java.lang.annotation.Annotation;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.ContextHandler;
@@ -32,20 +33,23 @@ import net.mcparkour.anfodis.handler.RootContext;
 import net.mcparkour.anfodis.mapper.Root;
 import net.mcparkour.anfodis.mapper.RootMapper;
 
-public abstract class AbstractRegistry<T extends Root, C extends RootContext> implements Registry {
+public abstract class AbstractRegistry<T extends Root<C>, C extends RootContext> implements Registry {
 
     private final Class<? extends Annotation> annotationClass;
-    private final RootMapper<T> mapper;
+    private final RootMapper<T, C> mapper;
     private final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
+    private final CodecRegistry<TransformCodec<C, ?>> transformCodecRegistry;
 
     public AbstractRegistry(
         final Class<? extends Annotation> annotation,
-        final RootMapper<T> mapper,
-        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry
+        final RootMapper<T, C> mapper,
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<C, ?>> transformCodecRegistry
     ) {
         this.annotationClass = annotation;
         this.mapper = mapper;
         this.injectionCodecRegistry = injectionCodecRegistry;
+        this.transformCodecRegistry = transformCodecRegistry;
     }
 
     @Override
@@ -63,5 +67,9 @@ public abstract class AbstractRegistry<T extends Root, C extends RootContext> im
 
     protected CodecRegistry<InjectionCodec<?>> getInjectionCodecRegistry() {
         return this.injectionCodecRegistry;
+    }
+
+    protected CodecRegistry<TransformCodec<C, ?>> getTransformCodecRegistry() {
+        return this.transformCodecRegistry;
     }
 }

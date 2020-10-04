@@ -33,7 +33,7 @@ import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 
-public interface Messenger<T extends Command<T, ?, ?, ?>, S> {
+public interface Messenger<T extends Command<T, ?, ?, ?, S>, S> {
 
     default void sendNoPermissionMessage(final Sender<S> sender, final Permission permission) {
         MessageReceiver receiver = sender.getReceiver();

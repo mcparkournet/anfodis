@@ -24,17 +24,17 @@
 
 package net.mcparkour.anfodis.listener.mapper;
 
-import net.mcparkour.anfodis.listener.mapper.context.WaterfallContext;
-import net.mcparkour.anfodis.listener.mapper.context.WaterfallContextMapper;
+import net.mcparkour.anfodis.listener.context.WaterfallListenerContext;
 import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerProperties;
 import net.mcparkour.anfodis.listener.mapper.properties.WaterfallListenerPropertiesMapper;
+import net.md_5.bungee.api.plugin.Event;
 
-public class WaterfallListenerMapper extends ListenerMapper<WaterfallListener, WaterfallContext, WaterfallListenerProperties> {
+public class WaterfallListenerMapper
+    extends ListenerMapper<WaterfallListener, WaterfallListenerProperties, WaterfallListenerContext, Event> {
 
-    private static final WaterfallContextMapper CONTEXT_MAPPER = new WaterfallContextMapper();
     private static final WaterfallListenerPropertiesMapper PROPERTIES_MAPPER = new WaterfallListenerPropertiesMapper();
 
     public WaterfallListenerMapper() {
-        super(CONTEXT_MAPPER, PROPERTIES_MAPPER, WaterfallListener::new);
+        super(PROPERTIES_MAPPER, WaterfallListener::new);
     }
 }

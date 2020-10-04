@@ -29,30 +29,32 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.argument.ArgumentMapper;
-import net.mcparkour.anfodis.command.mapper.context.Context;
-import net.mcparkour.anfodis.command.mapper.context.ContextMapper;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.command.mapper.properties.CommandPropertiesMapper;
 import net.mcparkour.anfodis.command.mapper.subcommand.SubCommand;
 import net.mcparkour.anfodis.command.mapper.subcommand.SubCommandMapper;
-import net.mcparkour.anfodis.mapper.RootMapper;
+import net.mcparkour.anfodis.mapper.AbstractRootMapper;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public class CommandMapper<T extends Command<T, A, C, P>, A extends Argument, C extends Context, P extends CommandProperties> implements RootMapper<T> {
+public class CommandMapper<T extends Command<T, A, P, C, S>, A extends Argument, P extends CommandProperties, C extends CommandContext<T, S>, S> extends AbstractRootMapper<T, C> {
 
     private static final SubCommandMapper SUB_COMMAND_MAPPER = new SubCommandMapper();
 
     private final ArgumentMapper<A, ?> argumentMapper;
-    private final ContextMapper<C, ?> contextMapper;
     private final CommandPropertiesMapper<P, ?> propertiesMapper;
-    private final CommandMerger<T, A, C, P> commandMerger;
+    private final CommandMerger<T, A, P, C, S> commandMerger;
 
-    public CommandMapper(final ArgumentMapper<A, ?> argumentMapper, final ContextMapper<C, ?> contextMapper, final CommandPropertiesMapper<P, ?> propertiesMapper, final CommandMerger<T, A, C, P> commandMerger) {
+    public CommandMapper(
+        final ArgumentMapper<A, ?> argumentMapper,
+        final CommandPropertiesMapper<P, ?> propertiesMapper,
+        final CommandMerger<T, A, P, C, S> commandMerger
+    ) {
         this.argumentMapper = argumentMapper;
-        this.contextMapper = contextMapper;
         this.propertiesMapper = propertiesMapper;
         this.commandMerger = commandMerger;
     }
@@ -63,20 +65,16 @@ public class CommandMapper<T extends Command<T, A, C, P>, A extends Argument, C 
         Method[] methods = annotatedClass.getDeclaredMethods();
         Constructor<?> constructor = getConstructor(annotatedClass);
         List<Injection> injections = getInjections(fields);
+        List<Transform<C>> transforms = getTransforms(fields);
         Executor executor = getExecutor(methods);
         List<A> arguments = getArguments(fields);
-        C context = getContext(fields);
         P properties = getProperties(annotatedClass);
         List<T> subCommands = getSubCommands(fields);
-        return this.commandMerger.merge(constructor, injections, executor, arguments, context, properties, subCommands);
+        return this.commandMerger.merge(constructor, injections, transforms, executor, arguments, properties, subCommands);
     }
 
     private List<A> getArguments(final Field[] fields) {
         return this.argumentMapper.map(fields);
-    }
-
-    private C getContext(final Field[] fields) {
-        return this.contextMapper.map(fields);
     }
 
     private P getProperties(final Class<?> commandClass) {

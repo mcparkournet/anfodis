@@ -29,16 +29,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.TestMessenger;
+import net.mcparkour.anfodis.command.codec.TestTransformCodec;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
+import net.mcparkour.anfodis.command.context.TestCommandContext;
 import net.mcparkour.anfodis.command.registry.CommandWrapper;
 import net.mcparkour.anfodis.command.registry.TestCommandRegistry;
 import net.mcparkour.anfodis.registry.Registry;
 import net.mcparkour.craftmon.permission.Permission;
+import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 import net.mcparkour.intext.translation.TranslatedText;
 import net.mcparkour.intext.translation.Translation;
@@ -71,6 +75,12 @@ public class CommandCompletionTest {
             .self(TestInjectionCodec1.class, new TestInjectionCodec1())
             .self(TestInjectionCodec2.class, new TestInjectionCodec2())
             .build();
+        CodecRegistry<TransformCodec<TestCommandContext, ?>> transformCodecRegistry = CodecRegistry.<TransformCodec<TestCommandContext, ?>>builder()
+            .typed(MessageReceiver.class, new ReceiverTransformCodec())
+            .self(ReceiverTransformCodec.class, new ReceiverTransformCodec())
+            .typed(TestCommandSender.class, new SenderTransformCodec())
+            .self(ArgumentsTransformCodec.class, new ArgumentsTransformCodec())
+            .build();
         CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry = CodecRegistry.<ArgumentCodec<?>>builder()
             .typed(String.class, ArgumentCodec.identity())
             .typed(Integer.class, (commandContext, argumentContext, argumentValue) -> Result.ok(Integer.parseInt(argumentValue)))
@@ -82,7 +92,7 @@ public class CommandCompletionTest {
             .typed(Locale.class, CompletionCodec.entries("en-US", "pl-PL"))
             .self(ArgsCompletionCodec.class, new ArgsCompletionCodec())
             .build();
-        this.commandRegistry = new TestCommandRegistry(injectionCodecRegistry, argumentCodecRegistry, completionCodecRegistry, receiverFactory, messenger, Permission.of("test"), this.commandManager);
+        this.commandRegistry = new TestCommandRegistry(injectionCodecRegistry, transformCodecRegistry, argumentCodecRegistry, completionCodecRegistry, receiverFactory, messenger, Permission.of("test"), this.commandManager);
     }
 
     @Test

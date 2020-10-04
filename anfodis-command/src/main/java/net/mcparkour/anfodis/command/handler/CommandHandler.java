@@ -42,7 +42,7 @@ import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<T, S>, B extends CommandContextBuilder<C, T, S>, S, M extends Messenger<T, S>>
+public class CommandHandler<T extends Command<T, ?, ?, C, S>, C extends CommandContext<T, S>, B extends CommandContextBuilder<T, C, S>, S, M extends Messenger<T, S>>
     implements CommandContextBuilderHandler<B, C> {
 
     private final T command;
@@ -114,7 +114,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
             this.messenger.sendCommandUsageMessage(sender, this.command);
             return;
         }
-        Optional<Permission> argumentPermissionOptional = checkArgumentPermission(contextBuilder);
+        Optional<Permission> argumentPermissionOptional = getMissingArgumentPermission(contextBuilder);
         if (argumentPermissionOptional.isPresent()) {
             Permission argumentPermission = argumentPermissionOptional.get();
             this.messenger.sendNoPermissionMessage(sender, argumentPermission);
@@ -137,7 +137,7 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         return argumentsLength >= minimumSize && argumentsLength <= maximumSize;
     }
 
-    private Optional<Permission> checkArgumentPermission(final B contextBuilder) {
+    private Optional<Permission> getMissingArgumentPermission(final B contextBuilder) {
         Permissible permissible = contextBuilder.getSender();
         Permission contextPermission = contextBuilder.getPermission();
         int argumentsSize = contextBuilder.getArgumentsSize();

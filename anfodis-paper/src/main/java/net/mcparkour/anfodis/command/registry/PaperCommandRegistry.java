@@ -27,6 +27,7 @@ package net.mcparkour.anfodis.command.registry;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.command.PaperMessenger;
@@ -66,6 +67,7 @@ public class PaperCommandRegistry
 
     public PaperCommandRegistry(
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<PaperCommandContext, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
@@ -74,6 +76,7 @@ public class PaperCommandRegistry
     ) {
         this(
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
@@ -85,6 +88,7 @@ public class PaperCommandRegistry
 
     public PaperCommandRegistry(
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<PaperCommandContext, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
@@ -94,6 +98,7 @@ public class PaperCommandRegistry
     ) {
         this(
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,
@@ -107,6 +112,7 @@ public class PaperCommandRegistry
 
     public PaperCommandRegistry(
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<PaperCommandContext, ?>> transformCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
         final MessageReceiverFactory<CommandSender> messageReceiverFactory,
@@ -124,6 +130,7 @@ public class PaperCommandRegistry
             CompletionHandler::new,
             PaperCompletionContext::new,
             injectionCodecRegistry,
+            transformCodecRegistry,
             argumentCodecRegistry,
             completionCodecRegistry,
             messageReceiverFactory,

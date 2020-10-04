@@ -24,20 +24,20 @@
 
 package net.mcparkour.anfodis.command.mapper;
 
+import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.WaterfallArgument;
 import net.mcparkour.anfodis.command.mapper.argument.WaterfallArgumentMapper;
-import net.mcparkour.anfodis.command.mapper.context.WaterfallContext;
-import net.mcparkour.anfodis.command.mapper.context.WaterfallContextMapper;
 import net.mcparkour.anfodis.command.mapper.properties.WaterfallCommandProperties;
 import net.mcparkour.anfodis.command.mapper.properties.WaterfallCommandPropertiesMapper;
+import net.md_5.bungee.api.CommandSender;
 
-public class WaterfallCommandMapper extends CommandMapper<WaterfallCommand, WaterfallArgument, WaterfallContext, WaterfallCommandProperties> {
+public class WaterfallCommandMapper
+    extends CommandMapper<WaterfallCommand, WaterfallArgument, WaterfallCommandProperties, WaterfallCommandContext, CommandSender> {
 
     private static final WaterfallArgumentMapper ARGUMENT_MAPPER = new WaterfallArgumentMapper();
-    private static final WaterfallContextMapper CONTEXT_MAPPER = new WaterfallContextMapper();
     private static final WaterfallCommandPropertiesMapper PROPERTIES_MAPPER = new WaterfallCommandPropertiesMapper();
 
     public WaterfallCommandMapper() {
-        super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, WaterfallCommand::new);
+        super(ARGUMENT_MAPPER, PROPERTIES_MAPPER, WaterfallCommand::new);
     }
 }

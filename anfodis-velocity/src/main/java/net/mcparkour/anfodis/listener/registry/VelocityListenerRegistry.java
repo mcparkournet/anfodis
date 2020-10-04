@@ -28,34 +28,46 @@ import com.velocitypowered.api.event.EventHandler;
 import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.proxy.ProxyServer;
+import net.mcparkour.anfodis.codec.context.TransformCodec;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.codec.injection.InjectionCodec;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.anfodis.listener.annotation.properties.Listener;
+import net.mcparkour.anfodis.listener.context.VelocityListenerContext;
 import net.mcparkour.anfodis.listener.handler.ListenerContext;
 import net.mcparkour.anfodis.listener.mapper.VelocityListener;
 import net.mcparkour.anfodis.listener.mapper.VelocityListenerMapper;
 import net.mcparkour.anfodis.listener.mapper.properties.VelocityListenerProperties;
 
-public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityListener, ListenerContext<?>> {
+public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityListener, VelocityListenerContext, Object> {
 
     private static final VelocityListenerMapper LISTENER_MAPPER = new VelocityListenerMapper();
 
     private final EventManager eventManager;
     private final Object plugin;
 
-    public VelocityListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final ProxyServer server, final Object plugin) {
-        this(injectionCodecRegistry, server.getEventManager(), plugin);
+    public VelocityListenerRegistry(
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<VelocityListenerContext, ?>> transformCodecRegistry,
+        final ProxyServer server,
+        final Object plugin
+    ) {
+        this(injectionCodecRegistry, transformCodecRegistry, server.getEventManager(), plugin);
     }
 
-    public VelocityListenerRegistry(final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, final EventManager eventManager, final Object plugin) {
-        super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry);
+    public VelocityListenerRegistry(
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
+        final CodecRegistry<TransformCodec<VelocityListenerContext, ?>> transformCodecRegistry,
+        final EventManager eventManager,
+        final Object plugin
+    ) {
+        super(Listener.class, LISTENER_MAPPER, injectionCodecRegistry, transformCodecRegistry);
         this.eventManager = eventManager;
         this.plugin = plugin;
     }
 
     @Override
-    public void register(final VelocityListener root, final ContextHandler<ListenerContext<?>> handler) {
+    public void register(final VelocityListener root, final ContextHandler<VelocityListenerContext> handler) {
         VelocityListenerProperties properties = root.getProperties();
         PostOrder priority = properties.getPriority();
         Iterable<Class<?>> eventTypes = properties.getListenedEvents();
@@ -65,10 +77,15 @@ public class VelocityListenerRegistry extends AbstractListenerRegistry<VelocityL
     }
 
     @SuppressWarnings("unchecked")
-    private <E> void register(final VelocityListener listener, final Class<?> eventType, final PostOrder priority, final ContextHandler<ListenerContext<?>> handler) {
+    private <E> void register(
+        final VelocityListener listener,
+        final Class<?> eventType,
+        final PostOrder priority,
+        final ContextHandler<VelocityListenerContext> handler
+    ) {
         Class<E> castedEventType = (Class<E>) eventType;
         VelocityEventListener<E> eventListener = event -> {
-            ListenerContext<E> context = new ListenerContext<>(event);
+            VelocityListenerContext context = new VelocityListenerContext(event);
             Object listenerInstance = listener.createInstance();
             handler.handle(context, listenerInstance);
         };

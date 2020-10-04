@@ -32,7 +32,7 @@ import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.handler.RootContext;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class CommandContext<T extends Command<T, ?, ?, ?>, S> extends RootContext {
+public class CommandContext<T extends Command<T, ?, ?, ?, S>, S> extends RootContext {
 
     private final Sender<S> sender;
     private final List<Token> arguments;

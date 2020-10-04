@@ -24,20 +24,19 @@
 
 package net.mcparkour.anfodis.command.mapper;
 
+import net.mcparkour.anfodis.TestCommandSender;
+import net.mcparkour.anfodis.command.context.TestCommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.TestArgument;
 import net.mcparkour.anfodis.command.mapper.argument.TestArgumentMapper;
-import net.mcparkour.anfodis.command.mapper.context.TestContext;
-import net.mcparkour.anfodis.command.mapper.context.TestContextMapper;
 import net.mcparkour.anfodis.command.mapper.properties.TestCommandProperties;
 import net.mcparkour.anfodis.command.mapper.properties.TestCommandPropertiesMapper;
 
-public class TestCommandMapper extends CommandMapper<TestCommand, TestArgument, TestContext, TestCommandProperties> {
+public class TestCommandMapper extends CommandMapper<TestCommand, TestArgument, TestCommandProperties, TestCommandContext, TestCommandSender> {
 
     private static final TestArgumentMapper ARGUMENT_MAPPER = new TestArgumentMapper();
-    private static final TestContextMapper CONTEXT_MAPPER = new TestContextMapper();
     private static final TestCommandPropertiesMapper PROPERTIES_MAPPER = new TestCommandPropertiesMapper();
 
     public TestCommandMapper() {
-        super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, TestCommand::new);
+        super(ARGUMENT_MAPPER, PROPERTIES_MAPPER, TestCommand::new);
     }
 }

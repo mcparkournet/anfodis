@@ -26,31 +26,26 @@ package net.mcparkour.anfodis.channel.mapper;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
-import net.mcparkour.anfodis.channel.mapper.context.PaperChannelListenerContext;
+import net.mcparkour.anfodis.channel.handler.ChannelListenerContext;
 import net.mcparkour.anfodis.channel.mapper.properties.PaperChannelListenerProperties;
 import net.mcparkour.anfodis.mapper.Root;
 import net.mcparkour.anfodis.mapper.executor.Executor;
 import net.mcparkour.anfodis.mapper.injection.Injection;
+import net.mcparkour.anfodis.mapper.transform.Transform;
 
-public class PaperChannelListener extends Root {
+public class PaperChannelListener extends Root<ChannelListenerContext> {
 
-    private final PaperChannelListenerContext context;
     private final PaperChannelListenerProperties properties;
 
     public PaperChannelListener(
         final Constructor<?> constructor,
         final List<Injection> injections,
+        final List<Transform<ChannelListenerContext>> transforms,
         final Executor executor,
-        final PaperChannelListenerContext context,
         final PaperChannelListenerProperties properties
     ) {
-        super(constructor, injections, executor);
-        this.context = context;
+        super(constructor, injections, transforms, executor);
         this.properties = properties;
-    }
-
-    public PaperChannelListenerContext getContext() {
-        return this.context;
     }
 
     public PaperChannelListenerProperties getProperties() {

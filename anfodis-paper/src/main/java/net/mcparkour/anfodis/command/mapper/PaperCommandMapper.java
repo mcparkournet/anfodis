@@ -24,20 +24,19 @@
 
 package net.mcparkour.anfodis.command.mapper;
 
+import net.mcparkour.anfodis.command.context.PaperCommandContext;
 import net.mcparkour.anfodis.command.mapper.argument.PaperArgument;
 import net.mcparkour.anfodis.command.mapper.argument.PaperArgumentMapper;
-import net.mcparkour.anfodis.command.mapper.context.PaperContext;
-import net.mcparkour.anfodis.command.mapper.context.PaperContextMapper;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandPropertiesMapper;
+import org.bukkit.command.CommandSender;
 
-public class PaperCommandMapper extends CommandMapper<PaperCommand, PaperArgument, PaperContext, PaperCommandProperties> {
+public class PaperCommandMapper extends CommandMapper<PaperCommand, PaperArgument, PaperCommandProperties, PaperCommandContext, CommandSender> {
 
     private static final PaperArgumentMapper ARGUMENT_MAPPER = new PaperArgumentMapper();
-    private static final PaperContextMapper CONTEXT_MAPPER = new PaperContextMapper();
     private static final PaperCommandPropertiesMapper PROPERTIES_MAPPER = new PaperCommandPropertiesMapper();
 
     public PaperCommandMapper() {
-        super(ARGUMENT_MAPPER, CONTEXT_MAPPER, PROPERTIES_MAPPER, PaperCommand::new);
+        super(ARGUMENT_MAPPER, PROPERTIES_MAPPER, PaperCommand::new);
     }
 }
