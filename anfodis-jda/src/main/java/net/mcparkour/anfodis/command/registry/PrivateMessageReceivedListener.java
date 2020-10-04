@@ -36,8 +36,9 @@ import net.mcparkour.anfodis.command.ChannelSender;
 import net.mcparkour.anfodis.command.JDAChannelSender;
 import net.mcparkour.anfodis.command.PermissionMap;
 import net.mcparkour.anfodis.command.context.JDACommandContext;
-import net.mcparkour.anfodis.command.context.JDACommandSender;
-import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.context.JDACommandContextBuilder;
+import net.mcparkour.anfodis.command.context.JDASender;
+import net.mcparkour.anfodis.command.handler.CommandContextBuilderHandler;
 import net.mcparkour.anfodis.command.lexer.Lexer;
 import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
@@ -84,24 +85,24 @@ public class PrivateMessageReceivedListener implements EventListener {
         if (entry == null) {
             return;
         }
-        CommandContextHandler<JDACommandContext> handler = entry.getHandler();
+        CommandContextBuilderHandler<JDACommandContextBuilder, JDACommandContext> handler = entry.getHandler();
         int size = tokens.size();
         List<Token> arguments = tokens.subList(1, size);
         JDACommand command = entry.getCommand();
-        JDACommandContext context = createContext(event, arguments, command);
-        handler.handle(context);
+        JDACommandContextBuilder contextBuilder = createContextBuilder(event, arguments, command);
+        handler.handle(contextBuilder);
     }
 
-    private JDACommandContext createContext(final PrivateMessageReceivedEvent event, final List<Token> arguments, final JDACommand command) {
+    private JDACommandContextBuilder createContextBuilder(final PrivateMessageReceivedEvent event, final List<Token> arguments, final JDACommand command) {
         User sender = event.getAuthor();
         PrivateChannel channel = event.getChannel();
         ChannelSender channelSender = new JDAChannelSender(sender, channel);
         MessageReceiver receiver = this.messageReceiverFactory.createMessageReceiver(channelSender);
-        JDACommandSender commandSender = new JDACommandSender(channelSender, receiver, this.permissionMap);
+        JDASender commandSender = new JDASender(channelSender, receiver, this.permissionMap);
         JDACommandProperties properties = command.getProperties();
         Permission commandPermission = properties.getPermission();
         Permission permission = commandPermission.withFirst(this.basePermission);
         boolean asynchronous = properties.isAsynchronous();
-        return new JDACommandContext(commandSender, arguments, permission, asynchronous);
+        return new JDACommandContextBuilder(commandSender, command, arguments, permission, asynchronous);
     }
 }

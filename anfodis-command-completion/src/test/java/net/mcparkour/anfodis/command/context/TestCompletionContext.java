@@ -24,20 +24,23 @@
 
 package net.mcparkour.anfodis.command.context;
 
+import java.util.Deque;
 import java.util.List;
 import net.mcparkour.anfodis.TestCommandSender;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.TestCommand;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class TestCompletionContext extends CompletionContext<TestCommandSender> {
+public class TestCompletionContext extends CompletionContext<TestCommand, TestCommandSender> {
 
     public TestCompletionContext(
-        final CommandSender<TestCommandSender> sender,
+        final Sender<TestCommandSender> sender,
         final List<Token> arguments,
+        final Deque<TestCommand> parents,
         final Permission permission,
         final boolean asynchronous
     ) {
-        super(sender, arguments, permission, asynchronous);
+        super(sender, arguments, parents, permission, asynchronous);
     }
 }

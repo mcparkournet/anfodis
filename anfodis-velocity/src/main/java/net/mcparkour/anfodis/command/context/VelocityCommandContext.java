@@ -24,19 +24,22 @@
 
 package net.mcparkour.anfodis.command.context;
 
+import java.util.Deque;
 import java.util.List;
 import com.velocitypowered.api.command.CommandSource;
 import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.VelocityCommand;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class VelocityCommandContext extends CommandContext<CommandSource> {
+public class VelocityCommandContext extends CommandContext<VelocityCommand, CommandSource> {
 
     public VelocityCommandContext(
-        final CommandSender<CommandSource> sender,
+        final Sender<CommandSource> sender,
         final List<Token> arguments,
+        final Deque<VelocityCommand> parents,
         final Permission permission,
         final boolean asynchronous
     ) {
-        super(sender, arguments, permission, asynchronous);
+        super(sender, arguments, parents, permission, asynchronous);
     }
 }

@@ -8,7 +8,7 @@ import net.mcparkour.anfodis.command.handler.CompletionContext;
 
 public interface CompletionCodec extends Codec {
 
-    List<String> getCompletions(CompletionContext<?> completionContext, ArgumentContext argumentContext);
+    List<String> getCompletions(CompletionContext<?, ?> completionContext, ArgumentContext argumentContext);
 
     static CompletionCodec entries(final String... completions) {
         return (context, argumentContext) -> List.of(completions);

@@ -37,7 +37,7 @@ import net.mcparkour.anfodis.command.codec.argument.result.ErrorResult;
 import net.mcparkour.anfodis.command.codec.argument.result.OkResult;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.context.CommandContext;
-import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.Sender;
 import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
@@ -46,7 +46,7 @@ import net.mcparkour.anfodis.handler.RootHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 
-public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>>
+public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<?, ?>>
     extends RootHandler<T, C> {
 
     private final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
@@ -130,7 +130,7 @@ public class CommandExecutorHandler<T extends Command<T, ?, ?, ?>, C extends Com
         commandContext.setArgumentsField(commandInstance, arguments);
         Permission permission = context.getPermission();
         commandContext.setRequiredPermissionField(commandInstance, permission);
-        CommandSender<?> sender = context.getSender();
+        Sender<?> sender = context.getSender();
         Object rawSender = sender.getSender();
         commandContext.setSenderField(commandInstance, rawSender);
         MessageReceiver receiver = sender.getReceiver();

@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 import net.mcparkour.anfodis.codec.registry.CodecRegistry;
 import net.mcparkour.anfodis.command.argument.ArgumentContext;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
-import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.context.Permissible;
 import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.CompletionCommand;
@@ -41,38 +40,39 @@ import net.mcparkour.anfodis.command.mapper.argument.CompletionArgument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<S>, S>
-    implements CompletionContextHandler<C> {
+public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<T, S>, B extends CompletionContextBuilder<C, T, S>, S>
+    implements CompletionContextBuilderHandler<B, C> {
 
     private final T command;
     private final CodecRegistry<CompletionCodec> completionCodecRegistry;
-    private final Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap;
-    private final CommandContextSupplier<? extends C, S> contextSupplier;
+    private final Map<T, ? extends CompletionContextBuilderHandler<B, C>> subCommandHandlerMap;
+    private final CommandContextCreator<T, C, S> contextCreator;
 
     public CompletionHandler(
         final T command,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
-        final Map<T, ? extends CompletionContextHandler<C>> subCommandHandlerMap,
-        final CommandContextSupplier<? extends C, S> contextSupplier
+        final Map<T, ? extends CompletionContextBuilderHandler<B, C>> subCommandHandlerMap,
+        final CommandContextCreator<T, C, S> contextCreator
     ) {
         this.command = command;
         this.completionCodecRegistry = completionCodecRegistry;
         this.subCommandHandlerMap = subCommandHandlerMap;
-        this.contextSupplier = contextSupplier;
+        this.contextCreator = contextCreator;
     }
 
     @Override
-    public List<String> handle(final C context) {
-        Permissible permissible = context.getSender();
-        Permission permission = context.getPermission();
+    public List<String> handle(final B contextBuilder) {
+        Permissible permissible = contextBuilder.getSender();
+        Permission permission = contextBuilder.getPermission();
         if (!permissible.hasPermission(permission)) {
             return List.of();
         }
-        List<Token> arguments = context.getArguments();
-        if (arguments.size() <= 1) {
-            return getCompletions(context, arguments);
+        Optional<Token> firstTokenOptional = contextBuilder.peekArgument();
+        int argumentsSize = contextBuilder.getArgumentsSize();
+        if (firstTokenOptional.isEmpty() || argumentsSize == 1) {
+            return getCompletions(contextBuilder);
         }
-        Token firstToken = arguments.get(0);
+        Token firstToken = firstTokenOptional.get();
         String firstArgument = firstToken.getString();
         List<T> subCommands = this.command.getSubCommands();
         T subCommand = subCommands.stream()
@@ -80,30 +80,18 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
             .findFirst()
             .orElse(null);
         if (subCommand == null) {
-            return getCompletions(context, arguments);
+            return getCompletions(contextBuilder);
         }
-        CompletionContextHandler<C> handler = this.subCommandHandlerMap.get(subCommand);
+        CompletionContextBuilderHandler<B, C> handler = this.subCommandHandlerMap.get(subCommand);
         if (handler == null) {
-            return getCompletions(context, arguments);
+            return getCompletions(contextBuilder);
         }
-        C subCommandContext = createSubCommandContext(arguments, context, subCommand);
-        return handler.handle(subCommandContext);
-    }
-
-    private C createSubCommandContext(final List<Token> subCommandArguments, final C context, final T subCommand) {
-        CommandSender<S> sender = context.getSender();
-        int size = subCommandArguments.size();
-        List<Token> arguments = subCommandArguments.subList(1, size);
-        Permission permission = createSubCommandPermission(context, subCommand);
-        boolean asynchronous = context.isAsynchronous();
-        return this.contextSupplier.supply(sender, arguments, permission, asynchronous);
-    }
-
-    private Permission createSubCommandPermission(final C context, final T subCommand) {
-        Permission permission = context.getPermission();
-        CommandProperties properties = subCommand.getProperties();
-        Permission subCommandPermission = properties.getPermission();
-        return permission.withLast(subCommandPermission);
+        contextBuilder.pollArgument();
+        contextBuilder.pushParent(subCommand);
+        CommandProperties subCommandProperties = subCommand.getProperties();
+        Permission subCommandPermission = subCommandProperties.getPermission();
+        contextBuilder.permissionWithLast(subCommandPermission);
+        return handler.handle(contextBuilder);
     }
 
     private boolean isMatching(final String argument, final T command) {
@@ -117,7 +105,9 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
         return aliases.contains(lowerCaseArgument);
     }
 
-    private List<String> getCompletions(final C context, final List<Token> arguments) {
+    private List<String> getCompletions(final B contextBuilder) {
+        C context = contextBuilder.build(this.contextCreator);
+        List<Token> arguments = context.getArguments();
         List<String> completions = new ArrayList<>(0);
         if (arguments.size() == 1) {
             List<String> subCommandsCompletions = getSubCommandsCompletions(context, arguments);

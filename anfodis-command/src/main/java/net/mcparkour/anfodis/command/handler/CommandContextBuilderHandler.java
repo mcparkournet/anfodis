@@ -22,24 +22,14 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.registry;
+package net.mcparkour.anfodis.command.handler;
 
-import java.util.Map;
-import net.mcparkour.anfodis.codec.registry.CodecRegistry;
-import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandContextBuilder;
-import net.mcparkour.anfodis.command.handler.CommandContextCreator;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.handler.CompletionContextBuilder;
-import net.mcparkour.anfodis.command.handler.CompletionContextBuilderHandler;
-import net.mcparkour.anfodis.command.mapper.CompletionCommand;
+import net.mcparkour.craftmon.scheduler.Scheduler;
 
-public interface CompletionHandlerSupplier<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<T, S>, B extends CompletionContextBuilder<C, T, S>, S> {
+@FunctionalInterface
+public interface CommandContextBuilderHandler<B extends CommandContextBuilder<C, ?, ?>, C extends CommandContext<?, ?>> {
 
-    CompletionContextBuilderHandler<B, C> supply(
-        T command,
-        CodecRegistry<CompletionCodec> completionCodecRegistry,
-        Map<T, CompletionContextBuilderHandler<B, C>> subCommandHandlerMap,
-        CommandContextCreator<T, C, S> contextSupplier
-    );
+    void handle(B contextBuilder);
 }

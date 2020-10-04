@@ -22,21 +22,23 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command.context;
 
-import net.mcparkour.anfodis.command.context.CommandContext;
-import net.mcparkour.craftmon.scheduler.Scheduler;
+import java.util.List;
+import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.PaperCommand;
+import net.mcparkour.craftmon.permission.Permission;
+import org.bukkit.command.CommandSender;
 
-@FunctionalInterface
-public interface CommandContextHandler<C extends CommandContext<?>> {
+public class PaperCommandContextBuilder extends CommandContextBuilder<PaperCommandContext, PaperCommand, CommandSender> {
 
-    default void handleAsync(final C context, final Scheduler asyncScheduler) {
-        if (context.isAsynchronous()) {
-            asyncScheduler.run(() -> handle(context));
-        } else {
-            handle(context);
-        }
+    public PaperCommandContextBuilder(
+        final Sender<CommandSender> sender,
+        final PaperCommand command,
+        final List<Token> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
+        super(sender, command, arguments, permission, asynchronous);
     }
-
-    void handle(C context);
 }

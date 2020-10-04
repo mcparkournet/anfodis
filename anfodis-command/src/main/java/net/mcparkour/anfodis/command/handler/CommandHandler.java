@@ -26,88 +26,93 @@ package net.mcparkour.anfodis.command.handler;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import net.mcparkour.anfodis.command.Messenger;
 import net.mcparkour.anfodis.command.context.CommandContext;
-import net.mcparkour.anfodis.command.context.CommandSender;
-import net.mcparkour.anfodis.command.context.Permissible;
+import net.mcparkour.anfodis.command.context.CommandContextBuilder;
+import net.mcparkour.anfodis.command.context.Sender;
 import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.command.mapper.argument.Argument;
 import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
-import net.mcparkour.intext.message.MessageReceiver;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<S>, S, M extends Messenger<T, S>> implements CommandContextHandler<C> {
+public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<T, S>, B extends CommandContextBuilder<C, T, S>, S, M extends Messenger<T, S>> implements CommandContextBuilderHandler<B, C> {
 
     private final T command;
-    private final Map<T, ? extends CommandContextHandler<C>> subCommandHandlers;
-    private final @Nullable ContextHandler<C> executorHandler;
-    private final CommandContextSupplier<C, S> contextSupplier;
+    private final Map<T, ? extends CommandContextBuilderHandler<B, C>> subCommandHandlers;
+    private final @Nullable ContextHandler<? super C> executorHandler;
+    private final CommandContextCreator<T, C, S> contextCreator;
     private final M messenger;
 
     public CommandHandler(
         final T command,
-        final Map<T, ? extends CommandContextHandler<C>> subCommandHandlers,
-        @Nullable final ContextHandler<C> executorHandler,
-        final CommandContextSupplier<C, S> contextSupplier,
+        final Map<T, ? extends CommandContextBuilderHandler<B, C>> subCommandHandlers,
+        final @Nullable ContextHandler<? super C> executorHandler,
+        final CommandContextCreator<T, C, S> contextCreator,
         final M messenger
     ) {
         this.command = command;
         this.subCommandHandlers = subCommandHandlers;
         this.executorHandler = executorHandler;
-        this.contextSupplier = contextSupplier;
+        this.contextCreator = contextCreator;
         this.messenger = messenger;
     }
 
     @Override
-    public void handle(final C context) {
-        CommandSender<S> sender = context.getSender();
-        Permission permission = context.getPermission();
+    public void handle(final B contextBuilder) {
+        Sender<S> sender = contextBuilder.getSender();
+        Permission permission = contextBuilder.getPermission();
         if (!sender.hasPermission(permission)) {
             this.messenger.sendNoPermissionMessage(sender, permission);
             return;
         }
-        List<Token> arguments = context.getArguments();
-        int argumentsLength = arguments.size();
-        if (arguments.isEmpty()) {
-            execute(context, argumentsLength);
+        Optional<Token> firstTokenOptional = contextBuilder.peekArgument();
+        if (firstTokenOptional.isEmpty()) {
+            execute(contextBuilder);
             return;
         }
-        Token firstToken = arguments.get(0);
+        Token firstToken = firstTokenOptional.get();
         String firstArgument = firstToken.getString();
+        System.out.println(firstArgument);
         List<T> subCommands = this.command.getSubCommands();
         T subCommand = subCommands.stream()
             .filter(element -> isMatching(firstArgument, element))
             .findFirst()
             .orElse(null);
         if (subCommand == null) {
-            execute(context, argumentsLength);
+            execute(contextBuilder);
             return;
         }
-        CommandContextHandler<C> subCommandHandler = this.subCommandHandlers.get(subCommand);
+        CommandContextBuilderHandler<B, C> subCommandHandler = this.subCommandHandlers.get(subCommand);
         if (subCommandHandler == null) {
-            execute(context, argumentsLength);
+            execute(contextBuilder);
             return;
         }
-        C subCommandContext = createSubCommandContext(subCommand, context);
-        subCommandHandler.handle(subCommandContext);
+        contextBuilder.pollArgument();
+        contextBuilder.pushParent(subCommand);
+        CommandProperties subCommandProperties = subCommand.getProperties();
+        Permission subCommandPermission = subCommandProperties.getPermission();
+        contextBuilder.permissionWithLast(subCommandPermission);
+        subCommandHandler.handle(contextBuilder);
     }
 
-    private void execute(final C context, final int argumentsSize) {
-        CommandSender<S> sender = context.getSender();
-        Permission permission = context.getPermission();
+    private void execute(final B contextBuilder) {
+        Sender<S> sender = contextBuilder.getSender();
+        Permission permission = contextBuilder.getPermission();
         if (this.executorHandler == null) {
             this.messenger.sendSubCommandsUsageMessage(sender, permission, this.command);
             return;
         }
+        int argumentsSize = contextBuilder.getArgumentsSize();
         if (!checkLength(argumentsSize)) {
             this.messenger.sendCommandUsageMessage(sender, this.command);
             return;
         }
+        C context = contextBuilder.build(this.contextCreator);
         Object instance = this.command.createInstance();
         this.executorHandler.handle(context, instance);
     }
@@ -133,17 +138,6 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         String lowerCaseArgument = argument.toLowerCase();
         Set<String> aliases = properties.getLowerCaseAliases();
         return aliases.contains(lowerCaseArgument);
-    }
-
-    private C createSubCommandContext(final T subCommand, final C context) {
-        CommandSender<S> sender = context.getSender();
-        List<Token> contextArguments = context.getArguments();
-        int size = contextArguments.size();
-        List<Token> arguments = contextArguments.subList(1, size);
-        Permission contextPermission = context.getPermission();
-        Permission permission = subCommand.getPermission(contextPermission);
-        boolean asynchronous = context.isAsynchronous();
-        return this.contextSupplier.supply(sender, arguments, permission, asynchronous);
     }
 
     public T getCommand() {

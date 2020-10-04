@@ -31,7 +31,7 @@ import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.mapper.Command;
 import net.mcparkour.anfodis.handler.ContextHandler;
 
-public interface CommandExecutorHandlerSupplier<T extends Command<T, ?, ?, ?>, C extends CommandContext<?>> {
+public interface CommandExecutorHandlerSupplier<T extends Command<T, ?, ?, ?>, C extends CommandContext<?, ?>> {
 
     ContextHandler<C> supply(T command, CodecRegistry<InjectionCodec<?>> injectionCodecRegistry, CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry);
 }

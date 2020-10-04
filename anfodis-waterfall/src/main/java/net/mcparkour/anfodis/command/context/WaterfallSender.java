@@ -24,29 +24,18 @@
 
 package net.mcparkour.anfodis.command.context;
 
-import java.util.List;
-import net.dv8tion.jda.api.entities.User;
-import net.mcparkour.anfodis.command.ChannelSender;
-import net.mcparkour.anfodis.command.PermissionMap;
-import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
+import net.md_5.bungee.api.CommandSender;
 
-public class JDACommandSender extends AbstractCommandSender<ChannelSender> {
+public class WaterfallSender extends AbstractSender<CommandSender> {
 
-    private final PermissionMap permissionMap;
-
-    public JDACommandSender(final ChannelSender sender, final MessageReceiver receiver, final PermissionMap permissionMap) {
+    public WaterfallSender(final CommandSender sender, final MessageReceiver receiver) {
         super(sender, receiver);
-        this.permissionMap = permissionMap;
     }
 
     @Override
     public boolean hasPermission(final String name) {
-        ChannelSender sender = getSender();
-        User user = sender.getUser();
-        List<Permission> permissions = this.permissionMap.getPermissions(user);
-        return permissions.stream()
-            .map(Permission::getName)
-            .anyMatch(permissionName -> permissionName.equals(name));
+        CommandSender sender = getSender();
+        return sender.hasPermission(name);
     }
 }

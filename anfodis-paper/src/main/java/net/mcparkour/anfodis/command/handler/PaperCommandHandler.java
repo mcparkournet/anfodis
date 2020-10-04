@@ -25,39 +25,40 @@
 package net.mcparkour.anfodis.command.handler;
 
 import java.util.Map;
-import java.util.Set;
 import net.mcparkour.anfodis.command.PaperMessenger;
-import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.Sender;
 import net.mcparkour.anfodis.command.context.PaperCommandContext;
+import net.mcparkour.anfodis.command.context.PaperCommandContextBuilder;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.anfodis.command.mapper.properties.PaperCommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
 public class PaperCommandHandler
-    extends CommandHandler<PaperCommand, PaperCommandContext, org.bukkit.command.CommandSender, PaperMessenger> {
+    extends CommandHandler<PaperCommand, PaperCommandContext, PaperCommandContextBuilder, CommandSender, PaperMessenger> {
 
     public PaperCommandHandler(
         final PaperCommand command,
-        final Map<PaperCommand, ? extends CommandContextHandler<PaperCommandContext>> subCommandHandlers,
-        @Nullable final ContextHandler<PaperCommandContext> executorHandler,
-        final CommandContextSupplier<PaperCommandContext, org.bukkit.command.CommandSender> contextSupplier,
+        final Map<PaperCommand, ? extends CommandContextBuilderHandler<PaperCommandContextBuilder, PaperCommandContext>> subCommandHandlers,
+        final @Nullable ContextHandler<? super PaperCommandContext> executorHandler,
+        final CommandContextCreator<PaperCommand, PaperCommandContext, CommandSender> contextSupplier,
         final PaperMessenger messenger
     ) {
         super(command, subCommandHandlers, executorHandler, contextSupplier, messenger);
     }
 
     @Override
-    public void handle(final PaperCommandContext context) {
+    public void handle(final PaperCommandContextBuilder contextBuilder) {
         PaperCommand command = getCommand();
         PaperCommandProperties properties = command.getProperties();
-        CommandSender<org.bukkit.command.CommandSender> sender = context.getSender();
+        Sender<CommandSender> sender = contextBuilder.getSender();
         if (!properties.isValidSender(sender)) {
             PaperMessenger messenger = getMessenger();
             var validSenders = properties.getSenderTypes();
             messenger.sendInvalidSenderMessage(sender, validSenders);
             return;
         }
-        super.handle(context);
+        super.handle(contextBuilder);
     }
 }

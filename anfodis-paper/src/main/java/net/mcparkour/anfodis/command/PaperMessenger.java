@@ -26,14 +26,15 @@ package net.mcparkour.anfodis.command;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.Sender;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.intext.message.MessageReceiver;
+import org.bukkit.command.CommandSender;
 
 public interface PaperMessenger extends Messenger<PaperCommand, org.bukkit.command.CommandSender> {
 
     default void sendInvalidSenderMessage(
-        final CommandSender<org.bukkit.command.CommandSender> sender,
+        final Sender<CommandSender> sender,
         final Set<Class<? extends org.bukkit.command.CommandSender>> validSenders
     ) {
         MessageReceiver receiver = sender.getReceiver();

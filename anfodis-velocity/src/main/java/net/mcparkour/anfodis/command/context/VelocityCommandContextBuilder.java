@@ -22,24 +22,23 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.registry;
+package net.mcparkour.anfodis.command.context;
 
-import java.util.Map;
-import net.mcparkour.anfodis.codec.registry.CodecRegistry;
-import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
-import net.mcparkour.anfodis.command.context.CommandContextBuilder;
-import net.mcparkour.anfodis.command.handler.CommandContextCreator;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.handler.CompletionContextBuilder;
-import net.mcparkour.anfodis.command.handler.CompletionContextBuilderHandler;
-import net.mcparkour.anfodis.command.mapper.CompletionCommand;
+import java.util.List;
+import com.velocitypowered.api.command.CommandSource;
+import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.VelocityCommand;
+import net.mcparkour.craftmon.permission.Permission;
 
-public interface CompletionHandlerSupplier<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<T, S>, B extends CompletionContextBuilder<C, T, S>, S> {
+public class VelocityCommandContextBuilder extends CommandContextBuilder<VelocityCommandContext, VelocityCommand, CommandSource> {
 
-    CompletionContextBuilderHandler<B, C> supply(
-        T command,
-        CodecRegistry<CompletionCodec> completionCodecRegistry,
-        Map<T, CompletionContextBuilderHandler<B, C>> subCommandHandlerMap,
-        CommandContextCreator<T, C, S> contextSupplier
-    );
+    public VelocityCommandContextBuilder(
+        final Sender<CommandSource> sender,
+        final VelocityCommand command,
+        final List<Token> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
+        super(sender, command, arguments, permission, asynchronous);
+    }
 }

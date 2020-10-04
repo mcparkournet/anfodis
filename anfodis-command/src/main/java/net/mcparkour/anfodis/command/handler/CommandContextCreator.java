@@ -22,20 +22,23 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.context;
+package net.mcparkour.anfodis.command.handler;
 
-import net.mcparkour.intext.message.MessageReceiver;
-import org.bukkit.command.CommandSender;
+import java.util.Deque;
+import java.util.List;
+import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.context.Sender;
+import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.Command;
+import net.mcparkour.craftmon.permission.Permission;
 
-public class PaperCommandSender extends AbstractCommandSender<CommandSender> {
+public interface CommandContextCreator<T extends Command<T, ?, ?, ?>, C extends CommandContext<T, S>, S> {
 
-    public PaperCommandSender(final CommandSender sender, final MessageReceiver receiver) {
-        super(sender, receiver);
-    }
-
-    @Override
-    public boolean hasPermission(final String name) {
-        CommandSender sender = getSender();
-        return sender.hasPermission(name);
-    }
+    C create(
+        Sender<S> sender,
+        List<Token> arguments,
+        Deque<T> parents,
+        Permission permission,
+        boolean asynchronous
+    );
 }

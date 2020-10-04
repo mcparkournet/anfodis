@@ -24,25 +24,22 @@
 
 package net.mcparkour.anfodis.command.context;
 
-import net.mcparkour.intext.message.MessageReceiver;
+import java.util.List;
+import net.mcparkour.anfodis.command.handler.CompletionContextBuilder;
+import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
+import net.mcparkour.craftmon.permission.Permission;
+import net.md_5.bungee.api.CommandSender;
 
-public abstract class AbstractCommandSender<T> implements CommandSender<T> {
+public class WaterfallCompletionContextBuilder extends CompletionContextBuilder<WaterfallCompletionContext, WaterfallCommand, CommandSender> {
 
-    private final T sender;
-    private final MessageReceiver receiver;
-
-    public AbstractCommandSender(final T sender, final MessageReceiver receiver) {
-        this.sender = sender;
-        this.receiver = receiver;
-    }
-
-    @Override
-    public T getSender() {
-        return this.sender;
-    }
-
-    @Override
-    public MessageReceiver getReceiver() {
-        return this.receiver;
+    public WaterfallCompletionContextBuilder(
+        final Sender<CommandSender> sender,
+        final WaterfallCommand command,
+        final List<Token> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
+        super(sender, command, arguments, permission, asynchronous);
     }
 }

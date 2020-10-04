@@ -31,7 +31,7 @@ import net.mcparkour.anfodis.command.context.CommandContext;
 
 public interface ArgumentCodec<T> extends Codec {
 
-    Result<T> parse(CommandContext<?> commandContext, ArgumentContext argumentContext, String argumentValue);
+    Result<T> parse(CommandContext<?, ?> commandContext, ArgumentContext argumentContext, String argumentValue);
 
     static ArgumentCodec<String> identity() {
         return (commandContext, argumentContext, argumentValue) -> Result.ok(argumentValue);

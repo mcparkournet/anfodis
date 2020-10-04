@@ -32,11 +32,13 @@ import net.mcparkour.anfodis.command.WaterfallMessenger;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
-import net.mcparkour.anfodis.command.context.WaterfallCommandSender;
+import net.mcparkour.anfodis.command.context.WaterfallCommandContextBuilder;
+import net.mcparkour.anfodis.command.context.WaterfallSender;
 import net.mcparkour.anfodis.command.context.WaterfallCompletionContext;
-import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.context.WaterfallCompletionContextBuilder;
+import net.mcparkour.anfodis.command.handler.CommandContextBuilderHandler;
 import net.mcparkour.anfodis.command.handler.CommandExecutorHandler;
-import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
+import net.mcparkour.anfodis.command.handler.CompletionContextBuilderHandler;
 import net.mcparkour.anfodis.command.handler.CompletionHandler;
 import net.mcparkour.anfodis.command.handler.WaterfallCommandHandler;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
@@ -53,7 +55,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
 public class WaterfallCommandRegistry
-    extends AbstractCompletionRegistry<WaterfallCommand, WaterfallCommandContext, WaterfallCompletionContext, CommandSender, WaterfallMessenger> {
+    extends AbstractCompletionRegistry<WaterfallCommand, WaterfallCommandContext, WaterfallCommandContextBuilder, WaterfallCompletionContext, WaterfallCompletionContextBuilder, CommandSender, WaterfallMessenger> {
 
     private static final WaterfallCommandMapper COMMAND_MAPPER = new WaterfallCommandMapper();
 
@@ -135,8 +137,8 @@ public class WaterfallCommandRegistry
     @Override
     public void register(
         final WaterfallCommand command,
-        final CommandContextHandler<WaterfallCommandContext> commandHandler,
-        final CompletionContextHandler<WaterfallCompletionContext> completionHandler
+        final CommandContextBuilderHandler<WaterfallCommandContextBuilder, WaterfallCommandContext> commandHandler,
+        final CompletionContextBuilderHandler<WaterfallCompletionContextBuilder, WaterfallCompletionContext> completionHandler
     ) {
         WaterfallCommandProperties properties = command.getProperties();
         String name = properties.getName();
@@ -145,29 +147,34 @@ public class WaterfallCommandRegistry
         Permission commandPermission = properties.getPermission();
         Permission permission = commandPermission.withFirst(basePermission);
         boolean asynchronous = properties.isAsynchronous();
-        register(name, aliases, permission, asynchronous, commandHandler, completionHandler);
+        register(command, name, aliases, permission, asynchronous, commandHandler, completionHandler);
     }
 
     private void register(
+        final WaterfallCommand command,
         final String name,
         final Collection<String> aliases,
         final Permission permission,
         final boolean asynchronous,
-        final CommandContextHandler<WaterfallCommandContext> commandHandler,
-        final CompletionContextHandler<WaterfallCompletionContext> completionHandler
+        final CommandContextBuilderHandler<WaterfallCommandContextBuilder, WaterfallCommandContext> commandHandler,
+        final CompletionContextBuilderHandler<WaterfallCompletionContextBuilder, WaterfallCompletionContext> completionHandler
     ) {
         MessageReceiverFactory<CommandSender> messageReceiverFactory = getMessageReceiverFactory();
         WaterfallCommandExecutor commandExecutor = (sender, arguments) -> {
             MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
-            WaterfallCommandSender waterfallSender = new WaterfallCommandSender(sender, receiver);
-            WaterfallCommandContext context = new WaterfallCommandContext(waterfallSender, arguments, permission, asynchronous);
-            commandHandler.handleAsync(context, this.asyncScheduler);
+            WaterfallSender waterfallSender = new WaterfallSender(sender, receiver);
+            WaterfallCommandContextBuilder contextBuilder = new WaterfallCommandContextBuilder(waterfallSender, command, arguments, permission, asynchronous);
+            if (asynchronous) {
+                this.asyncScheduler.run(() -> commandHandler.handle(contextBuilder));
+            } else {
+                commandHandler.handle(contextBuilder);
+            }
         };
         WaterfallCompletionExecutor completionExecutor = (sender, arguments) -> {
             MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
-            WaterfallCommandSender waterfallSender = new WaterfallCommandSender(sender, receiver);
-            WaterfallCompletionContext context = new WaterfallCompletionContext(waterfallSender, arguments, permission, asynchronous);
-            return completionHandler.handle(context);
+            WaterfallSender waterfallSender = new WaterfallSender(sender, receiver);
+            WaterfallCompletionContextBuilder contextBuilder = new WaterfallCompletionContextBuilder(waterfallSender, command, arguments, permission, asynchronous);
+            return completionHandler.handle(contextBuilder);
         };
         register(name, aliases, permission, commandExecutor, completionExecutor);
     }

@@ -32,7 +32,7 @@ import net.mcparkour.anfodis.command.context.CommandContext;
 public class ArgArgumentCodec implements ArgumentCodec<String> {
 
     @Override
-    public Result<String> parse(final CommandContext<?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
+    public Result<String> parse(final CommandContext<?, ?> commandContext, final ArgumentContext argumentContext, final String argumentValue) {
         return Result.ok(argumentValue.strip());
     }
 }

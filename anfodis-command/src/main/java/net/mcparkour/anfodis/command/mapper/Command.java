@@ -74,11 +74,6 @@ public class Command<T extends Command<T, A, C, P>, A extends Argument, C extend
         return description.isEmpty() ? "" : " - " + description + ".";
     }
 
-    public Permission getPermission(final Permission prefix) {
-        Permission permission = this.properties.getPermission();
-        return prefix.withLast(permission);
-    }
-
     public List<A> getArguments() {
         return this.arguments;
     }
