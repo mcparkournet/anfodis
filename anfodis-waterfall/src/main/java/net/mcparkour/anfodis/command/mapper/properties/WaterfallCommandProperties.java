@@ -30,11 +30,11 @@ import net.md_5.bungee.api.CommandSender;
 
 public class WaterfallCommandProperties extends CommandProperties {
 
-    private final Set<Class<? extends net.md_5.bungee.api.CommandSender>> senderTypes;
+    private final Set<Class<? extends CommandSender>> senderTypes;
 
     public WaterfallCommandProperties(final WaterfallCommandPropertiesData propertiesData) {
         super(propertiesData);
-        Class<? extends net.md_5.bungee.api.CommandSender>[] senderTypes = propertiesData.getSenderTypes();
+        Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
         this.senderTypes = senderTypes == null ?
             Set.of() :
             Set.of(senderTypes);
@@ -44,13 +44,13 @@ public class WaterfallCommandProperties extends CommandProperties {
         if (this.senderTypes.isEmpty()) {
             return true;
         }
-        net.md_5.bungee.api.CommandSender waterfallSender = commandSender.getSender();
+        CommandSender waterfallSender = commandSender.getSender();
         Class<?> bukkitSenderClass = waterfallSender.getClass();
         return this.senderTypes.stream()
             .anyMatch(sender -> sender.isAssignableFrom(bukkitSenderClass));
     }
 
-    public Set<Class<? extends net.md_5.bungee.api.CommandSender>> getSenderTypes() {
+    public Set<Class<? extends CommandSender>> getSenderTypes() {
         return this.senderTypes;
     }
 }

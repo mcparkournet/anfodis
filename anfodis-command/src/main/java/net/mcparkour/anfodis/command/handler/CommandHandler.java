@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import net.mcparkour.anfodis.command.Messenger;
+import net.mcparkour.anfodis.command.argument.ArgumentContext;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandContextBuilder;
 import net.mcparkour.anfodis.command.context.Permissible;
@@ -144,13 +145,15 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         int commandArgumentSize = commandArguments.size();
         for (int index = 0; index < Math.min(argumentsSize, commandArgumentSize); index++) {
             Argument argument = commandArguments.get(index);
-            Optional<String> permissionOptional = argument.getPermission();
-            if (permissionOptional.isPresent()) {
-                String permission = permissionOptional.get();
-                Permission argumentPermission = contextPermission.withLast(permission);
-                if (!permissible.hasPermission(argumentPermission)) {
-                    return Optional.of(argumentPermission);
-                }
+            ArgumentContext argumentContext = argument.getContext();
+            Optional<Permission> argumentPermissionOptional = argumentContext.getPermission();
+            if (argumentPermissionOptional.isEmpty()) {
+                continue;
+            }
+            Permission argumentPermission = argumentPermissionOptional.get();
+            Permission permission = contextPermission.withLast(argumentPermission);
+            if (!permissible.hasPermission(permission)) {
+                return Optional.of(permission);
             }
         }
         return Optional.empty();

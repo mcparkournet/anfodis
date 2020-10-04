@@ -29,15 +29,11 @@ import org.jetbrains.annotations.Nullable;
 
 class ExecutorData {
 
-    @Nullable
-    private Method beforeMethod;
-    @Nullable
-    private Method executorMethod;
-    @Nullable
-    private Method afterMethod;
+    private @Nullable Method beforeMethod;
+    private @Nullable Method executorMethod;
+    private @Nullable Method afterMethod;
 
-    @Nullable
-    public Method getBeforeMethod() {
+    public @Nullable Method getBeforeMethod() {
         return this.beforeMethod;
     }
 
@@ -45,8 +41,7 @@ class ExecutorData {
         this.beforeMethod = beforeMethod;
     }
 
-    @Nullable
-    public Method getExecutorMethod() {
+    public @Nullable Method getExecutorMethod() {
         return this.executorMethod;
     }
 
@@ -54,8 +49,7 @@ class ExecutorData {
         this.executorMethod = executorMethod;
     }
 
-    @Nullable
-    public Method getAfterMethod() {
+    public @Nullable Method getAfterMethod() {
         return this.afterMethod;
     }
 

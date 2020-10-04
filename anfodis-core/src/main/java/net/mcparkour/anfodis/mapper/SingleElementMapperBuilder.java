@@ -36,8 +36,7 @@ public class SingleElementMapperBuilder<E extends AnnotatedElement> {
 
     private AnnotationConsumer<? extends Annotation> requiredAnnotation;
     private final List<AnnotationConsumer<? extends Annotation>> additionalAnnotations = new ArrayList<>();
-    @Nullable
-    private Consumer<E> elementConsumer;
+    private @Nullable Consumer<E> elementConsumer;
 
     public <A extends Annotation> SingleElementMapperBuilder<E> required(final Class<A> annotation) {
         if (this.requiredAnnotation != null) {

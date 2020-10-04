@@ -57,8 +57,7 @@ public class CommandMap {
         }
     }
 
-    @Nullable
-    public CommandMapEntry getCommand(final String name) {
+    public @Nullable CommandMapEntry getCommand(final String name) {
         return this.commandMap.get(name);
     }
 

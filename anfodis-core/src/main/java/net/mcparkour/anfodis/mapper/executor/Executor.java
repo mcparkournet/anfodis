@@ -31,12 +31,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class Executor {
 
-    @Nullable
-    private final Method beforeMethod;
-    @Nullable
-    private final Method executorMethod;
-    @Nullable
-    private final Method afterMethod;
+    private final @Nullable Method beforeMethod;
+    private final @Nullable Method executorMethod;
+    private final @Nullable Method afterMethod;
 
     public Executor(final ExecutorData executorData) {
         this.beforeMethod = executorData.getBeforeMethod();
@@ -55,8 +52,7 @@ public class Executor {
         return this.executorMethod != null;
     }
 
-    @Nullable
-    public Object invokeExecutor(final Object instance) {
+    public @Nullable Object invokeExecutor(final Object instance) {
         Objects.requireNonNull(this.executorMethod, "Executor method is null");
         return Reflections.invokeMethod(this.executorMethod, instance);
     }

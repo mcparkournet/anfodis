@@ -29,11 +29,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class ClassData {
 
-    @Nullable
-    private String first;
+    private @Nullable String first;
     private String second;
-    @Nullable
-    private String third;
+    private @Nullable String third;
 
     public ClassData() {}
 
@@ -71,8 +69,7 @@ public class ClassData {
             "}";
     }
 
-    @Nullable
-    public String getFirst() {
+    public @Nullable String getFirst() {
         return this.first;
     }
 
@@ -88,8 +85,7 @@ public class ClassData {
         this.second = second;
     }
 
-    @Nullable
-    public String getThird() {
+    public @Nullable String getThird() {
         return this.third;
     }
 

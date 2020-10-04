@@ -28,11 +28,9 @@ import org.jetbrains.annotations.Nullable;
 
 class ListenerPropertiesData<E> {
 
-    @Nullable
-    private Class<? extends E>[] listenedEvents;
+    private @Nullable Class<? extends E>[] listenedEvents;
 
-    @Nullable
-    public Class<? extends E>[] getListenedEvents() {
+    public @Nullable Class<? extends E>[] getListenedEvents() {
         return this.listenedEvents;
     }
 

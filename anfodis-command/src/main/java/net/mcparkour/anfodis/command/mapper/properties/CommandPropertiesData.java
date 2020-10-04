@@ -28,23 +28,15 @@ import org.jetbrains.annotations.Nullable;
 
 class CommandPropertiesData {
 
-    @Nullable
-    private String name;
-    @Nullable
-    private String description;
-    @Nullable
-    private String descriptionTranslationId;
-    @Nullable
-    private String[] aliases;
-    @Nullable
-    private String aliasesTranslationId;
-    @Nullable
-    private String permission;
-    @Nullable
-    private Boolean asynchronous;
+    private @Nullable String name;
+    private @Nullable String description;
+    private @Nullable String descriptionTranslationId;
+    private @Nullable String[] aliases;
+    private @Nullable String aliasesTranslationId;
+    private @Nullable String permission;
+    private @Nullable Boolean asynchronous;
 
-    @Nullable
-    public String getName() {
+    public @Nullable String getName() {
         return this.name;
     }
 
@@ -52,8 +44,7 @@ class CommandPropertiesData {
         this.name = name;
     }
 
-    @Nullable
-    public String getDescription() {
+    public @Nullable String getDescription() {
         return this.description;
     }
 
@@ -61,8 +52,7 @@ class CommandPropertiesData {
         this.description = description;
     }
 
-    @Nullable
-    public String getDescriptionTranslationId() {
+    public @Nullable String getDescriptionTranslationId() {
         return this.descriptionTranslationId;
     }
 
@@ -70,8 +60,7 @@ class CommandPropertiesData {
         this.descriptionTranslationId = descriptionTranslationId;
     }
 
-    @Nullable
-    public String[] getAliases() {
+    public @Nullable String[] getAliases() {
         return this.aliases;
     }
 
@@ -79,8 +68,7 @@ class CommandPropertiesData {
         this.aliases = aliases;
     }
 
-    @Nullable
-    public String getAliasesTranslationId() {
+    public @Nullable String getAliasesTranslationId() {
         return this.aliasesTranslationId;
     }
 
@@ -88,8 +76,7 @@ class CommandPropertiesData {
         this.aliasesTranslationId = aliasesTranslationId;
     }
 
-    @Nullable
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return this.permission;
     }
 

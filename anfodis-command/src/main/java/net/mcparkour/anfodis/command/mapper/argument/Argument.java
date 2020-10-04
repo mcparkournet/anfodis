@@ -46,7 +46,6 @@ public class Argument {
     private final Type argumentType;
     private final @Nullable Class<? extends ArgumentCodec<?>> codecType;
     private final ArgumentContext context;
-    private final @Nullable String permission;
 
     public Argument(final ArgumentData argumentData) {
         Field field = argumentData.getArgumentField();
@@ -61,13 +60,15 @@ public class Argument {
         optional = optional != null && optional;
         Boolean variadic = argumentData.getVariadic();
         variadic = variadic != null && variadic;
-        String permission = argumentData.getPermission();
-        this.permission = permission == null ?
-            null :
-            permission.isEmpty() ?
-                name :
-                permission;
-        this.context = new ArgumentContext(name, optional, variadic);
+        String permissionNode = argumentData.getPermission();
+        Permission permission = permissionNode == null ?
+            Permission.empty() :
+            Permission.of(
+                permissionNode.isEmpty() ?
+                    name :
+                    permissionNode
+            );
+        this.context = new ArgumentContext(name, optional, variadic, permission);
     }
 
     private static Type getArgumentType(final Field field) {
@@ -162,9 +163,5 @@ public class Argument {
 
     public ArgumentContext getContext() {
         return this.context;
-    }
-
-    public Optional<String> getPermission() {
-        return Optional.ofNullable(this.permission);
     }
 }

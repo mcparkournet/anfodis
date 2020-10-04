@@ -30,11 +30,11 @@ import org.bukkit.command.CommandSender;
 
 public class PaperCommandProperties extends CommandProperties {
 
-    private final Set<Class<? extends org.bukkit.command.CommandSender>> senderTypes;
+    private final Set<Class<? extends CommandSender>> senderTypes;
 
     public PaperCommandProperties(final PaperCommandPropertiesData propertiesData) {
         super(propertiesData);
-        Class<? extends org.bukkit.command.CommandSender>[] senderTypes = propertiesData.getSenderTypes();
+        Class<? extends CommandSender>[] senderTypes = propertiesData.getSenderTypes();
         this.senderTypes = senderTypes == null ?
             Set.of() :
             Set.of(senderTypes);
@@ -44,13 +44,13 @@ public class PaperCommandProperties extends CommandProperties {
         if (this.senderTypes.isEmpty()) {
             return true;
         }
-        org.bukkit.command.CommandSender bukkitSender = commandSender.getSender();
+        CommandSender bukkitSender = commandSender.getSender();
         Class<?> bukkitSenderClass = bukkitSender.getClass();
         return this.senderTypes.stream()
             .anyMatch(sender -> sender.isAssignableFrom(bukkitSenderClass));
     }
 
-    public Set<Class<? extends org.bukkit.command.CommandSender>> getSenderTypes() {
+    public Set<Class<? extends CommandSender>> getSenderTypes() {
         return this.senderTypes;
     }
 }

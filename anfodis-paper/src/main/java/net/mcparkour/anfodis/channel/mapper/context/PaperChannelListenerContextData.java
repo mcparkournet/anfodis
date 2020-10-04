@@ -29,13 +29,10 @@ import org.jetbrains.annotations.Nullable;
 
 class PaperChannelListenerContextData {
 
-    @Nullable
-    private Field messageField;
-    @Nullable
-    private Field sourceField;
+    private @Nullable Field messageField;
+    private @Nullable Field sourceField;
 
-    @Nullable
-    public Field getMessageField() {
+    public @Nullable Field getMessageField() {
         return this.messageField;
     }
 
@@ -43,8 +40,7 @@ class PaperChannelListenerContextData {
         this.messageField = messageField;
     }
 
-    @Nullable
-    public Field getSourceField() {
+    public @Nullable Field getSourceField() {
         return this.sourceField;
     }
 

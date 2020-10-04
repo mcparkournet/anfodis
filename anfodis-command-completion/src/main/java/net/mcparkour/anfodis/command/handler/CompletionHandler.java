@@ -180,14 +180,15 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?>, C extend
     }
 
     private boolean checkPermission(final B contextBuilder, final CompletionArgument completionArgument) {
-        Optional<String> argumentPermissionOptional = completionArgument.getPermission();
+        ArgumentContext argumentContext = completionArgument.getContext();
+        Optional<Permission> argumentPermissionOptional = argumentContext.getPermission();
         if (argumentPermissionOptional.isEmpty()) {
             return true;
         }
-        String argumentPermissionNode = argumentPermissionOptional.get();
-        Permission permission = contextBuilder.getPermission();
-        Permission argumentPermission = permission.withLast(argumentPermissionNode);
+        Permission argumentPermission = argumentPermissionOptional.get();
+        Permission contextPermission = contextBuilder.getPermission();
+        Permission permission = contextPermission.withLast(argumentPermission);
         Permissible permissible = contextBuilder.getSender();
-        return permissible.hasPermission(argumentPermission);
+        return permissible.hasPermission(permission);
     }
 }

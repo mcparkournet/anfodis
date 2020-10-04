@@ -47,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C extends CommandContext<T, S>, B extends CommandContextBuilder<C, T, S>, S, M extends Messenger<T, S>>
     extends AbstractRegistry<T, C> {
 
-    private final CommandHandlerSupplier<T, C, B, S, M> commandHandlerSupplier;
+    private final CommandHandlerCreator<T, C, B, S, M> commandHandlerCreator;
     private final CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier;
     private final CommandContextCreator<T, C, S> contextCreator;
     private final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry;
@@ -57,7 +57,7 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
 
     public AbstractCommandRegistry(
         final RootMapper<T> mapper,
-        final CommandHandlerSupplier<T, C, B, S, M> commandHandlerSupplier,
+        final CommandHandlerCreator<T, C, B, S, M> commandHandlerCreator,
         final CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier,
         final CommandContextCreator<T, C, S> contextCreator,
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
@@ -67,7 +67,7 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
         final Permission basePermission
     ) {
         super(net.mcparkour.anfodis.command.annotation.properties.Command.class, mapper, injectionCodecRegistry);
-        this.commandHandlerSupplier = commandHandlerSupplier;
+        this.commandHandlerCreator = commandHandlerCreator;
         this.commandExecutorHandlerSupplier = commandExecutorHandlerSupplier;
         this.contextCreator = contextCreator;
         this.argumentCodecRegistry = argumentCodecRegistry;
@@ -100,11 +100,10 @@ public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, ?>, C e
             handlers.put(subCommand, handler);
         }
         ContextHandler<C> executorHandler = createCommandExecutorHandler(command);
-        return this.commandHandlerSupplier.supply(command, handlers, executorHandler, this.contextCreator, this.messenger);
+        return this.commandHandlerCreator.create(command, handlers, executorHandler, this.contextCreator, this.messenger);
     }
 
-    @Nullable
-    private ContextHandler<C> createCommandExecutorHandler(final T command) {
+    private @Nullable ContextHandler<C> createCommandExecutorHandler(final T command) {
         Executor executor = command.getExecutor();
         if (!executor.hasExecutor()) {
             return null;
