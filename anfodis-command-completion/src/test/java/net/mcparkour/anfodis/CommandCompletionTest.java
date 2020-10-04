@@ -258,4 +258,40 @@ public class CommandCompletionTest {
         Assertions.assertEquals("foobar", sender.getLastMessage());
         Assertions.assertNull(sender.getLastMessage());
     }
+
+    @Test
+    public void testArgumentPermission() {
+        this.commandRegistry.register(TestArgumentPermissionCommand.class);
+        CommandWrapper command = this.commandManager.get("argumentPermission");
+        TestCommandSender sender1 = new TestCommandSender(Locale.US, Set.of(), false);
+        command.execute(sender1, null);
+        Assertions.assertEquals("You do not have permission: test.argumentPermission", sender1.getLastMessage());
+        Assertions.assertEquals(null, sender1.getLastMessage());
+        Assertions.assertEquals(List.of(), command.complete(sender1, null));
+        TestCommandSender sender2 = new TestCommandSender(Locale.US, Set.of("test.argumentPermission"), false);
+        command.execute(sender2, null);
+        Assertions.assertEquals(null, sender2.getLastMessage());
+        Assertions.assertEquals(null, sender2.getLastMessage());
+        Assertions.assertEquals(List.of(), command.complete(sender2, null));
+        TestCommandSender sender3 = new TestCommandSender(Locale.US, Set.of("test.argumentPermission"), false);
+        command.execute(sender3, "foo");
+        Assertions.assertEquals("You do not have permission: test.argumentPermission.string1", sender3.getLastMessage());
+        Assertions.assertEquals(null, sender3.getLastMessage());
+        Assertions.assertEquals(List.of(), command.complete(sender3, ""));
+        TestCommandSender sender4 = new TestCommandSender(Locale.US, Set.of("test.argumentPermission", "test.argumentPermission.string1"), false);
+        command.execute(sender4, "foo");
+        Assertions.assertEquals("foo", sender4.getLastMessage());
+        Assertions.assertEquals(null, sender4.getLastMessage());
+        Assertions.assertEquals(List.of("1", "2", "3"), command.complete(sender4, ""));
+        TestCommandSender sender5 = new TestCommandSender(Locale.US, Set.of("test.argumentPermission", "test.argumentPermission.string1"), false);
+        command.execute(sender5, "foo bar");
+        Assertions.assertEquals("You do not have permission: test.argumentPermission.string2", sender5.getLastMessage());
+        Assertions.assertEquals(null, sender5.getLastMessage());
+        Assertions.assertEquals(List.of(), command.complete(sender5, "foo "));
+        TestCommandSender sender6 = new TestCommandSender(Locale.US, Set.of("test.argumentPermission", "test.argumentPermission.string1", "test.argumentPermission.string2"), false);
+        command.execute(sender6, "foo bar");
+        Assertions.assertEquals("foo", sender6.getLastMessage());
+        Assertions.assertEquals("bar", sender6.getLastMessage());
+        Assertions.assertEquals(List.of("1", "2", "3"), command.complete(sender6, "foo "));
+    }
 }

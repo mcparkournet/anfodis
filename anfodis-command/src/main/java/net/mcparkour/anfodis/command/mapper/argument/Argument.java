@@ -37,6 +37,7 @@ import net.mcparkour.anfodis.command.argument.VariadicArgument;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
+import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
 public class Argument {
@@ -45,6 +46,7 @@ public class Argument {
     private final Type argumentType;
     private final @Nullable Class<? extends ArgumentCodec<?>> codecType;
     private final ArgumentContext context;
+    private final @Nullable String permission;
 
     public Argument(final ArgumentData argumentData) {
         Field field = argumentData.getArgumentField();
@@ -59,6 +61,12 @@ public class Argument {
         optional = optional != null && optional;
         Boolean variadic = argumentData.getVariadic();
         variadic = variadic != null && variadic;
+        String permission = argumentData.getPermission();
+        this.permission = permission == null ?
+            null :
+            permission.isEmpty() ?
+                name :
+                permission;
         this.context = new ArgumentContext(name, optional, variadic);
     }
 
@@ -154,5 +162,9 @@ public class Argument {
 
     public ArgumentContext getContext() {
         return this.context;
+    }
+
+    public Optional<String> getPermission() {
+        return Optional.ofNullable(this.permission);
     }
 }

@@ -31,6 +31,7 @@ import java.util.Set;
 import net.mcparkour.anfodis.command.Messenger;
 import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandContextBuilder;
+import net.mcparkour.anfodis.command.context.Permissible;
 import net.mcparkour.anfodis.command.context.Sender;
 import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.Command;
@@ -40,7 +41,8 @@ import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<T, S>, B extends CommandContextBuilder<C, T, S>, S, M extends Messenger<T, S>> implements CommandContextBuilderHandler<B, C> {
+public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandContext<T, S>, B extends CommandContextBuilder<C, T, S>, S, M extends Messenger<T, S>>
+    implements CommandContextBuilderHandler<B, C> {
 
     private final T command;
     private final Map<T, ? extends CommandContextBuilderHandler<B, C>> subCommandHandlers;
@@ -77,7 +79,6 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         }
         Token firstToken = firstTokenOptional.get();
         String firstArgument = firstToken.getString();
-        System.out.println(firstArgument);
         List<T> subCommands = this.command.getSubCommands();
         T subCommand = subCommands.stream()
             .filter(element -> isMatching(firstArgument, element))
@@ -112,6 +113,12 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
             this.messenger.sendCommandUsageMessage(sender, this.command);
             return;
         }
+        Optional<Permission> argumentPermissionOptional = checkArgumentPermission(contextBuilder);
+        if (argumentPermissionOptional.isPresent()) {
+            Permission argumentPermission = argumentPermissionOptional.get();
+            this.messenger.sendNoPermissionMessage(sender, argumentPermission);
+            return;
+        }
         C context = contextBuilder.build(this.contextCreator);
         Object instance = this.command.createInstance();
         this.executorHandler.handle(context, instance);
@@ -127,6 +134,26 @@ public class CommandHandler<T extends Command<T, ?, ?, ?>, C extends CommandCont
         }
         int maximumSize = commandArguments.size();
         return argumentsLength >= minimumSize && argumentsLength <= maximumSize;
+    }
+
+    private Optional<Permission> checkArgumentPermission(final B contextBuilder) {
+        Permissible permissible = contextBuilder.getSender();
+        Permission contextPermission = contextBuilder.getPermission();
+        int argumentsSize = contextBuilder.getArgumentsSize();
+        List<? extends Argument> commandArguments = this.command.getArguments();
+        int commandArgumentSize = commandArguments.size();
+        for (int index = 0; index < Math.min(argumentsSize, commandArgumentSize); index++) {
+            Argument argument = commandArguments.get(index);
+            Optional<String> permissionOptional = argument.getPermission();
+            if (permissionOptional.isPresent()) {
+                String permission = permissionOptional.get();
+                Permission argumentPermission = contextPermission.withLast(permission);
+                if (!permissible.hasPermission(argumentPermission)) {
+                    return Optional.of(argumentPermission);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     private boolean isMatching(final String argument, final T command) {
