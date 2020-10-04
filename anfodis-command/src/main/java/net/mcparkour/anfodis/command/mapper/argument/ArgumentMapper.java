@@ -33,6 +33,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.command.annotation.argument.Argument;
 import net.mcparkour.anfodis.command.annotation.argument.ArgumentCodec;
+import net.mcparkour.anfodis.command.annotation.argument.ArgumentPermission;
 import net.mcparkour.anfodis.command.annotation.argument.Optional;
 import net.mcparkour.anfodis.command.annotation.argument.Variadic;
 import net.mcparkour.anfodis.mapper.ElementsMapper;
@@ -77,6 +78,8 @@ public class ArgumentMapper<A extends net.mcparkour.anfodis.command.mapper.argum
                 data.setOptional(true))
             .additional(Variadic.class, variadic ->
                 data.setVariadic(true))
+            .additional(ArgumentPermission.class, permission ->
+                data.setPermission(permission.value()))
             .elementConsumer(data::setArgumentField);
         if (additional != null) {
             applier = applier.andThen(additional);

@@ -35,6 +35,7 @@ class ArgumentData {
     private @Nullable String name;
     private @Nullable Boolean optional;
     private @Nullable Boolean variadic;
+    private @Nullable String permission;
 
     public @Nullable Field getArgumentField() {
         return this.argumentField;
@@ -74,5 +75,13 @@ class ArgumentData {
 
     public void setVariadic(final @Nullable Boolean variadic) {
         this.variadic = variadic;
+    }
+
+    public @Nullable String getPermission() {
+        return this.permission;
+    }
+
+    public void setPermission(final @Nullable String permission) {
+        this.permission = permission;
     }
 }
