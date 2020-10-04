@@ -25,9 +25,23 @@
 package net.mcparkour.anfodis.command.handler;
 
 import java.util.List;
+import net.mcparkour.anfodis.command.context.CommandContext;
+import net.mcparkour.anfodis.command.context.CommandContextBuilder;
+import net.mcparkour.anfodis.command.context.Sender;
+import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.Command;
+import net.mcparkour.craftmon.permission.Permission;
 
-@FunctionalInterface
-public interface CompletionContextHandler<C extends CompletionContext<?>> {
+public class CompletionContextBuilder<C extends CommandContext<T, S>, T extends Command<T, ?, ?, ?>, S>
+    extends CommandContextBuilder<C, T, S> {
 
-    List<String> handle(C context);
+    public CompletionContextBuilder(
+        final Sender<S> sender,
+        final T command,
+        final List<Token> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
+        super(sender, command, arguments, permission, asynchronous);
+    }
 }

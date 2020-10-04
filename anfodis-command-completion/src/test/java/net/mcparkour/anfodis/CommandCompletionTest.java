@@ -35,7 +35,6 @@ import net.mcparkour.anfodis.command.TestMessenger;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.argument.result.Result;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
-import net.mcparkour.anfodis.command.context.CommandSender;
 import net.mcparkour.anfodis.command.registry.CommandWrapper;
 import net.mcparkour.anfodis.command.registry.TestCommandRegistry;
 import net.mcparkour.anfodis.registry.Registry;

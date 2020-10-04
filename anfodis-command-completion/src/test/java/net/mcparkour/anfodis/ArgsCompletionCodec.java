@@ -32,7 +32,7 @@ import net.mcparkour.anfodis.command.handler.CompletionContext;
 public class ArgsCompletionCodec implements CompletionCodec {
 
     @Override
-    public List<String> getCompletions(final CompletionContext<?> completionContext, final ArgumentContext argumentContext) {
+    public List<String> getCompletions(final CompletionContext<?, ?> completionContext, final ArgumentContext argumentContext) {
         return List.of("1", "2", "3");
     }
 }

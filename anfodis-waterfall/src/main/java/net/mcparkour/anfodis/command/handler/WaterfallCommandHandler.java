@@ -25,53 +25,40 @@
 package net.mcparkour.anfodis.command.handler;
 
 import java.util.Map;
-import java.util.Set;
 import net.mcparkour.anfodis.command.WaterfallMessenger;
-import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.Sender;
 import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
+import net.mcparkour.anfodis.command.context.WaterfallCommandContextBuilder;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.anfodis.command.mapper.properties.WaterfallCommandProperties;
 import net.mcparkour.anfodis.handler.ContextHandler;
-import net.mcparkour.intext.message.MessageReceiver;
+import net.md_5.bungee.api.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
 public class WaterfallCommandHandler
-    extends CommandHandler<WaterfallCommand, WaterfallCommandContext, net.md_5.bungee.api.CommandSender, WaterfallMessenger> {
+    extends CommandHandler<WaterfallCommand, WaterfallCommandContext, WaterfallCommandContextBuilder, CommandSender, WaterfallMessenger> {
 
     public WaterfallCommandHandler(
         final WaterfallCommand command,
-        final Map<WaterfallCommand, ? extends CommandContextHandler<WaterfallCommandContext>> subCommandHandlers,
-        @Nullable final ContextHandler<WaterfallCommandContext> executorHandler,
-        final CommandContextSupplier<WaterfallCommandContext, net.md_5.bungee.api.CommandSender> contextSupplier,
+        final Map<WaterfallCommand, ? extends CommandContextBuilderHandler<WaterfallCommandContextBuilder, WaterfallCommandContext>> subCommandHandlers,
+        final @Nullable ContextHandler<? super WaterfallCommandContext> executorHandler,
+        final CommandContextCreator<WaterfallCommand, WaterfallCommandContext, CommandSender> contextSupplier,
         final WaterfallMessenger messenger
     ) {
         super(command, subCommandHandlers, executorHandler, contextSupplier, messenger);
     }
 
     @Override
-    public void handle(final WaterfallCommandContext context) {
+    public void handle(final WaterfallCommandContextBuilder contextBuilder) {
         WaterfallCommand command = getCommand();
         WaterfallCommandProperties properties = command.getProperties();
-        CommandSender<net.md_5.bungee.api.CommandSender> sender = context.getSender();
+        Sender<CommandSender> sender = contextBuilder.getSender();
         if (!properties.isValidSender(sender)) {
             WaterfallMessenger messenger = getMessenger();
             var senderTypes = properties.getSenderTypes();
             messenger.sendInvalidSenderMessage(sender, senderTypes);
             return;
         }
-        super.handle(context);
-    }
-
-    private boolean checkSenders(final WaterfallCommandContext context) {
-        WaterfallCommand command = getCommand();
-        WaterfallCommandProperties properties = command.getProperties();
-        Set<Class<? extends net.md_5.bungee.api.CommandSender>> senders = properties.getSenderTypes();
-        if (senders.isEmpty()) {
-            return true;
-        }
-        CommandSender<net.md_5.bungee.api.CommandSender> commandSender = context.getSender();
-        Object rawSender = commandSender.getSender();
-        Class<?> rawSenderType = rawSender.getClass();
-        return senders.stream().anyMatch(sender -> sender.isAssignableFrom(rawSenderType));
+        super.handle(contextBuilder);
     }
 }

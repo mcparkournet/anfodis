@@ -25,7 +25,8 @@
 package net.mcparkour.anfodis.command.mapper.properties;
 
 import java.util.Set;
-import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.Sender;
+import net.md_5.bungee.api.CommandSender;
 
 public class WaterfallCommandProperties extends CommandProperties {
 
@@ -39,7 +40,7 @@ public class WaterfallCommandProperties extends CommandProperties {
             Set.of(senderTypes);
     }
 
-    public boolean isValidSender(final CommandSender<net.md_5.bungee.api.CommandSender> commandSender) {
+    public boolean isValidSender(final Sender<CommandSender> commandSender) {
         if (this.senderTypes.isEmpty()) {
             return true;
         }

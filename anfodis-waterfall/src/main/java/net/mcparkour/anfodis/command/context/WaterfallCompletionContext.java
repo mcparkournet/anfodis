@@ -24,19 +24,23 @@
 
 package net.mcparkour.anfodis.command.context;
 
+import java.util.Deque;
 import java.util.List;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.craftmon.permission.Permission;
+import net.md_5.bungee.api.CommandSender;
 
-public class WaterfallCompletionContext extends CompletionContext<net.md_5.bungee.api.CommandSender> {
+public class WaterfallCompletionContext extends CompletionContext<WaterfallCommand, CommandSender> {
 
     public WaterfallCompletionContext(
-        final CommandSender<net.md_5.bungee.api.CommandSender> sender,
+        final Sender<CommandSender> sender,
         final List<Token> arguments,
+        final Deque<WaterfallCommand> parents,
         final Permission permission,
         final boolean asynchronous
     ) {
-        super(sender, arguments, permission, asynchronous);
+        super(sender, arguments, parents, permission, asynchronous);
     }
 }

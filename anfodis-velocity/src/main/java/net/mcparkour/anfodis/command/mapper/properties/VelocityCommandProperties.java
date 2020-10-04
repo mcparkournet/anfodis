@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.mapper.properties;
 
 import java.util.Set;
 import com.velocitypowered.api.command.CommandSource;
-import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.Sender;
 
 public class VelocityCommandProperties extends CommandProperties {
 
@@ -40,7 +40,7 @@ public class VelocityCommandProperties extends CommandProperties {
             Set.of(senderTypes);
     }
 
-    public boolean isValidSender(final CommandSender<CommandSource> commandSender) {
+    public boolean isValidSender(final Sender<CommandSource> commandSender) {
         if (this.senderTypes.isEmpty()) {
             return true;
         }

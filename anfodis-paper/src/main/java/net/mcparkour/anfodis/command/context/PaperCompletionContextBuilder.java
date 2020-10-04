@@ -22,15 +22,24 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.handler;
+package net.mcparkour.anfodis.command.context;
 
 import java.util.List;
-import net.mcparkour.anfodis.command.context.CommandContext;
-import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.handler.CompletionContextBuilder;
 import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.craftmon.permission.Permission;
+import org.bukkit.command.CommandSender;
 
-public interface CommandContextSupplier<C extends CommandContext<S>, S> {
+public class PaperCompletionContextBuilder extends CompletionContextBuilder<PaperCompletionContext, PaperCommand, CommandSender> {
 
-    C supply(CommandSender<S> sender, List<Token> arguments, Permission permission, boolean asynchronous);
+    public PaperCompletionContextBuilder(
+        final Sender<CommandSender> sender,
+        final PaperCommand command,
+        final List<Token> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
+        super(sender, command, arguments, permission, asynchronous);
+    }
 }

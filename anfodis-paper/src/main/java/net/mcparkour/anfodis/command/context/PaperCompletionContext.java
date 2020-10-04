@@ -24,20 +24,23 @@
 
 package net.mcparkour.anfodis.command.context;
 
+import java.util.Deque;
 import java.util.List;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
 import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.craftmon.permission.Permission;
 import org.bukkit.command.CommandSender;
 
-public class PaperCompletionContext extends CompletionContext<CommandSender> {
+public class PaperCompletionContext extends CompletionContext<PaperCommand, CommandSender> {
 
     public PaperCompletionContext(
-        final net.mcparkour.anfodis.command.context.CommandSender<CommandSender> sender,
+        final Sender<CommandSender> sender,
         final List<Token> arguments,
+        final Deque<PaperCommand> parents,
         final Permission permission,
         final boolean asynchronous
     ) {
-        super(sender, arguments, permission, asynchronous);
+        super(sender, arguments, parents, permission, asynchronous);
     }
 }

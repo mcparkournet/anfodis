@@ -24,18 +24,22 @@
 
 package net.mcparkour.anfodis.command.context;
 
+import java.util.Deque;
 import java.util.List;
 import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.PaperCommand;
 import net.mcparkour.craftmon.permission.Permission;
+import org.bukkit.command.CommandSender;
 
-public class PaperCommandContext extends CommandContext<org.bukkit.command.CommandSender> {
+public class PaperCommandContext extends CommandContext<PaperCommand, CommandSender> {
 
     public PaperCommandContext(
-        final CommandSender<org.bukkit.command.CommandSender> sender,
+        final Sender<CommandSender> sender,
         final List<Token> arguments,
+        final Deque<PaperCommand> parents,
         final Permission permission,
         final boolean asynchronous
     ) {
-        super(sender, arguments, permission, asynchronous);
+        super(sender, arguments, parents, permission, asynchronous);
     }
 }

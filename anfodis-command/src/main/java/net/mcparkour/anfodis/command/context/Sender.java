@@ -26,7 +26,7 @@ package net.mcparkour.anfodis.command.context;
 
 import net.mcparkour.intext.message.MessageReceiver;
 
-public interface CommandSender<T> extends Permissible {
+public interface Sender<T> extends Permissible {
 
     T getSender();
 

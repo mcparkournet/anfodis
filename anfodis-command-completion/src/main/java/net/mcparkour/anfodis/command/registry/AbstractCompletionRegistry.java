@@ -33,28 +33,30 @@ import net.mcparkour.anfodis.command.Messenger;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.CommandContext;
-import net.mcparkour.anfodis.command.handler.CommandContextHandler;
-import net.mcparkour.anfodis.command.handler.CommandContextSupplier;
+import net.mcparkour.anfodis.command.context.CommandContextBuilder;
+import net.mcparkour.anfodis.command.handler.CommandContextBuilderHandler;
+import net.mcparkour.anfodis.command.handler.CommandContextCreator;
 import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
+import net.mcparkour.anfodis.command.handler.CompletionContextBuilder;
+import net.mcparkour.anfodis.command.handler.CompletionContextBuilderHandler;
 import net.mcparkour.anfodis.command.mapper.CompletionCommand;
 import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
-public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, ?, ?, ?>, C extends CommandContext<S>, D extends CompletionContext<S>, S, M extends Messenger<T, S>> extends AbstractCommandRegistry<T, C, S, M> {
+public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, ?, ?, ?>, C1 extends CommandContext<T, S>, B1 extends CommandContextBuilder<C1, T, S>, C2 extends CompletionContext<T, S>, B2 extends CompletionContextBuilder<C2, T, S>, S, M extends Messenger<T, S>> extends AbstractCommandRegistry<T, C1, B1, S, M> {
 
-    private final CompletionHandlerSupplier<T, D, S> completionHandlerSupplier;
-    private final CommandContextSupplier<D, S> completionContextSupplier;
+    private final CompletionHandlerSupplier<T, C2, B2, S> completionHandlerSupplier;
+    private final CommandContextCreator<T, C2, S> completionContextSupplier;
     private final CodecRegistry<CompletionCodec> completionCodecRegistry;
 
     public AbstractCompletionRegistry(
         final RootMapper<T> mapper,
-        final CommandHandlerSupplier<T, C, S, M> commandHandlerSupplier,
-        final CommandExecutorHandlerSupplier<T, C> commandExecutorHandlerSupplier,
-        final CommandContextSupplier<C, S> commandContextSupplier,
-        final CompletionHandlerSupplier<T, D, S> completionHandlerSupplier,
-        final CommandContextSupplier<D, S> completionContextSupplier,
+        final CommandHandlerSupplier<T, C1, B1, S, M> commandHandlerSupplier,
+        final CommandExecutorHandlerSupplier<T, C1> commandExecutorHandlerSupplier,
+        final CommandContextCreator<T, C1, S> commandContextCreator,
+        final CompletionHandlerSupplier<T, C2, B2, S> completionHandlerSupplier,
+        final CommandContextCreator<T, C2, S> completionContextSupplier,
         final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry,
         final CodecRegistry<ArgumentCodec<?>> argumentCodecRegistry,
         final CodecRegistry<CompletionCodec> completionCodecRegistry,
@@ -66,7 +68,7 @@ public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, 
             mapper,
             commandHandlerSupplier,
             commandExecutorHandlerSupplier,
-            commandContextSupplier,
+            commandContextCreator,
             injectionCodecRegistry,
             argumentCodecRegistry,
             messageReceiverFactory,
@@ -80,26 +82,26 @@ public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, 
 
     @Override
     public void register(final T root) {
-        CommandContextHandler<C> commandHandler = createCommandHandler(root);
-        CompletionContextHandler<D> completionHandler = createCompletionHandler(root);
+        CommandContextBuilderHandler<B1, C1> commandHandler = createCommandHandler(root);
+        CompletionContextBuilderHandler<B2, C2> completionHandler = createCompletionHandler(root);
         register(root, commandHandler, completionHandler);
     }
 
-    private CompletionContextHandler<D> createCompletionHandler(final T command) {
+    private CompletionContextBuilderHandler<B2, C2> createCompletionHandler(final T command) {
         List<T> subCommands = command.getSubCommands();
         int size = subCommands.size();
-        Map<T, CompletionContextHandler<D>> handlers = new HashMap<>(size);
+        Map<T, CompletionContextBuilderHandler<B2, C2>> handlers = new HashMap<>(size);
         for (final T subCommand : subCommands) {
-            CompletionContextHandler<D> handler = createCompletionHandler(subCommand);
+            CompletionContextBuilderHandler<B2, C2> handler = createCompletionHandler(subCommand);
             handlers.put(subCommand, handler);
         }
         return this.completionHandlerSupplier.supply(command, this.completionCodecRegistry, handlers, this.completionContextSupplier);
     }
 
     @Override
-    public void register(final T command, final CommandContextHandler<C> commandHandler) {
+    public void register(final T command, final CommandContextBuilderHandler<B1, C1> commandHandler) {
         register(command, commandHandler, context -> List.of());
     }
 
-    public abstract void register(T command, CommandContextHandler<C> commandHandler, CompletionContextHandler<D> completionHandler);
+    public abstract void register(T command, CommandContextBuilderHandler<B1, C1> commandHandler, CompletionContextBuilderHandler<B2, C2> completionHandler);
 }

@@ -32,7 +32,8 @@ import net.mcparkour.anfodis.command.JDAMessenger;
 import net.mcparkour.anfodis.command.PermissionMap;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.context.JDACommandContext;
-import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.context.JDACommandContextBuilder;
+import net.mcparkour.anfodis.command.handler.CommandContextBuilderHandler;
 import net.mcparkour.anfodis.command.handler.CommandExecutorHandler;
 import net.mcparkour.anfodis.command.handler.CommandHandler;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
@@ -41,7 +42,7 @@ import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
 public class JDACommandRegistry
-    extends AbstractCommandRegistry<JDACommand, JDACommandContext, ChannelSender, JDAMessenger> {
+    extends AbstractCommandRegistry<JDACommand, JDACommandContext, JDACommandContextBuilder, ChannelSender, JDAMessenger> {
 
     private static final JDACommandMapper COMMAND_MAPPER = new JDACommandMapper();
 
@@ -83,7 +84,10 @@ public class JDACommandRegistry
     }
 
     @Override
-    public void register(final JDACommand command, final CommandContextHandler<JDACommandContext> commandHandler) {
+    public void register(
+        final JDACommand command,
+        final CommandContextBuilderHandler<JDACommandContextBuilder, JDACommandContext> commandHandler
+    ) {
         this.commandMap.register(command, commandHandler);
     }
 }

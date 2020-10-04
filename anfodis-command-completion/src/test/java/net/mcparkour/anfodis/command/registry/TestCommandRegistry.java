@@ -33,10 +33,12 @@ import net.mcparkour.anfodis.command.TestMessenger;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.TestCommandContext;
-import net.mcparkour.anfodis.command.context.TestCommandSender;
+import net.mcparkour.anfodis.command.context.TestCommandContextBuilder;
+import net.mcparkour.anfodis.command.context.TestSender;
 import net.mcparkour.anfodis.command.context.TestCompletionContext;
-import net.mcparkour.anfodis.command.handler.CommandContextHandler;
-import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
+import net.mcparkour.anfodis.command.context.TestCompletionContextBuilder;
+import net.mcparkour.anfodis.command.handler.CommandContextBuilderHandler;
+import net.mcparkour.anfodis.command.handler.CompletionContextBuilderHandler;
 import net.mcparkour.anfodis.command.handler.CompletionHandler;
 import net.mcparkour.anfodis.command.handler.TestCommandExecutorHandler;
 import net.mcparkour.anfodis.command.handler.TestCommandHandler;
@@ -47,7 +49,8 @@ import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
-public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand, TestCommandContext, TestCompletionContext, net.mcparkour.anfodis.TestCommandSender, TestMessenger> {
+public class TestCommandRegistry
+    extends AbstractCompletionRegistry<TestCommand, TestCommandContext, TestCommandContextBuilder, TestCompletionContext, TestCompletionContextBuilder, net.mcparkour.anfodis.TestCommandSender, TestMessenger> {
 
     private static final TestCommandMapper COMMAND_MAPPER = new TestCommandMapper();
 
@@ -80,7 +83,7 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
     }
 
     @Override
-    public void register(final TestCommand command, final CommandContextHandler<TestCommandContext> commandHandler, final CompletionContextHandler<TestCompletionContext> completionHandler) {
+    public void register(final TestCommand command, final CommandContextBuilderHandler<TestCommandContextBuilder, TestCommandContext> commandHandler, final CompletionContextBuilderHandler<TestCompletionContextBuilder, TestCompletionContext> completionHandler) {
         TestCommandProperties properties = command.getProperties();
         Set<String> names = properties.getAllNames();
         Permission basePermission = getBasePermission();
@@ -90,29 +93,30 @@ public class TestCommandRegistry extends AbstractCompletionRegistry<TestCommand,
         if (asynchronous) {
             throw new RuntimeException("Asynchronous command execution is not supported");
         }
-        register(names, permission, false, commandHandler, completionHandler);
+        register(command, names, permission, false, commandHandler, completionHandler);
     }
 
     @SuppressWarnings("SameParameterValue")
     private void register(
+        final TestCommand command,
         final Collection<String> aliases,
         final Permission permission,
         final boolean asynchronous,
-        final CommandContextHandler<TestCommandContext> commandHandler,
-        final CompletionContextHandler<TestCompletionContext> completionHandler
+        final CommandContextBuilderHandler<TestCommandContextBuilder, TestCommandContext> commandHandler,
+        final CompletionContextBuilderHandler<TestCompletionContextBuilder, TestCompletionContext> completionHandler
     ) {
         MessageReceiverFactory<net.mcparkour.anfodis.TestCommandSender> messageReceiverFactory = getMessageReceiverFactory();
         TestCommandExecutor commandExecutor = (sender, arguments) -> {
             MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
-            TestCommandSender testCommandSender = new TestCommandSender(sender, receiver);
-            TestCommandContext context = new TestCommandContext(testCommandSender, arguments, permission, asynchronous);
-            commandHandler.handle(context);
+            TestSender testCommandSender = new TestSender(sender, receiver);
+            TestCommandContextBuilder contextBuilder = new TestCommandContextBuilder(testCommandSender, command, arguments, permission, asynchronous);
+            commandHandler.handle(contextBuilder);
         };
         TestCompletionExecutor completionExecutor = (sender, arguments) -> {
             MessageReceiver receiver = messageReceiverFactory.createMessageReceiver(sender);
-            TestCommandSender testCommandSender = new TestCommandSender(sender, receiver);
-            TestCompletionContext context = new TestCompletionContext(testCommandSender, arguments, permission, asynchronous);
-            return completionHandler.handle(context);
+            TestSender testCommandSender = new TestSender(sender, receiver);
+            TestCompletionContextBuilder contextBuilder = new TestCompletionContextBuilder(testCommandSender, command, arguments, permission, asynchronous);
+            return completionHandler.handle(contextBuilder);
         };
         register(aliases, commandExecutor, completionExecutor);
     }

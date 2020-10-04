@@ -33,11 +33,13 @@ import net.mcparkour.anfodis.command.PaperMessenger;
 import net.mcparkour.anfodis.command.codec.argument.ArgumentCodec;
 import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
 import net.mcparkour.anfodis.command.context.PaperCommandContext;
-import net.mcparkour.anfodis.command.context.PaperCommandSender;
+import net.mcparkour.anfodis.command.context.PaperCommandContextBuilder;
+import net.mcparkour.anfodis.command.context.PaperSender;
 import net.mcparkour.anfodis.command.context.PaperCompletionContext;
-import net.mcparkour.anfodis.command.handler.CommandContextHandler;
+import net.mcparkour.anfodis.command.context.PaperCompletionContextBuilder;
+import net.mcparkour.anfodis.command.handler.CommandContextBuilderHandler;
 import net.mcparkour.anfodis.command.handler.CommandExecutorHandler;
-import net.mcparkour.anfodis.command.handler.CompletionContextHandler;
+import net.mcparkour.anfodis.command.handler.CompletionContextBuilderHandler;
 import net.mcparkour.anfodis.command.handler.CompletionHandler;
 import net.mcparkour.anfodis.command.handler.PaperCommandHandler;
 import net.mcparkour.anfodis.command.mapper.PaperCommand;
@@ -54,7 +56,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
 public class PaperCommandRegistry
-    extends AbstractCompletionRegistry<PaperCommand, PaperCommandContext, PaperCompletionContext, CommandSender, PaperMessenger> {
+    extends AbstractCompletionRegistry<PaperCommand, PaperCommandContext, PaperCommandContextBuilder, PaperCompletionContext, PaperCompletionContextBuilder, CommandSender, PaperMessenger> {
 
     private static final PaperCommandMapper COMMAND_MAPPER = new PaperCommandMapper();
 
@@ -136,8 +138,8 @@ public class PaperCommandRegistry
     @Override
     public void register(
         final PaperCommand command,
-        final CommandContextHandler<PaperCommandContext> commandHandler,
-        final CompletionContextHandler<PaperCompletionContext> completionHandler
+        final CommandContextBuilderHandler<PaperCommandContextBuilder, PaperCommandContext> commandHandler,
+        final CompletionContextBuilderHandler<PaperCompletionContextBuilder, PaperCompletionContext> completionHandler
     ) {
         PaperCommandProperties properties = command.getProperties();
         String name = properties.getName();
@@ -148,31 +150,36 @@ public class PaperCommandRegistry
         Permission commandPermission = properties.getPermission();
         Permission permission = commandPermission.withFirst(basePermission);
         boolean asynchronous = properties.isAsynchronous();
-        register(name, description, usage, aliases, permission, asynchronous, commandHandler, completionHandler);
+        register(command, name, description, usage, aliases, permission, asynchronous, commandHandler, completionHandler);
     }
 
     private void register(
+        final PaperCommand command,
         final String name,
         final String description,
         final String usage,
         final Collection<String> aliases,
         final Permission permission,
         final boolean asynchronous,
-        final CommandContextHandler<PaperCommandContext> commandHandler,
-        final CompletionContextHandler<PaperCompletionContext> completionHandler
+        final CommandContextBuilderHandler<PaperCommandContextBuilder, PaperCommandContext> commandHandler,
+        final CompletionContextBuilderHandler<PaperCompletionContextBuilder, PaperCompletionContext> completionHandler
     ) {
         MessageReceiverFactory<CommandSender> receiverFactory = getMessageReceiverFactory();
         PaperCommandExecutor commandExecutor = (sender, arguments) -> {
             MessageReceiver receiver = receiverFactory.createMessageReceiver(sender);
-            PaperCommandSender paperSender = new PaperCommandSender(sender, receiver);
-            PaperCommandContext context = new PaperCommandContext(paperSender, arguments, permission, asynchronous);
-            commandHandler.handleAsync(context, this.asyncScheduler);
+            PaperSender paperSender = new PaperSender(sender, receiver);
+            PaperCommandContextBuilder contextBuilder = new PaperCommandContextBuilder(paperSender, command, arguments, permission, asynchronous);
+            if (asynchronous) {
+                this.asyncScheduler.run(() -> commandHandler.handle(contextBuilder));
+            } else {
+                commandHandler.handle(contextBuilder);
+            }
         };
         PaperCompletionExecutor completionExecutor = (sender, arguments) -> {
             MessageReceiver receiver = receiverFactory.createMessageReceiver(sender);
-            PaperCommandSender paperSender = new PaperCommandSender(sender, receiver);
-            PaperCompletionContext context = new PaperCompletionContext(paperSender, arguments, permission, asynchronous);
-            return completionHandler.handle(context);
+            PaperSender paperSender = new PaperSender(sender, receiver);
+            PaperCompletionContextBuilder contextBuilder = new PaperCompletionContextBuilder(paperSender, command, arguments, permission, asynchronous);
+            return completionHandler.handle(contextBuilder);
         };
         register(name, description, usage, aliases, permission, commandExecutor, completionExecutor);
     }

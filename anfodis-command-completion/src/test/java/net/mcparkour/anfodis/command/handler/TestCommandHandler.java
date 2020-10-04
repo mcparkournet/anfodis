@@ -26,20 +26,21 @@ package net.mcparkour.anfodis.command.handler;
 
 import java.util.Map;
 import net.mcparkour.anfodis.TestCommandSender;
-import net.mcparkour.anfodis.command.Messenger;
 import net.mcparkour.anfodis.command.TestMessenger;
 import net.mcparkour.anfodis.command.context.TestCommandContext;
+import net.mcparkour.anfodis.command.context.TestCommandContextBuilder;
 import net.mcparkour.anfodis.command.mapper.TestCommand;
 import net.mcparkour.anfodis.handler.ContextHandler;
 import org.jetbrains.annotations.Nullable;
 
-public class TestCommandHandler extends CommandHandler<TestCommand, TestCommandContext, TestCommandSender, TestMessenger> {
+public class TestCommandHandler
+    extends CommandHandler<TestCommand, TestCommandContext, TestCommandContextBuilder, TestCommandSender, TestMessenger> {
 
     public TestCommandHandler(
         final TestCommand command,
-        final Map<TestCommand, ? extends CommandContextHandler<TestCommandContext>> subCommandHandlers,
+        final Map<TestCommand, ? extends CommandContextBuilderHandler<TestCommandContextBuilder, TestCommandContext>> subCommandHandlers,
         @Nullable final ContextHandler<TestCommandContext> executorHandler,
-        final CommandContextSupplier<TestCommandContext, TestCommandSender> contextSupplier,
+        final CommandContextCreator<TestCommand, TestCommandContext, TestCommandSender> contextSupplier,
         final TestMessenger messenger
     ) {
         super(command, subCommandHandlers, executorHandler, contextSupplier, messenger);

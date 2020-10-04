@@ -24,19 +24,22 @@
 
 package net.mcparkour.anfodis.command.context;
 
+import java.util.Deque;
 import java.util.List;
 import net.mcparkour.anfodis.command.ChannelSender;
 import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.JDACommand;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class JDACommandContext extends CommandContext<ChannelSender> {
+public class JDACommandContext extends CommandContext<JDACommand, ChannelSender> {
 
     public JDACommandContext(
-        final CommandSender<ChannelSender> sender,
+        final Sender<ChannelSender> sender,
         final List<Token> arguments,
+        final Deque<JDACommand> parents,
         final Permission permission,
         final boolean asynchronous
     ) {
-        super(sender, arguments, permission, asynchronous);
+        super(sender, arguments, parents, permission, asynchronous);
     }
 }

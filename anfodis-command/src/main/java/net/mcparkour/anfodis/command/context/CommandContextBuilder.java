@@ -24,46 +24,63 @@
 
 package net.mcparkour.anfodis.command.context;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import net.mcparkour.anfodis.command.handler.CommandContextCreator;
 import net.mcparkour.anfodis.command.lexer.Token;
 import net.mcparkour.anfodis.command.mapper.Command;
-import net.mcparkour.anfodis.handler.RootContext;
 import net.mcparkour.craftmon.permission.Permission;
 
-public class CommandContext<T extends Command<T, ?, ?, ?>, S> extends RootContext {
+public class CommandContextBuilder<C extends CommandContext<T, S>, T extends Command<T, ?, ?, ?>, S> {
 
     private final Sender<S> sender;
-    private final List<Token> arguments;
+    private final Deque<Token> arguments;
     private final Deque<T> parents;
-    private final Permission permission;
+    private Permission permission;
     private final boolean asynchronous;
 
-    public CommandContext(
-        final Sender<S> sender,
-        final List<Token> arguments,
-        final Deque<T> parents,
-        final Permission permission,
-        final boolean asynchronous
-    ) {
+    public CommandContextBuilder(final Sender<S> sender, final T command, final List<Token> arguments, final Permission permission, final boolean asynchronous) {
         this.sender = sender;
-        this.arguments = arguments;
+        this.arguments = new LinkedList<>(arguments);
+        Deque<T> parents = new LinkedList<>();
+        parents.push(command);
         this.parents = parents;
         this.permission = permission;
         this.asynchronous = asynchronous;
     }
 
+    public int getArgumentsSize() {
+        return this.arguments.size();
+    }
+
+    public Optional<Token> peekArgument() {
+        Token last = this.arguments.peek();
+        return Optional.ofNullable(last);
+    }
+
+    public Optional<Token> pollArgument() {
+        Token last = this.arguments.poll();
+        return Optional.ofNullable(last);
+    }
+
+    public void pushParent(final T command) {
+        this.parents.push(command);
+    }
+
+    public void permissionWithLast(final Permission permission) {
+        this.permission = this.permission.withLast(permission);
+    }
+
+    public C build(final CommandContextCreator<T, C, S> commandContextCreator) {
+        List<Token> arguments = new ArrayList<>(this.arguments);
+        return commandContextCreator.create(this.sender, arguments, this.parents, this.permission, this.asynchronous);
+    }
+
     public Sender<S> getSender() {
         return this.sender;
-    }
-
-    public List<Token> getArguments() {
-        return List.copyOf(this.arguments);
-    }
-
-    public Deque<T> getParents() {
-        return new LinkedList<>(this.parents);
     }
 
     public Permission getPermission() {

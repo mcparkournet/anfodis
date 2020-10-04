@@ -24,18 +24,21 @@
 
 package net.mcparkour.anfodis.command.context;
 
-import com.velocitypowered.api.command.CommandSource;
-import net.mcparkour.intext.message.MessageReceiver;
+import java.util.List;
+import net.mcparkour.anfodis.TestCommandSender;
+import net.mcparkour.anfodis.command.lexer.Token;
+import net.mcparkour.anfodis.command.mapper.TestCommand;
+import net.mcparkour.craftmon.permission.Permission;
 
-public class VelocityCommandSender extends AbstractCommandSender<CommandSource> {
+public class TestCommandContextBuilder extends CommandContextBuilder<TestCommandContext, TestCommand, TestCommandSender> {
 
-    public VelocityCommandSender(final CommandSource sender, final MessageReceiver receiver) {
-        super(sender, receiver);
-    }
-
-    @Override
-    public boolean hasPermission(final String name) {
-        CommandSource sender = getSender();
-        return sender.hasPermission(name);
+    public TestCommandContextBuilder(
+        final Sender<TestCommandSender> sender,
+        final TestCommand command,
+        final List<Token> arguments,
+        final Permission permission,
+        final boolean asynchronous
+    ) {
+        super(sender, command, arguments, permission, asynchronous);
     }
 }

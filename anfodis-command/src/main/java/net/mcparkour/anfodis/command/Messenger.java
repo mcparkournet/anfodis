@@ -26,27 +26,28 @@ package net.mcparkour.anfodis.command;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.Sender;
 import net.mcparkour.anfodis.command.context.Permissible;
 import net.mcparkour.anfodis.command.mapper.Command;
+import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 
 public interface Messenger<T extends Command<T, ?, ?, ?>, S> {
 
-    default void sendNoPermissionMessage(final CommandSender<S> sender, final Permission permission) {
+    default void sendNoPermissionMessage(final Sender<S> sender, final Permission permission) {
         MessageReceiver receiver = sender.getReceiver();
         String permissionName = permission.getName();
         receiver.receivePlain("You do not have permission: " + permissionName);
     }
 
-    default void sendCommandUsageMessage(final CommandSender<S> sender, final T command) {
+    default void sendCommandUsageMessage(final Sender<S> sender, final T command) {
         String usage = command.getUsage();
         MessageReceiver receiver = sender.getReceiver();
         receiver.receivePlain(usage);
     }
 
-    default void sendSubCommandsUsageMessage(final CommandSender<S> sender, final Permission permission, final T command) {
+    default void sendSubCommandsUsageMessage(final Sender<S> sender, final Permission permission, final T command) {
         String usage = getUsage(command, sender, permission);
         MessageReceiver receiver = sender.getReceiver();
         receiver.receivePlain(usage);
@@ -62,7 +63,9 @@ public interface Messenger<T extends Command<T, ?, ?, ?>, S> {
         List<T> subCommands = command.getSubCommands();
         return subCommands.stream()
             .filter(subCommand -> {
-                Permission permission = subCommand.getPermission(contextPermission);
+                CommandProperties subCommandProperties = subCommand.getProperties();
+                Permission subCommandPermission = subCommandProperties.getPermission();
+                Permission permission = contextPermission.withLast(subCommandPermission);
                 return permissible.hasPermission(permission);
             })
             .map(T::getUsage)

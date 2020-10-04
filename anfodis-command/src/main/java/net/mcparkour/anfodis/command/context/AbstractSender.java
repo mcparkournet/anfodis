@@ -22,24 +22,27 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.anfodis.command.registry;
+package net.mcparkour.anfodis.command.context;
 
-import java.util.Map;
-import net.mcparkour.anfodis.codec.registry.CodecRegistry;
-import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
-import net.mcparkour.anfodis.command.context.CommandContextBuilder;
-import net.mcparkour.anfodis.command.handler.CommandContextCreator;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.handler.CompletionContextBuilder;
-import net.mcparkour.anfodis.command.handler.CompletionContextBuilderHandler;
-import net.mcparkour.anfodis.command.mapper.CompletionCommand;
+import net.mcparkour.intext.message.MessageReceiver;
 
-public interface CompletionHandlerSupplier<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<T, S>, B extends CompletionContextBuilder<C, T, S>, S> {
+public abstract class AbstractSender<T> implements Sender<T> {
 
-    CompletionContextBuilderHandler<B, C> supply(
-        T command,
-        CodecRegistry<CompletionCodec> completionCodecRegistry,
-        Map<T, CompletionContextBuilderHandler<B, C>> subCommandHandlerMap,
-        CommandContextCreator<T, C, S> contextSupplier
-    );
+    private final T sender;
+    private final MessageReceiver receiver;
+
+    public AbstractSender(final T sender, final MessageReceiver receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
+    }
+
+    @Override
+    public T getSender() {
+        return this.sender;
+    }
+
+    @Override
+    public MessageReceiver getReceiver() {
+        return this.receiver;
+    }
 }

@@ -25,7 +25,8 @@
 package net.mcparkour.anfodis.command.mapper.properties;
 
 import java.util.Set;
-import net.mcparkour.anfodis.command.context.CommandSender;
+import net.mcparkour.anfodis.command.context.Sender;
+import org.bukkit.command.CommandSender;
 
 public class PaperCommandProperties extends CommandProperties {
 
@@ -39,7 +40,7 @@ public class PaperCommandProperties extends CommandProperties {
             Set.of(senderTypes);
     }
 
-    public boolean isValidSender(final CommandSender<org.bukkit.command.CommandSender> commandSender) {
+    public boolean isValidSender(final Sender<CommandSender> commandSender) {
         if (this.senderTypes.isEmpty()) {
             return true;
         }
