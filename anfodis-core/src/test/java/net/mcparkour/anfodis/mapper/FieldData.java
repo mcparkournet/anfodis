@@ -32,8 +32,7 @@ public class FieldData {
 
     private Field field;
     private String string1;
-    @Nullable
-    private String string2;
+    private @Nullable String string2;
 
     public FieldData() {}
 
@@ -87,8 +86,7 @@ public class FieldData {
         this.string1 = string1;
     }
 
-    @Nullable
-    public String getString2() {
+    public @Nullable String getString2() {
         return this.string2;
     }
 

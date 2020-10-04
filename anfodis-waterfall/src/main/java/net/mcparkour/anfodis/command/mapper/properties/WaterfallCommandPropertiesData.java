@@ -29,11 +29,9 @@ import org.jetbrains.annotations.Nullable;
 
 class WaterfallCommandPropertiesData extends CommandPropertiesData {
 
-    @Nullable
-    private Class<? extends CommandSender>[] senderTypes;
+    private @Nullable Class<? extends CommandSender>[] senderTypes;
 
-    @Nullable
-    public Class<? extends CommandSender>[] getSenderTypes() {
+    public @Nullable Class<? extends CommandSender>[] getSenderTypes() {
         return this.senderTypes;
     }
 

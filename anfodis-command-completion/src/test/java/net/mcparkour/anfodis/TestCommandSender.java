@@ -58,8 +58,7 @@ public class TestCommandSender {
         this.messages.add(message);
     }
 
-    @Nullable
-    public String getLastMessage() {
+    public @Nullable String getLastMessage() {
         return this.messages.poll();
     }
 

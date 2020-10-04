@@ -29,17 +29,12 @@ import org.jetbrains.annotations.Nullable;
 
 class ContextData {
 
-    @Nullable
-    private Field argumentsField;
-    @Nullable
-    private Field requiredPermissionField;
-    @Nullable
-    private Field senderField;
-    @Nullable
-    private Field receiverField;
+    private @Nullable Field argumentsField;
+    private @Nullable Field requiredPermissionField;
+    private @Nullable Field senderField;
+    private @Nullable Field receiverField;
 
-    @Nullable
-    public Field getArgumentsField() {
+    public @Nullable Field getArgumentsField() {
         return this.argumentsField;
     }
 
@@ -47,8 +42,7 @@ class ContextData {
         this.argumentsField = argumentsField;
     }
 
-    @Nullable
-    public Field getRequiredPermissionField() {
+    public @Nullable Field getRequiredPermissionField() {
         return this.requiredPermissionField;
     }
 
@@ -56,8 +50,7 @@ class ContextData {
         this.requiredPermissionField = requiredPermissionField;
     }
 
-    @Nullable
-    public Field getSenderField() {
+    public @Nullable Field getSenderField() {
         return this.senderField;
     }
 
@@ -65,8 +58,7 @@ class ContextData {
         this.senderField = senderField;
     }
 
-    @Nullable
-    public Field getReceiverField() {
+    public @Nullable Field getReceiverField() {
         return this.receiverField;
     }
 

@@ -25,21 +25,22 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.Map;
-import net.mcparkour.anfodis.codec.registry.CodecRegistry;
-import net.mcparkour.anfodis.command.codec.completion.CompletionCodec;
+import net.mcparkour.anfodis.command.Messenger;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.CommandContextBuilder;
+import net.mcparkour.anfodis.command.handler.CommandContextBuilderHandler;
 import net.mcparkour.anfodis.command.handler.CommandContextCreator;
-import net.mcparkour.anfodis.command.handler.CompletionContext;
-import net.mcparkour.anfodis.command.handler.CompletionContextBuilder;
-import net.mcparkour.anfodis.command.handler.CompletionContextBuilderHandler;
-import net.mcparkour.anfodis.command.mapper.CompletionCommand;
+import net.mcparkour.anfodis.command.mapper.Command;
+import net.mcparkour.anfodis.handler.ContextHandler;
+import org.jetbrains.annotations.Nullable;
 
-public interface CompletionHandlerSupplier<T extends CompletionCommand<T, ?, ?, ?>, C extends CompletionContext<T, S>, B extends CompletionContextBuilder<C, T, S>, S> {
+public interface CommandHandlerCreator<T extends Command<T, ?, ?, ?>, C extends CommandContext<T, S>, B extends CommandContextBuilder<C, T, S>, S, M extends Messenger<T, S>> {
 
-    CompletionContextBuilderHandler<B, C> supply(
+    CommandContextBuilderHandler<B, C> create(
         T command,
-        CodecRegistry<CompletionCodec> completionCodecRegistry,
-        Map<T, CompletionContextBuilderHandler<B, C>> subCommandHandlerMap,
-        CommandContextCreator<T, C, S> contextSupplier
+        Map<T, ? extends CommandContextBuilderHandler<B, C>> subCommandHandlers,
+        @Nullable ContextHandler<C> executorHandler,
+        CommandContextCreator<T, C, S> contextCreator,
+        M messenger
     );
 }

@@ -28,11 +28,9 @@ import org.jetbrains.annotations.Nullable;
 
 class PaperChannelListenerPropertiesData {
 
-    @Nullable
-    private String[] channels;
+    private @Nullable String[] channels;
 
-    @Nullable
-    public String[] getChannels() {
+    public @Nullable String[] getChannels() {
         return this.channels;
     }
 

@@ -29,10 +29,8 @@ import org.jetbrains.annotations.Nullable;
 
 class CompletionArgumentData extends ArgumentData {
 
-    @Nullable
-    private Boolean hasCompletion;
-    @Nullable
-    private Class<? extends CompletionCodec> completionCodecType;
+    private @Nullable Boolean hasCompletion;
+    private @Nullable Class<? extends CompletionCodec> completionCodecType;
 
     public @Nullable Boolean getHasCompletion() {
         return this.hasCompletion;
@@ -42,8 +40,7 @@ class CompletionArgumentData extends ArgumentData {
         this.hasCompletion = hasCompletion;
     }
 
-    @Nullable
-    public Class<? extends CompletionCodec> getCompletionCodecType() {
+    public @Nullable Class<? extends CompletionCodec> getCompletionCodecType() {
         return this.completionCodecType;
     }
 

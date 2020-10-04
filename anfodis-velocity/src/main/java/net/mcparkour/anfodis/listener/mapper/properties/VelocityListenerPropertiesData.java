@@ -29,11 +29,9 @@ import org.jetbrains.annotations.Nullable;
 
 class VelocityListenerPropertiesData extends ListenerPropertiesData<Object> {
 
-    @Nullable
-    private PostOrder priority;
+    private @Nullable PostOrder priority;
 
-    @Nullable
-    public PostOrder getPriority() {
+    public @Nullable PostOrder getPriority() {
         return this.priority;
     }
 

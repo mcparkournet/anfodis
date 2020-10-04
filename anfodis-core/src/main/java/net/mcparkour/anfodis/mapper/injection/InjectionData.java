@@ -30,13 +30,10 @@ import org.jetbrains.annotations.Nullable;
 
 class InjectionData {
 
-    @Nullable
-    private Field injectionField;
-    @Nullable
-    private Class<? extends InjectionCodec<?>> codecType;
+    private @Nullable Field injectionField;
+    private @Nullable Class<? extends InjectionCodec<?>> codecType;
 
-    @Nullable
-    public Field getInjectionField() {
+    public @Nullable Field getInjectionField() {
         return this.injectionField;
     }
 
@@ -44,8 +41,7 @@ class InjectionData {
         this.injectionField = injectionField;
     }
 
-    @Nullable
-    public Class<? extends InjectionCodec<?>> getCodecType() {
+    public @Nullable Class<? extends InjectionCodec<?>> getCodecType() {
         return this.codecType;
     }
 

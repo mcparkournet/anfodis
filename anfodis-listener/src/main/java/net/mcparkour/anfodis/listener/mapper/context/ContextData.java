@@ -29,11 +29,9 @@ import org.jetbrains.annotations.Nullable;
 
 class ContextData {
 
-    @Nullable
-    private Field eventField;
+    private @Nullable Field eventField;
 
-    @Nullable
-    public Field getEventField() {
+    public @Nullable Field getEventField() {
         return this.eventField;
     }
 

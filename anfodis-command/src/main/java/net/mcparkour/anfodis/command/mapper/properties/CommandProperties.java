@@ -26,6 +26,7 @@ package net.mcparkour.anfodis.command.mapper.properties;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.mcparkour.craftmon.permission.Permission;
@@ -35,12 +36,10 @@ public class CommandProperties {
 
     private final String name;
     private final String description;
-    @Nullable
-    private final String descriptionTranslationId;
+    private final @Nullable String descriptionTranslationId;
     private final Set<String> aliases;
     private final Set<String> lowerCaseAliases;
-    @Nullable
-    private final String aliasesTranslationId;
+    private final @Nullable String aliasesTranslationId;
     private final Permission permission;
     private final boolean asynchronous;
 
@@ -48,16 +47,26 @@ public class CommandProperties {
         String name = propertiesData.getName();
         this.name = Objects.requireNonNull(name, "Command name is null");
         String description = propertiesData.getDescription();
-        this.description = description == null ? "" : description;
+        this.description = description == null ?
+            "" :
+            description;
         this.descriptionTranslationId = propertiesData.getDescriptionTranslationId();
         String[] aliases = propertiesData.getAliases();
-        this.aliases = aliases == null ? Set.of() : Set.of(aliases);
+        this.aliases = aliases == null ?
+            Set.of() :
+            Set.of(aliases);
         this.lowerCaseAliases = this.aliases.stream()
             .map(String::toLowerCase)
             .collect(Collectors.toUnmodifiableSet());
         this.aliasesTranslationId = propertiesData.getAliasesTranslationId();
         String permissionName = propertiesData.getPermission();
-        this.permission = permissionName == null ? Permission.empty() : Permission.of(permissionName.isEmpty() ? this.name : permissionName);
+        this.permission = permissionName == null ?
+            Permission.empty() :
+            Permission.of(
+                permissionName.isEmpty() ?
+                    this.name :
+                    permissionName
+            );
         Boolean asynchronous = propertiesData.getAsynchronous();
         this.asynchronous = asynchronous != null && asynchronous;
     }
@@ -85,9 +94,8 @@ public class CommandProperties {
         return this.description;
     }
 
-    @Nullable
-    public String getDescriptionTranslationId() {
-        return this.descriptionTranslationId;
+    public Optional<String> getDescriptionTranslationId() {
+        return Optional.ofNullable(this.descriptionTranslationId);
     }
 
     public Set<String> getAliases() {
@@ -98,9 +106,8 @@ public class CommandProperties {
         return this.lowerCaseAliases;
     }
 
-    @Nullable
-    public String getAliasesTranslationId() {
-        return this.aliasesTranslationId;
+    public Optional<String> getAliasesTranslationId() {
+        return Optional.ofNullable(this.aliasesTranslationId);
     }
 
     public boolean isAsynchronous() {

@@ -34,14 +34,17 @@ public class SingleElementMapper<E extends AnnotatedElement> {
 
     private final AnnotationConsumer<? extends Annotation> requiredAnnotation;
     private final List<AnnotationConsumer<? extends Annotation>> additionalAnnotations;
-    @Nullable
-    private final Consumer<E> elementConsumer;
+    private final @Nullable Consumer<E> elementConsumer;
 
     public static <E extends AnnotatedElement> SingleElementMapperBuilder<E> builder() {
         return new SingleElementMapperBuilder<>();
     }
 
-    public SingleElementMapper(final AnnotationConsumer<? extends Annotation> requiredAnnotation, final List<AnnotationConsumer<? extends Annotation>> additionalAnnotations, @Nullable final Consumer<E> elementConsumer) {
+    public SingleElementMapper(
+        final AnnotationConsumer<? extends Annotation> requiredAnnotation,
+        final List<AnnotationConsumer<? extends Annotation>> additionalAnnotations,
+        @Nullable final Consumer<E> elementConsumer
+    ) {
         this.requiredAnnotation = requiredAnnotation;
         this.additionalAnnotations = additionalAnnotations;
         this.elementConsumer = elementConsumer;

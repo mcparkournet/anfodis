@@ -29,11 +29,9 @@ import org.jetbrains.annotations.Nullable;
 
 class SubCommandData {
 
-    @Nullable
-    private Field subCommandField;
+    private @Nullable Field subCommandField;
 
-    @Nullable
-    public Field getSubCommandField() {
+    public @Nullable Field getSubCommandField() {
         return this.subCommandField;
     }
 

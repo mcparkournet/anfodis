@@ -30,8 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Context {
 
-    @Nullable
-    private final Field eventField;
+    private final @Nullable Field eventField;
 
     public Context(final ContextData contextData) {
         this.eventField = contextData.getEventField();

@@ -38,7 +38,11 @@ public abstract class AbstractRegistry<T extends Root, C extends RootContext> im
     private final RootMapper<T> mapper;
     private final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry;
 
-    public AbstractRegistry(final Class<? extends Annotation> annotation, final RootMapper<T> mapper, final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry) {
+    public AbstractRegistry(
+        final Class<? extends Annotation> annotation,
+        final RootMapper<T> mapper,
+        final CodecRegistry<InjectionCodec<?>> injectionCodecRegistry
+    ) {
         this.annotationClass = annotation;
         this.mapper = mapper;
         this.injectionCodecRegistry = injectionCodecRegistry;
