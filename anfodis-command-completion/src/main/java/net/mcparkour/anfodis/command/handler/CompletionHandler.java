@@ -181,11 +181,10 @@ public class CompletionHandler<T extends CompletionCommand<T, ?, ?, ?, S>, C ext
 
     private boolean checkPermission(final B contextBuilder, final CompletionArgument completionArgument) {
         ArgumentContext argumentContext = completionArgument.getContext();
-        Optional<Permission> argumentPermissionOptional = argumentContext.getPermission();
-        if (argumentPermissionOptional.isEmpty()) {
+        Permission argumentPermission = argumentContext.getPermission();
+        if (argumentPermission.isEmpty()) {
             return true;
         }
-        Permission argumentPermission = argumentPermissionOptional.get();
         Permission contextPermission = contextBuilder.getPermission();
         Permission permission = contextPermission.withLast(argumentPermission);
         Permissible permissible = contextBuilder.getSender();

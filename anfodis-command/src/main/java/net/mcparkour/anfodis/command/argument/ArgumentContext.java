@@ -24,22 +24,20 @@
 
 package net.mcparkour.anfodis.command.argument;
 
-import java.util.Optional;
 import net.mcparkour.craftmon.permission.Permission;
-import org.jetbrains.annotations.Nullable;
 
 public class ArgumentContext {
 
     private final String name;
     private final boolean optional;
     private final boolean variadic;
-    private final @Nullable Permission permission;
+    private final Permission permission;
 
     public ArgumentContext(
         final String name,
         final boolean optional,
         final boolean variadic,
-        final @Nullable Permission permission
+        final Permission permission
     ) {
         this.name = name;
         this.optional = optional;
@@ -59,7 +57,7 @@ public class ArgumentContext {
         return this.variadic;
     }
 
-    public Optional<Permission> getPermission() {
-        return Optional.ofNullable(this.permission);
+    public Permission getPermission() {
+        return this.permission;
     }
 }

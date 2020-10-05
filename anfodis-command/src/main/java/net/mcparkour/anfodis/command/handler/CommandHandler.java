@@ -145,11 +145,10 @@ public class CommandHandler<T extends Command<T, ?, ?, C, S>, C extends CommandC
         for (int index = 0; index < Math.min(argumentsSize, commandArgumentSize); index++) {
             Argument argument = commandArguments.get(index);
             ArgumentContext argumentContext = argument.getContext();
-            Optional<Permission> argumentPermissionOptional = argumentContext.getPermission();
-            if (argumentPermissionOptional.isEmpty()) {
+            Permission argumentPermission = argumentContext.getPermission();
+            if (argumentPermission.isEmpty()) {
                 continue;
             }
-            Permission argumentPermission = argumentPermissionOptional.get();
             Permission permission = contextPermission.withLast(argumentPermission);
             if (!permissible.hasPermission(permission)) {
                 return Optional.of(permission);
