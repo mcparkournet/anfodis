@@ -27,16 +27,19 @@ package net.mcparkour.anfodis.command;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.mcparkour.anfodis.command.context.Sender;
+import net.mcparkour.anfodis.command.context.WaterfallCommandContext;
 import net.mcparkour.anfodis.command.mapper.WaterfallCommand;
 import net.mcparkour.intext.message.MessageReceiver;
 import net.md_5.bungee.api.CommandSender;
 
-public interface WaterfallMessenger extends Messenger<WaterfallCommand, net.md_5.bungee.api.CommandSender> {
+public interface WaterfallMessenger
+    extends Messenger<WaterfallCommand, WaterfallCommandContext, CommandSender> {
 
     default void sendInvalidSenderMessage(
-        final Sender<CommandSender> sender,
-        final Set<Class<? extends net.md_5.bungee.api.CommandSender>> validSenders
+        final WaterfallCommandContext context,
+        final Set<Class<? extends CommandSender>> validSenders
     ) {
+        Sender<CommandSender> sender = context.getSender();
         MessageReceiver receiver = sender.getReceiver();
         String senderType = sender.getClass().getSimpleName();
         String validSendersString = validSenders.stream()

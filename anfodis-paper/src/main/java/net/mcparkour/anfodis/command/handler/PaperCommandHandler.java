@@ -55,8 +55,10 @@ public class PaperCommandHandler
         Sender<CommandSender> sender = contextBuilder.getSender();
         if (!properties.isValidSender(sender)) {
             PaperMessenger messenger = getMessenger();
+            var contextCreator = getContextCreator();
+            PaperCommandContext context = contextBuilder.build(contextCreator);
             var validSenders = properties.getSenderTypes();
-            messenger.sendInvalidSenderMessage(sender, validSenders);
+            messenger.sendInvalidSenderMessage(context, validSenders);
             return;
         }
         super.handle(contextBuilder);

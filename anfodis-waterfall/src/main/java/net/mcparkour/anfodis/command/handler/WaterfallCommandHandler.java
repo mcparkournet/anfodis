@@ -55,8 +55,10 @@ public class WaterfallCommandHandler
         Sender<CommandSender> sender = contextBuilder.getSender();
         if (!properties.isValidSender(sender)) {
             WaterfallMessenger messenger = getMessenger();
+            var contextCreator = getContextCreator();
+            WaterfallCommandContext context = contextBuilder.build(contextCreator);
             var senderTypes = properties.getSenderTypes();
-            messenger.sendInvalidSenderMessage(sender, senderTypes);
+            messenger.sendInvalidSenderMessage(context, senderTypes);
             return;
         }
         super.handle(contextBuilder);

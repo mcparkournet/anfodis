@@ -28,15 +28,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import com.velocitypowered.api.command.CommandSource;
 import net.mcparkour.anfodis.command.context.Sender;
+import net.mcparkour.anfodis.command.context.VelocityCommandContext;
 import net.mcparkour.anfodis.command.mapper.VelocityCommand;
 import net.mcparkour.intext.message.MessageReceiver;
 
-public interface VelocityMessenger extends Messenger<VelocityCommand, CommandSource> {
+public interface VelocityMessenger
+    extends Messenger<VelocityCommand, VelocityCommandContext, CommandSource> {
 
     default void sendInvalidSenderMessage(
-        final Sender<CommandSource> sender,
+        final VelocityCommandContext context,
         final Set<Class<? extends CommandSource>> validSenders
     ) {
+        Sender<CommandSource> sender = context.getSender();
         MessageReceiver receiver = sender.getReceiver();
         String senderType = sender.getClass().getSimpleName();
         String validSendersString = validSenders.stream()

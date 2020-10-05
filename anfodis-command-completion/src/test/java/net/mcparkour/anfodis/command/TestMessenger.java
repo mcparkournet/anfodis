@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command;
 
 import net.mcparkour.anfodis.TestCommandSender;
+import net.mcparkour.anfodis.command.context.TestCommandContext;
 import net.mcparkour.anfodis.command.mapper.TestCommand;
 
-public interface TestMessenger extends Messenger<TestCommand, TestCommandSender> {}
+public interface TestMessenger extends Messenger<TestCommand, TestCommandContext, TestCommandSender> {}

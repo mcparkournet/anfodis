@@ -42,7 +42,7 @@ import net.mcparkour.anfodis.handler.ContextHandler;
 import net.mcparkour.craftmon.permission.Permission;
 import org.jetbrains.annotations.Nullable;
 
-public class CommandHandler<T extends Command<T, ?, ?, C, S>, C extends CommandContext<T, S>, B extends CommandContextBuilder<T, C, S>, S, M extends Messenger<T, S>>
+public class CommandHandler<T extends Command<T, ?, ?, C, S>, C extends CommandContext<T, S>, B extends CommandContextBuilder<T, C, S>, S, M extends Messenger<T, C, S>>
     implements CommandContextBuilderHandler<B, C> {
 
     private final T command;
@@ -70,7 +70,8 @@ public class CommandHandler<T extends Command<T, ?, ?, C, S>, C extends CommandC
         Sender<S> sender = contextBuilder.getSender();
         Permission permission = contextBuilder.getPermission();
         if (!sender.hasPermission(permission)) {
-            this.messenger.sendNoPermissionMessage(sender, permission);
+            C context = contextBuilder.build(this.contextCreator);
+            this.messenger.sendNoPermissionMessage(context, permission);
             return;
         }
         Optional<Token> firstTokenOptional = contextBuilder.peekArgument();
@@ -103,24 +104,22 @@ public class CommandHandler<T extends Command<T, ?, ?, C, S>, C extends CommandC
     }
 
     private void execute(final B contextBuilder) {
-        Sender<S> sender = contextBuilder.getSender();
-        Permission permission = contextBuilder.getPermission();
+        C context = contextBuilder.build(this.contextCreator);
         if (this.executorHandler == null) {
-            this.messenger.sendSubCommandsUsageMessage(sender, permission, this.command);
+            this.messenger.sendSubCommandsUsageMessage(context, this.command);
             return;
         }
         int argumentsSize = contextBuilder.getArgumentsSize();
         if (!checkLength(argumentsSize)) {
-            this.messenger.sendCommandUsageMessage(sender, this.command);
+            this.messenger.sendCommandUsageMessage(context, this.command);
             return;
         }
         Optional<Permission> argumentPermissionOptional = getMissingArgumentPermission(contextBuilder);
         if (argumentPermissionOptional.isPresent()) {
             Permission argumentPermission = argumentPermissionOptional.get();
-            this.messenger.sendNoPermissionMessage(sender, argumentPermission);
+            this.messenger.sendNoPermissionMessage(context, argumentPermission);
             return;
         }
-        C context = contextBuilder.build(this.contextCreator);
         Object instance = this.command.createInstance();
         this.executorHandler.handle(context, instance);
     }
@@ -172,6 +171,10 @@ public class CommandHandler<T extends Command<T, ?, ?, C, S>, C extends CommandC
 
     public T getCommand() {
         return this.command;
+    }
+
+    public CommandContextCreator<T, C, S> getContextCreator() {
+        return this.contextCreator;
     }
 
     public M getMessenger() {

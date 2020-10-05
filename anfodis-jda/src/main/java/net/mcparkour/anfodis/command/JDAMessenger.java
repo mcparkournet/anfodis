@@ -24,6 +24,7 @@
 
 package net.mcparkour.anfodis.command;
 
+import net.mcparkour.anfodis.command.context.JDACommandContext;
 import net.mcparkour.anfodis.command.mapper.JDACommand;
 
-public interface JDAMessenger extends Messenger<JDACommand, ChannelSender> {}
+public interface JDAMessenger extends Messenger<JDACommand, JDACommandContext, ChannelSender> {}

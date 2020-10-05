@@ -26,6 +26,7 @@ package net.mcparkour.anfodis.command;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import net.mcparkour.anfodis.command.context.CommandContext;
 import net.mcparkour.anfodis.command.context.Sender;
 import net.mcparkour.anfodis.command.context.Permissible;
 import net.mcparkour.anfodis.command.mapper.Command;
@@ -33,21 +34,25 @@ import net.mcparkour.anfodis.command.mapper.properties.CommandProperties;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiver;
 
-public interface Messenger<T extends Command<T, ?, ?, ?, S>, S> {
+public interface Messenger<T extends Command<T, ?, ?, ?, S>, C extends CommandContext<T, S>, S> {
 
-    default void sendNoPermissionMessage(final Sender<S> sender, final Permission permission) {
+    default void sendNoPermissionMessage(final C context, final Permission permission) {
+        Sender<S> sender = context.getSender();
         MessageReceiver receiver = sender.getReceiver();
         String permissionName = permission.getName();
         receiver.receivePlain("You do not have permission: " + permissionName);
     }
 
-    default void sendCommandUsageMessage(final Sender<S> sender, final T command) {
+    default void sendCommandUsageMessage(final C context, final T command) {
         String usage = command.getUsage();
+        Sender<S> sender = context.getSender();
         MessageReceiver receiver = sender.getReceiver();
         receiver.receivePlain(usage);
     }
 
-    default void sendSubCommandsUsageMessage(final Sender<S> sender, final Permission permission, final T command) {
+    default void sendSubCommandsUsageMessage(final C context, final T command) {
+        Sender<S> sender = context.getSender();
+        Permission permission = context.getPermission();
         String usage = getUsage(command, sender, permission);
         MessageReceiver receiver = sender.getReceiver();
         receiver.receivePlain(usage);

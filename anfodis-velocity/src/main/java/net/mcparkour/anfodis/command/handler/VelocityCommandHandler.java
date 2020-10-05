@@ -55,8 +55,10 @@ public class VelocityCommandHandler
         Sender<CommandSource> sender = contextBuilder.getSender();
         if (!properties.isValidSender(sender)) {
             VelocityMessenger messenger = getMessenger();
+            var contextCreator = getContextCreator();
+            VelocityCommandContext context = contextBuilder.build(contextCreator);
             var senderTypes = properties.getSenderTypes();
-            messenger.sendInvalidSenderMessage(sender, senderTypes);
+            messenger.sendInvalidSenderMessage(context, senderTypes);
             return;
         }
         super.handle(contextBuilder);

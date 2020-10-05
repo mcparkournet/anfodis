@@ -45,7 +45,7 @@ import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, C, S>, C extends CommandContext<T, S>, B extends CommandContextBuilder<T, C, S>, S, M extends Messenger<T, S>>
+public abstract class AbstractCommandRegistry<T extends Command<T, ?, ?, C, S>, C extends CommandContext<T, S>, B extends CommandContextBuilder<T, C, S>, S, M extends Messenger<T, C, S>>
     extends AbstractRegistry<T, C> {
 
     private final CommandHandlerCreator<T, C, B, S, M> commandHandlerCreator;

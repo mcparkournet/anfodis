@@ -45,7 +45,7 @@ import net.mcparkour.anfodis.mapper.RootMapper;
 import net.mcparkour.craftmon.permission.Permission;
 import net.mcparkour.intext.message.MessageReceiverFactory;
 
-public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, ?, ?, C1, S>, C1 extends CommandContext<T, S>, B1 extends CommandContextBuilder<T, C1, S>, C2 extends CompletionContext<T, S>, B2 extends CompletionContextBuilder<T, C2, S>, S, M extends Messenger<T, S>>
+public abstract class AbstractCompletionRegistry<T extends CompletionCommand<T, ?, ?, C1, S>, C1 extends CommandContext<T, S>, B1 extends CommandContextBuilder<T, C1, S>, C2 extends CompletionContext<T, S>, B2 extends CompletionContextBuilder<T, C2, S>, S, M extends Messenger<T, C1, S>>
     extends AbstractCommandRegistry<T, C1, B1, S, M> {
 
     private final CompletionHandlerCreator<T, C2, B2, S> completionHandlerCreator;
