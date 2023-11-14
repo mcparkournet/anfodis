@@ -25,6 +25,7 @@
 package net.mcparkour.anfodis.command.registry;
 
 import java.util.List;
+
 import net.mcparkour.anfodis.command.lexer.Lexer;
 import net.mcparkour.anfodis.command.lexer.Token;
 import org.bukkit.Location;

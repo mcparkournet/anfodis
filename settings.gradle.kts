@@ -5,6 +5,7 @@ include(
     "anfodis-command",
     "anfodis-command-completion",
     "anfodis-listener",
+    "anfodis-io",
     "anfodis-jda",
     "anfodis-paper",
     "anfodis-velocity",
